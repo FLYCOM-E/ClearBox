@@ -67,6 +67,7 @@ __模块已内置 busybox，兼容各种设备环境__
 ##### 感谢各位使用，欢迎反馈😋🎉🎉
 [ By Coolapk @飞翔COME & @默认值NORMAL ]
 > 更多玩机交流请前往 云湖 [MAGISK综合交流群](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
+
 > 模块内测请前往 [CACHE BOX](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
 
 > __*此README以最新debug版为准__
