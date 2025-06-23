@@ -28,7 +28,8 @@ __理论兼容 Magisk、Apatch、Ksu 及其分支管理器__
    ##### 阻止缓存功能：
 
 任意终端输入 **clearbox**  进入菜单或使用ClearBox软件开启阻止缓存功能，首次开启功能需重启或执行立即生效（见后
-编辑：重启后黑名单位于 **/data/adb/wipe_cache/blacklist.txt** ，添加方法为一行一个包名
+编辑：重启后黑名单位于 **/data/adb/wipe_cache/blacklist.prop** ，添加方法为一行一个包名
+或者您也可以在ClearBox软件中添加应用，（UI还是好用
 **重启手机** 或运行 **立即生效** 名单即刻生效
 > 模块并不会也无法阻止 /sdcard/Android/data 内生成软件缓存
 
@@ -62,4 +63,4 @@ __理论兼容 Magisk、Apatch、Ksu 及其分支管理器__
 
 [更多玩机交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
 
-> __*此README以最新debug版为准，往期模块使用请查看模块内README__
+> __*此README以**最新/debug**版本为准，往期模块使用请查看模块内README__
