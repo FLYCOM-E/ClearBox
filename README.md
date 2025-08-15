@@ -66,7 +66,7 @@ Other：模块不会实时监测前台软件并阻止缓存，采取每分钟更
 F2fs磁盘GC，此功能属于紧急GC，因此不需要经常使用，定期运行即可，方案来自Coolapk@Amktiao大佬，已得到同意，感谢大佬！
 
 > 模块内测请前往
-> [CACHE BOX](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
+> [ClearBox](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
 > [更多玩机交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
 
 > __*此README以**最新**版本为准
