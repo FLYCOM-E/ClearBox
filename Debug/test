@@ -1,4 +1,4 @@
-#!/system/bun/sh
+#!/system/bin/sh
 
 echo "test"
 
