@@ -69,4 +69,4 @@ F2fs磁盘GC，此功能属于紧急GC，因此不需要经常使用，定期运
 > [ClearBox](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
 > [更多玩机交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
 
-> __*此README以**最新**版本为准
+> *此README以**最新**版本为准
