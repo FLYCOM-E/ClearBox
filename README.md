@@ -20,7 +20,7 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 
    ## 简介功能：
    
-### 1：一键优化清理
+### **1**：一键优化清理
 
 进行快速一键优化/清理，效果等同于定期优化。包括缓存清理、垃圾清理，快速磁盘 **GC** 等，另外根据模块设置还可运行文件清理/归类
 
@@ -107,7 +107,7 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 
 
 > 模块内测请前往
->[ClearBox](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
+>[**ClearBox**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
 >[更多玩机交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
 
 > *此 **README** 以最新版本为准
