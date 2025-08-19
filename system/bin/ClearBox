@@ -1,0 +1,110 @@
+#!/system/bin/sh
+exec 2>>/dev/null
+######
+if [ ! "$(whoami)" = "root" ]; then
+    echo " » Please use root privileges!"
+    exit 1
+fi
+######
+home="/data/adb/modules/wipe_cache"
+######
+function RunService()
+{
+sh "$home/service.sh"
+echo " » Done"
+}
+######
+function md_menu()
+{
+sh "$home/Menu.sh"
+}
+######
+function ClearCache()
+{
+sh "$home/all.sh" ClearAll &
+wait
+}
+######
+function bin_dir()
+{
+if [ -d "/data/adb/magisk" ]; then
+    echo "/data/adb/magisk"
+elif [ -d "/data/adb/ap" ]; then
+    echo "/data/adb/ap/bin"
+elif [ -d "/data/adb/ksu" ]; then
+    echo "/data/adb/ksu/bin"
+fi
+}
+######
+function home_dir()
+{
+echo "$home"
+}
+######
+function work_dir()
+{
+echo "/data/adb/wipe_cache"
+}
+######
+function version()
+{
+echo -e "ClearBox Version: $(grep "version=" "$home/module.prop" | cut -f2 -d '=')"
+}
+######
+function md_help()
+{
+echo "                             "
+echo "Usage: ClearBox"
+echo "                             "
+echo "or ClearBox [ OPTION ]:"
+echo "                             "
+echo "    -u"
+echo "           ~ Update Profile"
+echo "                             "
+echo "    -c"
+echo "           ~ Clear All"
+echo "                             "
+echo "    -v"
+echo "           ~ Version"
+echo "                             "
+echo "    -b"
+echo "           ~ Busybox Bin Dir"
+echo "                             "
+echo "    -h"
+echo "           ~ Module Home Dir"
+echo "                             "
+echo "    -w"
+echo "           ~ Module Work Dir"
+echo "                             "
+echo "    --help"
+echo "           ~ Module Help"
+echo "                             "
+}
+######
+case "$1" in
+    -u | -U)
+        RunService
+        ;;
+    -c | -C)
+        ClearCache
+        ;;
+    -b | -B)
+        bin_dir
+        ;;
+    -h | -H)
+        home_dir
+        ;;
+    -w | -W)
+        work_dir
+        ;;
+    -v | -V)
+        version
+        ;;
+    --help | --HELP)
+        md_help
+        ;;
+    *)
+        md_menu
+        ;;
+esac
+exit 0
