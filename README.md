@@ -120,4 +120,4 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 >[更多玩机交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
 
 
-> *此 **README** 以最新版本为准
+> *此 **README** 以最新Debug版本为准
