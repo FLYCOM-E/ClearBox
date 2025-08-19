@@ -1,3 +1,5 @@
+   # 您当前正在Debug分支，此分支会及时更新最新代码，但较releases极不稳定，非尝鲜不建议使用
+
    # **ClearBox**
 
    ## 什么是 **ClearBox** ？
