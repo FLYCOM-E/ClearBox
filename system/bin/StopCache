@@ -1,0 +1,158 @@
+#!/system/bin/sh
+exec 2>>/dev/null
+######
+if [ ! "$(whoami)" = "root" ]; then
+    echo " » Please use root privileges!"
+    exit 1
+fi
+######
+bin_dir=$(ClearBox -b)
+home_dir=$(ClearBox -h)
+work_dir=$(ClearBox -w)
+whitelist="$work_dir/whitelist.prop"
+data_dir1="/data/user"
+data_dir2="/data/user_de"
+micro_dir1="/mnt/expand/*/user"
+micro_dir2="/mnt/expand/*/user_de"
+NowPackageName=$(dumpsys window | grep mCurrentFocus | cut -f1 -d '/' | cut -f5 -d ' ')
+######
+# 根据安卓版本设置权限
+sdkv=$(getprop ro.build.version.sdk)
+if [ "$sdkv" -lt "26" ]; then
+    permission_t=771
+    permission_m=551
+else
+    permission_t=2771
+    permission_m=2551
+fi
+######
+function UpdatePackage()
+{
+# 此函数用于获取/更新最近前台包名数据
+NowApp1=$(grep ^"1=" "$work_dir/RunStart" | cut -f2 -d '=')
+NowApp2=$(grep ^"2=" "$work_dir/RunStart" | cut -f2 -d '=')
+reset_app=$(grep ^"reset=" "$work_dir/RunStart" | cut -f2 -d '=')
+}
+######
+# 检查并初始化记录文件
+if ! grep "=" "$work_dir/RunStart"; then
+    echo "1=" > "$work_dir/RunStart"
+    echo "2=" >> "$work_dir/RunStart"
+    echo "reset=" >> "$work_dir/RunStart"
+fi
+######
+UpdatePackage
+######
+# 检查屏幕状态/更新数据
+if echo "$NowPackageName" | grep "StatusBar" >/dev/null; then
+    exit 0
+else
+    if ! grep ^"1=$NowPackageName" "$work_dir/RunStart" >/dev/null; then
+        sed -i "s/reset=$reset_app/reset=$NowApp2/g" "$work_dir/RunStart"
+        sed -i "s/2=$NowApp2/2=$NowApp1/g" "$work_dir/RunStart"
+        sed -i "s/1=$NowApp1/1=$NowPackageName/g" "$work_dir/RunStart"
+    else
+        exit 0
+    fi
+fi
+######
+UpdatePackage
+######
+function Stop_UserCache()
+{
+# 函数用于内部储存软件阻止缓存
+ls "$data_dir1/" | while read userid_dir; do
+    local Appdir="$data_dir1/$userid_dir"
+    local Appdir2="$data_dir1/$userid_dir"
+    ###
+    if [ -d "$Appdir/$NowPackageName" ]; then
+        if ! grep "$NowPackageName" "$whitelist" >/dev/null; then
+            if [ -d "$Appdir/$reset_app/cache" ]; then
+                chmod "$permission_t" "$Appdir/$reset_app/cache"
+                chmod "$permission_t" "$Appdir2/$reset_app/cache"
+            fi
+            chmod "$permission_m" "$Appdir/$NowPackageName/cache"
+            chmod "$permission_m" "$Appdir2/$NowPackageName/cache"
+        fi
+    fi
+done
+}
+######
+function Stop_MicroCache()
+{
+# 函数用于SD拓展卡软件阻止缓存
+###
+local Appdir="/mnt/expand/*/user/0"
+local Appdir2="/mnt/expand/*/user_de/0"
+###
+if [ ! -d "$Appdir" ]; then
+    exit 0
+fi
+###
+ls "$micro_dir1/" | while read userid_dir; do
+    local Appdir="$micro_dir1/$userid_dir"
+    local Appdir2="$micro_dir1/$userid_dir"
+    ###
+    if [ -d "$Appdir/$NowPackageName" ]; then
+        if ! grep "$NowPackageName" "$whitelist" >/dev/null; then
+            if [ -d "$Appdir/$reset_app/cache" ]; then
+                chmod "$permission_t" "$Appdir/$reset_app/cache"
+                chmod "$permission_t" "$Appdir2/$reset_app/cache"
+            fi
+            chmod "$permission_m" "$Appdir/$NowPackageName/cache"
+            chmod "$permission_m" "$Appdir2/$NowPackageName/cache"
+        fi
+    fi
+done
+}
+######
+function Reset_UserCache()
+{
+# 函数用于恢复内部储存软件缓存状态
+ls "$data_dir1/" | while read userid_dir; do
+    local Appdir="$data_dir1/$userid_dir"
+    local Appdir2="$data_dir1/$userid_dir"
+    ###
+    ls "$Appdir/" | while read Reset_app_dir; do
+        rm -r "$Appdir/$Reset_app_dir/cache"
+        rm -r "$Appdir2/$Reset_app_dir/cache"
+    done
+done
+}
+######
+function Reset_MicroCache()
+{
+# 函数用于恢复SD拓展卡软件缓存状态
+###
+local Appdir="/mnt/expand/*/user/0"
+local Appdir2="/mnt/expand/*/user_de/0"
+###
+if [ ! -d "$Appdir" ]; then
+    exit 0
+fi
+###
+ls "$micro_dir1/" | while read userid_dir; do
+    local Appdir="$micro_dir1/$userid_dir"
+    local Appdir2="$micro_dir1/$userid_dir"
+    ###
+    ls "$Appdir/" | while read Reset_app_dir; do
+        rm -r "$Appdir/$Reset_app_dir/cache"
+        rm -r "$Appdir2/$Reset_app_dir/cache"
+    done
+done
+}
+######
+case $1 in
+    Reset)
+        Reset_UserCache &
+        Reset_MicroCache &
+        wait
+        ;;
+    Stop)
+        Stop_UserCache &
+        Stop_MicroCache &
+        wait
+        ;;
+esac
+######
+exit 0
