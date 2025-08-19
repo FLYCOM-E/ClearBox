@@ -1,2 +1,0 @@
-# shell
-echo "Hello Shell"
