@@ -9,9 +9,7 @@ fi
 home_dir="$MODDIR"
 bin_dir=$(ClearBox -b)
 work_dir=$(ClearBox -w)
-chmod -R 700 "$work_dir"
-#exec 2>>/dev/null
-exec 2>>"$work_dir/运行日志.log"
+exec 2>>/dev/null
 ######
 function StartSettings()
 {
@@ -20,6 +18,7 @@ if [ ! -d "$work_dir" ]; then
     touch "$work_dir/settings.prop"
     touch "$work_dir/ClearBox模块配置目录"
 fi
+######
 if ! grep ^"stopcache=" "$work_dir/settings.prop" >/dev/null; then
     echo "stopcache=0" >> "$work_dir/settings.prop"
 fi
@@ -50,6 +49,7 @@ fi
 if ! grep ^"ClearIso_disk=" "$work_dir/settings.prop" >/dev/null; then
     echo "ClearIso_disk=0" >> "$work_dir/settings.prop"
 fi
+######
 if [ ! -f "$work_dir/whitelist.prop" ]; then
     touch "$work_dir/whitelist.prop"
 fi
@@ -63,6 +63,9 @@ if [ ! -d "$work_dir/文件格式配置" ]; then
         echo "[ $(date) ] No such ProFile! Please Reinstall the module." > "$work_dir/运行日志.log"
     fi
 fi
+######
+chmod -R 700 "$work_dir"
+######
 }
 ######
 while true; do
