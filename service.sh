@@ -63,6 +63,10 @@ if [ ! -d "$work_dir/文件格式配置" ]; then
         echo "[ $(date) ] No such ProFile! Please Reinstall the module." > "$work_dir/运行日志.log"
     fi
 fi
+if [ ! -d "$work_dir/清理配置" ]; then
+    rm -rf "$work_dir/清理配置"
+    mkdir -p "$work_dir/清理配置"
+fi
 ######
 chmod -R 700 "$work_dir"
 ######
