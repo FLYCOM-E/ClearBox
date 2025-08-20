@@ -58,12 +58,17 @@ ls "$work_dir/清理配置/" | while read File; do
         fi
         # 设置clear参数则删除该文件夹
         if echo "$i" | grep ^"CLEAR" >/dev/null; then
-            echo " » 正在删除 $df"
-            rm -r "$df"
+            if [ -f "$df" ]; then
+                echo " » 正在删除 $df"
+                rm -r "$df"
+            elif [ -d "$df" ]; then
+                echo " » 正在删除 $df"
+                rm -r "$df"
+            fi
         # 设置kill参数则将对应文件夹替换为文件
         elif echo "$i" | grep ^"KILL" >/dev/null; then
-            echo " » 正在强制干掉 $df"
             if [ -d "$df" ]; then
+                echo " » 正在强制干掉 $df"
                 rm -r "$df"
                 touch "$df"
             fi
