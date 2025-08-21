@@ -1,6 +1,4 @@
 ![image](https://github.com/FLYCOM-E/ClearBox/blob/main/ClearBox.png)
-   # **ClearBox**
-
    ## 什么是 **ClearBox** ？
 
 **ClearBox** 是一个深度快速清理模块，可为您的设备一键删除所有软件缓存、安装包、压缩包、垃圾、空文件夹，阻止缓存、文件归类，阻止软件更新/安装和定期优化/清理、文件归类功能（无后台），支持添加自定义清理规则和文件清理/整理归类
