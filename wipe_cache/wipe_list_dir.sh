@@ -16,8 +16,8 @@ exec 2>>"$work_dir/运行日志.log"
 ######
 if [ -f "$work_dir/清理配置" ]; then
     rm -rf "$work_dir/清理配置"
-    mkdir -p "$work_dir/清理配置"
 fi
+mkdir -p "$work_dir/清理配置"
 ######
 if [ "$(ls "$work_dir/清理配置/")" = "" ]; then
     exit 0
