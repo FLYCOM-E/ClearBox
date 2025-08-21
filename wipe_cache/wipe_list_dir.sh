@@ -14,7 +14,7 @@ work_dir=$(ClearBox -w)
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 ######
-if [ ! -d "$work_dir/清理配置" ]; then
+if [ -f "$work_dir/清理配置" ]; then
     rm -rf "$work_dir/清理配置"
     mkdir -p "$work_dir/清理配置"
 fi
