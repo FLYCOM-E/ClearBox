@@ -27,6 +27,7 @@ if [ "$(ls "$work_dir/清理规则/")" = "" ]; then
 fi
 ls "$work_dir/清理规则/" | while read File; do
     Pro_File="$work_dir/清理规则/$File"
+    Name=$(echo "$File" | cut -f1 -d ".")
     if [ -d "$Pro_File" ]; then
         rm -r "$Pro_File"
         continue
@@ -48,7 +49,7 @@ ls "$work_dir/清理规则/" | while read File; do
                 break
             fi
             cd "$AppDir/$AppPackage/"
-            echo " » 清理$AppPackage &"
+            echo " » 清理 $Name &"
             continue
         fi
         ######
