@@ -23,7 +23,7 @@ function md_menu()
 clear
 "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
- ===================================================
+ ==============================================
 
  1：一键优化清理             2：清理干掉自定义目录
 
@@ -37,8 +37,8 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
  
  00：模块管理
 
- ===================================================
-                                --- 键入 E 退出 ---
+ ==============================================
+                           --- 键入 E 退出 ---
  请输入相应序号:"
    read in_put
      case "$in_put" in
@@ -63,7 +63,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
          count=0
          echo "      "
          "$bin_dir/busybox" echo -e "\033[44m[深度清理，请备份重要文档！！]\033[0m"
-         echo " ==================================================="
+         echo " =============================================="
          echo "      "
          for FN in $(ls "$work_dir/文件格式配置/"); do
             Name=$(echo "$FN" | cut -f1 -d ".")
@@ -72,7 +72,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
             echo "     $count：清理$Name"
             echo "      "
          done
-         echo " ==================================================="
+         echo " =============================================="
          echo "      "
          echo -ne " 请输入相应序号: "
          read put1
@@ -123,11 +123,11 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
          fi
          "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[APP更新安装管理]\033[0m")
- ===================================================
+ ==============================================
 
      1：$i1阻止APP更新安装
 
- ===================================================
+ ==============================================
 
  请输入相应序号:"
          read put1
@@ -168,11 +168,15 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
          fi
          "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[阻止缓存]\033[0m")
- ===================================================
+ ==============================================
 
      1：$i2阻止生成缓存功能
+     
+     2：软件加入白名单
+     
+     3：取消白名单软件
   
- ===================================================
+ ==============================================
 
  请输入相应序号:"
          read put2
@@ -196,6 +200,53 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                    sed -i 's/stopcache=1/stopcache=0/g' "$work_dir/settings.prop"
                    echo " » 已关闭，重启生效 ~"
                fi
+               ;;
+             2)
+               # Off SELinux
+               if [ "$(getenforce)" = "Enforcing" ]; then
+                   setenforce 0
+                   OffSelinux=1
+               fi
+               echo -ne " » 请输入软件包名（空格分隔）："
+               read packages
+                 if [ "$packages" = "" ]; then
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+                 fi
+                 for package in $packages; do
+                     if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
+                         echo " » $package 已存在白名单"
+                         continue
+                     elif ! pm list package | grep "package:$package\$" >> /dev/null; then
+                         echo " » $package 不在软件包列表"
+                         continue
+                     else
+                         if pm list package -s | grep "package:$package\$" >> /dev/null; then
+                             echo " » $package 请不要添加系统软件"
+                             continue
+                         fi
+                         echo "$package" >> "$work_dir/whitelist.prop"
+                         echo " » $package 已成功加入白名单!"
+                     fi
+                 done
+                 # Reset SELinux
+                 if [ "$OffSelinux" = 1 ]; then
+                     setenforce 1
+                 fi
+               ;;
+             3)
+               echo -ne " » 请输入软件包名（空格分隔）："
+               read packages
+                 if [ "$packages" = "" ]; then
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+                 fi
+                 for package in $packages; do
+                     if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
+                         sed -i /"$package"/d "$work_dir/whitelist.prop"
+                         echo " $package 已成功从白名单中移除！"
+                     else
+                         echo " $package 不在白名单中！"
+                     fi
+                 done
                ;;
              *)
                "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
@@ -223,7 +274,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
          clear
          "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[模块管理菜单]\033[0m")
- ===================================================
+ ==============================================
  
      0：立即生效当前配置（免重启）
      
@@ -237,7 +288,7 @@ $(echo -e "\033[44m[模块管理菜单]\033[0m")
      
      00：卸载模块(！
 
- ===================================================
+ ==============================================
 
  请输入相应序号:"
          read put3
@@ -250,13 +301,13 @@ $(echo -e "\033[44m[模块管理菜单]\033[0m")
                NowClearTime=$(cat $home_dir/CRON/ClearCache/root | cut -f3 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")]\033[0m")
- ===================================================
+ ==============================================
       
       1：自定义输入间隔时间（单位：天）
       
       0：关闭定期优化
  
- ===================================================
+ ==============================================
 
  请输入相应序号:"
                read put4
@@ -291,13 +342,13 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")
                NowFileAllTime=$(cat $home_dir/CRON/FileAll/root | cut -f2 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
- ===================================================
+ ==============================================
       
       1：自定义输入间隔时间（单位：小时）
       
       0：关闭定期整理
  
- ===================================================
+ ==============================================
 
  请输入相应序号:"
                read put4
@@ -332,13 +383,13 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                NowFileAllTime=$(cat $home_dir/CRON/ClearDir/root | cut -f1 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
- ===================================================
+ ==============================================
       
       1：自定义输入间隔时间（单位：分钟）
       
       0：关闭定期清理空文件夹
  
- ===================================================
+ ==============================================
 
  请输入相应序号:"
                read put4
@@ -382,7 +433,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                fi
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[清理设置]\033[0m")
- ===================================================
+ ==============================================
 
      1：外部储存相关设置
 
@@ -390,7 +441,11 @@ $(echo -e "\033[44m[清理设置]\033[0m")
 
      3：$i5一键及定时自动清理时运行文件归类功能
      
- ===================================================
+     4：新增清理白名单
+     
+     5：取消白名单软件
+     
+ ==============================================
 
  请输入相应序号:"
                read put5
@@ -429,7 +484,7 @@ $(echo -e "\033[44m[清理设置]\033[0m")
                      fi
                      "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[外部储存相关]\033[0m")
- ===================================================
+ ==============================================
 
      1：$i6清理外部储存缓存
 
@@ -443,7 +498,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
      
      6：$i11清理外部储存镜像文件
      
- ===================================================
+ ==============================================
 
  请输入相应序号:"
                      read put6
@@ -610,6 +665,53 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          sed -i 's/fileall=1/fileall=0/g' "$work_dir/settings.prop"
                          echo " » 已关闭！"
                      fi
+                     ;;
+                   4)
+                     # Off SELinux
+                     if [ "$(getenforce)" = "Enforcing" ]; then
+                         setenforce 0
+                         OffSelinux=1
+                     fi
+                     echo -ne " » 请输入软件包名（空格分隔）："
+                     read packages
+                     if [ "$packages" = "" ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+                     fi
+                     for package in $packages; do
+                         if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
+                             echo " » $package 已存在白名单"
+                             continue
+                         elif ! pm list package | grep "package:$package\$" >> /dev/null; then
+                             echo " » $package 不在软件包列表"
+                             continue
+                         else
+                             if pm list package -s | grep "package:$package\$" >> /dev/null; then
+                                 echo " » $package 请不要添加系统软件"
+                                 continue
+                             fi
+                             echo "$package" >> "$work_dir/ClearWhitelist.prop"
+                             echo " » $package 已成功加入白名单!"
+                         fi
+                     done
+                     # Reset SELinux
+                     if [ "$OffSelinux" = 1 ]; then
+                         setenforce 1
+                     fi
+                     ;;
+                   5)
+                     echo -ne " » 请输入软件包名（空格分隔）："
+                     read packages
+                     if [ "$packages" = "" ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+                     fi
+                     for package in $packages; do
+                         if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
+                             sed -i /"$package"/d "$work_dir/ClearWhitelist.prop"
+                             echo " $package 已成功从白名单中移除！"
+                         else
+                             echo " $package 不在白名单中！"
+                         fi
+                     done
                      ;;
                    *)
                      "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
