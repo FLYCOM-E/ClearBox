@@ -43,18 +43,22 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
    read in_put
      case "$in_put" in
        1)
+         clear
          sh "$home_dir/all.sh" ClearAll &
          wait
          ;;
        2)
+         clear
          sh "$home_dir/all.sh" List_Dir &
          wait
          ;;
        3)
+         clear
          sh "$home_dir/all.sh" All_Dir &
          wait
          ;;
        4)
+         clear
          sh "$home_dir/all.sh" ClearCache &
          wait
          ;;
@@ -85,6 +89,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
                 read put_2
                 case "$put_2" in
                   y | Y)
+                    clear
                     sh "$home_dir/all.sh" File_Clear "$Fname" &
                     wait
                     break
@@ -106,6 +111,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
          read put_2
          case "$put_2" in
            y | Y)
+             clear
              sh "$home_dir/all.sh" Clear_SCache &
              wait
              ;;
@@ -138,6 +144,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                    read put_3
                    case "$put_3" in
                      y | Y)
+                       clear
                        chmod 551 /data/app
                        echo " » 已开启阻止更新！"
                        if grep "stopinstall=0" "$work_dir/settings.prop" >/dev/null; then
@@ -149,6 +156,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                        ;;
                    esac
                else
+                   clear
                    chmod 771 /data/app
                    echo " » 已关闭阻止更新！"
                    sed -i 's/stopinstall=1/stopinstall=0/g' "$work_dir/settings.prop"
@@ -187,21 +195,25 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                    read put
                    case "$put" in
                      y | Y)
+                       clear
                        if grep "stopcache=0" "$work_dir/settings.prop" >/dev/null; then
                            sed -i 's/stopcache=0/stopcache=1/g' "$work_dir/settings.prop"
                        fi
                        echo " » 已开启，重启生效 ~"
                        ;;
                      *)
+                       clear
                        "$bin_dir/busybox" echo -ne "\033[1;32m 您选择了否！正在返回主页！\033[0m"
                        ;;
                    esac
                else
+                   clear
                    sed -i 's/stopcache=1/stopcache=0/g' "$work_dir/settings.prop"
                    echo " » 已关闭，重启生效 ~"
                fi
                ;;
              2)
+               clear
                # Off SELinux
                if [ "$(getenforce)" = "Enforcing" ]; then
                    setenforce 0
@@ -234,6 +246,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                  fi
                ;;
              3)
+               clear
                echo -ne " » 请输入软件包名（空格分隔）："
                read packages
                  if [ "$packages" = "" ]; then
@@ -258,6 +271,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
          read put_4
          case "$put_4" in
            y | Y)
+             clear
              sh "$home_dir/all.sh" File_All &
              wait
              ;;
@@ -267,6 +281,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
          esac
          ;;
        10)
+         clear
          sh "$home_dir/all.sh" F2fs_GC &
          wait
          ;;
@@ -294,6 +309,7 @@ $(echo -e "\033[44m[模块管理菜单]\033[0m")
          read put3
            case "$put3" in
              0)
+               clear
                ClearBox -U
                ;;
              1)
@@ -313,6 +329,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")
                read put4
                  case "$put4" in
                    1)
+                     clear
                      echo -ne " » 请输入纯数字，范围 1～30 天："
                      read day_num
                      if ! echo "$day_num" | grep [0-9] >>/dev/null; then
@@ -328,6 +345,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")
                      fi
                      ;;
                    0)
+                     clear
                      echo -n "" > "$home_dir/CRON/ClearCache/root"
                      rm "$work_dir/root_backup"
                      echo " » 已关闭定期优化！"
@@ -354,6 +372,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                read put4
                  case "$put4" in
                    1)
+                     clear
                      echo -ne " » 请输入纯数字，范围 1～24 小时："
                      read N_num
                      if ! echo "$N_num" | grep [0-9] >>/dev/null; then
@@ -369,6 +388,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                      fi
                      ;;
                    0)
+                     clear
                      echo -n "" > "$home_dir/CRON/FileAll/root"
                      rm "$work_dir/root_backup2"
                      echo " » 已关闭定期整理！"
@@ -395,6 +415,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                read put4
                  case "$put4" in
                    1)
+                     clear
                      echo -ne " » 请输入纯数字，范围 60 分钟："
                      read S_num
                      if ! echo "$S_num" | grep [0-9] >>/dev/null; then
@@ -410,6 +431,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                      fi
                      ;;
                    0)
+                     clear
                      echo -n "" > "$home_dir/CRON/ClearDir/root"
                      rm "$work_dir/root_backup3"
                      echo " » 已关闭定期清理空文件夹！"
@@ -509,6 +531,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                read cleardisk
                                case "$cleardisk" in
                                  y | Y)
+                                   clear
                                    if grep "cleardisk=0" "$work_dir/settings.prop" >/dev/null; then
                                        sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
@@ -519,6 +542,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                    ;;
                                esac
                            else
+                               clear
                                sed -i 's/cleardisk=1/cleardisk=0/g' "$work_dir/settings.prop"
                                echo " » 已关闭！"
                            fi
@@ -529,6 +553,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                read Fileall_Disk
                                case "$Fileall_Disk" in
                                  y | Y)
+                                   clear
                                    if grep "Fileall_Disk=0" "$work_dir/settings.prop" >/dev/null; then
                                        sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
@@ -539,6 +564,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                    ;;
                                esac
                            else
+                               clear
                                sed -i 's/Fileall_Disk=1/Fileall_Disk=0/g' "$work_dir/settings.prop"
                                echo " » 已关闭！"
                            fi
@@ -549,6 +575,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                read ClearApk_disk
                                case "$ClearApk_disk" in
                                  y | Y)
+                                   clear
                                    if grep "ClearApk_disk=0" "$work_dir/settings.prop" >/dev/null; then
                                        sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
@@ -559,6 +586,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                    ;;
                                esac
                            else
+                               clear
                                sed -i 's/ClearApk_disk=1/ClearApk_disk=0/g' "$work_dir/settings.prop"
                                echo " » 已关闭！"
                            fi
@@ -569,6 +597,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                read ClearZip_disk
                                case "$ClearZip_disk" in
                                  y | Y)
+                                   clear
                                    if grep "ClearZip_disk=0" "$work_dir/settings.prop" >/dev/null; then
                                        sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
@@ -579,6 +608,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                    ;;
                                esac
                            else
+                               clear
                                sed -i 's/ClearZip_disk=1/ClearZip_disk=0/g' "$work_dir/settings.prop"
                                echo " » 已关闭！"
                            fi
@@ -589,6 +619,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                read ClearFont_disk
                                case "$ClearFont_disk" in
                                  y | Y)
+                                   clear
                                    if grep "ClearFont_disk=0" "$work_dir/settings.prop" >/dev/null; then
                                        sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
@@ -599,6 +630,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                    ;;
                                esac
                            else
+                               clear
                                sed -i 's/ClearFont_disk=1/ClearFont_disk=0/g' "$work_dir/settings.prop"
                                echo " » 已关闭！"
                            fi
@@ -609,6 +641,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                read ClearIso_disk
                                case "$ClearIso_disk" in
                                  y | Y)
+                                   clear
                                    if grep "ClearIso_disk=0" "$work_dir/settings.prop" >/dev/null; then
                                        sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
@@ -619,6 +652,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                    ;;
                                esac
                            else
+                               clear
                                sed -i 's/ClearIso_disk=1/ClearIso_disk=0/g' "$work_dir/settings.prop"
                                echo " » 已关闭！"
                            fi
@@ -634,6 +668,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          read put_5
                          case "$put_5" in
                            y | Y)
+                             clear
                              if grep "clearall=0" "$work_dir/settings.prop" >/dev/null; then
                                  sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop"
                                  echo " » 已开启！"
@@ -644,6 +679,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                              ;;
                          esac
                      else
+                         clear
                          sed -i 's/clearall=1/clearall=0/g' "$work_dir/settings.prop"
                          echo " » 已关闭！"
                      fi
@@ -654,6 +690,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          read put_6
                          case "$put_6" in
                            y | Y)
+                             clear
                              sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop"
                              echo " » 已开启！"
                              ;;
@@ -662,11 +699,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                              ;;
                          esac
                      else
+                         clear
                          sed -i 's/fileall=1/fileall=0/g' "$work_dir/settings.prop"
                          echo " » 已关闭！"
                      fi
                      ;;
                    4)
+                     clear
                      # Off SELinux
                      if [ "$(getenforce)" = "Enforcing" ]; then
                          setenforce 0
@@ -699,6 +738,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                      fi
                      ;;
                    5)
+                     clear
                      echo -ne " » 请输入软件包名（空格分隔）："
                      read packages
                      if [ "$packages" = "" ]; then
@@ -719,14 +759,12 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                  esac
                  ;;
              00)
+               clear
                echo -ne " » 是否卸载模块？(y/n): "
                read unput
                case "$unput" in
                  y | Y)
                    un=1
-                   ;;
-                 n | N)
-                   un=0
                    ;;
                  *)
                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -748,7 +786,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
          exit 0
          ;;
        *)
-         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！已经是最后一层了呦，键入 E 退出！\033[0m"
+         "$bin_dir/busybox" echo -ne "\033[1;32m » 已经是最后一层了呦，键入 E 退出！\033[0m"
          ;;
      esac
 }
@@ -758,7 +796,4 @@ while true; do
     md_menu
     sleep 0.9
 done
-
-
-
 
