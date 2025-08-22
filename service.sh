@@ -1,5 +1,5 @@
 #!/system/bin/sh
-#此脚本来自ClearBox模块，用于完成模块初始 & 设置 & 加载
+# ClearBox
 MODDIR=${0%/*}
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！"
