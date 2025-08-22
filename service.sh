@@ -11,6 +11,15 @@ bin_dir=$(ClearBox -b)
 work_dir=$(ClearBox -w)
 exec 2>>/dev/null
 ######
+while true; do
+    if [ "$(getprop sys.boot_completed)" = "1" ]; then
+        if [ -d "/storage/emulated/0" ]; then
+            break
+        fi
+    fi
+sleep 5
+done
+######
 function StartSettings()
 {
 if [ ! -d "$work_dir" ]; then
@@ -71,15 +80,6 @@ fi
 chmod -R 700 "$work_dir"
 ######
 }
-######
-while true; do
-    if [ "$(getprop sys.boot_completed)" = "1" ]; then
-        if [ -d "/storage/emulated/0" ]; then
-            break
-        fi
-    fi
-sleep 5
-done
 ######
 StartSettings
 echo "[ $(date) ] ReStart" > "$work_dir/运行日志.log"
