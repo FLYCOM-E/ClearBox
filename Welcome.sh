@@ -1,3 +1,3 @@
 # ClearBox
 echo "Welcome to ClearBox!"
-echo "By FlyCom-E & n0RMa1"
+echo "By FlyCome & n0RMa1"
