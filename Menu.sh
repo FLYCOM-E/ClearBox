@@ -25,17 +25,17 @@ clear
 $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
  ==============================================
 
- 1：一键优化清理             2：清理干掉自定义目录
+ 1：一键优化清理             2：自定义规则清理
 
  3：清除垃圾文件及空文件夹   4：清空所有软件缓存
      
- 5：深度文件清理             6：清空系统缓存
+ 5：深度文件清理             6：软件规则清理
  
- 7：阻止软件更新安装         8：阻止缓存生成功能
-    
- 9：磁铁（一键归类文件       10：磁盘优化（GC）
+ 7：清空系统缓存             8：阻止软件更新安装
  
- 00：模块管理
+ 9：阻止缓存生成功能         10：磁铁（文件归类
+ 
+ 11：磁盘优化（GC）          00：模块管理
 
  ==============================================
                            --- 键入 E 退出 ---
@@ -73,7 +73,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
             Name=$(echo "$FN" | cut -f1 -d ".")
             count=$((count + 1))
             Num[$count]="$count,$Name"
-            echo "     $count：清理$Name"
+            echo "     $count：清理 $Name"
             echo "      "
          done
          echo " =============================================="
@@ -107,6 +107,50 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
          done
          ;;
        6)
+         clear
+         count=0
+         echo "      "
+         "$bin_dir/busybox" echo -e "\033[44m[软件清理，建议预检查配置文件]\033[0m"
+         echo " =============================================="
+         echo "      "
+         for FN in $(ls "$work_dir/清理规则/"); do
+            Name=$(cat "$work_dir/清理规则/$FN" | grep '@' | cut -f2 -d '/')
+            count=$((count + 1))
+            Num[$count]="$count,$Name"
+            echo "     $count：清理 $Name"
+            echo "      "
+         done
+         echo " =============================================="
+         echo "      "
+         echo -ne " 请输入相应序号: "
+         read put1
+         C_num=0
+         while true; do
+            C_num=$((C_num + 1))
+            if [ "$(echo "${Num[$C_num]}" | cut -f1 -d ',')" = "$put1" ]; then
+                Fname=$(echo "${Num[$C_num]}" | cut -f2 -d ',')
+                echo -ne " » 确认？(y): "
+                read put_2
+                case "$put_2" in
+                  y | Y)
+                    clear
+                    sh "$home_dir/all.sh" Clear_App "$Fname" &
+                    wait
+                    break
+                    ;;
+                  *)
+                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                    break
+                    ;;
+                esac
+            fi
+            if [ "$C_num" = "$count" ]; then
+                "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                break
+            fi
+         done
+         ;;
+       7)
          echo -ne " » 确认？(y): "
          read put_2
          case "$put_2" in
@@ -120,7 +164,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
              ;;
          esac
          ;;
-       7)
+       8)
          clear
          if grep "stopinstall=1" "$work_dir/settings.prop" >/dev/null; then
              i1="关闭"
@@ -167,7 +211,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                ;;
            esac
            ;;
-       8)
+       9)
          clear
          if grep "stopcache=0" "$work_dir/settings.prop" >/dev/null; then
              i2="开启"
@@ -266,7 +310,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                ;;
            esac
            ;;
-       9)
+       10)
          echo -ne " » 确认？(y): "
          read put_4
          case "$put_4" in
@@ -280,7 +324,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
              ;;
          esac
          ;;
-       10)
+       11)
          clear
          sh "$home_dir/all.sh" F2fs_GC &
          wait
@@ -796,4 +840,5 @@ while true; do
     md_menu
     sleep 0.9
 done
+
 
