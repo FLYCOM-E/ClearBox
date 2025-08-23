@@ -16,56 +16,76 @@ work_dir=$(ClearBox -w)
 exec 2>>"$work_dir/运行日志.log"
 AppDir="/data/data"
 ######
-if [ -f "$work_dir/清理规则" ]; then
+if [ ! -d "$work_dir/清理规则" ]; then
     rm -rf "$work_dir/清理规则"
+    mkdir -p "$work_dir/清理规则"
 fi
-mkdir -p "$work_dir/清理规则"
 ######
 if [ "$(ls "$work_dir/清理规则/")" = "" ]; then
-    echo " » App清理配置为空！"
+    echo " » 无App清理配置！"
     exit 0
 fi
+######
 ls "$work_dir/清理规则/" | while read File; do
     Pro_File="$work_dir/清理规则/$File"
-    Name=$(echo "$File" | cut -f1 -d ".")
     if [ -d "$Pro_File" ]; then
         rm -r "$Pro_File"
         continue
-    elif [ ! -f "$Pro_File" ]; then
-        " » $File：配置文件错误，请检查！"
     fi
     if [ "$(cat "$Pro_File")" = "" ]; then
         echo " » $File：配置内容为空！自动跳过"
         continue
     fi
     ######
+    count=0
     for i in $(cat "$Pro_File"); do
-        ######
+        count=$((count + 1))
         # 进入指定初始App目录
         if echo "$i" | grep ^"@" >/dev/null; then
-            AppPackage=$(echo "$i" | cut -f2 -d '@')
-            if [ "$AppPackage" = "" ]; then
-                echo " » $File 配置未指定App，请检查！"
+            if ! echo "$i" | grep "/" >/dev/null; then
+                echo " » $File 配置第 $count 行初始错误！"
                 break
             fi
-            cd "$AppDir/$AppPackage/"
-            echo " » 清理 $Name &"
-            continue
-        fi
-        ######
-        if echo "$i" | grep ^"/" >/dev/null; then
-            echo " » $Pro_File：配置存在错误，请检查！！"
-            exit 1
-        fi
-        # 如果该行被注释则返回
-        if echo "$i" | grep ^"#" >/dev/null; then
-            continue
-        fi
-        # 处理
-        if [ -f "$i" ]; then
-            rm "$i"
-        elif [ -d "$i" ]; then
-            rm -r "$i"
+            AppPackage=$(echo "$i" | cut -f2 -d '@' | cut -f1 -d '/')
+            Name=$(echo "$i" | cut -f2 -d '/')
+            if [ "$AppPackage" = "" ]; then
+                echo " » $File 配置未指定App包名！"
+                break
+            fi
+            if [ "$Name" = "" ]; then
+                echo " » $File 配置未指定App名称！"
+                break
+            fi
+            ######
+            if [ -d "$AppDir/$AppPackage/" ]; then
+                cd "$AppDir/$AppPackage/"
+                echo " » 清理 $Name &"
+                local pro=1
+                continue
+            else
+                echo " » $File：配置指定软件未找到！"
+                break
+            fi
+            ######
+        else
+            if [ "$pro" = "1" ]; then
+                # 如果该行被注释则返回
+                if echo "$i" | grep ^"#" >/dev/null; then
+                    continue
+                fi
+                if echo "$i" | grep ^"/" >/dev/null; then
+                    echo " » $File：配置第 $count 行存在危险错误！"
+                    break
+                fi
+                # 处理
+                if [ -f "$i" ]; then
+                    rm "$i"
+                elif [ -d "$i" ]; then
+                    rm -r "$i"
+                fi
+            else
+                echo " » $File 配置初始错误！"
+            fi
         fi
     done
 done
