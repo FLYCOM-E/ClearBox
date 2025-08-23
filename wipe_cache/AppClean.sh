@@ -1,5 +1,4 @@
 #!/system/bin/sh
-# 暂无调用，此脚本只是半成品
 #此脚本来自ClearBox模块，用于自定义规则软件内部清理
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！"
@@ -26,6 +25,8 @@ if [ "$(ls "$work_dir/清理规则/")" = "" ]; then
     exit 0
 fi
 ######
+function service()
+{
 ls "$work_dir/清理规则/" | while read File; do
     Pro_File="$work_dir/清理规则/$File"
     if [ -d "$Pro_File" ]; then
@@ -36,60 +37,79 @@ ls "$work_dir/清理规则/" | while read File; do
         echo " » $File：配置内容为空！自动跳过"
         continue
     fi
-    ######
-    count=0
-    for i in $(cat "$Pro_File"); do
-        count=$((count + 1))
-        # 进入指定初始App目录
-        if echo "$i" | grep ^"@" >/dev/null; then
-            if ! echo "$i" | grep "/" >/dev/null; then
-                echo " » $File 配置第 $count 行初始错误！"
-                break
-            fi
-            AppPackage=$(echo "$i" | cut -f2 -d '@' | cut -f1 -d '/')
-            Name=$(echo "$i" | cut -f2 -d '/')
-            if [ "$AppPackage" = "" ]; then
-                echo " » $File 配置未指定App包名！"
-                break
-            fi
-            if [ "$Name" = "" ]; then
-                echo " » $File 配置未指定App名称！"
-                break
-            fi
-            ######
-            if [ -d "$AppDir/$AppPackage/" ]; then
-                cd "$AppDir/$AppPackage/"
-                echo " » 清理 $Name &"
-                local pro=1
-                continue
-            else
-                echo " » $File：配置指定软件未找到！"
-                break
-            fi
-            ######
-        else
-            if [ "$pro" = "1" ]; then
-                # 如果该行被注释则返回
-                if echo "$i" | grep ^"#" >/dev/null; then
-                    continue
-                fi
-                if echo "$i" | grep ^"/" >/dev/null; then
-                    echo " » $File：配置第 $count 行存在危险错误！"
+    if grep "$AppName" "$Pro_File" >> /dev/null; then
+        count=0
+        for i in $(cat "$Pro_File"); do
+            count=$((count + 1))
+            # 进入指定初始App目录
+            if echo "$i" | grep ^"@" >/dev/null; then
+                if ! echo "$i" | grep "/" >/dev/null; then
+                    echo " » $File 配置第 $count 行初始错误！"
                     break
                 fi
-                # 处理
-                if [ -f "$i" ]; then
-                    rm "$i"
-                elif [ -d "$i" ]; then
-                    rm -r "$i"
+                AppPackage=$(echo "$i" | cut -f2 -d '@' | cut -f1 -d '/')
+                Name=$(echo "$i" | cut -f2 -d '/')
+                if [ "$AppPackage" = "" ]; then
+                    echo " » $File 配置未指定App包名！"
+                    break
                 fi
+                if [ "$Name" = "" ]; then
+                    echo " » $File 配置未指定App名称！"
+                    break
+                fi
+                ######
+                if [ -d "$AppDir/$AppPackage/" ]; then
+                    cd "$AppDir/$AppPackage/"
+                    echo " » 清理 $Name &"
+                    local pro=1
+                    continue
+                else
+                    echo " » $File：配置指定软件未找到！"
+                    break
+                fi
+                ######
             else
-                echo " » $File 配置初始错误！"
+                if [ "$pro" = "1" ]; then
+                    # 如果该行被注释则返回
+                    if echo "$i" | grep ^"#" >/dev/null; then
+                        continue
+                    fi
+                    if echo "$i" | grep ^"/" >/dev/null; then
+                        echo " » $File：配置第 $count 行存在危险错误！"
+                        break
+                    fi
+                    # 处理
+                    if [ -f "$i" ]; then
+                        rm "$i"
+                    elif [ -d "$i" ]; then
+                        rm -r "$i"
+                    fi
+                else
+                    echo " » $File 配置初始错误！"
+                fi
             fi
+        done
+        ClearDone=1
+    else
+        if [ "$ClearDone" = "1" ]; then
+            echo " » 软件规则处理完成！"
+        else
+            echo " » 未找到指定软件！"
         fi
-    done
+    fi
 done
+}
 ######
-echo " » 软件规则处理完成！"
-
+case $1 in
+    *)
+      AppName="$1"
+      if [ "$AppName" = "" ]; then
+          echo " » 错误：需要一个参数，未输入软件名称！"
+          exit 1
+      fi
+      service &
+      wait
+      ;;
+esac
+######
 exit 0
