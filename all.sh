@@ -77,7 +77,15 @@ function FileClear()
 sh "$home_dir/wipe_cache/ClearService1.sh" "$1" &
 sh "$home_dir/wipe_cache/ClearService2.sh" "$1" &
 wait
-echo "[ $(date) ]：清理指定文件" >> "$work_dir/运行日志.log"
+echo "[ $(date) ]：清理 $1 文件" >> "$work_dir/运行日志.log"
+}
+######
+# 自定义软件 规则清理
+function ClearApp()
+{
+sh "$home_dir/wipe_cache/AppClean.sh" "$1" &
+wait
+echo "[ $(date) ]：清理 $1 软件" >> "$work_dir/运行日志.log"
 }
 ######
 # 自定义格式文件归类
@@ -148,6 +156,9 @@ case $1 in
         ;;
     File_Clear)
         FileClear "$2"
+        ;;
+    Clear_App)
+        ClearApp "$2"
         ;;
     File_All)
         file_all
