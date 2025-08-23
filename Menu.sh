@@ -129,20 +129,10 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
             C_num=$((C_num + 1))
             if [ "$(echo "${Num[$C_num]}" | cut -f1 -d ',')" = "$put1" ]; then
                 Fname=$(echo "${Num[$C_num]}" | cut -f2 -d ',')
-                echo -ne " » 确认？(y): "
-                read put_2
-                case "$put_2" in
-                  y | Y)
-                    clear
-                    sh "$home_dir/all.sh" Clear_App "$Fname" &
-                    wait
-                    break
-                    ;;
-                  *)
-                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                    break
-                    ;;
-                esac
+                clear
+                sh "$home_dir/all.sh" Clear_App "$Fname" &
+                wait
+                break
             fi
             if [ "$C_num" = "$count" ]; then
                 "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
