@@ -14,6 +14,7 @@ work_dir=$(ClearBox -w)
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 AppDir="/data/data"
+ClearDone=0
 ######
 if [ ! -d "$work_dir/清理规则" ]; then
     rm -rf "$work_dir/清理规则"
@@ -27,7 +28,7 @@ fi
 ######
 function service()
 {
-ls "$work_dir/清理规则/" | while read File; do
+for File in $(ls "$work_dir/清理规则/"); do
     Pro_File="$work_dir/清理规则/$File"
     if [ -d "$Pro_File" ]; then
         rm -r "$Pro_File"
@@ -92,12 +93,16 @@ ls "$work_dir/清理规则/" | while read File; do
         ClearDone=1
     else
         if [ "$ClearDone" = "1" ]; then
-            echo " » 软件规则处理完成！"
-        else
-            echo " » 未找到指定软件！"
+            break
         fi
     fi
 done
+######
+if [ "$ClearDone" = "1" ]; then
+    echo " » 软件规则清理成功！"
+else
+    echo " » 未找到指定软件！"
+fi
 }
 ######
 case $1 in
