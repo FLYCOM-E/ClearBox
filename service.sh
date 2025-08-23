@@ -76,6 +76,10 @@ if [ ! -d "$work_dir/清理配置" ]; then
     rm -rf "$work_dir/清理配置"
     mkdir -p "$work_dir/清理配置"
 fi
+if [ ! -d "$work_dir/清理规则" ]; then
+    rm -rf "$work_dir/清理规则"
+    mkdir -p "$work_dir/清理规则"
+fi
 ######
 chmod -R 700 "$work_dir"
 ######
