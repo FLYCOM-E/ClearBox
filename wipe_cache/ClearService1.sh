@@ -58,8 +58,8 @@ done
 }
 case $1 in
     *)
-        FileName="$1"
-        ;;
+      FileName="$1"
+      ;;
 esac
 if [ "$FileName" = "ALL" ]; then
     ClearServiceAll &
