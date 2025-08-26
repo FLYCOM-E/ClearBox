@@ -59,6 +59,10 @@ done
 case $1 in
     *)
       FileName="$1"
+      if [ "$FileName" = "" ]; then
+          echo " » ERROR：需要一个参数，未传入清理项名称！"
+          exit 1
+      fi
       ;;
 esac
 if [ "$FileName" = "ALL" ]; then
