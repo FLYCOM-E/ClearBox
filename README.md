@@ -116,7 +116,7 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 
 
 
-> 模块管理App使用[Kr-Script](https://github.com/helloklf/kr-scripts)项目制作而成，感谢该项目
+> 模块管理App使用 [Kr-Script](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目
 
 
 > 模块内测请前往
