@@ -116,7 +116,7 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 
 
 
-> 模块App使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目
+> 模块 **App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目
 
 
 > 模块内测请前往
@@ -124,4 +124,4 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 >[更多玩机交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
 
 
-> *此 **README** 以最新Debug版本为准，独立于main分支更新
+> *此 **README** 以最新 **Debug** 版本为准，独立于 **main** 分支更新
