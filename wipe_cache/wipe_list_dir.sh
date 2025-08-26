@@ -25,8 +25,6 @@ fi
 ls "$work_dir/清理配置/" | while read File; do
     Pro_File="$work_dir/清理配置/$File"
     if [ -d "$Pro_File" ]; then
-        echo " » $File：未知的目录，已自动清除！"
-        rm -r "$Pro_File"
         continue
     elif [ ! -f "$Pro_File" ]; then
         " » $File：配置读取错误，请检查！"
@@ -38,19 +36,25 @@ ls "$work_dir/清理配置/" | while read File; do
         echo " » 处理 $File 配置📍"
     fi
     ######
+    count=0
     for i in $(cat "$Pro_File"); do
+        count=$((count + 1))
         df=$(echo "$i" | cut -f2 -d '=')
         ######
         # 进入指定初始目录
         if echo "$i" | grep ^"@" >/dev/null; then
             dir=$(echo "$i" | grep ^"@" | cut -f2 -d '@')
-            cd "$dir"
+            if [ -d "$dir" ]; then
+                cd "$dir"
+            else
+                echo " » $Pro_File：配置指定初始目录错误！"
+            fi
             continue
         fi
         ######
         if echo "$i" | grep ^"/" >/dev/null; then
-            echo " » $Pro_File：配置存在错误 & 危险操作，请检查！！"
-            exit 1
+            echo " » $Pro_File：配置第 $count 行存在错误！"
+            continue
         fi
         # 如果该行被注释则返回
         if echo "$i" | grep ^"#" >/dev/null; then
@@ -72,6 +76,8 @@ ls "$work_dir/清理配置/" | while read File; do
                 rm -r "$df"
                 touch "$df"
             fi
+        else
+            echo " » $Pro_File：配置第 $count 行未指定参数！"
         fi
     done
 done
