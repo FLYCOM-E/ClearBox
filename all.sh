@@ -132,48 +132,53 @@ wait
 # 根据输入参数执行对应操作
 case $1 in
     ClearAll)
-        echo "[ $(date) ]：一键优化" >> "$work_dir/运行日志.log"
-        clear_cache &
-        dir_file &
-        clear_tar &
-        file_all2 &
-        wait
-        fast_GC &
-        freezer &
-        wait
-        ;;
+      echo "[ $(date) ]：一键优化" >> "$work_dir/运行日志.log"
+      clear_cache &
+      dir_file &
+      clear_tar &
+      file_all2 &
+      wait
+      fast_GC &
+      freezer &
+      wait
+      ;;
     ClearCache)
-        clear_cache
-        ;;
+      clear_cache
+      ;;
     Clear_SCache)
-        clear_scache
-        ;;
+      clear_scache
+      ;;
     List_Dir)
-        list_dir
-        ;;
+      list_dir
+      ;;
     All_Dir)
-        all_dir
-        ;;
+      all_dir
+      ;;
     File_Clear)
-        FileClear "$2"
-        ;;
+      FileClear "$2"
+      ;;
     Clear_App)
-        ClearApp "$2"
-        ;;
+      ClearApp "$2"
+      ;;
     File_All)
-        file_all
-        ;;
+      file_all
+      ;;
     F2fs_GC)
-        f2fs_GC
-        ;;
+      f2fs_GC
+      ;;
     Freezer)
-        freezer
-        ;;
+      freezer
+      ;;
 esac
 ######
 # Reset SELinux
 if [ "$OffSelinux" = 1 ]; then
     setenforce 1
+fi
+######
+if [ "$1" = "" ]; then
+    echo " » ERROR：需要一个参数，未输入清理项名称！"
+    exit 1
 fi
 ######
 exit 0
