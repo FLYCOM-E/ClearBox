@@ -17,6 +17,13 @@ dir="/storage/emulated/0"
 ######
 function FileAll()
 {
+if [ ! -d "$work_dir/文件格式配置" ]; then
+    mkdir "$work_dir/文件格式配置"
+fi
+if [ $(ls "$work_dir/文件格式配置/") = "" ]; then
+    echo " » 无格式配置文件，请检查！"
+    exit 1
+fi
 ls "$work_dir/文件格式配置/" | while read NFile; do
     if [ -d "$NFile" ]; then
         rm -r "$NFile"
@@ -35,7 +42,9 @@ ls "$work_dir/文件格式配置/" | while read NFile; do
             fi
         done
     done
-    if [ "$count_num" -ge 1 ]; then
+    if [ "$count_num" -lt 1 ]; then
+        continue
+    else
         echo " » 已归类 $count_num 个 $Name"
     fi
 done
