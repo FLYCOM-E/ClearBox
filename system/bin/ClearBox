@@ -82,29 +82,29 @@ echo "                             "
 }
 ######
 case "$1" in
-    -u | -U)
-        RunService
-        ;;
-    -c | -C)
-        ClearCache
-        ;;
-    -b | -B)
-        bin_dir
-        ;;
-    -h | -H)
-        home_dir
-        ;;
-    -w | -W)
-        work_dir
-        ;;
-    -v | -V)
-        version
-        ;;
-    --help | --HELP)
-        md_help
-        ;;
+    *-h | *-H)
+      home_dir
+      ;;
+    *-w | *-W)
+      work_dir
+      ;;
+    *-b | *-B)
+      bin_dir
+      ;;
+    *-u | *-U)
+      RunService
+      ;;
+    *-c | *-C)
+      ClearCache
+      ;;
+    *-v | *-V | *-version)
+      version
+      ;;
+    *-help | *-HELP)
+      md_help
+      ;;
     *)
-        md_menu
-        ;;
+      md_menu
+      ;;
 esac
 exit 0
