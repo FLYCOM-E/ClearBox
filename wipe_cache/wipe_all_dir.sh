@@ -59,7 +59,7 @@ ls /storage | grep .*- | while read diskdir; do
     "$bin_dir/busybox" find "$dir2"/ -type f -name "*.log" -delete &
     "$bin_dir/busybox" find "$dir2"/ -type f -name "*.LOG" -delete &
     wait
-    echo " » 外部储存$diskdir垃圾删除完成！"
+    echo " » 外部储存 $diskdir 垃圾删除完成！"
 done
 ######
 exit 0
