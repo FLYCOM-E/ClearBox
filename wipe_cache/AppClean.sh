@@ -109,7 +109,7 @@ case $1 in
     *)
       AppName="$1"
       if [ "$AppName" = "" ]; then
-          echo " » 错误：需要一个参数，未输入软件名称！"
+          echo " » ERROR：需要一个参数，未传入软件名称！"
           exit 1
       fi
       service &
