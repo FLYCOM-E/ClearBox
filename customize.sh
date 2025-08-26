@@ -121,8 +121,6 @@ getevent -qlc 1 2>> /dev/null | while read -r A; do
 done
 ######
 rm -r "$MODPATH"/META-INF
-rm -r "$MODPATH"/ClearBox.png
-rm -r "$MODPATH"/README.md
 ######
 echo "                              "
 sleep 0.1
