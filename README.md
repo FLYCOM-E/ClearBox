@@ -115,6 +115,8 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 方案来自 **Coolapk@Amktiao** 大佬，已得到同意，感谢大佬！
 
 
+模块管理App使用[Kr-Script](https://github.com/helloklf/kr-scripts)项目制作而成，感谢该项目
+
 
 > 模块内测请前往
 >[**ClearBox**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
