@@ -144,15 +144,21 @@ done
 ######
 case $1 in
     Reset)
-        Reset_UserCache &
-        Reset_MicroCache &
-        wait
-        ;;
+      Reset_UserCache &
+      Reset_MicroCache &
+      wait
+      ;;
     Stop)
-        Stop_UserCache &
-        Stop_MicroCache &
-        wait
-        ;;
+      Stop_UserCache &
+      Stop_MicroCache &
+      wait
+      ;;
+    *)
+      if [ "$1" = "" ]; then
+          echo " » ERROR: A parameter is required!"
+          exit 1
+      fi
+      ;;
 esac
 ######
 exit 0
