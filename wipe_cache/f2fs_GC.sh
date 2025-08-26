@@ -105,6 +105,12 @@ case $1 in
     FAST_GC)
         idle-maint
         ;;
+    *)
+        if [ "$1" = "" ]; then
+            echo " » ERROR：需要一个参数，未传入选项名称！"
+            exit 1
+        fi
+        ;;
 esac
 ######
 exit 0
