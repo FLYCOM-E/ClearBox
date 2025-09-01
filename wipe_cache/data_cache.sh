@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 data_dir1="/data/user"
 data_dir2="/data/user_de"
 micro_dir1="/mnt/expand/$(ls /mnt/expand)/user"
@@ -43,10 +44,10 @@ echo " » 内部储存软件缓存删除完成"
 ######
 function WipeCache2()
 {
-if [ ! -d $micro_dir1 ]; then
+if [ ! -d "$micro_dir1" ]; then
     exit 0
 fi
-if grep "cleardisk=0" "$work_dir/settings.prop" >/dev/null; then
+if [ "$cleardisk" = 0 ]; then
     exit 0
 fi
 ######
