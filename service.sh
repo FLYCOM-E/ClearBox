@@ -9,7 +9,6 @@ fi
 home_dir="$MODDIR"
 bin_dir=$(ClearBox -b)
 work_dir=$(ClearBox -w)
-source "$work_dir/settings.prop"
 exec 2>>/dev/null
 ######
 while true; do
@@ -83,6 +82,7 @@ if [ ! -d "$work_dir/清理规则" ]; then
 fi
 ######
 chmod -R 700 "$work_dir"
+source "$work_dir/settings.prop"
 ######
 }
 ######
