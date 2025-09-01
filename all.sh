@@ -120,7 +120,6 @@ function fast_GC()
 {
 sh "$home_dir/wipe_cache/f2fs_GC.sh" FAST_GC &
 wait
-echo "[ $(date) ]：GC磁盘优化" >> "$work_dir/运行日志.log"
 }
 ######
 # 其它优化，打开原生墓碑
