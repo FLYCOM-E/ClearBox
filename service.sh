@@ -9,6 +9,7 @@ fi
 home_dir="$MODDIR"
 bin_dir=$(ClearBox -b)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 exec 2>>/dev/null
 ######
 while true; do
@@ -28,34 +29,34 @@ if [ ! -d "$work_dir" ]; then
     touch "$work_dir/ClearBox模块配置目录"
 fi
 ######
-if ! grep ^"stopcache=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$stopcache" = "" ]; then
     echo "stopcache=0" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"stopinstall=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$stopinstall" = "" ]; then
     echo "stopinstall=0" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"clearall=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$clearall" = "" ]; then
     echo "clearall=0" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"fileall=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$fileall" = "" ]; then
     echo "fileall=0" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"cleardisk=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$cleardisk" = "" ]; then
     echo "cleardisk=1" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"Fileall_Disk=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$Fileall_Disk" = "" ]; then
     echo "Fileall_Disk=1" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"ClearApk_disk=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$ClearApk_disk" = "" ]; then
     echo "ClearApk_disk=1" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"ClearZip_disk=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$ClearZip_disk" = "" ]; then
     echo "ClearZip_disk=1" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"ClearFont_disk=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$ClearFont_disk" = "" ]; then
     echo "ClearFont_disk=0" >> "$work_dir/settings.prop"
 fi
-if ! grep ^"ClearIso_disk=" "$work_dir/settings.prop" >/dev/null; then
+if [ "$ClearIso_disk" = "" ]; then
     echo "ClearIso_disk=0" >> "$work_dir/settings.prop"
 fi
 ######
@@ -88,7 +89,7 @@ chmod -R 700 "$work_dir"
 StartSettings
 echo "[ $(date) ] ReStart" > "$work_dir/运行日志.log"
 ######
-if grep "stopcache=1" "$work_dir/settings.prop" >/dev/null; then
+if [ "$stopcache" = 1 ]; then
     echo -n "* * * * * StopCache Stop" > "$home_dir/CRON/StopCache/root"
     echo "[ $(date) ]：阻止缓存运行" >> "$work_dir/运行日志.log"
 else
@@ -117,9 +118,9 @@ if ! grep "sh" "$home_dir/CRON/ClearDir/root" >/dev/null; then
 fi
 "$bin_dir/busybox" crond -c "$home_dir"/CRON/ClearDir
 ######
-if grep "stopinstall=1" "$work_dir/settings.prop" >/dev/null; then
+if [ "$stopinstall" = 1 ]; then
     chmod 551 /data/app
-elif grep "stopinstall=0" "$work_dir/settings.prop" >/dev/null; then
+elif [ "$stopinstall" = 0 ]; then
     chmod 771 /data/app
 fi
 ######
