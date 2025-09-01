@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 ######
