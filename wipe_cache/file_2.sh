@@ -11,13 +11,14 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 ######
 if ! ls /storage | grep .*- >/dev/null; then
     exit 0
 fi
-if grep "Fileall_Disk=0" "$work_dir/settings.prop" >/dev/null; then
+if [ "$Fileall_Disk" = 0 ]; then
     exit 0
 fi
 ######
@@ -30,7 +31,7 @@ ls /storage | grep .*- | while read diskdir; do
     mkdir "$work_dir/文件格式配置"
     fi
     if [ $(ls "$work_dir/文件格式配置/") = "" ]; then
-        echo " » 无格式配置文件，请检查！"
+        echo " » 配置文件目录为空，请检查！"
         exit 1
     fi
     ls "$work_dir/文件格式配置/" | while read NFile; do
