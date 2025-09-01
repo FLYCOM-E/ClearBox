@@ -52,9 +52,6 @@ ls "$work_dir/清理配置/" | while read File; do
                 break
             fi
             continue
-        else
-            echo " » $Pro_File：配置未指定初始目录！"
-            break
         fi
         ######
         if echo "$i" | grep ^"/" >/dev/null; then
