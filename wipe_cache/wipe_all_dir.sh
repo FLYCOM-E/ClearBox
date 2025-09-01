@@ -16,14 +16,13 @@ source "$work_dir/settings.prop"
 exec 2>>"$work_dir/运行日志.log"
 whitelist="$work_dir/ClearWhitelist.prop"
 dir="/storage/emulated/0"
-dir2="/storage/$(ls /storage | grep .*-)"
 ######
-for c in $(ls "$dir"/Android/data); do
-    if grep "$c" "$whitelist" >/dev/null; then
+for cd1 in $(ls "$dir/Android/data"); do
+    if grep "$cd1" "$whitelist" >/dev/null; then
         continue
     fi
-    rm -r "$dir"/Android/data/"$c"/cache/*
-    echo " $c 缓存已清除"
+    rm -rf "$dir/Android/data/$cd1/cache/"*
+    echo " $cd1 缓存已清除"
 done
 
 function MediaCache()
@@ -42,9 +41,9 @@ if [ -d "$dir/DCIM/.thumbnails" ]; then
 fi
 }
 MediaCache &
-"$bin_dir/busybox" find "$dir"/ -type f -name "*.log" -delete &
-"$bin_dir/busybox" find "$dir"/ -type f -name "*.LOG" -delete &
-"$bin_dir/busybox" find "$dir" -type d -empty -delete &
+"$bin_dir/busybox" find "$dir/" -type f -name "*.log" -delete &
+"$bin_dir/busybox" find "$dir/" -type f -name "*.LOG" -delete &
+"$bin_dir/busybox" find "$dir/" -type d -empty -delete &
 wait
 
 echo " » 内部储存垃圾删除完成！"
@@ -57,14 +56,14 @@ if [ "$cleardisk" = 0 ]; then
 fi
 ######
 ls /storage | grep .*- | while read diskdir; do
-    dir="/storage/$diskdir"
+    dir2="/storage/$diskdir"
     
-    for v in $(ls "$dir2"/Android/data); do
-        if grep "$v" "$whitelist" >/dev/null; then
+    for cd2 in $(ls "$dir2/Android/data"); do
+        if grep "$cd2" "$whitelist" >/dev/null; then
            continue
         fi
-        rm -r "$F"/Android/data/"$v"/cache/*
-        echo " $v 缓存已清除"
+        rm -rf "$dir/Android/data/$cd2/cache/"*
+        echo " $cd2 缓存已清除"
     done
     
     function MediaCache2()
@@ -83,9 +82,9 @@ ls /storage | grep .*- | while read diskdir; do
     fi
     }
     MediaCache2 &
-    "$bin_dir/busybox" find "$dir2"/ -type f -name "*.log" -delete &
-    "$bin_dir/busybox" find "$dir2"/ -type f -name "*.LOG" -delete &
-    "$bin_dir/busybox" find "$dir2" -type d -empty -delete &
+    "$bin_dir/busybox" find "$dir2/" -type f -name "*.log" -delete &
+    "$bin_dir/busybox" find "$dir2/" -type f -name "*.LOG" -delete &
+    "$bin_dir/busybox" find "$dir2/" -type d -empty -delete &
     wait
     
     echo " » 外部储存 $diskdir 垃圾删除完成！"
