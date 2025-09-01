@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 ######
@@ -48,8 +49,12 @@ ls "$work_dir/清理配置/" | while read File; do
                 cd "$dir"
             else
                 echo " » $Pro_File：配置指定初始目录错误！"
+                break
             fi
             continue
+        else
+            echo " » $Pro_File：配置未指定初始目录！"
+            break
         fi
         ######
         if echo "$i" | grep ^"/" >/dev/null; then
@@ -77,7 +82,7 @@ ls "$work_dir/清理配置/" | while read File; do
                 touch "$df"
             fi
         else
-            echo " » $Pro_File：配置第 $count 行未指定参数！"
+            echo " » $Pro_File：第 $count 行未指定参数或参数错误！"
         fi
     done
 done
