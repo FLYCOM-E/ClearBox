@@ -9,6 +9,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 whitelist="$work_dir/whitelist.prop"
 data_dir1="/data/user"
 data_dir2="/data/user_de"
