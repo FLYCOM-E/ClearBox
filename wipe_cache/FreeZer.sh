@@ -11,10 +11,12 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 ######
 if [ "$(device_config put activity_manager_native_boot use_freezer)" = "false" ]; then
-    device_config put activity_manager_native_boot use_freezer true
-    echo " » 已打开安卓原生墓碑 (^^)"
+    if $(device_config put activity_manager_native_boot use_freezer true); then
+        echo " » 已打开安卓原生墓碑 (^^)"
+    fi
 fi
