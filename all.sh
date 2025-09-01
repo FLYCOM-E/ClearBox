@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 ######
@@ -63,7 +64,7 @@ echo "[ $(date) ]：运行规则清理、清理储存目录" >> "$work_dir/运�
 # 根据prop配置，清理全部文件（仅用于自动清理，该选项打开状态
 function clear_tar()
 {
-if grep "clearall=1" "$work_dir/settings.prop" >/dev/null; then
+if [ "$clearall" = 1 ]; then
     sh "$home_dir/wipe_cache/ClearService1.sh" ALL &
     sh "$home_dir/wipe_cache/ClearService2.sh" ALL &
     wait
@@ -99,7 +100,7 @@ echo "[ $(date) ]：运行文件归类" >> "$work_dir/运行日志.log"
 # 根据prop决定是否运行文件归类
 function file_all2()
 {
-if grep "fileall=1" "$work_dir/settings.prop" >/dev/null; then
+if [ "$fileall" = 1 ]; then
     sh "$home_dir/wipe_cache/file_1.sh"
     sh "$home_dir/wipe_cache/file_2.sh"
     echo "[ $(date) ]：运行文件归类" >> "$work_dir/运行日志.log"
