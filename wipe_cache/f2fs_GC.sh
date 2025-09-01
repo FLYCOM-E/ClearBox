@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 get_f2fs_sysfs="/sys/fs/f2fs/$(getprop dev.mnt.dev.data)"
@@ -43,7 +44,7 @@ function f2fs_gc()
         echo " » GC已开始, 请您耐心等待，建议挂后台！"
     else
         echo " » GC启动失败！“$get_f2fs_sysfs/gc_urgent”节点写入失败！"
-        exit 0
+        exit 1
     fi
     time=0
     time2=0
@@ -59,7 +60,7 @@ function f2fs_gc()
         fi
         echo -ne " » 已运行$timeM $time 秒...\r"
         if [ "$time2" = 10 ]; then
-            echo " » GC运行超时，已结束运行！"
+            echo " » GC等待超时，已结束等待！"
             echo "         "
             break
         fi
@@ -89,7 +90,7 @@ function f2fs_gc()
 function idle-maint()
 {
 echo " » 开始快速磁盘优化，请您耐心等待，可以离开前台！"
-if sm idle-maint run >/dev/null; then
+if $(sm idle-maint run >/dev/null); then
     echo " » 优化完成，可以试试更激进的GC优化哦 (・∀・)"
     i="成功"
 else
