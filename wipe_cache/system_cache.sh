@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 data_dir1="/data/user"
 data_dir2="/data/user_de"
 #exec 2>>/dev/null
@@ -35,13 +36,13 @@ ls "$data_dir1/" | while read userid_dir; do
 done
 ######
 # 清除“MTP主机”组件数据可解决MTP连接文件显示不全的问题
-pm clear "com.android.mtp" >/dev/null
+pm clear "com.android.mtp" >>/dev/null
 ######
 # 清空系统缓存
 rm -r /cache/* &
-rm -r /data/dalvik-cache/* &
-rm -r /data/system/package_cache/* &
 rm -r /data/resource-cache/* &
+rm -r /data/system/package_cache/* &
+rm -r /data/dalvik-cache/* &
 wait
 ######
 echo " » 系统缓存已清空！建议重启系统！"
