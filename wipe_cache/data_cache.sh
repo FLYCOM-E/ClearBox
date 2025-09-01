@@ -31,10 +31,10 @@ ls "$data_dir1/" | while read userid_dir; do
         if [ ! -d "/data/user/$userid_dir/$UserAppList" ]; then
             continue
         fi
-        rm -r "$data_dir1/$userid_dir/$UserAppList/cache/"* &
-        rm -r "$data_dir1/$userid_dir/$UserAppList/code_cache/"* &
-        rm -r "$data_dir2/$userid_dir/$UserAppList/cache/"* &
-        rm -r "$data_dir2/$userid_dir/$UserAppList/code_cache/"* &
+        rm -rf "$data_dir1/$userid_dir/$UserAppList/cache/"* &
+        rm -rf "$data_dir1/$userid_dir/$UserAppList/code_cache/"* &
+        rm -rf "$data_dir2/$userid_dir/$UserAppList/cache/"* &
+        rm -rf "$data_dir2/$userid_dir/$UserAppList/code_cache/"* &
         wait
         echo " $UserAppList 缓存已清除"
     done
@@ -57,10 +57,10 @@ ls "$micro_dir1/" | while read userid_dir; do
         if grep ^"$CardAppList" "$whitelist" >/dev/null; then
             continue
         fi
-        rm -r "$micro_dir1/$userid_dir/$CardAppList/cache/"* &
-        rm -r "$micro_dir1/$userid_dir/$CardAppList/code_cache/"* &
-        rm -r "$micro_dir2/$userid_dir/$CardAppList/cache/"* &
-        rm -r "$micro_dir2/$userid_dir/$CardAppList/code_cache/"* &
+        rm -rf "$micro_dir1/$userid_dir/$CardAppList/cache/"* &
+        rm -rf "$micro_dir1/$userid_dir/$CardAppList/code_cache/"* &
+        rm -rf "$micro_dir2/$userid_dir/$CardAppList/cache/"* &
+        rm -rf "$micro_dir2/$userid_dir/$CardAppList/code_cache/"* &
         wait
         echo " $CardAppList 缓存已清除"
     done
