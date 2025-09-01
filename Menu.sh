@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 Version=$(ClearBox -v | cut -f3 -d " ")
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
@@ -156,7 +157,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox    "$Version"]\033[0m")
          ;;
        8)
          clear
-         if grep "stopinstall=1" "$work_dir/settings.prop" >/dev/null; then
+         if [ "$stopinstall" = 1 ]; then
              i1="关闭"
          else
              i1="开启"
@@ -181,7 +182,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                        clear
                        chmod 551 /data/app
                        echo " » 已开启阻止更新！"
-                       if grep "stopinstall=0" "$work_dir/settings.prop" >/dev/null; then
+                       if [ "$stopinstall" = 0 ]; then
                            sed -i 's/stopinstall=0/stopinstall=1/g' "$work_dir/settings.prop"
                        fi
                        ;;
@@ -203,7 +204,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
            ;;
        9)
          clear
-         if grep "stopcache=0" "$work_dir/settings.prop" >/dev/null; then
+         if [ "$stopcache" = 0 ]; then
              i2="开启"
          else
              i2="关闭"
@@ -230,7 +231,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                    case "$put" in
                      y | Y)
                        clear
-                       if grep "stopcache=0" "$work_dir/settings.prop" >/dev/null; then
+                       if [ "$stopcache" = 0 ]; then
                            sed -i 's/stopcache=0/stopcache=1/g' "$work_dir/settings.prop"
                        fi
                        echo " » 已开启，重启生效 ~"
@@ -348,7 +349,7 @@ $(echo -e "\033[44m[模块管理菜单]\033[0m")
                ;;
              1)
                clear
-               NowClearTime=$(cat $home_dir/CRON/ClearCache/root | cut -f3 -d ' ' | cut -f2 -d '/')
+               NowClearTime=$(cat "$home_dir/CRON/ClearCache/root" | cut -f3 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")]\033[0m")
  ==============================================
@@ -391,7 +392,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")
                  ;;
              2)
                clear
-               NowFileAllTime=$(cat $home_dir/CRON/FileAll/root | cut -f2 -d ' ' | cut -f2 -d '/')
+               NowFileAllTime=$(cat "$home_dir/CRON/FileAll/root" | cut -f2 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
  ==============================================
@@ -434,7 +435,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                  ;;
              3)
                clear
-               NowFileAllTime=$(cat $home_dir/CRON/ClearDir/root | cut -f1 -d ' ' | cut -f2 -d '/')
+               NowFileAllTime=$(cat "$home_dir/CRON/ClearDir/root" | cut -f1 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
  ==============================================
@@ -477,12 +478,12 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                  ;;
              4)
                clear
-               if grep "clearall=0" "$work_dir/settings.prop" >/dev/null; then
+               if [ "$clearall" = 0 ]; then
                    i4="开启"
                else
                    i4="关闭"
                fi
-               if grep "fileall=0" "$work_dir/settings.prop" >/dev/null; then
+               if [ "$fileall" = 0 ]; then
                    i5="开启"
                else
                    i5="关闭"
@@ -508,32 +509,32 @@ $(echo -e "\033[44m[清理设置]\033[0m")
                  case "$put5" in
                    1)
                      clear
-                     if grep ^"cleardisk=0" "$work_dir/settings.prop" >/dev/null; then
+                     if [ "$cleardisk" = 0 ]; then
                          i6="开启"
                      else
                          i6="关闭"
                      fi
-                     if grep ^"Fileall_Disk=0" "$work_dir/settings.prop" >/dev/null; then
+                     if [ "$Fileall_Disk" = 0 ]; then
                          i7="开启"
                      else
                          i7="关闭"
                      fi
-                     if grep ^"ClearApk_disk=0" "$work_dir/settings.prop" >/dev/null; then
+                     if [ "$ClearApk_disk" = 0 ]; then
                          i8="开启"
                      else
                          i8="关闭"
                      fi
-                     if grep ^"ClearZip_disk=0" "$work_dir/settings.prop" >/dev/null; then
+                     if [ "$ClearZip_disk" = 0 ]; then
                          i9="开启"
                      else
                          i9="关闭"
                      fi
-                     if grep ^"ClearFont_disk=0" "$work_dir/settings.prop" >/dev/null; then
+                     if [ "$ClearFont_disk" = 0 ]; then
                          i10="开启"
                      else
                          i10="关闭"
                      fi
-                     if grep ^"ClearIso_disk=0" "$work_dir/settings.prop" >/dev/null; then
+                     if [ "$ClearIso_disk" = 0 ]; then
                          i11="开启"
                      else
                          i11="关闭"
@@ -566,7 +567,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$cleardisk" in
                                  y | Y)
                                    clear
-                                   if grep "cleardisk=0" "$work_dir/settings.prop" >/dev/null; then
+                                   if [ "$cleardisk" = 0 ]; then
                                        sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
                                    fi
@@ -588,7 +589,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$Fileall_Disk" in
                                  y | Y)
                                    clear
-                                   if grep "Fileall_Disk=0" "$work_dir/settings.prop" >/dev/null; then
+                                   if [ "$Fileall_Disk" = 0 ]; then
                                        sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop"
                                        echo " » 已开启！"
                                    fi
@@ -605,230 +606,4 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                            ;;
                          3)
                            if [ "$i6" = "开启" ]; then
-                               echo -ne " » 确认？(y): "
-                               read ClearApk_disk
-                               case "$ClearApk_disk" in
-                                 y | Y)
-                                   clear
-                                   if grep "ClearApk_disk=0" "$work_dir/settings.prop" >/dev/null; then
-                                       sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
-                               esac
-                           else
-                               clear
-                               sed -i 's/ClearApk_disk=1/ClearApk_disk=0/g' "$work_dir/settings.prop"
-                               echo " » 已关闭！"
-                           fi
-                           ;;
-                         4)
-                           if [ "$i6" = "开启" ]; then
-                               echo -ne " » 确认？(y): "
-                               read ClearZip_disk
-                               case "$ClearZip_disk" in
-                                 y | Y)
-                                   clear
-                                   if grep "ClearZip_disk=0" "$work_dir/settings.prop" >/dev/null; then
-                                       sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
-                               esac
-                           else
-                               clear
-                               sed -i 's/ClearZip_disk=1/ClearZip_disk=0/g' "$work_dir/settings.prop"
-                               echo " » 已关闭！"
-                           fi
-                           ;;
-                         5)
-                           if [ "$i6" = "开启" ]; then
-                               echo -ne " » 确认？(y): "
-                               read ClearFont_disk
-                               case "$ClearFont_disk" in
-                                 y | Y)
-                                   clear
-                                   if grep "ClearFont_disk=0" "$work_dir/settings.prop" >/dev/null; then
-                                       sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
-                               esac
-                           else
-                               clear
-                               sed -i 's/ClearFont_disk=1/ClearFont_disk=0/g' "$work_dir/settings.prop"
-                               echo " » 已关闭！"
-                           fi
-                           ;;
-                         6)
-                           if [ "$i6" = "开启" ]; then
-                               echo -ne " » 确认？(y): "
-                               read ClearIso_disk
-                               case "$ClearIso_disk" in
-                                 y | Y)
-                                   clear
-                                   if grep "ClearIso_disk=0" "$work_dir/settings.prop" >/dev/null; then
-                                       sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
-                               esac
-                           else
-                               clear
-                               sed -i 's/ClearIso_disk=1/ClearIso_disk=0/g' "$work_dir/settings.prop"
-                               echo " » 已关闭！"
-                           fi
-                           ;;
-                         *)
-                           "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                           ;;
-                     esac
-                     ;;
-                   2)
-                     if [ "$i3" = "开启" ]; then
-                         echo -ne " » 确认？(y): "
-                         read put_5
-                         case "$put_5" in
-                           y | Y)
-                             clear
-                             if grep "clearall=0" "$work_dir/settings.prop" >/dev/null; then
-                                 sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop"
-                                 echo " » 已开启！"
-                             fi
-                             ;;
-                           *)
-                             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                             ;;
-                         esac
-                     else
-                         clear
-                         sed -i 's/clearall=1/clearall=0/g' "$work_dir/settings.prop"
-                         echo " » 已关闭！"
-                     fi
-                     ;;
-                   3)
-                     if [ "$i4" = "开启" ]; then
-                         echo -ne " » 确认？(y): "
-                         read put_6
-                         case "$put_6" in
-                           y | Y)
-                             clear
-                             sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop"
-                             echo " » 已开启！"
-                             ;;
-                           *)
-                             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                             ;;
-                         esac
-                     else
-                         clear
-                         sed -i 's/fileall=1/fileall=0/g' "$work_dir/settings.prop"
-                         echo " » 已关闭！"
-                     fi
-                     ;;
-                   4)
-                     clear
-                     # Off SELinux
-                     if [ "$(getenforce)" = "Enforcing" ]; then
-                         setenforce 0
-                         OffSelinux=1
-                     fi
-                     echo -ne " » 请输入软件包名（空格分隔）："
-                     read packages
-                     if [ "$packages" = "" ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
-                     fi
-                     for package in $packages; do
-                         if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
-                             echo " » $package 已存在白名单"
-                             continue
-                         elif ! pm list package | grep "package:$package\$" >> /dev/null; then
-                             echo " » $package 不在软件包列表"
-                             continue
-                         else
-                             if pm list package -s | grep "package:$package\$" >> /dev/null; then
-                                 echo " » $package 请不要添加系统软件"
-                                 continue
-                             fi
-                             echo "$package" >> "$work_dir/ClearWhitelist.prop"
-                             echo " » $package 已成功加入白名单!"
-                         fi
-                     done
-                     # Reset SELinux
-                     if [ "$OffSelinux" = 1 ]; then
-                         setenforce 1
-                     fi
-                     ;;
-                   5)
-                     clear
-                     echo -ne " » 请输入软件包名（空格分隔）："
-                     read packages
-                     if [ "$packages" = "" ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
-                     fi
-                     for package in $packages; do
-                         if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
-                             sed -i /"$package"/d "$work_dir/ClearWhitelist.prop"
-                             echo " $package 已成功从白名单中移除！"
-                         else
-                             echo " $package 不在白名单中！"
-                         fi
-                     done
-                     ;;
-                   *)
-                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                     ;;
-                 esac
-                 ;;
-             00)
-               clear
-               echo -ne " » 是否卸载模块？(y/n): "
-               read unput
-               case "$unput" in
-                 y | Y)
-                   un=1
-                   ;;
-                 *)
-                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                   ;;
-               esac
-               if [ "$un" = 1 ]; then
-                   sh "$home_dir/uninstall.sh" &
-                   wait
-                   exit 0
-               fi
-               ;;
-             *)
-               "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-               ;;
-           esac
-           ;;
-       e | E)
-         clear
-         exit 0
-         ;;
-       *)
-         "$bin_dir/busybox" echo -ne "\033[1;32m » 已经是最后一层了呦，键入 E 退出！\033[0m"
-         ;;
-     esac
-}
-######
-# 运行函数
-while true; do
-    md_menu
-    sleep 0.9
-done
-
-
+       
