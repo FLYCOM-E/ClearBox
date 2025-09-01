@@ -11,6 +11,7 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
+source "$work_dir/settings.prop"
 #exec 2>>/dev/null
 exec 2>>"$work_dir/运行日志.log"
 dir="/storage/emulated/0"
@@ -18,10 +19,10 @@ dir="/storage/emulated/0"
 function ClearService()
 {
 echo " » 开始清理内部储存 $FileName！"
-if [ -f "$work_dir/文件格式配置/$FileName.xml" ]; then
+if [ -f "$work_dir/文件格式配置/$FileName.conf" ]; then
     Name=$(echo "$NFile" | cut -f1 -d ".")
     count_num=0
-    for Fn in $(cat "$work_dir/文件格式配置/$FileName.xml"); do
+    for Fn in $(cat "$work_dir/文件格式配置/$FileName.conf"); do
         for File in $("$bin_dir/busybox" find "$dir"/ -type f -name "*.$Fn"); do
             if [ -f "$File" ]; then
                 rm "$File"
@@ -32,6 +33,14 @@ if [ -f "$work_dir/文件格式配置/$FileName.xml" ]; then
     if [ "$count_num" -ge 1 ]; then
         echo " » 已清理 $count_num 个 $FileName"
     fi
+else
+    echo " » 模块貌似出了一点状况:⁠-⁠) 自动排查..."
+    if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
+        echo " » 配置文件目录为空，请检查！"
+    else
+        echo " » 传入参数错误或配置文件格式错误！"
+    fi
+    exit 1
 fi
 }
 ######
@@ -53,6 +62,9 @@ for File in $(ls "$work_dir/文件格式配置/"); do
         if [ "$count_num" -ge 1 ]; then
             echo " » 已清理 $count_num 个 $Name"
         fi
+    else
+        echo " » 配置文件目录为空，请检查！"
+        exit 1
     fi
 done
 }
