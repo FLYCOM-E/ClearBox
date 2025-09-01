@@ -90,7 +90,7 @@ function f2fs_gc()
 function idle-maint()
 {
 echo " » 开始快速磁盘优化，请您耐心等待，可以离开前台！"
-if $(sm idle-maint run >/dev/null); then
+if [ "$(sm idle-maint run >/dev/null)" = "" ]; then
     echo " » 优化完成，可以试试更激进的GC优化哦 (・∀・)"
     i="成功"
 else
