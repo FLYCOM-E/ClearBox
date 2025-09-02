@@ -349,7 +349,7 @@ $(echo -e "\033[44m[模块管理菜单]\033[0m")
                ;;
              1)
                clear
-               NowClearTime=$(cat "$home_dir/CRON/ClearCache/root" | cut -f3 -d ' ' | cut -f2 -d '/')
+               NowClearTime=$(cat "$work_dir/CRON/ClearCache/root" | cut -f3 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")]\033[0m")
  ==============================================
@@ -374,15 +374,13 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")
                      elif [ "$day_num" -ge 30 ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 设置天数超过30天！设置失败！！\033[0m"
                      else
-                         echo "0 0 */$day_num * * sh $home_dir/all.sh ClearAll" > "$home_dir/CRON/ClearCache/root"
-                         echo "0 0 */$day_num * * sh $home_dir/all.sh ClearAll" > "$work_dir/root_backup"
+                         echo "0 0 */$day_num * * sh $home_dir/all.sh ClearAll" > "$work_dir/CRON/ClearCache/root"
                          echo " » 设定成功！"
                      fi
                      ;;
                    0)
                      clear
-                     echo -n "" > "$home_dir/CRON/ClearCache/root"
-                     rm "$work_dir/root_backup"
+                     echo -n "" > "$work_dir/CRON/ClearCache/root"
                      echo " » 已关闭定期优化！"
                      ;;
                    *)
@@ -392,7 +390,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")
                  ;;
              2)
                clear
-               NowFileAllTime=$(cat "$home_dir/CRON/FileAll/root" | cut -f2 -d ' ' | cut -f2 -d '/')
+               NowFileAllTime=$(cat "$work_dir/CRON/FileAll/root" | cut -f2 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
  ==============================================
@@ -417,15 +415,13 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                      elif [ "$N_num" -ge 24 ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过24小时！设置失败！！\033[0m"
                      else
-                         echo "0 */$N_num * * * sh $home_dir/all.sh File_All" > "$home_dir/CRON/FileAll/root"
-                         echo "0 */$N_num * * * sh $home_dir/all.sh File_All" > "$work_dir/root_backup2"
+                         echo "0 */$N_num * * * sh $home_dir/all.sh File_All" > "$work_dir/CRON/FileAll/root"
                          echo " » 设定成功！"
                      fi
                      ;;
                    0)
                      clear
-                     echo -n "" > "$home_dir/CRON/FileAll/root"
-                     rm "$work_dir/root_backup2"
+                     echo -n "" > "$work_dir/CRON/FileAll/root"
                      echo " » 已关闭定期整理！"
                      ;;
                    *)
@@ -435,7 +431,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                  ;;
              3)
                clear
-               NowFileAllTime=$(cat "$home_dir/CRON/ClearDir/root" | cut -f1 -d ' ' | cut -f2 -d '/')
+               NowFileAllTime=$(cat "$work_dir/CRON/ClearDir/root" | cut -f1 -d ' ' | cut -f2 -d '/')
                "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
  ==============================================
@@ -460,15 +456,13 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                      elif [ "$S_num" -ge 60 ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过1小时！设置失败！！\033[0m"
                      else
-                         echo "*/$S_num * * * * sh $home_dir/all.sh All_Dir" > "$home_dir/CRON/ClearDir/root"
-                         echo "*/$S_num * * * * sh $home_dir/all.sh All_Dir" > "$work_dir/root_backup3"
+                         echo "*/$S_num * * * * sh $home_dir/all.sh All_Dir" > "$work_dir/CRON/ClearDir/root"
                          echo " » 设定成功！"
                      fi
                      ;;
                    0)
                      clear
-                     echo -n "" > "$home_dir/CRON/ClearDir/root"
-                     rm "$work_dir/root_backup3"
+                     echo -n "" > "$work_dir/CRON/ClearDir/root"
                      echo " » 已关闭定期清理空文件夹！"
                      ;;
                    *)
@@ -606,4 +600,230 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                            ;;
                          3)
                            if [ "$i6" = "开启" ]; then
-       
+                               echo -ne " » 确认？(y): "
+                               read ClearApk_disk
+                               case "$ClearApk_disk" in
+                                 y | Y)
+                                   clear
+                                   if [ "$ClearApk_disk" = 0 ]; then
+                                       sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop"
+                                       echo " » 已开启！"
+                                   fi
+                                   ;;
+                                 *)
+                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                   ;;
+                               esac
+                           else
+                               clear
+                               sed -i 's/ClearApk_disk=1/ClearApk_disk=0/g' "$work_dir/settings.prop"
+                               echo " » 已关闭！"
+                           fi
+                           ;;
+                         4)
+                           if [ "$i6" = "开启" ]; then
+                               echo -ne " » 确认？(y): "
+                               read ClearZip_disk
+                               case "$ClearZip_disk" in
+                                 y | Y)
+                                   clear
+                                   if [ "$ClearZip_disk" = 0 ]; then
+                                       sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop"
+                                       echo " » 已开启！"
+                                   fi
+                                   ;;
+                                 *)
+                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                   ;;
+                               esac
+                           else
+                               clear
+                               sed -i 's/ClearZip_disk=1/ClearZip_disk=0/g' "$work_dir/settings.prop"
+                               echo " » 已关闭！"
+                           fi
+                           ;;
+                         5)
+                           if [ "$i6" = "开启" ]; then
+                               echo -ne " » 确认？(y): "
+                               read ClearFont_disk
+                               case "$ClearFont_disk" in
+                                 y | Y)
+                                   clear
+                                   if [ "ClearFont_disk" = 0 ]; then
+                                       sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop"
+                                       echo " » 已开启！"
+                                   fi
+                                   ;;
+                                 *)
+                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                   ;;
+                               esac
+                           else
+                               clear
+                               sed -i 's/ClearFont_disk=1/ClearFont_disk=0/g' "$work_dir/settings.prop"
+                               echo " » 已关闭！"
+                           fi
+                           ;;
+                         6)
+                           if [ "$i6" = "开启" ]; then
+                               echo -ne " » 确认？(y): "
+                               read ClearIso_disk
+                               case "$ClearIso_disk" in
+                                 y | Y)
+                                   clear
+                                   if [ "$ClearIso_disk" = 0 ]; then
+                                       sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop"
+                                       echo " » 已开启！"
+                                   fi
+                                   ;;
+                                 *)
+                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                   ;;
+                               esac
+                           else
+                               clear
+                               sed -i 's/ClearIso_disk=1/ClearIso_disk=0/g' "$work_dir/settings.prop"
+                               echo " » 已关闭！"
+                           fi
+                           ;;
+                         *)
+                           "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                           ;;
+                     esac
+                     ;;
+                   2)
+                     if [ "$i3" = "开启" ]; then
+                         echo -ne " » 确认？(y): "
+                         read put_5
+                         case "$put_5" in
+                           y | Y)
+                             clear
+                             if [ "$clearall" = 0 ]; then
+                                 sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop"
+                                 echo " » 已开启！"
+                             fi
+                             ;;
+                           *)
+                             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                             ;;
+                         esac
+                     else
+                         clear
+                         sed -i 's/clearall=1/clearall=0/g' "$work_dir/settings.prop"
+                         echo " » 已关闭！"
+                     fi
+                     ;;
+                   3)
+                     if [ "$i4" = "开启" ]; then
+                         echo -ne " » 确认？(y): "
+                         read put_6
+                         case "$put_6" in
+                           y | Y)
+                             clear
+                             if [ "$fileall" = 0 ]; then
+                                sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop"
+                                echo " » 已开启！"
+                             fi
+                             ;;
+                           *)
+                             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                             ;;
+                         esac
+                     else
+                         clear
+                         sed -i 's/fileall=1/fileall=0/g' "$work_dir/settings.prop"
+                         echo " » 已关闭！"
+                     fi
+                     ;;
+                   4)
+                     clear
+                     # Off SELinux
+                     if [ "$(getenforce)" = "Enforcing" ]; then
+                         setenforce 0
+                         OffSelinux=1
+                     fi
+                     echo -ne " » 请输入软件包名（空格分隔）："
+                     read packages
+                     if [ "$packages" = "" ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+                     fi
+                     for package in $packages; do
+                         if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
+                             echo " » $package 已存在白名单"
+                             continue
+                         elif ! pm list package | grep "package:$package\$" >> /dev/null; then
+                             echo " » $package 不在软件包列表"
+                             continue
+                         else
+                             if pm list package -s | grep "package:$package\$" >> /dev/null; then
+                                 echo " » $package 请不要添加系统软件"
+                                 continue
+                             fi
+                             echo "$package" >> "$work_dir/ClearWhitelist.prop"
+                             echo " » $package 已成功加入白名单!"
+                         fi
+                     done
+                     # Reset SELinux
+                     if [ "$OffSelinux" = 1 ]; then
+                         setenforce 1
+                     fi
+                     ;;
+                   5)
+                     clear
+                     echo -ne " » 请输入软件包名（空格分隔）："
+                     read packages
+                     if [ "$packages" = "" ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+                     fi
+                     for package in $packages; do
+                         if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
+                             sed -i /"$package"/d "$work_dir/ClearWhitelist.prop"
+                             echo " $package 已成功从白名单中移除！"
+                         else
+                             echo " $package 不在白名单中！"
+                         fi
+                     done
+                     ;;
+                   *)
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                     ;;
+                 esac
+                 ;;
+             00)
+               clear
+               echo -ne " » 是否卸载模块？(y/n): "
+               read unput
+               case "$unput" in
+                 y | Y)
+                   sh "$home_dir/uninstall.sh" &
+                   wait && clear && exit 0
+                   ;;
+                 *)
+                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                   ;;
+               esac
+               ;;
+             *)
+               "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+               ;;
+           esac
+           ;;
+       e | E)
+         clear
+         exit 0
+         ;;
+       *)
+         "$bin_dir/busybox" echo -ne "\033[1;32m » 已经是最后一层了呦，键入 E 退出！\033[0m"
+         ;;
+     esac
+}
+######
+# 运行函数
+while true; do
+    md_menu
+    sleep 0.9
+done
+
+
+
+
