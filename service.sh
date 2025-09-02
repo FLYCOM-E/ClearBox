@@ -70,6 +70,10 @@ function StartSettings()
         echo "ClearIso_disk=0" >> "$work_dir/settings.prop"
         ReSource=1
     fi
+    if [ "$DebugPro" = "" ]; then
+        echo "DebugPro=0" >> "$work_dir/settings.prop"
+        ReSource=1
+    fi
     }
     ######
     function prosetting()
