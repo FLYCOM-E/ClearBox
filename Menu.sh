@@ -12,9 +12,12 @@ bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 source "$work_dir/settings.prop"
+if [ "$DebugPro" = 1 ]; then
+    exec 2>>"$work_dir/运行日志.log"
+else
+    exec 2>>/dev/null
+fi
 Version=$(ClearBox -v | cut -f3 -d " ")
-#exec 2>>/dev/null
-exec 2>>"$work_dir/运行日志.log"
 ######
 echo "[ $(date) ]：打开终端UI" >> "$work_dir/运行日志.log"
 ######
@@ -823,7 +826,4 @@ while true; do
     md_menu
     sleep 0.9
 done
-
-
-
 
