@@ -12,8 +12,11 @@ bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 source "$work_dir/settings.prop"
-#exec 2>>/dev/null
-exec 2>>"$work_dir/运行日志.log"
+if [ "$DebugPro" = 1 ]; then
+    exec 2>>"$work_dir/运行日志.log"
+else
+    exec 2>>/dev/null
+fi
 ######
 if [ "$(device_config put activity_manager_native_boot use_freezer)" = "false" ]; then
     if $(device_config put activity_manager_native_boot use_freezer true); then
