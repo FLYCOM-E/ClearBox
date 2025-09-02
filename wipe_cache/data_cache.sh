@@ -12,13 +12,16 @@ bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 source "$work_dir/settings.prop"
+if [ "$DebugPro" = 1 ]; then
+    exec 2>>"$work_dir/运行日志.log"
+else
+    exec 2>>/dev/null
+fi
 data_dir1="/data/user"
 data_dir2="/data/user_de"
 micro_dir1="/mnt/expand/$(ls /mnt/expand)/user"
 micro_dir2="/mnt/expand/$(ls /mnt/expand)/user_de"
 whitelist="$work_dir/ClearWhitelist.prop"
-#exec 2>>/dev/null
-exec 2>>"$work_dir/运行日志.log"
 ######
 function WipeCache1()
 {
