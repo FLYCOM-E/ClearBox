@@ -12,10 +12,13 @@ bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 source "$work_dir/settings.prop"
+if [ "$DebugPro" = 1 ]; then
+    exec 2>>"$work_dir/运行日志.log"
+else
+    exec 2>>/dev/null
+fi
 data_dir1="/data/user"
 data_dir2="/data/user_de"
-#exec 2>>/dev/null
-exec 2>>"$work_dir/运行日志.log"
 ######
 # 遍历清空系统组件cache文件夹
 ls "$data_dir1/" | while read userid_dir; do
