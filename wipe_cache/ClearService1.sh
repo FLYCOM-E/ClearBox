@@ -38,7 +38,7 @@ if [ -f "$work_dir/文件格式配置/$FileName.conf" ]; then
     fi
 else
     echo " » 模块貌似出了一点状况:⁠-⁠) 自动排查..."
-    if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
+    if [ -z "$(ls "$work_dir/文件格式配置/")" ]; then
         echo " » 配置文件目录为空，请检查！"
     else
         echo " » 传入参数错误或配置文件格式错误！"
@@ -71,21 +71,19 @@ for File in $(ls "$work_dir/文件格式配置/"); do
     fi
 done
 }
-case $1 in
-    *)
-      FileName="$1"
-      if [ "$FileName" = "" ]; then
-          echo " » ERROR：需要一个参数，未传入清理项名称！"
-          exit 1
-      fi
-      ;;
-esac
-if [ "$FileName" = "ALL" ]; then
-    ClearServiceAll &
-    wait
+######
+if [ -z "$1" ]; then
+    echo " » ERROR：需要一个参数，未传入清理项名称！"
+    exit 1
 else
-    ClearService &
-    wait
+    FileName="$1"
+    if [ "$FileName" = "ALL" ]; then
+        ClearServiceAll &
+        wait
+    else
+        ClearService &
+        wait
+    fi
 fi
 ######
 exit 0
