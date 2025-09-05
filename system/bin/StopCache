@@ -155,7 +155,7 @@ case $1 in
       wait
       ;;
     *)
-      if [ "$1" = "" ]; then
+      if [ -z "$1" ]; then
           echo " » ERROR: A parameter is required!"
           exit 1
       fi
