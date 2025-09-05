@@ -264,7 +264,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                fi
                echo -ne " » 请输入软件包名（空格分隔）："
                read packages
-                 if [ "$packages" = "" ]; then
+                 if [ -z "$packages" ]; then
                      "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
                  fi
                  for package in $packages; do
@@ -292,7 +292,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                clear
                echo -ne " » 请输入软件包名（空格分隔）："
                read packages
-                 if [ "$packages" = "" ]; then
+                 if [ -z "$packages" ]; then
                      "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
                  fi
                  for package in $packages; do
@@ -752,7 +752,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                      fi
                      echo -ne " » 请输入软件包名（空格分隔）："
                      read packages
-                     if [ "$packages" = "" ]; then
+                     if [ -z "$packages" ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
                      fi
                      for package in $packages; do
@@ -780,7 +780,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                      clear
                      echo -ne " » 请输入软件包名（空格分隔）："
                      read packages
-                     if [ "$packages" = "" ]; then
+                     if [ -z "$packages" ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
                      fi
                      for package in $packages; do
