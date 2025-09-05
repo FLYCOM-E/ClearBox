@@ -23,7 +23,7 @@ if [ -f "$work_dir/清理配置" ]; then
 fi
 mkdir -p "$work_dir/清理配置"
 ######
-if [ "$(ls "$work_dir/清理配置/")" = "" ]; then
+if [ -z "$(ls "$work_dir/清理配置/")" ]; then
     exit 0
 fi
 ls "$work_dir/清理配置/" | while read File; do
@@ -33,7 +33,7 @@ ls "$work_dir/清理配置/" | while read File; do
     elif [ ! -f "$Pro_File" ]; then
         " » $File：配置读取错误，请检查！"
     fi
-    if [ "$(cat "$Pro_File")" = "" ]; then
+    if [ -z "$(cat "$Pro_File")" ]; then
         echo " » $File：配置内容为空！"
         continue
     else
