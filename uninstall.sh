@@ -23,7 +23,7 @@ function uninstall_md()
 {
 sed -E -i 's/(stopinstall|stopcache)=1/\1=0/g' "$work_dir/settings.prop"
 sh "$home_dir/service.sh"
-if $(StopCache Reset); then
+if StopCache Reset; then
     echo " » 阻止缓存恢复成功！"
 else
     echo " » 阻止缓存恢复失败！"
