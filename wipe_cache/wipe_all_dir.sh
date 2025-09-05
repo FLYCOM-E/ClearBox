@@ -60,7 +60,7 @@ fi
 ######
 ls /storage | grep .*- | while read diskdir; do
     dir2="/storage/$diskdir"
-    
+    ######
     for cd2 in $(ls "$dir2/Android/data"); do
         if grep "$cd2" "$whitelist" >/dev/null; then
            continue
