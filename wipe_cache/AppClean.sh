@@ -25,7 +25,7 @@ if [ ! -d "$work_dir/清理规则" ]; then
     mkdir -p "$work_dir/清理规则"
 fi
 ######
-if [ "$(ls "$work_dir/清理规则/")" = "" ]; then
+if [ -z "$(ls "$work_dir/清理规则/")" ]; then
     echo " » 无App清理配置！"
     exit 0
 fi
@@ -38,7 +38,7 @@ for File in $(ls "$work_dir/清理规则/"); do
         rm -r "$Pro_File"
         continue
     fi
-    if [ "$(cat "$Pro_File")" = "" ]; then
+    if [ -z "$(cat "$Pro_File")" ]; then
         echo " » $File：配置内容为空！自动跳过"
         continue
     fi
@@ -54,11 +54,11 @@ for File in $(ls "$work_dir/清理规则/"); do
                 fi
                 AppPackage=$(echo "$i" | cut -f2 -d '@' | cut -f1 -d '/')
                 Name=$(echo "$i" | cut -f2 -d '/')
-                if [ "$AppPackage" = "" ]; then
+                if [ -z "$AppPackage" ]; then
                     echo " » $File 配置未指定App包名！"
                     break
                 fi
-                if [ "$Name" = "" ]; then
+                if [ -z "$Name" ]; then
                     echo " » $File 配置未指定App名称！"
                     break
                 fi
@@ -109,16 +109,13 @@ else
 fi
 }
 ######
-case $1 in
-    *)
-      AppName="$1"
-      if [ "$AppName" = "" ]; then
-          echo " » ERROR：需要一个参数，未传入软件名称！"
-          exit 1
-      fi
-      service &
-      wait
-      ;;
-esac
+if [ -z "$AppName" ]; then
+    echo " » ERROR：需要一个参数，未传入软件名称！"
+    exit 1
+else
+    AppName="$1"
+    service &
+    wait
+fi
 ######
 exit 0
