@@ -179,7 +179,7 @@ if [ "$OffSelinux" = 1 ]; then
     setenforce 1
 fi
 ######
-if [ "$1" = "" ]; then
+if [ -z "$1" ]; then
     echo " » ERROR：需要一个参数，未输入清理项名称！"
     exit 1
 fi
