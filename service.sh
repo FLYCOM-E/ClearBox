@@ -1,12 +1,11 @@
 #!/system/bin/sh
 # ClearBox
-MODDIR=${0%/*}
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！"
     exit 1
 fi
 ######
-home_dir="$MODDIR"
+home_dir=${0%/*}
 bin_dir=$(ClearBox -b)
 work_dir=$(ClearBox -w)
 exec 2>>/dev/null
