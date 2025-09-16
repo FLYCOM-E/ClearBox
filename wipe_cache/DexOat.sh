@@ -20,16 +20,19 @@ fi
 ######
 function SystemDexOatServer()
 {
+echo " » 系统默认Dexoat..."
 cmd package bg-dexopt-job
 }
 function AllDexOat()
 {
+echo " » 自定义模式编译：$option_mode..."
 cmd package compile -m "$option_mode" -f -a
 }
-function AppDexOat()
-{
-cmd package compile -m "$option_mode" -f "$AppPackage"
-}
+#function AppDexOat()
+#{
+#echo ""
+#cmd package compile -m "$option_mode" -f "$AppPackage"
+#}
 # Option in "speed speed-profile everything"
 ######
 option_mode="$2"
@@ -45,17 +48,17 @@ case "$1" in
         fi
         AllDexOat
         ;;
-    APP_DEXOAT)
-        if [ -z "$option_mode" ]; then
-            echo " » ERROR：需要一个参数，未传入模式！"
-            exit 1
-        fi
-        if [ -z "$AppPackage" ]; then
-            echo " » ERROR：需要一个参数，未传入包名！"
-            exit 1
-        fi
-        AppDexOat
-        ;;
+    #APP_DEXOAT)
+    #    if [ -z "$option_mode" ]; then
+    #        echo " » ERROR：需要一个参数，未传入模式！"
+    #        exit 1
+    #    fi
+    #    if [ -z "$AppPackage" ]; then
+    #        echo " » ERROR：需要一个参数，未传入包名！"
+    #        exit 1
+    #    fi
+    #    AppDexOat
+    #    ;;
     *)
         if [ -z "$1" ]; then
             echo " » ERROR：需要一个参数，未传入选项名称！"
