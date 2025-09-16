@@ -125,6 +125,20 @@ sh "$home_dir/wipe_cache/f2fs_GC.sh" FAST_GC &
 wait
 }
 ######
+# Dexoat 优化1：触发系统Dexoat
+function Dexoat_SYSTEM_DEXOAT()
+{
+sh "$home_dir/wipe_cache/Dexoat.sh" SYSTEM_DEXOAT &
+wait 
+}
+######
+# Dexoat 优化2：自定义模式Dexoat
+function Dexoat_FAST_DEXOAT()
+{
+sh "$home_dir/wipe_cache/Dexoat.sh" FAST_DEXOAT "$1" &
+wait 
+}
+######
 # 其它优化，打开原生墓碑
 function freezer()
 {
@@ -168,6 +182,12 @@ case $1 in
       ;;
     F2fs_GC)
       f2fs_GC
+      ;;
+    Dexoat_1)
+      Dexoat_SYSTEM_DEXOAT
+      ;;
+    Dexoat_2)
+      Dexoat_FAST_DEXOAT "$2"
       ;;
     Freezer)
       freezer
