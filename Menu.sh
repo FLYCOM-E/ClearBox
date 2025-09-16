@@ -44,7 +44,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
  
  9：阻止缓存生成功能        10：磁铁（文件归类
  
- 11：磁盘优化（GC）         00：模块管理
+ 11：磁盘 & 软件优化        00：模块管理
 
  ==============================================
                            --- 键入 E 退出 ---
@@ -325,8 +325,90 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
          ;;
        11)
          clear
-         sh "$home_dir/all.sh" F2fs_GC &
-         wait
+         "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[磁盘 & 软件优化]\033[0m")
+ ==============================================
+     
+     1：磁盘 GC
+     
+     2：Dexoat 预编译
+     
+ ==============================================
+
+ 请输入相应序号:"
+         read put3
+         case "$put3" in
+           1)
+             clear
+             sh "$home_dir/all.sh" F2fs_GC &
+             wait
+             ;;
+           2)
+             # Option in "speed speed-profile everything"
+             clear
+             "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[DEXOAT]\033[0m")
+ ==============================================
+     
+     1：触发系统默认 Dexoat
+     
+     2：自定义模式全部编译
+     
+ ==============================================
+
+ 请输入相应序号:"
+             read put3
+             case "$put3" in
+               1)
+                 sh "$home_dir/all.sh" Dexoat_1 &
+                 wait
+                 ;;
+               2)
+                 clear
+                 "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[模式选择]\033[0m")
+ ==============================================
+     
+     1：Speed 模式
+     
+     2：Speed-Profile 模式
+     
+     3：Everything 模式
+     
+ ==============================================
+
+ 请输入相应序号:"
+                 read put3
+                 case "$put3" in
+                   1)
+                     clear
+                     sh "$home_dir/all.sh" Dexoat_2 speed &
+                     wait
+                     ;;
+                   2)
+                     clear
+                     sh "$home_dir/all.sh" Dexoat_2 speed-profile &
+                     wait
+                     ;;
+                   3)
+                     clear
+                     sh "$home_dir/all.sh" Dexoat_2 everything &
+                     wait
+                     ;;
+                   *)
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                     ;;
+                 esac
+                 ;;
+               *)
+                 "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                 ;;
+             esac
+             ;;
+           *)
+             "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+             ;;
+         esac
          ;;
        00)
          clear
@@ -878,4 +960,3 @@ while true; do
     md_menu
     sleep 1
 done
-
