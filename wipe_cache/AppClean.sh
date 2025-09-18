@@ -109,7 +109,7 @@ else
 fi
 }
 ######
-if [ -z "$AppName" ]; then
+if [ -z "$1" ]; then
     echo " » ERROR：需要一个参数，未传入软件名称！"
     exit 1
 else
