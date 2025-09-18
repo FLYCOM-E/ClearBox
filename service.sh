@@ -12,17 +12,15 @@ exec 2>>/dev/null
 ######
 set=0
 while true; do
-    if [ "$(getprop sys.boot_completed)" = "1" ]; then
-        if [ -d "/storage/emulated/0" ]; then
-            break
-        fi
+    if [ "$(getprop sys.boot_completed)" = "1" ] || [ -d "/storage/emulated/0/" ]; then
+        break
     fi
-    set=$((set + 1))
     if [ "$set" = 120 ]; then
         touch "$home_dir/disable"
         exit 1
     fi
-sleep 5
+    set=$((set + 1))
+    sleep 5
 done
 ######
 function StartSettings()
@@ -96,7 +94,7 @@ function StartSettings()
         if [ -d "$home_dir/ProFile" ]; then
             cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
         else
-            echo "[ $(date) ] No such ProFile! Please Reinstall the module." > "$work_dir/运行日志.log"
+            echo "[ $(date) ] No Find ProFile! Please Reinstall Module." > "$work_dir/运行日志.log"
         fi
     fi
     ls "$work_dir/文件格式配置/" | while read f; do
@@ -131,14 +129,8 @@ chmod -R 700 "$work_dir"
 StartSettings
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
-"$bin_dir/busybox" crond -c "$work_dir/CRON/StopCache" &
-"$bin_dir/busybox" crond -c "$work_dir/CRON/ClearCache" &
-"$bin_dir/busybox" crond -c "$work_dir/CRON/FileAll" &
-"$bin_dir/busybox" crond -c "$work_dir/CRON/ClearDir" &
-######
 if [ "$stopcache" = 1 ]; then
     echo -n "* * * * * StopCache Stop" > "$work_dir/CRON/StopCache/root"
-    echo "[ $(date) ]：阻止缓存运行" >> "$work_dir/运行日志.log"
 else
     echo -n "" > "$work_dir/CRON/StopCache/root"
 fi
@@ -147,6 +139,15 @@ if [ "$stopinstall" = 1 ]; then
     chmod 551 /data/app
 else
     chmod 771 /data/app
+fi
+######
+if ! pgrep -f "crond -c $work_dir/CRON/" > /dev/null; then
+    pkill -f "crond -c $work_dir/CRON/"
+    "$bin_dir/busybox" crond -c "$work_dir/CRON/StopCache" &
+    "$bin_dir/busybox" crond -c "$work_dir/CRON/ClearCache" &
+    "$bin_dir/busybox" crond -c "$work_dir/CRON/FileAll" &
+    "$bin_dir/busybox" crond -c "$work_dir/CRON/ClearDir" &
+    echo "[ $(date) ]：CRON运行" >> "$work_dir/运行日志.log"
 fi
 ######
 exit 0
