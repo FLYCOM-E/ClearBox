@@ -77,10 +77,10 @@ ls /storage | grep .*- | while read diskdir; do
     if [ -d "$dir2/Movies/.thumbnails" ]; then
         rm -r "$dir2/Movies/.thumbnails"
     fi
-    if [ -d "$dir/music/.thumbnails" ]; then
+    if [ -d "$dir2/music/.thumbnails" ]; then
         rm -r "$dir2/music/.thumbnails"
     fi
-    if [ -d "$dir/DCIM/.thumbnails" ]; then
+    if [ -d "$dir2/DCIM/.thumbnails" ]; then
         rm -r "$dir2/DCIM/.thumbnails"
     fi
     }
