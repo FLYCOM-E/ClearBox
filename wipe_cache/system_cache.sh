@@ -26,7 +26,10 @@ ls "$data_dir1/" | while read userid_dir; do
         if grep ^"$SystemAppList" "$whitelist" >/dev/null; then
             continue
         fi
-        if [ ! -d "/data/user/$userid_dir/$SystemAppList" ]; then
+        if [ ! -d "$data_dir1/$userid_dir/$SystemAppList" ]; then
+            continue
+        elif [ "$(du -s "$data_dir1/$userid_dir/$SystemAppList/cache" | cut -f1 -d '	')" -lt "1024" ]; then
+            echo " » 跳过 $SystemAppList"
             continue
         fi
         rm -r "$data_dir1/$userid_dir/$SystemAppList/cache/"* &
