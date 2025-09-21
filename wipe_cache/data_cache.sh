@@ -31,7 +31,9 @@ ls "$data_dir1/" | while read userid_dir; do
         if grep ^"$UserAppList" "$whitelist" >/dev/null; then
             continue
         fi
-        if [ ! -d "/data/user/$userid_dir/$UserAppList" ]; then
+        if [ ! -d "$data_dir1/$userid_dir/$UserAppList" ]; then
+            continue
+        elif [ "$(du -s "$data_dir1/$userid_dir/$UserAppList/cache" | cut -f1 -d '	')" -lt "1024" ]; then
             continue
         fi
         rm -rf "$data_dir1/$userid_dir/$UserAppList/cache/"* &
@@ -58,6 +60,11 @@ fi
 ls "$micro_dir1/" | while read userid_dir; do
     for CardAppList in $(ls "$micro_dir1/$userid_dir"); do
         if grep ^"$CardAppList" "$whitelist" >/dev/null; then
+            continue
+        fi
+        if [ ! -d "$micro_dir1/$userid_dir/$CardAppList" ]; then
+            continue
+        elif [ "$(du -s "$micro_dir1/$userid_dir/$CardAppList/cache" | cut -f1 -d '	')" -lt "1024" ]; then
             continue
         fi
         rm -rf "$micro_dir1/$userid_dir/$CardAppList/cache/"* &
