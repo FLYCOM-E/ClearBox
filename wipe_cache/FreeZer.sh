@@ -18,7 +18,7 @@ else
     exec 2>>/dev/null
 fi
 ######
-if [ "$(device_config put activity_manager_native_boot use_freezer)" = "false" ]; then
+if [ ! "$(device_config get activity_manager_native_boot use_freezer)" = "true" ]; then
     if $(device_config put activity_manager_native_boot use_freezer true); then
         echo " » 已打开安卓原生墓碑 (^^)"
     fi
