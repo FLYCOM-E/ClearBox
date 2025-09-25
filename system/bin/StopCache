@@ -17,16 +17,6 @@ micro_dir1="/mnt/expand/*/user"
 micro_dir2="/mnt/expand/*/user_de"
 NowPackageName=$(dumpsys window | grep mCurrentFocus | cut -f1 -d '/' | cut -f5 -d ' ')
 ######
-# 根据安卓版本设置权限
-sdkv=$(getprop ro.build.version.sdk)
-if [ "$sdkv" -lt "26" ]; then
-    permission_t=771
-    permission_m=551
-else
-    permission_t=2771
-    permission_m=2551
-fi
-######
 function UpdatePackage()
 {
 # 此函数用于获取/更新最近前台包名数据
@@ -69,11 +59,11 @@ ls "$data_dir1/" | while read userid_dir; do
     if [ -d "$Appdir/$NowPackageName" ]; then
         if ! grep "$NowPackageName" "$whitelist" >/dev/null; then
             if [ -d "$Appdir/$reset_app/cache" ]; then
-                chmod "$permission_t" "$Appdir/$reset_app/cache"
-                chmod "$permission_t" "$Appdir2/$reset_app/cache"
+                chattr -R -i "$Appdir/$reset_app/cache"
+                chattr -R -i "$Appdir2/$reset_app/cache"
             fi
-            chmod "$permission_m" "$Appdir/$NowPackageName/cache"
-            chmod "$permission_m" "$Appdir2/$NowPackageName/cache"
+            chattr -R +i "$Appdir/$NowPackageName/cache"
+            chattr -R +i "$Appdir2/$NowPackageName/cache"
         fi
     fi
 done
@@ -97,11 +87,11 @@ ls "$micro_dir1/" | while read userid_dir; do
     if [ -d "$Appdir/$NowPackageName" ]; then
         if ! grep "$NowPackageName" "$whitelist" >/dev/null; then
             if [ -d "$Appdir/$reset_app/cache" ]; then
-                chmod "$permission_t" "$Appdir/$reset_app/cache"
-                chmod "$permission_t" "$Appdir2/$reset_app/cache"
+                chattr -R -i "$Appdir/$reset_app/cache"
+                chattr -R -i "$Appdir2/$reset_app/cache"
             fi
-            chmod "$permission_m" "$Appdir/$NowPackageName/cache"
-            chmod "$permission_m" "$Appdir2/$NowPackageName/cache"
+            chattr -R +i "$Appdir/$NowPackageName/cache"
+            chattr -R +i "$Appdir2/$NowPackageName/cache"
         fi
     fi
 done
@@ -115,8 +105,8 @@ ls "$data_dir1/" | while read userid_dir; do
     local Appdir2="$data_dir1/$userid_dir"
     ###
     ls "$Appdir/" | while read Reset_app_dir; do
-        rm -r "$Appdir/$Reset_app_dir/cache"
-        rm -r "$Appdir2/$Reset_app_dir/cache"
+        chattr -R -i "$Appdir/$Reset_app_dir/cache"
+        chattr -R -i "$Appdir2/$Reset_app_dir/cache"
     done
 done
 }
@@ -137,8 +127,8 @@ ls "$micro_dir1/" | while read userid_dir; do
     local Appdir2="$micro_dir1/$userid_dir"
     ###
     ls "$Appdir/" | while read Reset_app_dir; do
-        rm -r "$Appdir/$Reset_app_dir/cache"
-        rm -r "$Appdir2/$Reset_app_dir/cache"
+        chattr -R -i "$Appdir/$Reset_app_dir/cache"
+        chattr -R -i "$Appdir2/$Reset_app_dir/cache"
     done
 done
 }
