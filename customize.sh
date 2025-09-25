@@ -35,6 +35,8 @@ if $(unzip -oq "$ZIPFILE" -d "$MODPATH"); then
     chown root:shell "$MODPATH/system/bin/ClearBox"
     chmod 750 "$MODPATH/system/bin/StopCache"
     chown root:shell "$MODPATH/system/bin/StopCache"
+    chmod 750 "$MODPATH/system/bin/chattr"
+    chown root:root "$MODPATH/system/bin/chattr"
 else
     uninstall
     exit 1
