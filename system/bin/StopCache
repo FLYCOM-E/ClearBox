@@ -56,7 +56,7 @@ while true; do
     function Stop_UserCache()
     {
     # 函数用于内部储存软件阻止缓存
-    ls "$data_dir1/" | while read userid_dir; do
+    for userid_dir in "$data_dir1"/*; do
         local Appdir="$data_dir1/$userid_dir"
         local Appdir2="$data_dir2/$userid_dir"
         ###
@@ -79,7 +79,7 @@ while true; do
     {
     # 函数用于SD拓展卡软件阻止缓存
     ###
-    ls "$micro_dir1/" | while read userid_dir; do
+    for userid_dir in "$micro_dir1"/*; do
         local Appdir="$micro_dir1/$userid_dir"
         local Appdir2="$micro_dir2/$userid_dir"
         ###
