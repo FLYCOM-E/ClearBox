@@ -130,7 +130,7 @@ StartSettings
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
 if [ "$stopcache" = 1 ]; then
-    echo -n "* * * * * StopCache Stop" > "$work_dir/CRON/StopCache/root"
+    echo -n "*/10 * * * * killall StopCache && nohup StopCache &" > "$work_dir/CRON/StopCache/root"
 else
     echo -n "" > "$work_dir/CRON/StopCache/root"
 fi
