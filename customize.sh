@@ -32,10 +32,10 @@ fi
 # 解压安装并设置权限
 if $(unzip -oq "$ZIPFILE" -d "$MODPATH"); then
     chmod 750 "$MODPATH/system/bin/ClearBox"
-    chown root:shell "$MODPATH/system/bin/ClearBox"
-    chmod 750 "$MODPATH/system/bin/StopCache"
-    chown root:shell "$MODPATH/system/bin/StopCache"
-    chmod 750 "$MODPATH/system/bin/chattr"
+    chown root:root "$MODPATH/system/bin/ClearBox"
+    chmod 700 "$MODPATH/system/bin/StopCache"
+    chown root:root "$MODPATH/system/bin/StopCache"
+    chmod 700 "$MODPATH/system/bin/chattr"
     chown root:root "$MODPATH/system/bin/chattr"
 else
     uninstall
