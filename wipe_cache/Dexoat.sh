@@ -18,17 +18,19 @@ else
     exec 2>>/dev/null
 fi
 ######
-function SystemDexOatServer()
+SystemDexOatServer()
 {
 echo " » 系统默认Dexoat..."
 cmd package bg-dexopt-job
 }
-function AllDexOat()
+
+AllDexOat()
 {
 echo " » 自定义模式编译：$option_mode..."
 cmd package compile -m "$option_mode" -f -a
 }
-#function AppDexOat()
+
+#AppDexOat()
 #{
 #echo ""
 #cmd package compile -m "$option_mode" -f "$AppPackage"
@@ -42,28 +44,16 @@ case "$1" in
         SystemDexOatServer
         ;;
     FAST_DEXOAT)
-        if [ -z "$option_mode" ]; then
-            echo " » ERROR：需要一个参数，未传入模式！"
-            exit 1
-        fi
+        [ -z "$option_mode" ] && echo " » ERROR：需要一个参数，未传入模式！" && exit 1
         AllDexOat
         ;;
     #APP_DEXOAT)
-    #    if [ -z "$option_mode" ]; then
-    #        echo " » ERROR：需要一个参数，未传入模式！"
-    #        exit 1
-    #    fi
-    #    if [ -z "$AppPackage" ]; then
-    #        echo " » ERROR：需要一个参数，未传入包名！"
-    #        exit 1
-    #    fi
+    #    [ -z "$option_mode" ] && echo " » ERROR：需要一个参数，未传入模式！" && exit 1
+    #    [ -z "$AppPackage" ] && echo " » ERROR：需要一个参数，未传入包名！" && exit 1
     #    AppDexOat
     #    ;;
     *)
-        if [ -z "$1" ]; then
-            echo " » ERROR：需要一个参数，未传入选项名称！"
-            exit 1
-        fi
+        [ -z "$1" ] && echo " » ERROR：需要一个参数，未传入选项名称！" && exit 1
         ;;
 esac
 ######

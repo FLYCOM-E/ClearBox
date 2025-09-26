@@ -3,7 +3,7 @@
 exec 2>>/dev/null
 SKIPUNZIP=1
 work_dir=$(ClearBox -w)
-function uninstall()
+uninstall()
 {
 rm "$ZIPFILE"
 rm -r "$MODPATH"
@@ -15,7 +15,7 @@ if [ -d "/data/adb/magisk" ]; then
     echo " » 您正在使用 Magisk ROOT 🔥"
 elif [ -d "/data/adb/ap" ]; then
     echo "                              "
-    echo " » 您正在使用 Apatch ROOT 🔥"
+    echo " » 您正在使用 APatch ROOT 🔥"
 elif [ -d "/data/adb/ksu" ]; then
     echo "                              "
     echo " » 您正在使用 KernelSU ROOT 🔥"
@@ -25,21 +25,19 @@ else
     sleep 0.1
     echo " » 安装错误，请联系模块作者适配或排查问题❗"
     echo "                              "
-    uninstall
-    exit 1
+    uninstall && exit 1
 fi
 ######
 # 解压安装并设置权限
 if $(unzip -oq "$ZIPFILE" -d "$MODPATH"); then
-    chmod 750 "$MODPATH/system/bin/ClearBox"
+    chmod 700 "$MODPATH/system/bin/ClearBox"
     chown root:root "$MODPATH/system/bin/ClearBox"
     chmod 700 "$MODPATH/system/bin/StopCache"
     chown root:root "$MODPATH/system/bin/StopCache"
     chmod 700 "$MODPATH/system/bin/chattr"
     chown root:root "$MODPATH/system/bin/chattr"
 else
-    uninstall
-    exit 1
+    uninstall && exit 1
 fi
 ######
 if $(pm list package -3 | grep "wipe.cache.module" >/dev/null); then
@@ -69,7 +67,7 @@ getevent -qlc 1 2>> /dev/null | while read -r A; do
     *)
       if [ -d "$work_dir" ]; then
           if grep "stopinstall=1" "$work_dir/settings.prop" >/dev/null; then
-              chmod 771 /data/app
+              chattr -i /data/app
               sa=1
           else
               sa=0
@@ -113,11 +111,7 @@ getevent -qlc 1 2>> /dev/null | while read -r A; do
                         rm -r "$TMPDIR/*"
                         mkdir -p "$TMPDIR"
                         cp "$(ls "$MODPATH/META-INF/TEMP_RES/"ClearBox*.apk)" "$TMPDIR"
-                        if [ "$(ls "$TMPDIR/ClearBox*.apk")" = "" ]; then
-                            echo " » 提取失败！"
-                            uninstall
-                            exit 1
-                        fi
+                        [ "$(ls "$TMPDIR/ClearBox*.apk")" = "" ] && echo " » 提取失败！" && uninstall && exit 1
                     fi
                     chmod 755 "$TMPDIR/"ClearBox*.apk
                     pm uninstall "wipe.cache.module" >/dev/null
@@ -140,9 +134,7 @@ getevent -qlc 1 2>> /dev/null | while read -r A; do
           fi
       fi
       rm "$TMPDIR"/*.apk
-      if [ "$sa" = 1 ]; then
-          chmod 551 /data/app
-      fi
+      [ "$sa" = 1 ] && chattr +i /data/app
       ;;
   esac
 done
@@ -157,4 +149,3 @@ sleep 0.1
 echo " » 模块安装完成 ✨"
 echo "                              "
 echo "====================================================="
-

@@ -19,7 +19,7 @@ else
 fi
 ######
 # 还原模块设置并执行卸载
-function uninstall_md()
+uninstall_md()
 {
 sed -E -i 's/(stopinstall|stopcache)=1/\1=0/g' "$work_dir/settings.prop"
 sh "$home_dir/service.sh"

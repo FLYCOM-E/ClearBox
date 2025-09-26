@@ -23,14 +23,14 @@ micro_dir1="/mnt/expand/$(ls /mnt/expand)/user"
 micro_dir2="/mnt/expand/$(ls /mnt/expand)/user_de"
 whitelist="$work_dir/ClearWhitelist.prop"
 ######
-function WipeCache1()
+WipeCache1()
 {
 # 遍历清空内部储存软件cache文件夹
-ls "$data_dir1/" | while read userid_dir; do
+for userid_dir in "$data_dir1"/*; do
     for UserAppList in $(pm list package -3 | cut -f2 -d ':'); do
         if grep ^"$UserAppList" "$whitelist" >/dev/null; then
-            continue
-        fi
+	    continue
+	fi
         if [ ! -d "$data_dir1/$userid_dir/$UserAppList" ]; then
             continue
         elif [ "$(du -s "$data_dir1/$userid_dir/$UserAppList/cache" | cut -f1 -d '	')" -lt "1024" ]; then
@@ -48,18 +48,14 @@ done
 echo " » 内部储存软件缓存删除完成"
 }
 ######
-function WipeCache2()
+WipeCache2()
 {
-if [ ! -d "$micro_dir1" ]; then
-    exit 0
-fi
-if [ "$cleardisk" = 0 ]; then
-    exit 0
-fi
+[ ! -d "$micro_dir1" ] && exit 0
+[ "$cleardisk" = 0 ] && exit 0
 ######
 # 遍历清空软件cache文件夹
-ls "$micro_dir1/" | while read userid_dir; do
-    for CardAppList in $(ls "$micro_dir1/$userid_dir"); do
+for userid_dir in "$micro_dir1"/*; do
+    for CardAppList in "$micro_dir1/$userid_dir"/*; do
         if grep ^"$CardAppList" "$whitelist" >/dev/null; then
             continue
         fi

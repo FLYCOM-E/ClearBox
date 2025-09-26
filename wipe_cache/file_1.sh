@@ -19,16 +19,11 @@ else
 fi
 dir="/storage/emulated/0"
 ######
-function FileAll()
+FileAll()
 {
-if [ ! -d "$work_dir/文件格式配置" ]; then
-    mkdir "$work_dir/文件格式配置"
-fi
-if [ $(ls "$work_dir/文件格式配置/") = "" ]; then
-    echo " » 配置文件目录为空，请检查！"
-    exit 1
-fi
-ls "$work_dir/文件格式配置/" | while read NFile; do
+[ ! -d "$work_dir/文件格式配置" ] && mkdir "$work_dir/文件格式配置"
+[ -z $(ls "$work_dir/文件格式配置/") ] && echo " » 配置文件目录为空，请检查！" && exit 1
+for NFile in "$work_dir/文件格式配置"/*; do
     if [ -d "$NFile" ]; then
         rm -r "$NFile"
         continue
@@ -40,10 +35,7 @@ ls "$work_dir/文件格式配置/" | while read NFile; do
     count_num=0
     for Fn in $(cat "$work_dir/文件格式配置/$NFile"); do
         for File in $("$bin_dir/busybox" find "$dir"/ -type f -name "*.$Fn"); do
-            if [ -f "$File" ]; then
-                mv "$File" "$File_dir"
-                count_num=$((count_num + 1))
-            fi
+            [ -f "$File" ] && mv "$File" "$File_dir" && count_num=$((count_num + 1))
         done
     done
     if [ "$count_num" -lt 1 ]; then

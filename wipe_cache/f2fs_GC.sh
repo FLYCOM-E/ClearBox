@@ -19,20 +19,14 @@ else
 fi
 get_f2fs_sysfs="/sys/fs/f2fs/$(getprop dev.mnt.dev.data)"
 ######
-function f2fs_gc()
+f2fs_gc()
     {
     # 检测是否为f2fs文件系统
-    if [ ! -d "$get_f2fs_sysfs" ]; then
-        echo " » 您的设备不是 F2FS 文件系统"
-        echo " » 维护仅支持 F2FS 环境"
-        exit 0
+    [ ! -d "$get_f2fs_sysfs" ] && echo " » 您的设备不是 F2FS 文件系统" && echo " » 维护仅支持 F2FS 环境" && exit 0
     # 检测是否支持当前gc方案
-    elif [ ! -f "$get_f2fs_sysfs/gc_urgent" ]; then
-        echo " » 您的设备不支持当前GC功能"
-        exit 0
-    fi
+    [ ! -f "$get_f2fs_sysfs/gc_urgent" ] && echo " » 您的设备不支持当前GC功能" && exit 0
     ######
-    function check_dirty()
+    check_dirty()
     {
     Dirty=$(cat "$get_f2fs_sysfs/dirty_segments")
     Free=$(cat "$get_f2fs_sysfs/free_segments")
@@ -61,17 +55,10 @@ function f2fs_gc()
             fi
             timeM=" $time2 分"
         fi
-        echo -ne " » 已运行$timeM $time 秒...\r"
-        if [ "$time2" = 10 ]; then
-            echo " » GC等待超时，已结束等待！"
-            echo "         "
-            break
-        fi
+        echo -ne " » 已运行 $timeM $time 秒...\r"
+        [ "$time2" = 10 ] && echo -e " » GC等待超时，已结束等待！\n" && break
         time=$((time + 5))
-        if [ $(cat "$get_f2fs_sysfs/gc_urgent") = 0 ]; then
-            echo " » GC运行完成，已结束运行！"
-            break
-        fi
+        [ $(cat "$get_f2fs_sysfs/gc_urgent") = 0 ] && echo " » GC运行完成，已结束运行！" && break
         sleep 5
     done
     ######
@@ -83,14 +70,13 @@ function f2fs_gc()
         echo " » 磁盘脏块减少 $NewDirty"
     else
         echo " » 磁盘脏块增加 $NewDirty"
-        echo " » GC可能仍在优化或并不适合您的设备！"
+        echo -e " » GC可能仍在优化或并不适合您的设备！\n"
     fi
     ######
-    echo "         "
     echo " [ $(date) ] GC已完成！"
     }
 ######
-function idle-maint()
+idle-maint()
 {
 echo " » 开始快速磁盘优化，请您耐心等待，可以离开前台！"
 if [ -z "$(sm idle-maint run >/dev/null)" ]; then
@@ -110,10 +96,7 @@ case $1 in
         idle-maint
         ;;
     *)
-        if [ -z "$1" ]; then
-            echo " » ERROR：需要一个参数，未传入选项名称！"
-            exit 1
-        fi
+        [ -z "$1" ] && echo " » ERROR：需要一个参数，未传入选项名称！" && exit 1
         ;;
 esac
 ######

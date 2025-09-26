@@ -19,13 +19,10 @@ else
 fi
 ######
 # Off SELinux
-if [ "$(getenforce)" = "Enforcing" ]; then
-    setenforce 0
-    OffSelinux=1
-fi
+[ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
 ######
 # 清理第三方软件缓存
-function clear_cache()
+clear_cache()
 {
 sh "$home_dir/wipe_cache/data_cache.sh" &
 wait
@@ -33,7 +30,7 @@ echo "[ $(date) ]：清理软件缓存" >> "$work_dir/运行日志.log"
 }
 ######
 # 清理系统软件缓存
-function clear_scache()
+clear_scache()
 {
 sh "$home_dir/wipe_cache/system_cache.sh" &
 wait
@@ -41,7 +38,7 @@ echo "[ $(date) ]：清除系统缓存" >> "$work_dir/运行日志.log"
 }
 ######
 # 运行处理自定义规则
-function list_dir()
+list_dir()
 {
 sh "$home_dir/wipe_cache/wipe_list_dir.sh" &
 wait
@@ -49,7 +46,7 @@ echo "[ $(date) ]：运行规则清理" >> "$work_dir/运行日志.log"
 }
 ######
 # 清理储存目录
-function all_dir()
+all_dir()
 {
 sh "$home_dir/wipe_cache/wipe_all_dir.sh" &
 wait
@@ -57,7 +54,7 @@ echo "[ $(date) ]：清理储存目录" >> "$work_dir/运行日志.log"
 }
 ######
 # 运行规则清理、清理储存目录
-function dir_file()
+dir_file()
 {
 sh "$home_dir/wipe_cache/wipe_list_dir.sh"
 sh "$home_dir/wipe_cache/wipe_all_dir.sh"
@@ -65,7 +62,7 @@ echo "[ $(date) ]：运行规则清理、清理储存目录" >> "$work_dir/运�
 }
 ######
 # 根据prop配置，清理全部文件（仅用于自动清理，该选项打开状态
-function clear_tar()
+clear_tar()
 {
 if [ "$clearall" = 1 ]; then
     sh "$home_dir/wipe_cache/ClearService1.sh" ALL &
@@ -76,7 +73,7 @@ fi
 }
 ######
 # 自定义格式文件清理
-function FileClear()
+FileClear()
 {
 sh "$home_dir/wipe_cache/ClearService1.sh" "$1" &
 sh "$home_dir/wipe_cache/ClearService2.sh" "$1" &
@@ -85,7 +82,7 @@ echo "[ $(date) ]：清理 $1 文件" >> "$work_dir/运行日志.log"
 }
 ######
 # 自定义软件 规则清理
-function ClearApp()
+ClearApp()
 {
 sh "$home_dir/wipe_cache/AppClean.sh" "$1" &
 wait
@@ -93,7 +90,7 @@ echo "[ $(date) ]：清理 $1 软件" >> "$work_dir/运行日志.log"
 }
 ######
 # 自定义格式文件归类
-function file_all()
+file_all()
 {
 sh "$home_dir/wipe_cache/file_1.sh"
 sh "$home_dir/wipe_cache/file_2.sh"
@@ -101,7 +98,7 @@ echo "[ $(date) ]：运行文件归类" >> "$work_dir/运行日志.log"
 }
 ######
 # 根据prop决定是否运行文件归类
-function file_all2()
+file_all2()
 {
 if [ "$fileall" = 1 ]; then
     sh "$home_dir/wipe_cache/file_1.sh"
@@ -111,7 +108,7 @@ fi
 }
 ######
 # 磁盘GC
-function f2fs_GC()
+f2fs_GC()
 {
 sh "$home_dir/wipe_cache/f2fs_GC.sh" F2FS_GC &
 wait
@@ -119,28 +116,28 @@ echo "[ $(date) ]：GC磁盘优化" >> "$work_dir/运行日志.log"
 }
 ######
 # 快速GC
-function fast_GC()
+fast_GC()
 {
 sh "$home_dir/wipe_cache/f2fs_GC.sh" FAST_GC &
 wait
 }
 ######
 # Dexoat 优化1：触发系统Dexoat
-function Dexoat_SYSTEM_DEXOAT()
+Dexoat_SYSTEM_DEXOAT()
 {
 sh "$home_dir/wipe_cache/Dexoat.sh" SYSTEM_DEXOAT &
 wait 
 }
 ######
 # Dexoat 优化2：自定义模式Dexoat
-function Dexoat_FAST_DEXOAT()
+Dexoat_FAST_DEXOAT()
 {
 sh "$home_dir/wipe_cache/Dexoat.sh" FAST_DEXOAT "$1" &
 wait 
 }
 ######
 # 其它优化，打开原生墓碑
-function freezer()
+freezer()
 {
 sh "$home_dir/wipe_cache/FreeZer.sh" &
 wait
@@ -195,13 +192,8 @@ case $1 in
 esac
 ######
 # Reset SELinux
-if [ "$OffSelinux" = 1 ]; then
-    setenforce 1
-fi
+[ "$OffSelinux" = 1 ] && setenforce 1
 ######
-if [ -z "$1" ]; then
-    echo " » ERROR：需要一个参数，未输入清理项名称！"
-    exit 1
-fi
+[ -z "$1" ] && echo " » ERROR：需要一个参数，未输入清理项名称！" && exit 1
 ######
 exit 0

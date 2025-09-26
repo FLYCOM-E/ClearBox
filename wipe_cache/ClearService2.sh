@@ -21,14 +21,12 @@ fi
 if ! ls /storage | grep .*- >/dev/null; then
     exit 0
 fi
-if [ "$Fileall_Disk" = 0 ]; then
-    exit 0
-fi
+[ "$Fileall_Disk" = 0 ] && exit 0
 ######
 ls /storage | grep .*- | while read diskdir; do
     dir="/storage/$diskdir"
     ######
-    function ClearService()
+    ClearService()
     {
     echo " » 开始清理外部储存 $FileName！"
     if [ -f "$work_dir/文件格式配置/$FileName.conf" ]; then
@@ -36,15 +34,10 @@ ls /storage | grep .*- | while read diskdir; do
         count_num=0
         for Fn in $(cat "$work_dir/文件格式配置/$FileName.conf"); do
             for File in $("$bin_dir/busybox" find "$dir"/ -type f -name "*.$Fn"); do
-                if [ -f "$File" ]; then
-                    rm "$File"
-                    count_num=$((count_num + 1))
-                fi
+                [ -f "$File" ] && rm "$File" && count_num=$((count_num + 1))
             done
         done
-        if [ "$count_num" -ge 1 ]; then
-            echo " » 已清理 $count_num 个 $FileName"
-        fi
+        [ "$count_num" -ge 1 ] && echo " » 已清理 $count_num 个 $FileName"
     else
         echo " » 模块貌似出了一点状况:⁠-⁠) 自动排查..."
         if [ -z "$(ls "$work_dir/文件格式配置/")" ]; then
@@ -59,21 +52,16 @@ ls /storage | grep .*- | while read diskdir; do
     function ClearServiceAll()
     {
     echo " » 开始深度清理外部储存文件！"
-    for File in $(ls "$work_dir/文件格式配置/"); do
+    for File in "$work_dir/文件格式配置"/*; do
         if [ -f "$work_dir/文件格式配置/$File" ]; then
             Name=$(echo "$File" | cut -f1 -d ".")
             count_num=0
             for Fn in $(cat "$work_dir/文件格式配置/$File"); do
                 for FileD in $("$bin_dir/busybox" find "$dir"/ -type f -name "*.$Fn"); do
-                    if [ -f "$FileD" ]; then
-                        rm "$FileD"
-                        count_num=$((count_num + 1))
-                    fi
+                    [ -f "$FileD" ] && rm "$FileD" && count_num=$((count_num + 1))
                 done
             done
-            if [ "$count_num" -ge 1 ]; then
-                echo " » 已清理 $count_num 个 $Name"
-            fi
+            [ "$count_num" -ge 1 ] && echo " » 已清理 $count_num 个 $Name"
         else
             echo " » 配置文件目录为空，请检查！"
         fi

@@ -1,31 +1,28 @@
 #!/system/bin/sh
 exec 2>>/dev/null
 ######
-if [ ! "$(whoami)" = "root" ]; then
-    echo " » Please use root privileges!"
-    exit 1
-fi
+[ ! "$(whoami)" = "root" ] && echo " » Please use root privileges!" && exit 1
 ######
 home="/data/adb/modules/wipe_cache"
 ######
-function RunService()
+RunService()
 {
 sh "$home/service.sh"
 echo " » Done"
 }
 ######
-function md_menu()
+md_menu()
 {
 sh "$home/Menu.sh"
 }
 ######
-function ClearCache()
+ClearCache()
 {
 sh "$home/all.sh" ClearAll &
 wait
 }
 ######
-function bin_dir()
+bin_dir()
 {
 if [ -d "/data/adb/magisk" ]; then
     echo "/data/adb/magisk"
@@ -33,25 +30,27 @@ elif [ -d "/data/adb/ap" ]; then
     echo "/data/adb/ap/bin"
 elif [ -d "/data/adb/ksu" ]; then
     echo "/data/adb/ksu/bin"
+else
+    find -name busybox "/data/adb"
 fi
 }
 ######
-function home_dir()
+home_dir()
 {
 echo "$home"
 }
 ######
-function work_dir()
+work_dir()
 {
 echo "/data/adb/wipe_cache"
 }
 ######
-function version()
+version()
 {
 echo -e "ClearBox Version: $(grep "version=" "$home/module.prop" | cut -f2 -d '=')"
 }
 ######
-function md_help()
+md_help()
 {
 echo "                             "
 echo "Usage: ClearBox"
@@ -107,4 +106,5 @@ case "$1" in
       md_menu
       ;;
 esac
+
 exit 0

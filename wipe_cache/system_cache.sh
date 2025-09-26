@@ -21,7 +21,7 @@ data_dir1="/data/user"
 data_dir2="/data/user_de"
 ######
 # 遍历清空系统组件cache文件夹
-ls "$data_dir1/" | while read userid_dir; do
+for userid_dir in "$data_dir1"/*; do
     for SystemAppList in $(pm list package -s | cut -f2 -d ':'); do
         if grep ^"$SystemAppList" "$whitelist" >/dev/null; then
             continue

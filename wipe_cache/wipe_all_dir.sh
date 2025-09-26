@@ -20,7 +20,7 @@ fi
 whitelist="$work_dir/ClearWhitelist.prop"
 dir="/storage/emulated/0"
 ######
-for cd1 in $(ls "$dir/Android/data"); do
+for cd1 in "$dir/Android/data"/*; do
     if grep "$cd1" "$whitelist" >/dev/null; then
         continue
     fi
@@ -28,22 +28,15 @@ for cd1 in $(ls "$dir/Android/data"); do
     echo " $cd1 缓存已清除"
 done
 
-function MediaCache()
+MediaCache()
 {
-if [ -d "$dir/Pictures/.thumbnails" ]; then
-    rm -r "$dir/Pictures/.thumbnails"
-fi
-if [ -d "$dir/Movies/.thumbnails" ]; then
-    rm -r "$dir/Movies/.thumbnails"
-fi
-if [ -d "$dir/music/.thumbnails" ]; then
-    rm -r "$dir/music/.thumbnails"
-fi
-if [ -d "$dir/DCIM/.thumbnails" ]; then
-    rm -r "$dir/DCIM/.thumbnails"
-fi
+[ -d "$dir/Pictures/.thumbnails" ] && rm -r "$dir/Pictures/.thumbnails"
+[ -d "$dir/Movies/.thumbnails" ] && rm -r "$dir/Movies/.thumbnails"
+[ -d "$dir/music/.thumbnails" ] && rm -r "$dir/music/.thumbnails"
+[ -d "$dir/DCIM/.thumbnails" ] && rm -r "$dir/DCIM/.thumbnails"
 }
 MediaCache &
+
 "$bin_dir/busybox" find "$dir/" -type f -name "*.log" -delete &
 "$bin_dir/busybox" find "$dir/" -type f -name "*.LOG" -delete &
 "$bin_dir/busybox" find "$dir/" -type d -empty -delete &
@@ -54,14 +47,12 @@ echo " » 内部储存垃圾删除完成！"
 if ! ls /storage | grep .*- >/dev/null; then
     exit 0
 fi
-if [ "$cleardisk" = 0 ]; then
-    exit 0
-fi
+[ "$cleardisk" = 0 ] && exit 0
 ######
 ls /storage | grep .*- | while read diskdir; do
     dir2="/storage/$diskdir"
     ######
-    for cd2 in $(ls "$dir2/Android/data"); do
+    for cd2 in "$dir2/Android/data"/*; do
         if grep "$cd2" "$whitelist" >/dev/null; then
            continue
         fi
@@ -69,22 +60,15 @@ ls /storage | grep .*- | while read diskdir; do
         echo " $cd2 缓存已清除"
     done
     
-    function MediaCache2()
+    MediaCache2()
     {
-    if [ -d "$dir2/Pictures/.thumbnails" ]; then
-        rm -r "$dir2/Pictures/.thumbnails"
-    fi
-    if [ -d "$dir2/Movies/.thumbnails" ]; then
-        rm -r "$dir2/Movies/.thumbnails"
-    fi
-    if [ -d "$dir2/music/.thumbnails" ]; then
-        rm -r "$dir2/music/.thumbnails"
-    fi
-    if [ -d "$dir2/DCIM/.thumbnails" ]; then
-        rm -r "$dir2/DCIM/.thumbnails"
-    fi
+    [ -d "$dir2/Pictures/.thumbnails" ] && rm -r "$dir2/Pictures/.thumbnails"
+    [ -d "$dir2/Movies/.thumbnails" ] && rm -r "$dir2/Movies/.thumbnails"
+    [ -d "$dir2/music/.thumbnails" ] && rm -r "$dir2/music/.thumbnails"
+    [ -d "$dir2/DCIM/.thumbnails" ] && rm -r "$dir2/DCIM/.thumbnails"
     }
     MediaCache2 &
+
     "$bin_dir/busybox" find "$dir2/" -type f -name "*.log" -delete &
     "$bin_dir/busybox" find "$dir2/" -type f -name "*.LOG" -delete &
     "$bin_dir/busybox" find "$dir2/" -type d -empty -delete &

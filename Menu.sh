@@ -27,7 +27,7 @@ fi
 echo "[ $(date) ]：打开终端UI" >> "$work_dir/运行日志.log"
 ######
 # 菜单函数
-function md_menu()
+md_menu()
 {
 clear
 "$bin_dir/busybox" echo -ne "
@@ -78,7 +78,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
          "$bin_dir/busybox" echo -e "\033[44m[深度清理，请备份重要文档！！]\033[0m"
          echo " =============================================="
          echo "      "
-         for FN in $(ls "$work_dir/文件格式配置/"); do
+         for FN in "$work_dir/文件格式配置"/*; do
             Name=$(echo "$FN" | cut -f1 -d ".")
             count=$((count + 1))
             Num[$count]="$count,$Name"
@@ -109,10 +109,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
                     ;;
                 esac
             fi
-            if [ "$C_num" = "$count" ]; then
-                "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                break
-            fi
+            [ "$C_num" = "$count" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m" && break
          done
          ;;
        6)
@@ -122,7 +119,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
          "$bin_dir/busybox" echo -e "\033[44m[软件清理，建议预检查配置文件]\033[0m"
          echo " =============================================="
          echo "      "
-         for FN in $(ls "$work_dir/清理规则/"); do
+         for FN in "$work_dir/清理规则"/*; do
             Name=$(cat "$work_dir/清理规则/$FN" | grep '@' | cut -f2 -d '/')
             count=$((count + 1))
             Num[$count]="$count,$Name"
@@ -143,10 +140,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
                 wait
                 break
             fi
-            if [ "$C_num" = "$count" ]; then
-                "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                break
-            fi
+            [ "$C_num" = "$count" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m" && break
          done
          ;;
        7)
@@ -190,9 +184,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                        clear
                        chmod 551 /data/app
                        echo " » 已开启阻止更新！"
-                       if [ "$stopinstall" = 0 ]; then
-                           sed -i 's/stopinstall=0/stopinstall=1/g' "$work_dir/settings.prop"
-                       fi
+                       [ "$stopinstall" = 0 ] && sed -i 's/stopinstall=0/stopinstall=1/g' "$work_dir/settings.prop"
                        ;;
                      *)
                        "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -258,51 +250,42 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
              2)
                clear
                # Off SELinux
-               if [ "$(getenforce)" = "Enforcing" ]; then
-                   setenforce 0
-                   OffSelinux=1
-               fi
+               [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
                echo -ne " » 请输入软件包名（空格分隔）："
                read packages
-                 if [ -z "$packages" ]; then
-                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
-                 fi
-                 for package in $packages; do
-                     if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
-                         echo " » $package 已存在白名单"
-                         continue
-                     elif ! pm list package | grep "package:$package\$" >> /dev/null; then
-                         echo " » $package 不在软件包列表"
-                         continue
-                     else
-                         if pm list package -s | grep "package:$package\$" >> /dev/null; then
-                             echo " » $package 请不要添加系统软件"
-                             continue
-                         fi
-                         echo "$package" >> "$work_dir/whitelist.prop"
-                         echo " » $package 已成功加入白名单!"
-                     fi
-                 done
-                 # Reset SELinux
-                 if [ "$OffSelinux" = 1 ]; then
-                     setenforce 1
-                 fi
+               [ -z "$packages" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+               for package in $packages; do
+                   if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
+                       echo " » $package 已存在白名单"
+                       continue
+                   elif ! pm list package | grep "package:$package\$" >> /dev/null; then
+                       echo " » $package 不在软件包列表"
+                       continue
+                   else
+                       if pm list package -s | grep "package:$package\$" >> /dev/null; then
+                           echo " » $package 请不要添加系统软件"
+                           continue
+                       fi
+                       echo "$package" >> "$work_dir/whitelist.prop"
+                       echo " » $package 已成功加入白名单!"
+                   fi
+               done
+               # Reset SELinux
+               [ "$OffSelinux" = 1 ] && setenforce 1
                ;;
              3)
                clear
                echo -ne " » 请输入软件包名（空格分隔）："
                read packages
-                 if [ -z "$packages" ]; then
-                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
-                 fi
-                 for package in $packages; do
-                     if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
-                         sed -i /"$package"/d "$work_dir/whitelist.prop"
-                         echo " $package 已成功从白名单中移除！"
-                     else
-                         echo " $package 不在白名单中！"
-                     fi
-                 done
+               [ -z "$packages" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
+               for package in $packages; do
+                   if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
+                       sed -i /"$package"/d "$work_dir/whitelist.prop"
+                       echo " $package 已成功从白名单中移除！"
+                   else
+                       echo " $package 不在白名单中！"
+                   fi
+               done
                ;;
              *)
                "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
@@ -344,7 +327,6 @@ $(echo -e "\033[44m[磁盘 & 软件优化]\033[0m")
              wait
              ;;
            2)
-             # Option in "speed speed-profile everything"
              clear
              "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[DEXOAT]\033[0m")
@@ -651,10 +633,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$cleardisk" in
                                  y | Y)
                                    clear
-                                   if [ "$cleardisk" = 0 ]; then
-                                       sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
+                                   [ "$cleardisk" = 0 ] && sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                    ;;
                                  *)
                                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -673,10 +652,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$Fileall_Disk" in
                                  y | Y)
                                    clear
-                                   if [ "$Fileall_Disk" = 0 ]; then
-                                       sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
+                                   [ "$Fileall_Disk" = 0 ] && sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                    ;;
                                  *)
                                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -695,10 +671,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$ClearApk_disk" in
                                  y | Y)
                                    clear
-                                   if [ "$ClearApk_disk" = 0 ]; then
-                                       sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
+                                   [ "$ClearApk_disk" = 0 ] && sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                    ;;
                                  *)
                                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -717,10 +690,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$ClearZip_disk" in
                                  y | Y)
                                    clear
-                                   if [ "$ClearZip_disk" = 0 ]; then
-                                       sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
+                                   [ "$ClearZip_disk" = 0 ] && sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                    ;;
                                  *)
                                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -739,10 +709,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$ClearFont_disk" in
                                  y | Y)
                                    clear
-                                   if [ "ClearFont_disk" = 0 ]; then
-                                       sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
+                                   [ "ClearFont_disk" = 0 ] && sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                    ;;
                                  *)
                                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -761,10 +728,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                case "$ClearIso_disk" in
                                  y | Y)
                                    clear
-                                   if [ "$ClearIso_disk" = 0 ]; then
-                                       sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop"
-                                       echo " » 已开启！"
-                                   fi
+                                   [ "$ClearIso_disk" = 0 ] && sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                    ;;
                                  *)
                                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -788,10 +752,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          case "$put_5" in
                            y | Y)
                              clear
-                             if [ "$clearall" = 0 ]; then
-                                 sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop"
-                                 echo " » 已开启！"
-                             fi
+                             [ "$clearall" = 0 ] && sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                              ;;
                            *)
                              "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -810,10 +771,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          case "$put_6" in
                            y | Y)
                              clear
-                             if [ "$fileall" = 0 ]; then
-                                sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop"
-                                echo " » 已开启！"
-                             fi
+                             [ "$fileall" = 0 ] && sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                              ;;
                            *)
                              "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -828,15 +786,10 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                    4)
                      clear
                      # Off SELinux
-                     if [ "$(getenforce)" = "Enforcing" ]; then
-                         setenforce 0
-                         OffSelinux=1
-                     fi
+                     [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
                      echo -ne " » 请输入软件包名（空格分隔）："
                      read packages
-                     if [ -z "$packages" ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
-                     fi
+                     [ -z "$packages" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
                      for package in $packages; do
                          if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
                              echo " » $package 已存在白名单"
@@ -854,17 +807,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          fi
                      done
                      # Reset SELinux
-                     if [ "$OffSelinux" = 1 ]; then
-                         setenforce 1
-                     fi
+                     [ "$OffSelinux" = 1 ] && setenforce 1
                      ;;
                    5)
                      clear
                      echo -ne " » 请输入软件包名（空格分隔）："
                      read packages
-                     if [ -z "$packages" ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
-                     fi
+                     [ -z "$packages" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入为空！！正在返回主页！\033[0m"
                      for package in $packages; do
                          if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
                              sed -i /"$package"/d "$work_dir/ClearWhitelist.prop"
@@ -881,12 +830,9 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                  ;;
              00)
                clear
-               if [ "$(getenforce)" = "Enforcing" ]; then
-                   setenforce 0
-                   OffSelinux=1
-               fi
+               [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
                "$bin_dir/busybox" echo -ne "
-$(echo -e "\033[44m[关于模块       "$Version"]\033[0m")
+$(echo -e "\033[44m[关于 ClearBox     "$Version"]\033[0m")
  ==============================================
  
     CCC   L      EEEEEE     A      RRRRR
@@ -898,7 +844,7 @@ $(echo -e "\033[44m[关于模块       "$Version"]\033[0m")
      
      2：模块内测
      
-     3：卸载模块（！
+     3：卸载 ClearBox（！）
                                $DebugTitle
  ==============================================
 
@@ -920,7 +866,7 @@ $(echo -e "\033[44m[关于模块       "$Version"]\033[0m")
                    fi
                    ;;
                  3)
-                   echo -ne " » 确定完全卸载此模块并清理残留😉？(y/n): "
+                   echo -ne " » 确定完全卸载 ClearBox 并清理残留😉？(y/n): "
                    read unput
                    case "$unput" in
                      y | Y)
@@ -936,9 +882,7 @@ $(echo -e "\033[44m[关于模块       "$Version"]\033[0m")
                    "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
                    ;;
                esac
-               if [ "$OffSelinux" = 1 ]; then
-                   setenforce 1
-               fi
+               [ "$OffSelinux" = 1 ] && setenforce 1
                ;;
              *)
                "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"

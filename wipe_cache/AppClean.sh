@@ -20,28 +20,16 @@ fi
 AppDir="/data/data"
 ClearDone=0
 ######
-if [ ! -d "$work_dir/清理规则" ]; then
-    rm -rf "$work_dir/清理规则"
-    mkdir -p "$work_dir/清理规则"
-fi
+[ ! -d "$work_dir/清理规则" ] && mkdir -p "$work_dir/清理规则"
 ######
-if [ -z "$(ls "$work_dir/清理规则/")" ]; then
-    echo " » 无App清理配置！"
-    exit 0
-fi
+[ -z "$(ls "$work_dir/清理规则/")" ] && echo " » 无App清理配置！" && exit 0
 ######
-function service()
+service()
 {
-for File in $(ls "$work_dir/清理规则/"); do
+for File in "$work_dir/清理规则"/*; do
     Pro_File="$work_dir/清理规则/$File"
-    if [ -d "$Pro_File" ]; then
-        rm -r "$Pro_File"
-        continue
-    fi
-    if [ -z "$(cat "$Pro_File")" ]; then
-        echo " » $File：配置内容为空！自动跳过"
-        continue
-    fi
+    [ -d "$Pro_File" ] && rm -r "$Pro_File" && continue
+    [ -z "$(cat "$Pro_File")" ] && echo " » $File：配置内容为空！自动跳过" && continue
     if grep "$AppName" "$Pro_File" >> /dev/null; then
         count=0
         for i in $(cat "$Pro_File"); do
@@ -49,19 +37,13 @@ for File in $(ls "$work_dir/清理规则/"); do
             # 进入指定初始App目录
             if echo "$i" | grep ^"@" >/dev/null; then
                 if ! echo "$i" | grep "/" >/dev/null; then
-                    echo " » $File 配置第 $count 行初始错误！"
-                    break
-                fi
+		    echo " » $File 配置第 $count 行初始错误！"
+		    break
+		fi
                 AppPackage=$(echo "$i" | cut -f2 -d '@' | cut -f1 -d '/')
                 Name=$(echo "$i" | cut -f2 -d '/')
-                if [ -z "$AppPackage" ]; then
-                    echo " » $File 配置未指定App包名！"
-                    break
-                fi
-                if [ -z "$Name" ]; then
-                    echo " » $File 配置未指定App名称！"
-                    break
-                fi
+                [ -z "$AppPackage" ] && echo " » $File 配置未指定App包名！" && break
+                [ -z "$Name" ] && echo " » $File 配置未指定App名称！" && break
                 ######
                 if [ -d "$AppDir/$AppPackage/" ]; then
                     cd "$AppDir/$AppPackage/"
@@ -96,9 +78,7 @@ for File in $(ls "$work_dir/清理规则/"); do
         done
         ClearDone=1
     else
-        if [ "$ClearDone" = "1" ]; then
-            break
-        fi
+        [ "$ClearDone" = "1" ] && break
     fi
 done
 ######

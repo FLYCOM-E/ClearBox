@@ -1,9 +1,6 @@
 #!/system/bin/sh
 # ClearBox
-if [ ! "$(whoami)" = "root" ]; then
-    echo " » 请授予root权限！"
-    exit 1
-fi
+[ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！" && exit 1
 ######
 home_dir=${0%/*}
 bin_dir=$(ClearBox -b)
@@ -12,68 +9,30 @@ exec 2>>/dev/null
 ######
 set=0
 while true; do
-    if [ "$(getprop sys.boot_completed)" = "1" ] || [ -d "/storage/emulated/0/" ]; then
-        break
-    fi
-    if [ "$set" = 120 ]; then
-        touch "$home_dir/disable"
-        exit 1
-    fi
+    [ "$(getprop sys.boot_completed)" = "1" ] || [ -d "/storage/emulated/0/" ] && break
+    [ "$set" = 120 ] && touch "$home_dir/disable" && exit 1
     set=$((set + 1))
     sleep 5
 done
 ######
-function StartSettings()
+StartSettings()
 {
-    function PropSetting()
+    PropSetting()
     {
-    if [ -z "$stopcache" ]; then
-        echo "stopcache=0" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$stopinstall" ]; then
-        echo "stopinstall=0" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$clearall" ]; then
-        echo "clearall=0" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$fileall" ]; then
-        echo "fileall=0" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$cleardisk" ]; then
-        echo "cleardisk=1" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$Fileall_Disk" ]; then
-        echo "Fileall_Disk=1" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$ClearApk_disk" ]; then
-        echo "ClearApk_disk=1" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$ClearZip_disk" ]; then
-        echo "ClearZip_disk=1" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$ClearFont_disk" ]; then
-        echo "ClearFont_disk=0" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$ClearIso_disk" ]; then
-        echo "ClearIso_disk=0" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
-    if [ -z "$DebugPro" ]; then
-        echo "DebugPro=0" >> "$work_dir/settings.prop"
-        ReSource=1
-    fi
+    [ -z "$stopcache" ] && echo "stopcache=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$cleardisk" ] && echo "cleardisk=1" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=1" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$ClearApk_disk" ] && echo "ClearApk_disk=1" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$ClearZip_disk" ] && echo "ClearZip_disk=1" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$ClearFont_disk" ] && echo "ClearFont_disk=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$ClearIso_disk" ] && echo "ClearIso_disk=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop" && ReSource=1
     }
     ######
-    function prosetting()
+    prosetting()
     {
     mkdir -p "$work_dir/清理规则"
     mkdir -p "$work_dir/清理配置"
@@ -83,12 +42,8 @@ function StartSettings()
     mkdir -p "$work_dir/CRON/FileAll"
     mkdir -p "$work_dir/CRON/ClearDir"
     ######
-    if [ ! -f "$work_dir/whitelist.prop" ]; then
-        touch "$work_dir/whitelist.prop"
-    fi
-    if [ ! -f "$work_dir/ClearWhitelist.prop" ]; then
-        touch "$work_dir/ClearWhitelist.prop"
-    fi
+    [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
+    [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
     ######
     if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
         if [ -d "$home_dir/ProFile" ]; then
@@ -97,12 +52,10 @@ function StartSettings()
             echo "[ $(date) ] No Find ProFile! Please Reinstall Module." > "$work_dir/运行日志.log"
         fi
     fi
-    ls "$work_dir/文件格式配置/" | while read f; do
+    for f in "$work_dir/文件格式配置"/*; do
         name1=$(echo "$f" | cut -f1 -d '.')
         name2=$(echo "$f" | cut -f2 -d '.')
-        if [ ! "$name2" = "conf" ]; then
-            mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
-        fi
+        [ ! "$name2" = "conf" ] && mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
     done
     }
 ######
@@ -111,9 +64,7 @@ if [ -d "$work_dir" ]; then
     PropSetting &
     prosetting &
     wait
-    if [ "$ReSource" = 1 ]; then
-        source "$work_dir/settings.prop"
-    fi
+    [ "$ReSource" = 1 ] && source "$work_dir/settings.prop"
 else
     mkdir -p "$work_dir"
     touch "$work_dir/settings.prop"
@@ -123,7 +74,6 @@ else
     wait
     source "$work_dir/settings.prop"
 fi
-chmod -R 700 "$work_dir"
 }
 ######
 StartSettings
@@ -137,9 +87,9 @@ else
 fi
 ######
 if [ "$stopinstall" = 1 ]; then
-    chmod 551 /data/app
+    chattr +i /data/app
 else
-    chmod 771 /data/app
+    chattr -i /data/app
 fi
 ######
 if ! pgrep -f "crond -c $work_dir/CRON/" > /dev/null; then
@@ -151,4 +101,5 @@ if ! pgrep -f "crond -c $work_dir/CRON/" > /dev/null; then
     echo "[ $(date) ]：CRON运行" >> "$work_dir/运行日志.log"
 fi
 ######
+chmod -R 700 "$work_dir/"
 exit 0
