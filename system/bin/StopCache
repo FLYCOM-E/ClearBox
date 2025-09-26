@@ -13,143 +13,95 @@ source "$work_dir/settings.prop"
 whitelist="$work_dir/whitelist.prop"
 data_dir1="/data/user"
 data_dir2="/data/user_de"
-micro_dir1="/mnt/expand/*/user"
-micro_dir2="/mnt/expand/*/user_de"
-NowPackageName=$(dumpsys window | grep mCurrentFocus | cut -f1 -d '/' | cut -f5 -d ' ')
+micro_dir1="/mnt/expand/$(ls "/mnt/expand/")/user"
+micro_dir2="/mnt/expand/$(ls "/mnt/expand/")/user_de"
 ######
-function UpdatePackage()
-{
-# 此函数用于获取/更新最近前台包名数据
-NowApp1=$(grep ^"1=" "$work_dir/RunStart" | cut -f2 -d '=')
-NowApp2=$(grep ^"2=" "$work_dir/RunStart" | cut -f2 -d '=')
-reset_app=$(grep ^"reset=" "$work_dir/RunStart" | cut -f2 -d '=')
-}
-######
-# 检查并初始化记录文件
 if ! grep "=" "$work_dir/RunStart"; then
     echo "1=" > "$work_dir/RunStart"
     echo "2=" >> "$work_dir/RunStart"
     echo "reset=" >> "$work_dir/RunStart"
 fi
 ######
-UpdatePackage
-######
-# 检查屏幕状态/更新数据
-if echo "$NowPackageName" | grep "StatusBar" >/dev/null; then
-    exit 0
-else
-    if ! grep ^"1=$NowPackageName" "$work_dir/RunStart" >/dev/null; then
-        sed -i "s/reset=$reset_app/reset=$NowApp2/g" "$work_dir/RunStart"
-        sed -i "s/2=$NowApp2/2=$NowApp1/g" "$work_dir/RunStart"
-        sed -i "s/1=$NowApp1/1=$NowPackageName/g" "$work_dir/RunStart"
+while true; do
+    # Get now package
+    NowPackageName=$(dumpsys window | grep mCurrentFocus | cut -f1 -d '/' | cut -f5 -d ' ')
+    ######
+    function UpdatePackage()
+    {
+    # 更新前台包名数据
+    NowApp1=$(grep ^"1=" "$work_dir/RunStart" | cut -f2 -d '=')
+    NowApp2=$(grep ^"2=" "$work_dir/RunStart" | cut -f2 -d '=')
+    reset_app=$(grep ^"reset=" "$work_dir/RunStart" | cut -f2 -d '=')
+    }
+    ######
+    UpdatePackage
+    ######
+    # 检查屏幕状态/更新数据
+    if echo "$NowPackageName" | grep "StatusBar" >/dev/null; then
+        sleep 10
+        continue
     else
-        exit 0
-    fi
-fi
-######
-UpdatePackage
-######
-function Stop_UserCache()
-{
-# 函数用于内部储存软件阻止缓存
-ls "$data_dir1/" | while read userid_dir; do
-    local Appdir="$data_dir1/$userid_dir"
-    local Appdir2="$data_dir1/$userid_dir"
-    ###
-    if [ -d "$Appdir/$NowPackageName" ]; then
-        if ! grep "$NowPackageName" "$whitelist" >/dev/null; then
-            if [ -d "$Appdir/$reset_app/cache" ]; then
-                chattr -R -i "$Appdir/$reset_app/cache"
-                chattr -R -i "$Appdir2/$reset_app/cache"
-            fi
-            chattr -R +i "$Appdir/$NowPackageName/cache"
-            chattr -R +i "$Appdir2/$NowPackageName/cache"
+        if ! grep ^"1=$NowPackageName" "$work_dir/RunStart" >/dev/null; then
+            sed -i "s/reset=$reset_app/reset=$NowApp2/g" "$work_dir/RunStart"
+            sed -i "s/2=$NowApp2/2=$NowApp1/g" "$work_dir/RunStart"
+            sed -i "s/1=$NowApp1/1=$NowPackageName/g" "$work_dir/RunStart"
+        else
+            sleep 10
+            continue
         fi
     fi
-done
-}
-######
-function Stop_MicroCache()
-{
-# 函数用于SD拓展卡软件阻止缓存
-###
-local Appdir="/mnt/expand/*/user/0"
-local Appdir2="/mnt/expand/*/user_de/0"
-###
-if [ ! -d "$Appdir" ]; then
-    exit 0
-fi
-###
-ls "$micro_dir1/" | while read userid_dir; do
-    local Appdir="$micro_dir1/$userid_dir"
-    local Appdir2="$micro_dir1/$userid_dir"
-    ###
-    if [ -d "$Appdir/$NowPackageName" ]; then
-        if ! grep "$NowPackageName" "$whitelist" >/dev/null; then
-            if [ -d "$Appdir/$reset_app/cache" ]; then
-                chattr -R -i "$Appdir/$reset_app/cache"
-                chattr -R -i "$Appdir2/$reset_app/cache"
+    ######
+    UpdatePackage
+    ######
+    function Stop_UserCache()
+    {
+    # 函数用于内部储存软件阻止缓存
+    ls "$data_dir1/" | while read userid_dir; do
+        local Appdir="$data_dir1/$userid_dir"
+        local Appdir2="$data_dir2/$userid_dir"
+        ###
+        if [ -d "$Appdir/$NowApp1" ]; then
+            if ! grep "$NowApp1" "$whitelist" >/dev/null; then
+                chattr -R +i "$Appdir/$NowApp1/cache"
+                chattr -R +i "$Appdir2/$NowApp1/cache"
+                echo "阻止$NowApp1"
             fi
-            chattr -R +i "$Appdir/$NowPackageName/cache"
-            chattr -R +i "$Appdir2/$NowPackageName/cache"
         fi
+        if [ -d "$Appdir/$reset_app/cache" ]; then
+            chattr -R -i "$Appdir/$reset_app/cache"
+            chattr -R -i "$Appdir2/$reset_app/cache"
+            echo "恢复$reset_app"
+        fi
+    done
+    }
+    ######
+    function Stop_MicroCache()
+    {
+    # 函数用于SD拓展卡软件阻止缓存
+    ###
+    ls "$micro_dir1/" | while read userid_dir; do
+        local Appdir="$micro_dir1/$userid_dir"
+        local Appdir2="$micro_dir2/$userid_dir"
+        ###
+        if [ -d "$Appdir/$NowApp1" ]; then
+            if ! grep "$NowApp1" "$whitelist" >/dev/null; then
+                chattr -R +i "$Appdir/$NowApp1/cache"
+                chattr -R +i "$Appdir2/$NowApp1/cache"
+                echo "阻止$NowApp1"
+            fi
+        fi
+        if [ -d "$Appdir/$reset_app/cache" ]; then
+            chattr -R -i "$Appdir/$reset_app/cache"
+            chattr -R -i "$Appdir2/$reset_app/cache"
+            echo "恢复$reset_app"
+        fi
+    done
+    }
+    ######
+    Stop_UserCache &
+    if [ -d "$micro_dir1" ]; then
+        Stop_MicroCache &
     fi
+    wait
+    sleep 10
 done
-}
-######
-function Reset_UserCache()
-{
-# 函数用于恢复内部储存软件缓存状态
-ls "$data_dir1/" | while read userid_dir; do
-    local Appdir="$data_dir1/$userid_dir"
-    local Appdir2="$data_dir1/$userid_dir"
-    ###
-    ls "$Appdir/" | while read Reset_app_dir; do
-        chattr -R -i "$Appdir/$Reset_app_dir/cache"
-        chattr -R -i "$Appdir2/$Reset_app_dir/cache"
-    done
-done
-}
-######
-function Reset_MicroCache()
-{
-# 函数用于恢复SD拓展卡软件缓存状态
-###
-local Appdir="/mnt/expand/*/user/0"
-local Appdir2="/mnt/expand/*/user_de/0"
-###
-if [ ! -d "$Appdir" ]; then
-    exit 0
-fi
-###
-ls "$micro_dir1/" | while read userid_dir; do
-    local Appdir="$micro_dir1/$userid_dir"
-    local Appdir2="$micro_dir1/$userid_dir"
-    ###
-    ls "$Appdir/" | while read Reset_app_dir; do
-        chattr -R -i "$Appdir/$Reset_app_dir/cache"
-        chattr -R -i "$Appdir2/$Reset_app_dir/cache"
-    done
-done
-}
-######
-case $1 in
-    Reset)
-      Reset_UserCache &
-      Reset_MicroCache &
-      wait
-      ;;
-    Stop)
-      Stop_UserCache &
-      Stop_MicroCache &
-      wait
-      ;;
-    *)
-      if [ -z "$1" ]; then
-          echo " » ERROR: A parameter is required!"
-          exit 1
-      fi
-      ;;
-esac
-######
-exit 0
