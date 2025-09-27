@@ -21,15 +21,13 @@ while true; do
     # Get now package
     NowPackageName=$(dumpsys window | grep mCurrentFocus | cut -f1 -d '/' | cut -f5 -d ' ')
     ######
-    UpdatePackage()
+    GetPackage()
     {
-    # 更新前台包名数据
+    # Get前台包名数据
     NowApp1=$(grep ^"1=" "$work_dir/RunStart" | cut -f2 -d '=')
     NowApp2=$(grep ^"2=" "$work_dir/RunStart" | cut -f2 -d '=')
     reset_app=$(grep ^"reset=" "$work_dir/RunStart" | cut -f2 -d '=')
     }
-    ######
-    UpdatePackage
     ######
     # 检查屏幕状态/更新数据
     if echo "$NowPackageName" | grep "StatusBar" >/dev/null; then
@@ -46,7 +44,7 @@ while true; do
         fi
     fi
     ######
-    UpdatePackage
+    GetPackage
     ######
     Stop_UserCache()
     {
@@ -80,7 +78,7 @@ while true; do
     }
     ######
     Stop_UserCache &
-    [ -d "$micro_dir1" ] && Stop_MicroCache &
+    [ -d "$micro_dir" ] && Stop_MicroCache &
     wait
     sleep 10
 done
