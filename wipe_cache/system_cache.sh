@@ -18,7 +18,6 @@ else
     exec 2>>/dev/null
 fi
 data_dir1="/data/user"
-data_dir2="/data/user_de"
 ######
 # 遍历清空系统组件cache文件夹
 for userid_dir in "$data_dir1"/*; do
@@ -26,16 +25,14 @@ for userid_dir in "$data_dir1"/*; do
         if grep ^"$SystemAppList" "$whitelist" >/dev/null; then
             continue
         fi
-        if [ ! -d "$data_dir1/$userid_dir/$SystemAppList" ]; then
+        if [ ! -d "$userid_dir/$SystemAppList" ]; then
             continue
-        elif [ "$(du -s "$data_dir1/$userid_dir/$SystemAppList/cache" | cut -f1 -d '	')" -lt "1024" ]; then
+        elif [ "$(du -s "$userid_dir/$SystemAppList/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
             echo " » 跳过 $SystemAppList"
             continue
         fi
-        rm -r "$data_dir1/$userid_dir/$SystemAppList/cache/"* &
-        rm -r "$data_dir1/$userid_dir/$SystemAppList/code_cache/"* &
-        rm -r "$data_dir2/$userid_dir/$SystemAppList/cache/"* &
-        rm -r "$data_dir2/$userid_dir/$SystemAppList/code_cache/"* &
+        rm -r "$userid_dir/$SystemAppList/cache/"* &
+        rm -r "$userid_dir/$SystemAppList/code_cache/"* &
         wait
         echo " $SystemAppList 缓存已清除"
     done

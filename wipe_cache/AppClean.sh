@@ -26,32 +26,27 @@ ClearDone=0
 ######
 service()
 {
-for File in "$work_dir/清理规则"/*; do
-    Pro_File="$work_dir/清理规则/$File"
+for ProFile in "$work_dir/清理规则"/*; do
     [ -d "$Pro_File" ] && rm -r "$Pro_File" && continue
-    [ -z "$(cat "$Pro_File")" ] && echo " » $File：配置内容为空！自动跳过" && continue
+    [ -z "$(cat "$Pro_File")" ] && echo " » $AppName：配置内容为空！自动跳过" && continue
     if grep "$AppName" "$Pro_File" >> /dev/null; then
         count=0
         for i in $(cat "$Pro_File"); do
             count=$((count + 1))
             # 进入指定初始App目录
             if echo "$i" | grep ^"@" >/dev/null; then
-                if ! echo "$i" | grep "/" >/dev/null; then
-		    echo " » $File 配置第 $count 行初始错误！"
-		    break
-		fi
                 AppPackage=$(echo "$i" | cut -f2 -d '@' | cut -f1 -d '/')
                 Name=$(echo "$i" | cut -f2 -d '/')
-                [ -z "$AppPackage" ] && echo " » $File 配置未指定App包名！" && break
-                [ -z "$Name" ] && echo " » $File 配置未指定App名称！" && break
+                [ -z "$AppPackage" ] && echo " » $AppName 配置未指定App包名！" && break
+                [ -z "$Name" ] && echo " » $AppName 配置未指定App名称！" && break
                 ######
                 if [ -d "$AppDir/$AppPackage/" ]; then
                     cd "$AppDir/$AppPackage/"
-                    echo " » 清理 $Name &"
+                    echo " » 清理 $AppName &"
                     local pro=1
                     continue
                 else
-                    echo " » $File：配置指定软件未找到！"
+                    echo " » $AppName：配置指定软件未找到！"
                     break
                 fi
                 ######
@@ -62,7 +57,7 @@ for File in "$work_dir/清理规则"/*; do
                         continue
                     fi
                     if echo "$i" | grep ^"/" >/dev/null; then
-                        echo " » $File：配置第 $count 行存在危险错误！"
+                        echo " » $AppName：配置第 $count 行存在危险错误！"
                         break
                     fi
                     # 处理
@@ -72,13 +67,13 @@ for File in "$work_dir/清理规则"/*; do
                         rm -r "$i"
                     fi
                 else
-                    echo " » $File 配置初始错误！"
+                    echo " » $AppName 配置初始错误！"
                 fi
             fi
         done
         ClearDone=1
     else
-        [ "$ClearDone" = "1" ] && break
+        break
     fi
 done
 ######

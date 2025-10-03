@@ -30,20 +30,22 @@ ls /storage | grep .*- | while read diskdir; do
     {
     echo " » 开始清理外部储存 $FileName！"
     if [ -f "$work_dir/文件格式配置/$FileName.conf" ]; then
-        Name=$(echo "$NFile" | cut -f1 -d ".")
         count_num=0
         for Fn in $(cat "$work_dir/文件格式配置/$FileName.conf"); do
+            if echo "$Fn" | grep ^"#" >>/dev/null; then
+                continue
+            fi
             for File in $("$bin_dir/busybox" find "$dir"/ -type f -name "*.$Fn"); do
                 [ -f "$File" ] && rm "$File" && count_num=$((count_num + 1))
             done
         done
         [ "$count_num" -ge 1 ] && echo " » 已清理 $count_num 个 $FileName"
     else
-        echo " » 模块貌似出了一点状况:⁠-⁠) 自动排查..."
+        echo " » 貌似出了一点状况:⁠-⁠) 自动排查..."
         if [ -z "$(ls "$work_dir/文件格式配置/")" ]; then
             echo " » 配置文件目录为空，请检查！"
         else
-            echo " » 传入参数错误或配置文件格式错误！"
+            echo " » 传入参数错误或配置文件名称错误！"
         fi
         exit 1
     fi
@@ -53,17 +55,21 @@ ls /storage | grep .*- | while read diskdir; do
     {
     echo " » 开始深度清理外部储存文件！"
     for File in "$work_dir/文件格式配置"/*; do
-        if [ -f "$work_dir/文件格式配置/$File" ]; then
-            Name=$(echo "$File" | cut -f1 -d ".")
+        if [ -f "$File" ]; then
+            Name=$(echo "$File" | cut -f6 -d '/' | cut -f1 -d '.')
             count_num=0
-            for Fn in $(cat "$work_dir/文件格式配置/$File"); do
+            for Fn in $(cat "$File"); do
+                if echo "$Fn" | grep ^"#" >>/dev/null; then
+                    continue
+                fi
                 for FileD in $("$bin_dir/busybox" find "$dir"/ -type f -name "*.$Fn"); do
                     [ -f "$FileD" ] && rm "$FileD" && count_num=$((count_num + 1))
                 done
             done
             [ "$count_num" -ge 1 ] && echo " » 已清理 $count_num 个 $Name"
         else
-            echo " » 配置文件目录为空，请检查！"
+            [ -d "$File" ] && rm -r "$File" && continue
+            [ -z "$(ls "$work_dir/文件格式配置")" ] && echo " » 配置文件目录为空，请检查！"
         fi
     done
     }

@@ -17,67 +17,37 @@ if [ "$DebugPro" = 1 ]; then
 else
     exec 2>>/dev/null
 fi
-data_dir1="/data/user"
-data_dir2="/data/user_de"
-micro_dir1="/mnt/expand/$(ls /mnt/expand)/user"
-micro_dir2="/mnt/expand/$(ls /mnt/expand)/user_de"
+data_dir="/data/user"
+micro_dir="/mnt/expand/$(ls /mnt/expand)/user"
 whitelist="$work_dir/ClearWhitelist.prop"
 ######
-WipeCache1()
+WipeCache()
 {
 # 遍历清空内部储存软件cache文件夹
-for userid_dir in "$data_dir1"/*; do
+for userid_dir in "$dir"/*; do
     for UserAppList in $(pm list package -3 | cut -f2 -d ':'); do
         if grep ^"$UserAppList" "$whitelist" >/dev/null; then
-	    continue
-	fi
-        if [ ! -d "$data_dir1/$userid_dir/$UserAppList" ]; then
+	        continue
+	    fi
+        if [ ! -d "$userid_dir/$UserAppList" ]; then
             continue
-        elif [ "$(du -s "$data_dir1/$userid_dir/$UserAppList/cache" | cut -f1 -d '	')" -lt "1024" ]; then
+        elif [ "$(du -s "$userid_dir/$UserAppList/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
             echo " » 跳过 $UserAppList"
             continue
         fi
-        rm -rf "$data_dir1/$userid_dir/$UserAppList/cache/"* &
-        rm -rf "$data_dir1/$userid_dir/$UserAppList/code_cache/"* &
-        rm -rf "$data_dir2/$userid_dir/$UserAppList/cache/"* &
-        rm -rf "$data_dir2/$userid_dir/$UserAppList/code_cache/"* &
+        rm -rf "$userid_dir/$UserAppList/cache/"* &
+        rm -rf "$userid_dir/$UserAppList/code_cache/"* &
         wait
-        echo " $UserAppList 缓存已清除"
+        echo " » $UserAppList 缓存已清除"
     done
 done
-echo " » 内部储存软件缓存删除完成"
 }
 ######
-WipeCache2()
-{
-[ ! -d "$micro_dir1" ] && exit 0
+dir="$data_dir"
+WipeCache && echo " » 内部储存软件缓存删除完成"
 [ "$cleardisk" = 0 ] && exit 0
-######
-# 遍历清空软件cache文件夹
-for userid_dir in "$micro_dir1"/*; do
-    for CardAppList in "$micro_dir1/$userid_dir"/*; do
-        if grep ^"$CardAppList" "$whitelist" >/dev/null; then
-            continue
-        fi
-        if [ ! -d "$micro_dir1/$userid_dir/$CardAppList" ]; then
-            continue
-        elif [ "$(du -s "$micro_dir1/$userid_dir/$CardAppList/cache" | cut -f1 -d '	')" -lt "1024" ]; then
-            echo " » 跳过 $CardAppList"
-            continue
-        fi
-        rm -rf "$micro_dir1/$userid_dir/$CardAppList/cache/"* &
-        rm -rf "$micro_dir1/$userid_dir/$CardAppList/code_cache/"* &
-        rm -rf "$micro_dir2/$userid_dir/$CardAppList/cache/"* &
-        rm -rf "$micro_dir2/$userid_dir/$CardAppList/code_cache/"* &
-        wait
-        echo " $CardAppList 缓存已清除"
-    done
-done
-echo " » 外部储存软件缓存删除完成"
-}
-######
-WipeCache1 &
-WipeCache2 &
-wait
-
+if [ -d "$micro_dir" ]; then
+    dir="$micro_dir"
+    WipeCache && echo " » 外部储存软件缓存删除完成"
+fi
 exit 0

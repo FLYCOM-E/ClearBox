@@ -20,12 +20,11 @@ fi
 whitelist="$work_dir/ClearWhitelist.prop"
 dir="/storage/emulated/0"
 ######
-for cd1 in "$dir/Android/data"/*; do
+ls "$dir/Android/data/" | while read cd1; do
     if grep "$cd1" "$whitelist" >/dev/null; then
         continue
     fi
     rm -rf "$dir/Android/data/$cd1/cache/"*
-    echo " $cd1 缓存已清除"
 done
 
 MediaCache()
@@ -52,12 +51,11 @@ fi
 ls /storage | grep .*- | while read diskdir; do
     dir2="/storage/$diskdir"
     ######
-    for cd2 in "$dir2/Android/data"/*; do
+    ls "$dir2/Android/data/" | while read cd2; do
         if grep "$cd2" "$whitelist" >/dev/null; then
            continue
         fi
         rm -rf "$dir/Android/data/$cd2/cache/"*
-        echo " $cd2 缓存已清除"
     done
     
     MediaCache2()

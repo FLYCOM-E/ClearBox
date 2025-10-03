@@ -30,14 +30,10 @@ fi
 ######
 # 解压安装并设置权限
 if $(unzip -oq "$ZIPFILE" -d "$MODPATH"); then
-    chmod 700 "$MODPATH/system/bin/ClearBox"
-    chown root:root "$MODPATH/system/bin/ClearBox"
-    chmod 700 "$MODPATH/system/bin/StopCache"
-    chown root:root "$MODPATH/system/bin/StopCache"
-    chmod 700 "$MODPATH/system/bin/chattr"
-    chown root:root "$MODPATH/system/bin/chattr"
+    chmod 700 "$MODPATH/system/bin"/*
+    chown root:root "$MODPATH/system/bin"/*
 else
-    uninstall && exit 1
+    uninstall && echo " » 模块解压发生错误！" && exit 1
 fi
 ######
 if $(pm list package -3 | grep "wipe.cache.module" >/dev/null); then

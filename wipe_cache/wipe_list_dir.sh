@@ -21,19 +21,18 @@ fi
 mkdir -p "$work_dir/清理配置"
 ######
 [ -z "$(ls "$work_dir/清理配置/")" ] && exit 0
-for File in "$work_dir/清理配置"/*; do
-    Pro_File="$work_dir/清理配置/$File"
-    [ -d "$Pro_File" ] && rm -r "$Pro_File" >>/dev/null && continue
-    [ ! -f "$Pro_File" ] && echo " » $File：配置读取错误，请检查！"
-    if [ -z "$(cat "$Pro_File")" ]; then
-        echo " » $File：配置内容为空！"
+ls "$work_dir/清理配置/" | while read Pro_File; do
+    [ -d "$work_dir/清理配置/$Pro_File" ] && rm -r "$work_dir/清理配置/$Pro_File" && continue
+    [ ! -f "$work_dir/清理配置/$Pro_File" ] && echo " » $Pro_File：配置读取错误，请检查！" && continue
+    if [ -z "$(cat "$work_dir/清理配置/$Pro_File")" ]; then
+        echo " » $Pro_File：配置内容为空！"
         continue
     else
-        echo " » 处理 $File 配置📍"
+        echo " » 处理 $Pro_File 配置📍"
     fi
     ######
     count=0
-    for i in $(cat "$Pro_File"); do
+    for i in $(cat "$work_dir/清理配置/$Pro_File"); do
         count=$((count + 1))
         df=$(echo "$i" | cut -f2 -d '=')
         ######
@@ -50,13 +49,13 @@ for File in "$work_dir/清理配置"/*; do
         fi
         ######
         if echo "$i" | grep ^"/" >/dev/null; then
-	    echo " » $Pro_File：配置第 $count 行存在错误！"
-	    continue
-	fi
+	        echo " » $Pro_File：配置第 $count 行存在错误！"
+	        continue
+	    fi
         # 如果该行被注释则返回
         if echo "$i" | grep ^"#" >/dev/null; then
             continue
-	fi
+	    fi
         # 设置clear参数则删除该文件夹
         if echo "$i" | grep ^"CLEAR" >/dev/null; then
             if [ -f "$df" ]; then

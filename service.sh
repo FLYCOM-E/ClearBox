@@ -30,6 +30,7 @@ StartSettings()
     [ -z "$ClearFont_disk" ] && echo "ClearFont_disk=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$ClearIso_disk" ] && echo "ClearIso_disk=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=1024" >> "$work_dir/settings.prop" && ReSource=1
     }
     ######
     prosetting()

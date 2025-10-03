@@ -40,17 +40,19 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
      
  5：深度文件清理            6：软件规则清理
  
- 7：清空系统缓存            8：阻止软件更新安装
+ 7：清空系统缓存            8：自动清理
  
- 9：阻止缓存生成功能        10：磁铁（文件归类
+ 9：阻止软件更新安装        10：阻止缓存生成功能
  
- 11：磁盘 & 软件优化        00：模块管理
+ 11：磁铁（文件归类         12：磁盘 & 软件优化
+ 
+ 00：模块管理
 
  ==============================================
                            --- 键入 E 退出 ---
  请输入相应序号:"
    read in_put
-     case "$in_put" in
+   case "$in_put" in
        1)
          clear
          sh "$home_dir/all.sh" ClearAll &
@@ -97,16 +99,16 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
                 echo -ne " » 确认？(y): "
                 read put_2
                 case "$put_2" in
-                  y | Y)
-                    clear
-                    sh "$home_dir/all.sh" File_Clear "$Fname" &
-                    wait
-                    break
-                    ;;
-                  *)
-                    "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                    break
-                    ;;
+                    y | Y)
+                      clear
+                      sh "$home_dir/all.sh" File_Clear "$Fname" &
+                      wait
+                      break
+                      ;;
+                    *)
+                      "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                      break
+                      ;;
                 esac
             fi
             [ "$C_num" = "$count" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m" && break
@@ -147,17 +149,159 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
          echo -ne " » 确认？(y): "
          read put_2
          case "$put_2" in
-           y | Y)
-             clear
-             sh "$home_dir/all.sh" Clear_SCache &
-             wait
-             ;;
-           *)
-             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-             ;;
+             y | Y)
+               clear
+               sh "$home_dir/all.sh" Clear_SCache &
+               wait
+               ;;
+             *)
+               "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+               ;;
          esac
          ;;
        8)
+         clear
+         "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[自动清理]\033[0m")
+ ==============================================
+ 
+     1：定期运行优化整理
+     
+     2：定期运行文件归类
+     
+     3：定期清理空文件夹
+
+ ==============================================
+
+ 请输入相应序号:"
+         read put4
+         case "$put4" in
+             1)
+               clear
+               NowClearTime=$(cat "$work_dir/CRON/ClearCache/root" | cut -f3 -d ' ' | cut -f2 -d '/')
+             "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")]\033[0m")
+ ==============================================
+      
+      1：自定义输入间隔时间（单位：天）
+      
+      0：关闭定期优化
+ 
+ ==============================================
+
+ 请输入相应序号:"
+               read put4
+               case "$put4" in
+                   1)
+                     clear
+                     echo -ne " » 请输入纯数字，范围 1～30 天："
+                     read day_num
+                     if ! echo "$day_num" | grep [0-9] >>/dev/null; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
+                     elif [ "$day_num" -lt 1 ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 间隔天数少于1天！设置失败！！\033[0m"
+                     elif [ "$day_num" -ge 30 ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 设置天数超过30天！设置失败！！\033[0m"
+                     else
+                         echo "0 0 */$day_num * * sh $home_dir/all.sh ClearAll" > "$work_dir/CRON/ClearCache/root"
+                         echo " » 设定成功！"
+                     fi
+                     ;;
+                   0)
+                     clear
+                     echo -n "" > "$work_dir/CRON/ClearCache/root"
+                     echo " » 已关闭定期优化！"
+                     ;;
+                   *)
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                     ;;
+               esac
+               ;;
+             2)
+               clear
+               NowFileAllTime=$(cat "$work_dir/CRON/FileAll/root" | cut -f2 -d ' ' | cut -f2 -d '/')
+               "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
+ ==============================================
+      
+      1：自定义输入间隔时间（单位：小时）
+      
+      0：关闭定期整理
+ 
+ ==============================================
+
+ 请输入相应序号:"
+               read put4
+               case "$put4" in
+                   1)
+                     clear
+                     echo -ne " » 请输入纯数字，范围 1～24 小时："
+                     read N_num
+                     if ! echo "$N_num" | grep [0-9] >>/dev/null; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
+                     elif [ "$N_num" -lt 1 ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 间隔天数少于1小时！设置失败！！\033[0m"
+                     elif [ "$N_num" -ge 24 ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过24小时！设置失败！！\033[0m"
+                     else
+                         echo "0 */$N_num * * * sh $home_dir/all.sh File_All" > "$work_dir/CRON/FileAll/root"
+                         echo " » 设定成功！"
+                     fi
+                     ;;
+                   0)
+                     clear
+                     echo -n "" > "$work_dir/CRON/FileAll/root"
+                     echo " » 已关闭定期整理！"
+                     ;;
+                   *)
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                     ;;
+               esac
+               ;;
+             3)
+               clear
+               NowFileAllTime=$(cat "$work_dir/CRON/ClearDir/root" | cut -f1 -d ' ' | cut -f2 -d '/')
+               "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
+ ==============================================
+      
+      1：自定义输入间隔时间（单位：分钟）
+      
+      0：关闭定期清理空文件夹
+ 
+ ==============================================
+
+ 请输入相应序号:"
+               read put4
+               case "$put4" in
+                   1)
+                     clear
+                     echo -ne " » 请输入纯数字，范围 60 分钟："
+                     read S_num
+                     if ! echo "$S_num" | grep [0-9] >>/dev/null; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
+                     elif [ "$S_num" -lt 1 ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 间隔天数少于1分钟！设置失败！！\033[0m"
+                     elif [ "$S_num" -ge 60 ]; then
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过1小时！设置失败！！\033[0m"
+                     else
+                         echo "*/$S_num * * * * sh $home_dir/all.sh All_Dir" > "$work_dir/CRON/ClearDir/root"
+                         echo " » 设定成功！"
+                     fi
+                     ;;
+                   0)
+                     clear
+                     echo -n "" > "$work_dir/CRON/ClearDir/root"
+                     echo " » 已关闭定期清理空文件夹！"
+                     ;;
+                   *)
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                     ;;
+               esac
+               ;;
+         esac
+         ;;
+       9)
          clear
          if [ "$stopinstall" = 1 ]; then
              i1="关闭"
@@ -174,25 +318,25 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
 
  请输入相应序号:"
          read put1
-           case "$put1" in
+         case "$put1" in
              1)
                if [ "$i1" = "开启" ]; then
                    echo -ne " » 确认？(y): "
                    read put_3
                    case "$put_3" in
-                     y | Y)
-                       clear
-                       chmod 551 /data/app
-                       echo " » 已开启阻止更新！"
-                       [ "$stopinstall" = 0 ] && sed -i 's/stopinstall=0/stopinstall=1/g' "$work_dir/settings.prop"
-                       ;;
-                     *)
-                       "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                       ;;
+                       y | Y)
+                         clear
+                         chattr +i /data/app
+                         echo " » 已开启阻止更新！"
+                         [ "$stopinstall" = 0 ] && sed -i 's/stopinstall=0/stopinstall=1/g' "$work_dir/settings.prop"
+                         ;;
+                       *)
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                         ;;
                    esac
                else
                    clear
-                   chmod 771 /data/app
+                   chattr -i /data/app
                    echo " » 已关闭阻止更新！"
                    sed -i 's/stopinstall=1/stopinstall=0/g' "$work_dir/settings.prop"
                fi
@@ -200,9 +344,9 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
              *)
                "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
                ;;
-           esac
-           ;;
-       9)
+         esac
+         ;;
+       10)
          clear
          if [ "$stopcache" = 0 ]; then
              i2="开启"
@@ -223,23 +367,23 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
 
  请输入相应序号:"
          read put2
-           case "$put2" in
+         case "$put2" in
              1)
                if [ "$i2" = "开启" ]; then
                    echo -ne " » 确认？(y): "
                    read put
                    case "$put" in
-                     y | Y)
-                       clear
-                       if [ "$stopcache" = 0 ]; then
-                           sed -i 's/stopcache=0/stopcache=1/g' "$work_dir/settings.prop"
-                       fi
-                       echo " » 已开启，重启生效 ~"
-                       ;;
-                     *)
-                       clear
-                       "$bin_dir/busybox" echo -ne "\033[1;32m 您选择了否！正在返回主页！\033[0m"
-                       ;;
+                       y | Y)
+                         clear
+                         if [ "$stopcache" = 0 ]; then
+                             sed -i 's/stopcache=0/stopcache=1/g' "$work_dir/settings.prop"
+                         fi
+                         echo " » 已开启，重启生效 ~"
+                         ;;
+                       *)
+                         clear
+                         "$bin_dir/busybox" echo -ne "\033[1;32m 您选择了否！正在返回主页！\033[0m"
+                         ;;
                    esac
                else
                    clear
@@ -292,21 +436,21 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                ;;
            esac
            ;;
-       10)
+       11)
          echo -ne " » 确认？(y): "
          read put_4
          case "$put_4" in
-           y | Y)
-             clear
-             sh "$home_dir/all.sh" File_All &
-             wait
-             ;;
-           *)
-             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-             ;;
+             y | Y)
+               clear
+               sh "$home_dir/all.sh" File_All &
+               wait
+               ;;
+             *)
+               "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+               ;;
          esac
          ;;
-       11)
+       12)
          clear
          "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[磁盘 & 软件优化]\033[0m")
@@ -321,14 +465,14 @@ $(echo -e "\033[44m[磁盘 & 软件优化]\033[0m")
  请输入相应序号:"
          read put3
          case "$put3" in
-           1)
-             clear
-             sh "$home_dir/all.sh" F2fs_GC &
-             wait
-             ;;
-           2)
-             clear
-             "$bin_dir/busybox" echo -ne "
+             1)
+               clear
+               sh "$home_dir/all.sh" F2fs_GC &
+               wait
+               ;;
+             2)
+               clear
+               "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[DEXOAT]\033[0m")
  ==============================================
      
@@ -339,15 +483,15 @@ $(echo -e "\033[44m[DEXOAT]\033[0m")
  ==============================================
 
  请输入相应序号:"
-             read put3
-             case "$put3" in
-               1)
-                 sh "$home_dir/all.sh" Dexoat_1 &
-                 wait
-                 ;;
-               2)
-                 clear
-                 "$bin_dir/busybox" echo -ne "
+               read put3
+               case "$put3" in
+                   1)
+                     sh "$home_dir/all.sh" Dexoat_1 &
+                     wait
+                     ;;
+                   2)
+                     clear
+                     "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[模式选择]\033[0m")
  ==============================================
      
@@ -360,36 +504,36 @@ $(echo -e "\033[44m[模式选择]\033[0m")
  ==============================================
 
  请输入相应序号:"
-                 read put3
-                 case "$put3" in
-                   1)
-                     clear
-                     sh "$home_dir/all.sh" Dexoat_2 speed &
-                     wait
-                     ;;
-                   2)
-                     clear
-                     sh "$home_dir/all.sh" Dexoat_2 speed-profile &
-                     wait
-                     ;;
-                   3)
-                     clear
-                     sh "$home_dir/all.sh" Dexoat_2 everything &
-                     wait
+                     read put3
+                     case "$put3" in
+                         1)
+                             clear
+                             sh "$home_dir/all.sh" Dexoat_2 speed &
+                             wait
+                             ;;
+                         2)
+                             clear
+                             sh "$home_dir/all.sh" Dexoat_2 speed-profile &
+                             wait
+                             ;;
+                         3)
+                             clear
+                             sh "$home_dir/all.sh" Dexoat_2 everything &
+                             wait
+                             ;;
+                         *)
+                             "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                             ;;
+                     esac
                      ;;
                    *)
                      "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
                      ;;
-                 esac
-                 ;;
-               *)
-                 "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                 ;;
-             esac
-             ;;
-           *)
-             "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-             ;;
+               esac
+               ;;
+             *)
+               "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+               ;;
          esac
          ;;
        00)
@@ -400,13 +544,7 @@ $(echo -e "\033[44m[模块管理菜单]\033[0m")
  
      0：立即生效当前配置（免重启）
      
-     1：定期运行优化整理
-     
-     2：定期运行文件归类
-     
-     3：定期清理空文件夹
-     
-     4：清理设置
+     1：清理设置
      
      00：关于
 
@@ -414,135 +552,12 @@ $(echo -e "\033[44m[模块管理菜单]\033[0m")
 
  请输入相应序号:"
          read put3
-           case "$put3" in
+         case "$put3" in
              0)
                clear
                ClearBox -U
                ;;
              1)
-               clear
-               NowClearTime=$(cat "$work_dir/CRON/ClearCache/root" | cut -f3 -d ' ' | cut -f2 -d '/')
-               "$bin_dir/busybox" echo -ne "
-$(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")]\033[0m")
- ==============================================
-      
-      1：自定义输入间隔时间（单位：天）
-      
-      0：关闭定期优化
- 
- ==============================================
-
- 请输入相应序号:"
-               read put4
-                 case "$put4" in
-                   1)
-                     clear
-                     echo -ne " » 请输入纯数字，范围 1～30 天："
-                     read day_num
-                     if ! echo "$day_num" | grep [0-9] >>/dev/null; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
-                     elif [ "$day_num" -lt 1 ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 间隔天数少于1天！设置失败！！\033[0m"
-                     elif [ "$day_num" -ge 30 ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 设置天数超过30天！设置失败！！\033[0m"
-                     else
-                         echo "0 0 */$day_num * * sh $home_dir/all.sh ClearAll" > "$work_dir/CRON/ClearCache/root"
-                         echo " » 设定成功！"
-                     fi
-                     ;;
-                   0)
-                     clear
-                     echo -n "" > "$work_dir/CRON/ClearCache/root"
-                     echo " » 已关闭定期优化！"
-                     ;;
-                   *)
-                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                     ;;
-                 esac
-                 ;;
-             2)
-               clear
-               NowFileAllTime=$(cat "$work_dir/CRON/FileAll/root" | cut -f2 -d ' ' | cut -f2 -d '/')
-               "$bin_dir/busybox" echo -ne "
-$(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
- ==============================================
-      
-      1：自定义输入间隔时间（单位：小时）
-      
-      0：关闭定期整理
- 
- ==============================================
-
- 请输入相应序号:"
-               read put4
-                 case "$put4" in
-                   1)
-                     clear
-                     echo -ne " » 请输入纯数字，范围 1～24 小时："
-                     read N_num
-                     if ! echo "$N_num" | grep [0-9] >>/dev/null; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
-                     elif [ "$N_num" -lt 1 ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 间隔天数少于1小时！设置失败！！\033[0m"
-                     elif [ "$N_num" -ge 24 ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过24小时！设置失败！！\033[0m"
-                     else
-                         echo "0 */$N_num * * * sh $home_dir/all.sh File_All" > "$work_dir/CRON/FileAll/root"
-                         echo " » 设定成功！"
-                     fi
-                     ;;
-                   0)
-                     clear
-                     echo -n "" > "$work_dir/CRON/FileAll/root"
-                     echo " » 已关闭定期整理！"
-                     ;;
-                   *)
-                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                     ;;
-                 esac
-                 ;;
-             3)
-               clear
-               NowFileAllTime=$(cat "$work_dir/CRON/ClearDir/root" | cut -f1 -d ' ' | cut -f2 -d '/')
-               "$bin_dir/busybox" echo -ne "
-$(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime")]\033[0m")
- ==============================================
-      
-      1：自定义输入间隔时间（单位：分钟）
-      
-      0：关闭定期清理空文件夹
- 
- ==============================================
-
- 请输入相应序号:"
-               read put4
-                 case "$put4" in
-                   1)
-                     clear
-                     echo -ne " » 请输入纯数字，范围 60 分钟："
-                     read S_num
-                     if ! echo "$S_num" | grep [0-9] >>/dev/null; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
-                     elif [ "$S_num" -lt 1 ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 间隔天数少于1分钟！设置失败！！\033[0m"
-                     elif [ "$S_num" -ge 60 ]; then
-                         "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过1小时！设置失败！！\033[0m"
-                     else
-                         echo "*/$S_num * * * * sh $home_dir/all.sh All_Dir" > "$work_dir/CRON/ClearDir/root"
-                         echo " » 设定成功！"
-                     fi
-                     ;;
-                   0)
-                     clear
-                     echo -n "" > "$work_dir/CRON/ClearDir/root"
-                     echo " » 已关闭定期清理空文件夹！"
-                     ;;
-                   *)
-                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                     ;;
-                 esac
-                 ;;
-             4)
                clear
                if [ "$clearall" = 0 ]; then
                    i4="开启"
@@ -568,11 +583,13 @@ $(echo -e "\033[44m[清理设置]\033[0m")
      
      5：取消白名单软件
      
+     6：缓存清理跳过大小
+     
  ==============================================
 
  请输入相应序号:"
                read put5
-                 case "$put5" in
+               case "$put5" in
                    1)
                      clear
                      if [ "$cleardisk" = 0 ]; then
@@ -631,13 +648,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                echo -ne " » 确认？(y): "
                                read cleardisk
                                case "$cleardisk" in
-                                 y | Y)
-                                   clear
-                                   [ "$cleardisk" = 0 ] && sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
+                                   y | Y)
+                                     clear
+                                     [ "$cleardisk" = 0 ] && sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                     ;;
+                                   *)
+                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                     ;;
                                esac
                            else
                                clear
@@ -650,13 +667,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                echo -ne " » 确认？(y): "
                                read Fileall_Disk
                                case "$Fileall_Disk" in
-                                 y | Y)
-                                   clear
-                                   [ "$Fileall_Disk" = 0 ] && sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
+                                   y | Y)
+                                     clear
+                                     [ "$Fileall_Disk" = 0 ] && sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                     ;;
+                                   *)
+                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                     ;;
                                esac
                            else
                                clear
@@ -669,13 +686,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                echo -ne " » 确认？(y): "
                                read ClearApk_disk
                                case "$ClearApk_disk" in
-                                 y | Y)
-                                   clear
-                                   [ "$ClearApk_disk" = 0 ] && sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
+                                   y | Y)
+                                     clear
+                                     [ "$ClearApk_disk" = 0 ] && sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                     ;;
+                                   *)
+                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                     ;;
                                esac
                            else
                                clear
@@ -688,13 +705,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                echo -ne " » 确认？(y): "
                                read ClearZip_disk
                                case "$ClearZip_disk" in
-                                 y | Y)
-                                   clear
-                                   [ "$ClearZip_disk" = 0 ] && sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
+                                   y | Y)
+                                     clear
+                                     [ "$ClearZip_disk" = 0 ] && sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                     ;;
+                                   *)
+                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                     ;;
                                esac
                            else
                                clear
@@ -707,13 +724,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                echo -ne " » 确认？(y): "
                                read ClearFont_disk
                                case "$ClearFont_disk" in
-                                 y | Y)
-                                   clear
-                                   [ "ClearFont_disk" = 0 ] && sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
+                                   y | Y)
+                                     clear
+                                     [ "ClearFont_disk" = 0 ] && sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                     ;;
+                                   *)
+                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                     ;;
                                esac
                            else
                                clear
@@ -726,13 +743,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                echo -ne " » 确认？(y): "
                                read ClearIso_disk
                                case "$ClearIso_disk" in
-                                 y | Y)
-                                   clear
-                                   [ "$ClearIso_disk" = 0 ] && sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                   ;;
-                                 *)
-                                   "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                   ;;
+                                   y | Y)
+                                     clear
+                                     [ "$ClearIso_disk" = 0 ] && sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                     ;;
+                                   *)
+                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                                     ;;
                                esac
                            else
                                clear
@@ -750,13 +767,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          echo -ne " » 确认？(y): "
                          read put_5
                          case "$put_5" in
-                           y | Y)
-                             clear
-                             [ "$clearall" = 0 ] && sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                             ;;
-                           *)
-                             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                             ;;
+                             y | Y)
+                               clear
+                               [ "$clearall" = 0 ] && sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                               ;;
+                             *)
+                               "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                               ;;
                          esac
                      else
                          clear
@@ -769,13 +786,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          echo -ne " » 确认？(y): "
                          read put_6
                          case "$put_6" in
-                           y | Y)
-                             clear
-                             [ "$fileall" = 0 ] && sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                             ;;
-                           *)
-                             "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                             ;;
+                             y | Y)
+                               clear
+                               [ "$fileall" = 0 ] && sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                               ;;
+                             *)
+                               "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                               ;;
                          esac
                      else
                          clear
@@ -823,6 +840,31 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          fi
                      done
                      ;;
+                   6)
+                     clear
+                     echo " » 当前最小大小为 $ClearCacheSize"
+                     echo -n " » 是否设置新值？(y/N):"
+                     read put
+                     case "$put" in
+                         y | Y)
+                           echo -n " » 请输入新值：(单位：字节. 范围：10M):"
+                           read put
+                           if ! echo "$put" | grep [0-9] >>/dev/null; then
+                               "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
+                           elif [ "$put" -lt 1 ]; then
+                               "$bin_dir/busybox" echo -ne "\033[1;32m » 设置大小小于1字节！设置失败！！\033[0m"
+                           elif [ "$put" -ge 10485760 ]; then
+                               "$bin_dir/busybox" echo -ne "\033[1;32m » 设置大小超过10兆！设置失败！！\033[0m"
+                           else
+                               sed -i 's/ClearCacheSize=[0-9]*/ClearCacheSize='"$put"'/g' "$work_dir/settings.prop"
+                               echo " » 设定成功！"
+                           fi
+                           ;;
+                         *)
+                           "$bin_dir/busybox" echo -ne "\033[1;32m » 正在返回主页！\033[0m"
+                           ;;
+                     esac
+                     ;;
                    *)
                      "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
                      ;;
@@ -851,36 +893,36 @@ $(echo -e "\033[44m[关于 ClearBox     "$Version"]\033[0m")
  请输入相应序号:"
                read put7
                case "$put7" in
-                 1)
-                   if am start -a android.intent.action.VIEW -d "https://github.com/FLYCOM-E/ClearBox" >>/dev/null; then
-                       echo " » 跳转成功！"
-                   else
-                       echo " » 跳转失败！"
-                   fi
-                   ;;
-                 2)
-                   if am start -a android.intent.action.VIEW -d "https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950" >>/dev/null; then
-                       echo " » 跳转成功！"
-                   else
-                       echo " » 跳转失败！"
-                   fi
-                   ;;
-                 3)
-                   echo -ne " » 确定完全卸载 ClearBox 并清理残留😉？(y/n): "
-                   read unput
-                   case "$unput" in
-                     y | Y)
-                       sh "$home_dir/uninstall.sh" &
-                       wait && clear && exit 0
-                       ;;
-                     *)
-                       "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                       ;;
-                   esac
-                   ;;
-                 *)
-                   "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
-                   ;;
+                   1)
+                     if am start -a android.intent.action.VIEW -d "https://github.com/FLYCOM-E/ClearBox" >>/dev/null; then
+                         echo " » 跳转成功！"
+                     else
+                         echo " » 跳转失败！"
+                     fi
+                     ;;
+                   2)
+                     if am start -a android.intent.action.VIEW -d "https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950" >>/dev/null; then
+                         echo " » 跳转成功！"
+                     else
+                         echo " » 跳转失败！"
+                     fi
+                     ;;
+                   3)
+                     echo -ne " » 确定完全卸载 ClearBox 并清理残留😉？(y/n): "
+                     read unput
+                     case "$unput" in
+                         y | Y)
+                           sh "$home_dir/uninstall.sh" &
+                           wait && clear && exit 0
+                           ;;
+                         *)
+                           "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                           ;;
+                     esac
+                     ;;
+                   *)
+                     "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+                     ;;
                esac
                [ "$OffSelinux" = 1 ] && setenforce 1
                ;;

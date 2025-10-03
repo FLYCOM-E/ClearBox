@@ -35,12 +35,15 @@ ls /storage | grep .*- | while read diskdir; do
             rm -r "$NFile"
             continue
         else
-            Name=$(echo "$NFile" | cut -f1 -d ".")
+            Name=$(echo "$NFile" | cut -f6 -d '/' | cut -f1 -d '.')
         fi
         mkdir -p "$dir/Documents/$Name"
         File_dir="$dir/Documents/$Name"
         count_num=0
-        for Fn in $(cat "$work_dir/文件格式配置/$NFile"); do
+        for Fn in $(cat "$NFile"); do
+            if echo "$Fn" | grep ^"#" >>/dev/null; then
+                continue
+            fi
             for File in $("$bin_dir/busybox" find "$dir"/ -type f -name "*.$Fn"); do
                 [ -f "$File" ] && mv "$File" "$File_dir" && count_num=$((count_num + 1))
             done
