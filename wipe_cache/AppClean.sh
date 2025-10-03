@@ -26,7 +26,7 @@ ClearDone=0
 ######
 service()
 {
-for ProFile in "$work_dir/清理规则"/*; do
+for Pro_File in "$work_dir/清理规则"/*; do
     [ -d "$Pro_File" ] && rm -r "$Pro_File" && continue
     [ -z "$(cat "$Pro_File")" ] && echo " » $AppName：配置内容为空！自动跳过" && continue
     if grep "$AppName" "$Pro_File" >> /dev/null; then
