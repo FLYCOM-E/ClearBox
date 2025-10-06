@@ -19,7 +19,7 @@ fi
 ######
 while true; do
     # Get now package
-    NowPackageName=$(dumpsys window | grep mCurrentFocus | cut -f1 -d '/' | cut -f5 -d ' ')
+    NowPackageName=$(dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' ')
     ######
     GetPackage()
     {
