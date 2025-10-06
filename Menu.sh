@@ -577,7 +577,7 @@ $(echo -e "\033[44m[清理设置]\033[0m")
 
      2：$i4一键及定时自动清理时清理所有文件
 
-     3：$i5一键及定时自动清理时运行文件归类功能
+     3：$i5一键及定时自动清理时运行文件归类
      
      4：新增清理白名单
      
@@ -602,25 +602,10 @@ $(echo -e "\033[44m[清理设置]\033[0m")
                      else
                          i7="关闭"
                      fi
-                     if [ "$ClearApk_disk" = 0 ]; then
+                     if [ "$FileClear_Disk" = 0 ]; then
                          i8="开启"
                      else
                          i8="关闭"
-                     fi
-                     if [ "$ClearZip_disk" = 0 ]; then
-                         i9="开启"
-                     else
-                         i9="关闭"
-                     fi
-                     if [ "$ClearFont_disk" = 0 ]; then
-                         i10="开启"
-                     else
-                         i10="关闭"
-                     fi
-                     if [ "$ClearIso_disk" = 0 ]; then
-                         i11="开启"
-                     else
-                         i11="关闭"
                      fi
                      "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[外部储存相关]\033[0m")
@@ -629,14 +614,8 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
      1：$i6清理外部储存缓存
      
      2：$i7外部储存文件归类
-
-     3：$i8清理外部储存安装包
      
-     4：$i9清理外部储存压缩包
-     
-     5：$i10清理外部储存字体文件
-     
-     6：$i11清理外部储存镜像文件
+     3：$i8外部储存文件清理
      
  ==============================================
 
@@ -646,8 +625,8 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                          1)
                            if [ "$i6" = "开启" ]; then
                                echo -ne " » 确认？(y): "
-                               read cleardisk
-                               case "$cleardisk" in
+                               read cleardisk_i
+                               case "$cleardisk_i" in
                                    y | Y)
                                      clear
                                      [ "$cleardisk" = 0 ] && sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
@@ -663,10 +642,10 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                            fi
                            ;;
                          2)
-                           if [ "$i6" = "开启" ]; then
+                           if [ "$i7" = "开启" ]; then
                                echo -ne " » 确认？(y): "
-                               read Fileall_Disk
-                               case "$Fileall_Disk" in
+                               read Fileall_Disk_i
+                               case "$Fileall_Disk_i" in
                                    y | Y)
                                      clear
                                      [ "$Fileall_Disk" = 0 ] && sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
@@ -682,13 +661,13 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                            fi
                            ;;
                          3)
-                           if [ "$i6" = "开启" ]; then
+                           if [ "$i8" = "开启" ]; then
                                echo -ne " » 确认？(y): "
-                               read ClearApk_disk
-                               case "$ClearApk_disk" in
+                               read FileClear_Disk_i
+                               case "$FileClear_Disk_i" in
                                    y | Y)
                                      clear
-                                     [ "$ClearApk_disk" = 0 ] && sed -i 's/ClearApk_disk=0/ClearApk_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                     [ "$FileClear_Disk" = 0 ] && sed -i 's/FileClear_Disk=0/FileClear_Disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                      ;;
                                    *)
                                      "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -696,64 +675,7 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                                esac
                            else
                                clear
-                               sed -i 's/ClearApk_disk=1/ClearApk_disk=0/g' "$work_dir/settings.prop"
-                               echo " » 已关闭！"
-                           fi
-                           ;;
-                         4)
-                           if [ "$i6" = "开启" ]; then
-                               echo -ne " » 确认？(y): "
-                               read ClearZip_disk
-                               case "$ClearZip_disk" in
-                                   y | Y)
-                                     clear
-                                     [ "$ClearZip_disk" = 0 ] && sed -i 's/ClearZip_disk=0/ClearZip_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                     ;;
-                                   *)
-                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                     ;;
-                               esac
-                           else
-                               clear
-                               sed -i 's/ClearZip_disk=1/ClearZip_disk=0/g' "$work_dir/settings.prop"
-                               echo " » 已关闭！"
-                           fi
-                           ;;
-                         5)
-                           if [ "$i6" = "开启" ]; then
-                               echo -ne " » 确认？(y): "
-                               read ClearFont_disk
-                               case "$ClearFont_disk" in
-                                   y | Y)
-                                     clear
-                                     [ "ClearFont_disk" = 0 ] && sed -i 's/ClearFont_disk=0/ClearFont_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                     ;;
-                                   *)
-                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                     ;;
-                               esac
-                           else
-                               clear
-                               sed -i 's/ClearFont_disk=1/ClearFont_disk=0/g' "$work_dir/settings.prop"
-                               echo " » 已关闭！"
-                           fi
-                           ;;
-                         6)
-                           if [ "$i6" = "开启" ]; then
-                               echo -ne " » 确认？(y): "
-                               read ClearIso_disk
-                               case "$ClearIso_disk" in
-                                   y | Y)
-                                     clear
-                                     [ "$ClearIso_disk" = 0 ] && sed -i 's/ClearIso_disk=0/ClearIso_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                                     ;;
-                                   *)
-                                     "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
-                                     ;;
-                               esac
-                           else
-                               clear
-                               sed -i 's/ClearIso_disk=1/ClearIso_disk=0/g' "$work_dir/settings.prop"
+                               sed -i 's/FileClear_Disk=1/FileClear_Disk=0/g' "$work_dir/settings.prop"
                                echo " » 已关闭！"
                            fi
                            ;;

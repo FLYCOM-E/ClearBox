@@ -15,6 +15,8 @@ while true; do
     sleep 5
 done
 ######
+sh "$home_dir/DirtyClear.sh" &
+######
 StartSettings()
 {
     PropSetting()
@@ -23,12 +25,9 @@ StartSettings()
     [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$cleardisk" ] && echo "cleardisk=1" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=1" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$ClearApk_disk" ] && echo "ClearApk_disk=1" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$ClearZip_disk" ] && echo "ClearZip_disk=1" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$ClearFont_disk" ] && echo "ClearFont_disk=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$ClearIso_disk" ] && echo "ClearIso_disk=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$cleardisk" ] && echo "cleardisk=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$FileClear_Disk" ] && echo "FileClear_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=1024" >> "$work_dir/settings.prop" && ReSource=1
     }

@@ -21,7 +21,7 @@ fi
 if ! ls /storage | grep .*- >/dev/null; then
     exit 0
 fi
-[ "$Fileall_Disk" = 0 ] && exit 0
+[ "$FileClear_Disk" = 0 ] && exit 0
 ######
 ls /storage | grep .*- | while read diskdir; do
     dir="/storage/$diskdir"
