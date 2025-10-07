@@ -107,6 +107,13 @@ if [ "$fileall" = 1 ]; then
 fi
 }
 ######
+# 阻止安装
+STOPInstall()
+{
+sh "$home_dir/wipe_cache/StopInstall.sh" "$1" &
+wait
+}
+######
 # 磁盘GC
 f2fs_GC()
 {
@@ -176,6 +183,9 @@ case $1 in
       ;;
     File_All)
       file_all
+      ;;
+    StopInstall)
+      STOPInstall "$2"
       ;;
     F2fs_GC)
       f2fs_GC

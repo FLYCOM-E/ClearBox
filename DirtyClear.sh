@@ -12,17 +12,21 @@ bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 source "$work_dir/settings.prop"
-#if [ "$DebugPro" = 1 ]; then
-#    exec 2>>"$work_dir/运行日志.log"
-#else
-#    exec 2>>/dev/null
-#fi
+if [ "$DebugPro" = 1 ]; then
+    exec 2>>"$work_dir/运行日志.log"
+else
+    exec 2>>/dev/null
+fi
 ######
 [ -n "$ClearApk_disk" ] && sed -i 's|ClearApk_disk=[0-9]*||g' "$work_dir/settings.prop"
 [ -n "$ClearZip_disk" ] && sed -i 's|ClearZip_disk=[0-9]*||g' "$work_dir/settings.prop"
 [ -n "$ClearFont_disk" ] && sed -i 's|ClearFont_disk=[0-9]*||g' "$work_dir/settings.prop"
 [ -n "$ClearIso_disk" ] && sed -i 's|ClearIso_disk=[0-9]*||g' "$work_dir/settings.prop"
-
 sed -i '/^$/d' "$work_dir/settings.prop"
+
+rm -f "$work_dir/root_backup"
+rm -f "$work_dir/root_backup1"
+rm -f "$work_dir/root_backup2"
+rm -f "$work_dir/root_backup3"
 
 true

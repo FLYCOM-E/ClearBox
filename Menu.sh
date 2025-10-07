@@ -326,9 +326,8 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                    case "$put_3" in
                        y | Y)
                          clear
-                         chattr +i /data/app
-                         echo " » 已开启阻止更新！"
-                         [ "$stopinstall" = 0 ] && sed -i 's/stopinstall=0/stopinstall=1/g' "$work_dir/settings.prop"
+                         sh "$home_dir/all.sh" StopInstall STOP &
+                         wait
                          ;;
                        *)
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -336,9 +335,8 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                    esac
                else
                    clear
-                   chattr -i /data/app
-                   echo " » 已关闭阻止更新！"
-                   sed -i 's/stopinstall=1/stopinstall=0/g' "$work_dir/settings.prop"
+                   sh "$home_dir/all.sh" StopInstall RESET &
+                   wait
                fi
                ;;
              *)
