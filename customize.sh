@@ -2,6 +2,7 @@
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1
+home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 uninstall()
 {
@@ -145,3 +146,7 @@ sleep 0.1
 echo " » 模块安装完成 ✨"
 echo "                              "
 echo "====================================================="
+######
+if [ -d "$home_dir" ]; then
+    [ ! "$(sha256sum "$home_dir/service.sh")" = "$(sha256sum "$MODPATH/service.sh")" ] && echo -e "\n * 此次更新需要重启设备"
+fi
