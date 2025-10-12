@@ -148,5 +148,5 @@ echo "                              "
 echo "====================================================="
 ######
 if [ -d "$home_dir" ]; then
-    [ ! "$(sha256sum "$home_dir/service.sh")" = "$(sha256sum "$MODPATH/service.sh")" ] && echo -e "\n * 此次更新需要重启设备"
+    [ ! "$(sha256sum "$home_dir/service.sh" | cut -f1 -d ' ')" = "$(sha256sum "$MODPATH/service.sh" | cut -f1 -d ' ')" ] && echo -e "\n * 此次更新需要重启设备"
 fi
