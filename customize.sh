@@ -29,11 +29,11 @@ else
     uninstall && exit 1
 fi
 ######
-Oldsha256="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
 if [ -d "$home_dir" ]; then
+    Oldsha256="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
     MODPATH="$home_dir"
 fi
-if $(unzip -oq "$ZIPFILE" -d "$MODPATH"); then
+if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
     chmod 700 "$MODPATH/system/bin"/*
     chown root:root "$MODPATH/system/bin"/*
 else
@@ -79,7 +79,7 @@ getevent -qlc 1 2>> /dev/null | while read -r A; do
       echo "                              "
       cp "$MODPATH/META-INF/TEMP_RES/"ClearBox*.apk "$TMPDIR"
       chmod 755 "$TMPDIR/"ClearBox*.apk
-      if $(pm install -r "$TMPDIR/"ClearBox*.apk >/dev/null); then
+      if pm install -r "$TMPDIR/"ClearBox*.apk >/dev/null; then
           sleep 0.1
           echo " » 安装成功！✅"
       else
@@ -152,11 +152,11 @@ echo "                              "
 echo "====================================================="
 ######
 if [ "$Newsha256" = "$Oldsha256" ]; then
-    echo -e "\n * 此次更新无需重启设备\n"
+    echo -e "\n * 无需重启设备\n"
     sh "$home_dir/service.sh" >>/dev/null
     nohup sleep 5 && rm -f "$home_dir/update" &
 else
-    echo -e "\n * 此次更新需要重启设备\n"
+    echo -e "\n * 需要重启设备\n"
 fi
 
 
