@@ -1,5 +1,5 @@
 #!/system/bin/sh
-#exec >>/dev/null
+exec >>/dev/null
 ######
 [ ! "$(whoami)" = "root" ] && echo " » Please use root privileges!" && exit 1
 ######

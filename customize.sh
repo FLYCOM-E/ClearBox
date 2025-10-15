@@ -30,7 +30,8 @@ else
 fi
 ######
 if [ -d "$home_dir" ]; then
-    Oldsha256="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
+    Oldsha256_1="$(sha256sum "$home_dir/system/bin/ClearBox" | cut -f1 -d ' ')"
+    Oldsha256_2="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
     MODPATH="$home_dir"
 fi
 if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
@@ -39,7 +40,8 @@ if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
 else
     uninstall && echo " » 模块解压发生错误！" && exit 1
 fi
-Newsha256="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
+Newsha256_1="$(sha256sum "$home_dir/system/bin/ClearBox" | cut -f1 -d ' ')"
+Newsha256_2="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
 ######
 if $(pm list package -3 | grep "wipe.cache.module" >/dev/null); then
     echo "                              "
@@ -151,14 +153,22 @@ echo " » 模块安装完成 ✨"
 echo "                              "
 echo "====================================================="
 ######
-if [ "$Newsha256" = "$Oldsha256" ]; then
-    echo -e "\n * 无需重启设备\n"
-    sh "$home_dir/service.sh" >>/dev/null
-    nohup sleep 5 && rm -f "$home_dir/update" &
+if [ "$Newsha256_1" = "$Oldsha256_1" ]; then
+    if [ "$Newsha256_2" = "$Oldsha256_2" ]; then
+        echo -e "\n * 无需重启设备\n"
+        sh "$home_dir/service.sh" >>/dev/null
+        Reboot=0
+    else
+        echo -e "\n * 需要重启设备\n"
+        Reboot=1
+    fi
 else
     echo -e "\n * 需要重启设备\n"
+    Reboot=1
 fi
-
-
-
+if [ "$Reboot" = 1 ]; then
+    nohup $(sleep 3 && rm -rf "/data/adb/modules_update/wipe_cache") &
+else
+    nohup $(sleep 3 && rm -rf "/data/adb/modules_update/wipe_cache" && rm -f "$home_dir/update") &
+fi
 
