@@ -18,7 +18,6 @@ int main()
     }
     
     //work_dir定义
-    //whitelist="$work_dir/whitelist.prop"
     char work_dir[256] = "";
     FILE * work_dir_fp = popen("ClearBox -w", "r");
     fgets(work_dir, sizeof(work_dir), work_dir_fp);
@@ -104,13 +103,8 @@ int main()
         int a = 0;
         char checkhw[256] = "";
         snprintf(checkhw, sizeof(checkhw), "echo '%s' | grep StatusBar >>/dev/null 2>&1", NowPackageName);
-        //定义前台变化检查命令
-        int b = 0;
-        char checkUpdate[256] = "";
-        snprintf(checkUpdate, sizeof(checkUpdate), "grep ^1=%s %s/RunStart >>/dev/null 2>&1", NowApp1, work_dir);
         //Run
         a = system(checkhw);
-        b = system(checkUpdate);
         //check
         if (a == 0)
         {
@@ -118,7 +112,7 @@ int main()
             sleep(30);
             continue;
         }
-        if (b == 0)
+        if (strcmp(NowPackageName, NowApp1) == 0)
         {
             printf("App not Cycle\n");
             sleep(10);
@@ -160,12 +154,12 @@ int main()
         DIR * dir = NULL;
         dir = opendir(micro_dir);
         //StopCache
-        char * Stopdata_app_A[3] = {data_dir, NowApp1, reset_app};
-        Stopdata_app(3, Stopdata_app_A);
+        char * Stopdata_app_A[4] = {data_dir, NowApp1, reset_app, work_dir};
+        Stopdata_app(4, Stopdata_app_A);
         if (dir != NULL)
         {
-            char * Stopdata_app_B[3] = {micro_dir, NowApp1, reset_app};
-            Stopdata_app(3, Stopdata_app_B);
+            char * Stopdata_app_B[4] = {micro_dir, NowApp1, reset_app, work_dir};
+            Stopdata_app(4, Stopdata_app_B);
             closedir(dir);
         }
         
@@ -185,9 +179,10 @@ int Stopdata_app(int COMI, char * COM[])
     snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s", COM[0], COM[2]);
     
     //命令定义
-    char StopNowApp1[128] = "", Reset_app[128] = "";
+    char StopNowApp1[128] = "", Reset_app[128] = "", CheckWhitelist[128] = "";
     snprintf(StopNowApp1, sizeof(StopNowApp1), "chattr -R +i %s/cache", NowApp1_dir);
     snprintf(Reset_app, sizeof(Reset_app), "chattr -R -i %s/cache", reset_app_dir);
+    snprintf(CheckWhitelist, sizeof(CheckWhitelist), "grep %s %s/whitelist.prop >>/dev/null 2>&1", COM[1], COM[3]);
     
     DIR * dir1 = NULL;
     DIR * dir2 = NULL;
@@ -195,9 +190,14 @@ int Stopdata_app(int COMI, char * COM[])
     dir1 = opendir(NowApp1_dir);
     if (dir1 != NULL)
     {
-        system(StopNowApp1);
-        printf("Stop: %s\n", COM[1]);
-        closedir(dir1);
+        int i = 0;
+        i = system(CheckWhitelist);
+        if (i != 0)
+        {
+            system(StopNowApp1);
+            printf("Stop: %s\n", COM[1]);
+            closedir(dir1);
+        }
     }
     
     dir2 = opendir(reset_app_dir);
