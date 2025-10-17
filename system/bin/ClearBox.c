@@ -5,6 +5,7 @@
 #include <string.h>
 #include <dirent.h>
 
+//home目录
 char home[256] = "/data/adb/modules/wipe_cache";
 
 int RunService();
@@ -25,6 +26,7 @@ int main(int COMI, char * COM[])
         return 0;
     }
     
+    //定义调用
     if (COMI < 2)
     {
         md_menu();
@@ -76,17 +78,17 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
+//此函数用于更新运行模块server
 int RunService()
 {
     char shname[] = "/service.sh";
     char command[256] = "sh ";
-    int end;
+    int end = 0;
     
     strcat(command, home);
     strcat(command, shname);
     
     end = system(command);
-    
     if (end == 0)
     {
         printf(" » Done\n");
@@ -99,17 +101,17 @@ int RunService()
     return 0;
 }
 
+//此函数用于启动模块终端UI脚本
 int md_menu()
 {
     char shname[] = "/Menu.sh";
     char command[256] = "bash ";
-    int end;
+    int end = 0;
     
     strcat(command, home);
     strcat(command, shname);
     
     end = system(command);
-    
     if (end != 0)
     {
         printf(" » Run Error! \n");
@@ -118,17 +120,17 @@ int md_menu()
     return 0;
 }
 
+//此函数用于清理操作
 int ClearCache()
 {
     char shname[] = "/all.sh ClearAll";
     char command[256] = "bash ";
-    int end;
+    int end = 0;
     
     strcat(command, home);
     strcat(command, shname);
     
     end = system(command);
-    
     if (end != 0)
     {
         printf(" » Run Error! \n");
@@ -137,6 +139,7 @@ int ClearCache()
     return 0;
 }
 
+//此函数用于检查root方案并返回对应busybox路径
 int bin_dir()
 {
     DIR * dir = NULL;
@@ -165,6 +168,7 @@ int bin_dir()
     return 0;
 }
 
+//此函数用于输出home路径
 int home_dir()
 {
     printf("%s\n", home);
@@ -172,6 +176,7 @@ int home_dir()
     return 0;
 }
 
+//此函数用于输出work路径
 int work_dir()
 {
     printf("/data/adb/wipe_cache\n");
@@ -179,6 +184,7 @@ int work_dir()
     return 0;
 }
 
+//此函数用于获取模块版本
 int version()
 {
     char command[256] = "grep 'version=' ";
@@ -196,6 +202,7 @@ int version()
     return 0;
 }
 
+//help
 int md_help()
 {
     printf("                             \n");
@@ -222,7 +229,7 @@ int md_help()
     printf("           ~ Module Work Dir\n");
     printf("                             \n");
     printf("    --help\n");
-    printf("           ~ Module Help\n");
+    printf("           ~ Help\n");
     printf("                             \n");
     
     return 0;
