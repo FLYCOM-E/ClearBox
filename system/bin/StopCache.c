@@ -14,7 +14,7 @@ int main()
     if (nowuid != 0)
     {
         printf(" » Please use root privileges!\n");
-        return 0;
+        return 1;
     }
     
     //work_dir定义
@@ -30,7 +30,7 @@ int main()
     //micro_dir定义
     char cardname[64] = "";
     char micro_dir[128] = "";
-    FILE * cardname_fp = popen("ls /mnt/expand/", "r");
+    FILE * cardname_fp = popen("ls /mnt/expand/ | cut -f1 -d ' '", "r");
     fgets(cardname, sizeof(cardname), cardname_fp);
     cardname[strcspn(cardname, "\n")] = 0;
     snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user/0", cardname);
@@ -39,43 +39,29 @@ int main()
     //定义待处理app临时储存变量
     char NowApp1[64] = "", HowApp2[64] = "", reset_app[64] = "";
     
-    //定义RunStart初始化
+    //定义储存文件
+    char RunStart_File[128] = "";
+    snprintf(RunStart_File, sizeof(RunStart_File), "%s/RunStart", work_dir);
+    
+    //储存文件初始化
     char setting_command[256] = "";
-    char checkSettings[256] = "grep '1=' ";
-    char Setting[256] = "echo 1=\n2=\nreset= > ";
-    char File[12] = "/RunStart";
-    char Null[12] = " >>/dev/null";
-    int Settings = 0;
+    char checkSettings[256] = "";
     
-    //拼接初始化检查命令
-    strcat(checkSettings, work_dir);
-    strcat(checkSettings, File);
-    strcat(checkSettings, Null);
+    snprintf(setting_command, sizeof(setting_command), "echo 1=\n2=\nreset= > '%s'", RunStart_File);
+    snprintf(checkSettings, sizeof(checkSettings), "grep '1=' '%s' >>/dev/null", RunStart_File);
     
-    //拼接初始化命令
-    strcat(setting_command, Setting);
-    strcat(setting_command, work_dir);
-    strcat(setting_command, File);
-    
-    //检查/初始化
-    Settings = system(checkSettings);
-    if (Settings != 0)
+    int var = system(checkSettings);
+    if (var != 0)
     {
         system(setting_command);
     }
     
-    //定义更新文件
-    char RunStart_File[128] = "";
-    strcat(RunStart_File, work_dir);
-    strcat(RunStart_File, File);
-    
-    //定义get命令，获取当前值
+    //Get获取当前储存值
     char reset_app_R[256] = "", NowApp2_R[256] = "", NowApp1_R[256] = "";
     snprintf(reset_app_R, sizeof(reset_app_R), "grep ^'reset=' '%s' | cut -f2 -d '='", RunStart_File);
     snprintf(NowApp2_R, sizeof(NowApp2_R), "grep ^'2=' '%s' | cut -f2 -d '='", RunStart_File);
     snprintf(NowApp1_R, sizeof(NowApp1_R), "grep ^'1=' '%s' | cut -f2 -d '='", RunStart_File);
-    //运行并提取值
-    //char NowApp1[64] = "", HowApp2[64] = "", reset_app[64] = "";
+    
     FILE * NowApp1_fp = popen(NowApp1_R, "r");
     fgets(NowApp1, sizeof(NowApp1), NowApp1_fp);
     NowApp1[strcspn(NowApp1, "\n")] = 0;
@@ -98,23 +84,24 @@ int main()
         fgets(NowPackageName, sizeof(NowPackageName), NowPackageName_fp);
         NowPackageName[strcspn(NowPackageName, "\n")] = 0;
         pclose(NowPackageName_fp);
-        
-        //定义屏幕状态检查命令
+    
+        //检查屏幕状态是否关闭
         int a = 0;
         char checkhw[256] = "";
         snprintf(checkhw, sizeof(checkhw), "echo '%s' | grep StatusBar >>/dev/null 2>&1", NowPackageName);
-        //Run
+        
         a = system(checkhw);
-        //check
         if (a == 0)
         {
-            printf("HW is Off\n");
+            printf(" » HW Is Off\n");
             sleep(30);
             continue;
         }
+        
+        //检查上一次前台App是否与当前一致
         if (strcmp(NowPackageName, NowApp1) == 0)
         {
-            printf("App not Cycle\n");
+            printf(" » App Not Cycle\n");
             sleep(10);
             continue;
         }
@@ -125,44 +112,45 @@ int main()
             snprintf(reset_app_C, sizeof(reset_app_C), "sed -i 's|reset=%s|reset=%s|g' '%s'", reset_app, HowApp2, RunStart_File);
             snprintf(NowApp2_C, sizeof(NowApp2_C), "sed -i 's|2=%s|2=%s|g' '%s'", HowApp2, NowApp1, RunStart_File);
             snprintf(NowApp1_C, sizeof(NowApp1_C), "sed -i 's|1=%s|1=%s|g' '%s'", NowApp1, NowPackageName, RunStart_File);
+            
             system(reset_app_C);
             system(NowApp2_C);
             system(NowApp1_C);
         }
-        //定义get命令
+        
+        //Get获取当前储存值
         char reset_app_R[256] = "", NowApp2_R[256] = "", NowApp1_R[256] = "";
         snprintf(reset_app_R, sizeof(reset_app_R), "grep ^'reset=' '%s' | cut -f2 -d '='", RunStart_File);
         snprintf(NowApp2_R, sizeof(NowApp2_R), "grep ^'2=' '%s' | cut -f2 -d '='", RunStart_File);
         snprintf(NowApp1_R, sizeof(NowApp1_R), "grep ^'1=' '%s' | cut -f2 -d '='", RunStart_File);
-        //运行并提取值
-        //char NowApp1[64] = "", HowApp2[64] = "", reset_app[64] = "";
+    
         FILE * NowApp1_fp = popen(NowApp1_R, "r");
         fgets(NowApp1, sizeof(NowApp1), NowApp1_fp);
         NowApp1[strcspn(NowApp1, "\n")] = 0;
         pclose(NowApp1_fp);
-        
         FILE * HowApp2_fp = popen(NowApp2_R, "r");
         fgets(HowApp2, sizeof(HowApp2), HowApp2_fp);
         HowApp2[strcspn(HowApp2, "\n")] = 0;
         pclose(HowApp2_fp);
-        
         FILE * reset_app_fp = popen(reset_app_R, "r");
         fgets(reset_app, sizeof(reset_app), reset_app_fp);
         reset_app[strcspn(reset_app, "\n")] = 0;
         pclose(reset_app_fp);
         
-        DIR * dir = NULL;
-        dir = opendir(micro_dir);
-        //StopCache
+        //调用处理函数
         char * Stopdata_app_A[4] = {data_dir, NowApp1, reset_app, work_dir};
-        Stopdata_app(4, Stopdata_app_A);
+        Stopdata_app(3, Stopdata_app_A);
+        
+        //如果存在拓展SD则处理
+        DIR * dir = opendir(micro_dir);
         if (dir != NULL)
         {
             char * Stopdata_app_B[4] = {micro_dir, NowApp1, reset_app, work_dir};
-            Stopdata_app(4, Stopdata_app_B);
+            Stopdata_app(3, Stopdata_app_B);
             closedir(dir);
         }
         
+        //等待10s
         sleep(10);
         
     }
@@ -173,38 +161,40 @@ int main()
 //此函数用于StopApp缓存
 int Stopdata_app(int COMI, char * COM[])
 {
+    //检查参数数量
+    if (COMI != 3)
+    {
+        printf(" » Check Err\n");
+    }
+    
     //App目录定义
-    char NowApp1_dir[128] = "", reset_app_dir[128] = "";
+    char NowApp1_dir[512] = "", reset_app_dir[512] = "";
     snprintf(NowApp1_dir, sizeof(NowApp1_dir), "%s/%s", COM[0], COM[1]);
     snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s", COM[0], COM[2]);
     
     //命令定义
-    char StopNowApp1[128] = "", Reset_app[128] = "", CheckWhitelist[128] = "";
+    char StopNowApp1[512] = "", Reset_app[512] = "", CheckWhitelist[128] = "";
     snprintf(StopNowApp1, sizeof(StopNowApp1), "chattr -R +i %s/cache", NowApp1_dir);
     snprintf(Reset_app, sizeof(Reset_app), "chattr -R -i %s/cache", reset_app_dir);
     snprintf(CheckWhitelist, sizeof(CheckWhitelist), "grep %s %s/whitelist.prop >>/dev/null 2>&1", COM[1], COM[3]);
     
-    DIR * dir1 = NULL;
-    DIR * dir2 = NULL;
-    
-    dir1 = opendir(NowApp1_dir);
+    DIR * dir1 = opendir(NowApp1_dir);
     if (dir1 != NULL)
     {
-        int i = 0;
-        i = system(CheckWhitelist);
+        int i = system(CheckWhitelist);
         if (i != 0)
         {
             system(StopNowApp1);
-            printf("Stop: %s\n", COM[1]);
+            printf(" » Stop: %s\n", COM[1]);
             closedir(dir1);
         }
     }
     
-    dir2 = opendir(reset_app_dir);
+    DIR * dir2 = opendir(reset_app_dir);
     if (dir2 != NULL)
     {
         system(Reset_app);
-        printf("Reset: %s\n", COM[2]);
+        printf(" » Reset: %s\n", COM[2]);
         closedir(dir2);
     }
     

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
+#include <strings.h>
 #include <dirent.h>
 
 //home目录
@@ -23,56 +23,49 @@ int main(int COMI, char * COM[])
     if (nowuid != 0)
     {
         printf(" » Please use root privileges!\n");
-        return 0;
+        return 1;
     }
     
     //定义调用
     if (COMI < 2)
     {
-        md_menu();
-        return 0;
+        return md_menu();
     }
     if (strcasecmp(COM[1], "-h") == 0)
     {
-        home_dir();
-        return 0;
+        return home_dir();
     }
     if (strcasecmp(COM[1], "-w") == 0)
     {
-        work_dir();
-        return 0;
+        return work_dir();
     }
     if (strcasecmp(COM[1], "-b") == 0)
     {
-        bin_dir();
-        return 0;
+        return bin_dir();
     }
     if (strcasecmp(COM[1], "-u") == 0)
     {
-        RunService();
-        return 0;
+        return RunService();
     }
     if (strcasecmp(COM[1], "-c") == 0)
     {
-        ClearCache();
-        return 0;
+        return ClearCache();
     }
     if (strcasecmp(COM[1], "-v") == 0 ||
        strcasecmp(COM[1], "--version") == 0)
     {
-        version();
-        return 0;
+        return version();
     }
     if (strcasecmp(COM[1], "-help") == 0 ||
-       strcasecmp(COM[1], "--help") == 0)
+       strcasecmp(COM[1], "--help") == 0 ||
+       strcasecmp(COM[1], "help") == 0)
     {
-        md_help();
-        return 0;
+        return md_help();
     }
     else
     {
         md_help();
-        return 0;
+        return 1;
     }
     
     return 0;
@@ -81,12 +74,9 @@ int main(int COMI, char * COM[])
 //此函数用于更新运行模块server
 int RunService()
 {
-    char shname[] = "/service.sh";
-    char command[256] = "sh ";
     int end = 0;
-    
-    strcat(command, home);
-    strcat(command, shname);
+    char command[256] = "";
+    snprintf(command, sizeof(command), "sh '%s/service.sh' >>/dev/null 2>&1", home);
     
     end = system(command);
     if (end == 0)
@@ -96,6 +86,7 @@ int RunService()
     else
     {
         printf(" » Run Error! \n");
+        return 1;
     }
     
     return 0;
@@ -104,17 +95,15 @@ int RunService()
 //此函数用于启动模块终端UI脚本
 int md_menu()
 {
-    char shname[] = "/Menu.sh";
-    char command[256] = "bash ";
     int end = 0;
-    
-    strcat(command, home);
-    strcat(command, shname);
+    char command[256] = "";
+    snprintf(command, sizeof(command), "bash '%s/Menu.sh'", home);
     
     end = system(command);
     if (end != 0)
     {
         printf(" » Run Error! \n");
+        return 1;
     }
     
     return 0;
@@ -123,17 +112,15 @@ int md_menu()
 //此函数用于清理操作
 int ClearCache()
 {
-    char shname[] = "/all.sh ClearAll";
-    char command[256] = "bash ";
     int end = 0;
-    
-    strcat(command, home);
-    strcat(command, shname);
+    char command[256] = "";
+    snprintf(command, sizeof(command), "bash '%s/all.sh' ClearAll", home);
     
     end = system(command);
     if (end != 0)
     {
         printf(" » Run Error! \n");
+        return 1;
     }
     
     return 0;
@@ -142,27 +129,31 @@ int ClearCache()
 //此函数用于检查root方案并返回对应busybox路径
 int bin_dir()
 {
-    DIR * dir = NULL;
+    DIR * dir_1 = opendir("/data/adb/magisk");
+    DIR * dir_2 = opendir("/data/adb/ap");
+    DIR * dir_3 = opendir("/data/adb/ksu");
     
-    dir = opendir("/data/adb/magisk");
-    if (dir != NULL)
+    if (dir_1 != NULL)
     {
         printf("/data/adb/magisk\n");
-        closedir(dir);
+        closedir(dir_1);
+        return 0;
     }
-    
-    dir = opendir("/data/adb/ap");
-    if (dir != NULL)
+    else if (dir_2 != NULL)
     {
         printf("/data/adb/ap/bin\n");
-        closedir(dir);
+        closedir(dir_2);
+        return 0;
     }
-    
-    dir = opendir("/data/adb/ksu");
-    if (dir != NULL)
+    else if (dir_3 != NULL)
     {
         printf("/data/adb/ksu/bin\n");
-        closedir(dir);
+        closedir(dir_3);
+        return 0;
+    }
+    else
+    {
+        return 1;
     }
     
     return 0;
@@ -172,7 +163,6 @@ int bin_dir()
 int home_dir()
 {
     printf("%s\n", home);
-    
     return 0;
 }
 
@@ -180,24 +170,25 @@ int home_dir()
 int work_dir()
 {
     printf("/data/adb/wipe_cache\n");
-    
     return 0;
 }
 
 //此函数用于获取模块版本
 int version()
 {
-    char command[256] = "grep 'version=' ";
-    char filename[24] = "/module.prop ";
-    char getversion[48] = "| cut -f2 -d '='";
-    
-    strcat(command, home);
-    strcat(command, filename);
-    strcat(command, getversion);
+    int var = 0;
+    char command[256] = "";
+    snprintf(command, sizeof(command), "grep 'version=' '%s/module.prop' | cut -f2 -d '='", home);
     
     printf("ClearBox Version: ");
-    fflush(stdout);
-    system(command);
+    fflush(stdout); //刷新缓冲区
+    
+    var = system(command);
+    if (var != 0)
+    {
+        printf(" » Run Error!\n");
+        return 1;
+    }
     
     return 0;
 }
@@ -205,32 +196,22 @@ int version()
 //help
 int md_help()
 {
-    printf("                             \n");
-    printf("Usage: ClearBox\n");
-    printf("                             \n");
+    printf("\nUsage: ClearBox\n");
     printf("or ClearBox [ OPTION ]:\n");
-    printf("                             \n");
     printf("    -u\n");
     printf("           ~ Update Profile\n");
-    printf("                             \n");
     printf("    -c\n");
-    printf("           ~ Clear All\n");
-    printf("                             \n");
+    printf("           ~ Run Clear All\n");
     printf("    -v\n");
     printf("           ~ Version\n");
-    printf("                             \n");
     printf("    -b\n");
-    printf("           ~ Busybox Bin Dir\n");
-    printf("                             \n");
+    printf("           ~ Root Manager Busybox Bin Dir\n");
     printf("    -h\n");
-    printf("           ~ Module Home Dir\n");
-    printf("                             \n");
+    printf("           ~ ClearBox Module Home Dir\n");
     printf("    -w\n");
-    printf("           ~ Module Work Dir\n");
-    printf("                             \n");
-    printf("    --help\n");
-    printf("           ~ Help\n");
-    printf("                             \n");
+    printf("           ~ ClearBox Module Work Dir\n");
+    printf("    -help\n");
+    printf("           ~ Help\n\n");
     
     return 0;
 }
