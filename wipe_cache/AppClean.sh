@@ -72,8 +72,6 @@ for Pro_File in "$work_dir/清理规则"/*; do
             fi
         done
         ClearDone=1
-    else
-        break
     fi
 done
 ######
