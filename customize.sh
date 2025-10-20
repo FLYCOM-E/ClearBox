@@ -2,6 +2,8 @@
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1
+remove=0
+Reboot=0
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 uninstall()
@@ -33,6 +35,7 @@ if [ -d "$home_dir" ]; then
     Oldsha256_1="$(sha256sum "$home_dir/system/bin/ClearBox" | cut -f1 -d ' ')"
     Oldsha256_2="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
     MODPATH="$home_dir"
+    remove=1
 fi
 if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
     chmod 700 "$MODPATH/system/bin"/*
@@ -155,20 +158,19 @@ echo "====================================================="
 ######
 if [ "$Newsha256_1" = "$Oldsha256_1" ]; then
     if [ "$Newsha256_2" = "$Oldsha256_2" ]; then
-        echo -e "\n * 无需重启设备\n"
+        echo -e "\n * 此次更新无需重启设备\n"
         sh "$home_dir/service.sh" >>/dev/null
-        Reboot=0
     else
-        echo -e "\n * 需要重启设备\n"
+        echo -e "\n * 请重启设备应用更改\n"
         Reboot=1
     fi
 else
-    echo -e "\n * 需要重启设备\n"
+    echo -e "\n * 请重启设备应用更改\n"
     Reboot=1
 fi
 if [ "$Reboot" = 1 ]; then
-    nohup $(sleep 3 && rm -rf "/data/adb/modules_update/wipe_cache") &
+    [ "$remove" = 1 ] && nohup $(sleep 3 && rm -rf "/data/adb/modules_update/wipe_cache") &
 else
-    nohup $(sleep 3 && rm -rf "/data/adb/modules_update/wipe_cache" && rm -f "$home_dir/update") &
+    [ "$remove" = 1 ] && nohup $(sleep 3 && rm -rf "/data/adb/modules_update/wipe_cache" && rm -f "$home_dir/update") &
 fi
-
+echo "====================================================="
