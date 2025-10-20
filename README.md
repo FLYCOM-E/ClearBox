@@ -16,7 +16,7 @@ __兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
 
    ## 操作方式：
 
-> ：终端以 **root** 身份键入 `ClearBox` 进入功能菜单
+> ：终端以 **root** 身份键入 **`ClearBox`** 进入功能菜单
 
 > ：安装使用模块 **ClearBox** 软件（会在模块安装时询问
 
