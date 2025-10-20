@@ -81,7 +81,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
          echo " =============================================="
          echo "      "
          for FN in "$work_dir/文件格式配置"/*; do
-            Name=$(echo "$FN" | cut -f1 -d ".")
+            Name=$(echo "$FN" | cut -f6 -d '/' | cut -f1 -d ".")
             count=$((count + 1))
             Num[$count]="$count,$Name"
             echo "     $count：清理 $Name"
@@ -122,7 +122,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
          echo " =============================================="
          echo "      "
          for FN in "$work_dir/清理规则"/*; do
-            Name=$(cat "$work_dir/清理规则/$FN" | grep '@' | cut -f2 -d '/')
+            Name=$(cat "$FN" | grep '@' | cut -f2 -d '/')
             count=$((count + 1))
             Num[$count]="$count,$Name"
             echo "     $count：清理 $Name"
