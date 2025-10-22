@@ -36,6 +36,9 @@ if [ -d "$home_dir" ]; then
     Oldsha256_2="$(sha256sum "$home_dir/system/bin/StopCache" | cut -f1 -d ' ')"
     MODPATH="$home_dir"
     remove=1
+else
+    Oldsha256_1="NULL"
+    Oldsha256_2="NULL"
 fi
 if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
     chmod 700 "$MODPATH/system/bin"/*
