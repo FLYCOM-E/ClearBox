@@ -42,11 +42,11 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
  
  7：清空系统缓存            8：自动清理
  
- 9：阻止软件更新安装        10：阻止缓存生成功能
+ 9：阻止软件更新安装        10：内部储存固定功能
  
- 11：磁铁（文件归类         12：磁盘 & 软件优化
+ 11：阻止缓存生成功能      12：磁铁（文件归类
  
- 00：模块管理
+ 13：磁盘 & 软件优化       00：模块管理
 
  ==============================================
                            --- 键入 E 退出 ---
@@ -346,6 +346,49 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
          ;;
        10)
          clear
+         if [ "$stopstorage" = 1 ]; then
+             i1="关闭"
+         else
+             i1="开启"
+         fi
+         "$bin_dir/busybox" echo -ne "
+$(echo -e "\033[44m[内部储存固定功能]\033[0m")
+ ==============================================
+
+     1：$i1固定内部储存
+
+ ==============================================
+
+ 请输入相应序号:"
+         read put1
+         case "$put1" in
+             1)
+               if [ "$i1" = "开启" ]; then
+                   echo -ne " » 确认？(y): "
+                   read put_3
+                   case "$put_3" in
+                       y | Y)
+                         clear
+                         sh "$home_dir/all.sh" StopStorage STOP &
+                         wait
+                         ;;
+                       *)
+                         "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
+                         ;;
+                   esac
+               else
+                   clear
+                   sh "$home_dir/all.sh" StopStorage RESET &
+                   wait
+               fi
+               ;;
+             *)
+               "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
+               ;;
+         esac
+         ;;
+       11)
+         clear
          if [ "$stopcache" = 0 ]; then
              i2="开启"
          else
@@ -434,7 +477,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                ;;
            esac
            ;;
-       11)
+       12)
          echo -ne " » 确认？(y): "
          read put_4
          case "$put_4" in
@@ -448,7 +491,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                ;;
          esac
          ;;
-       12)
+       13)
          clear
          "$bin_dir/busybox" echo -ne "
 $(echo -e "\033[44m[磁盘 & 软件优化]\033[0m")

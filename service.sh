@@ -23,6 +23,7 @@ StartSettings()
     {
     [ -z "$stopcache" ] && echo "stopcache=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$stopstorage" ] && echo "stopstorage=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$cleardisk" ] && echo "cleardisk=0" >> "$work_dir/settings.prop" && ReSource=1
@@ -84,12 +85,6 @@ if [ "$stopcache" = 1 ]; then
     echo -n "*/30 * * * * killall StopCache 2>/dev/null; nohup setsid StopCache >>/dev/null &" > "$work_dir/CRON/StopCache/root"
 else
     echo -n "" > "$work_dir/CRON/StopCache/root"
-fi
-######
-if [ "$stopinstall" = 1 ]; then
-    chattr +i /data/app
-else
-    chattr -i /data/app
 fi
 ######
 if ! pgrep -f "crond -c $work_dir/CRON/" > /dev/null; then

@@ -114,6 +114,13 @@ sh "$home_dir/wipe_cache/StopInstall.sh" "$1" &
 wait
 }
 ######
+# 内部储存固定
+STOPStorage()
+{
+sh "$home_dir/wipe_cache/StopInstall.sh" "$1" &
+wait
+}
+######
 # 磁盘GC
 f2fs_GC()
 {
@@ -186,6 +193,9 @@ case $1 in
       ;;
     StopInstall)
       STOPInstall "$2"
+      ;;
+    StopStorage)
+      STOPStorage "$2"
       ;;
     F2fs_GC)
       f2fs_GC
