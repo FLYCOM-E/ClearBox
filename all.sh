@@ -117,7 +117,7 @@ wait
 # 内部储存固定
 STOPStorage()
 {
-sh "$home_dir/wipe_cache/StopInstall.sh" "$1" &
+sh "$home_dir/wipe_cache/StopStorage.sh" "$1" &
 wait
 }
 ######
