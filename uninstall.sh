@@ -25,6 +25,8 @@ sed -E -i 's/(stopinstall|stopcache)=1/\1=0/g' "$work_dir/settings.prop"
 sh "$home_dir/service.sh"
 touch "$home_dir/disable"
 touch "$home_dir/remove"
+chattr -R -i /data
+chattr -R -i /mnt/expand
 }
 ######
 uninstall_md
