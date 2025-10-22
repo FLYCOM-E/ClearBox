@@ -19,7 +19,7 @@ else
 fi
 ######
 sdkv=$(getprop ro.build.version.sdk)
-if [ "$sdkv" -lt "31" ]; then
+if [ "$sdkv" -lt "30" ]; then
     exit 0
 else
     if [ ! "$(device_config get activity_manager_native_boot use_freezer)" = "true" ]; then
