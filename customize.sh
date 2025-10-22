@@ -4,12 +4,13 @@ exec 2>>/dev/null
 SKIPUNZIP=1
 remove=0
 Reboot=0
+OLDMODPATH="$MODPATH"
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
 uninstall()
 {
 rm "$ZIPFILE"
-rm -r "$MODPATH"
+rm -r "$OLDMODPATH"
 }
 ######
 echo "====================================================="
