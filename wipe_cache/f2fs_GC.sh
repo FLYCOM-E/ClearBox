@@ -22,7 +22,7 @@ get_f2fs_sysfs="/sys/fs/f2fs/$(getprop dev.mnt.dev.data)"
 f2fs_gc()
     {
     # 检测是否为f2fs文件系统
-    [ ! -d "$get_f2fs_sysfs" ] && echo " » 您的设备不是 F2FS 文件系统" && echo " » 维护仅支持 F2FS 环境" && exit 0
+    [ ! -d "$get_f2fs_sysfs" ] && echo -e " » 您的设备不是 F2FS 文件系统\n » 维护仅支持 F2FS 环境" && exit 0
     # 检测是否支持当前gc方案
     [ ! -f "$get_f2fs_sysfs/gc_urgent" ] && echo " » 您的设备不支持当前GC功能" && exit 0
     ######
@@ -31,8 +31,7 @@ f2fs_gc()
     Dirty=$(cat "$get_f2fs_sysfs/dirty_segments")
     Free=$(cat "$get_f2fs_sysfs/free_segments")
     echo " » 目前脏段: $Dirty"
-    echo " » 目前空闲段: $Free"
-    echo "         "
+    echo -e " » 目前空闲段: $Free\n"
     }
     ######
     # 开始运行gc并等待节点归零（完成gc）
@@ -56,9 +55,9 @@ f2fs_gc()
             timeM=" $time2 分"
         fi
         echo -ne " » 已运行 $timeM $time 秒...\r"
-        [ "$time2" = 10 ] && echo -e " » GC等待超时，已结束等待！\n" && break
-        time=$((time + 5))
+        [ "$time2" = 9 ] && echo -e " » GC等待超时，已结束等待！\n" && break
         [ $(cat "$get_f2fs_sysfs/gc_urgent") = 0 ] && echo " » GC运行完成，已结束运行！" && break
+        time=$((time + 5))
         sleep 5
     done
     ######
@@ -69,8 +68,7 @@ f2fs_gc()
     if [ "$OldDirty" -ge "$Dirty" ]; then
         echo " » 磁盘脏块减少 $NewDirty"
     else
-        echo " » 磁盘脏块增加 $NewDirty"
-        echo -e " » GC可能仍在优化或并不适合您的设备！\n"
+        echo -e " » 磁盘脏块增加 $NewDirty\n » GC可能仍在优化或并不适合您的设备！\n"
     fi
     ######
     echo " [ $(date) ] GC已完成！"
@@ -79,7 +77,7 @@ f2fs_gc()
 idle-maint()
 {
 echo " » 开始快速磁盘优化，请您耐心等待，可以离开前台！"
-if [ -z "$(sm idle-maint run >/dev/null)" ]; then
+if sm idle-maint run >/dev/null; then
     echo " » 优化完成，可以试试更激进的GC优化哦 (・∀・)"
     i="成功"
 else

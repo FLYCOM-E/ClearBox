@@ -29,13 +29,6 @@ AllDexOat()
 echo " » 自定义模式编译：$option_mode..."
 cmd package compile -m "$option_mode" -f -a
 }
-
-#AppDexOat()
-#{
-#echo ""
-#cmd package compile -m "$option_mode" -f "$AppPackage"
-#}
-# Option in "speed speed-profile everything"
 ######
 option_mode="$2"
 AppPackage="$3"
@@ -47,11 +40,6 @@ case "$1" in
         [ -z "$option_mode" ] && echo " » ERROR：需要一个参数，未传入模式！" && exit 1
         AllDexOat
         ;;
-    #APP_DEXOAT)
-    #    [ -z "$option_mode" ] && echo " » ERROR：需要一个参数，未传入模式！" && exit 1
-    #    [ -z "$AppPackage" ] && echo " » ERROR：需要一个参数，未传入包名！" && exit 1
-    #    AppDexOat
-    #    ;;
     *)
         [ -z "$1" ] && echo " » ERROR：需要一个参数，未传入选项名称！" && exit 1
         ;;

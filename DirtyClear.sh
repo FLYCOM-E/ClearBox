@@ -24,6 +24,7 @@ fi
 [ -n "$ClearIso_disk" ] && sed -i 's|ClearIso_disk=[0-9]*||g' "$work_dir/settings.prop"
 sed -i '/^$/d' "$work_dir/settings.prop"
 
+rm -r "$home_dir/CRON"
 rm -f "$work_dir/root_backup"
 rm -f "$work_dir/root_backup1"
 rm -f "$work_dir/root_backup2"

@@ -26,3 +26,5 @@ else
         device_config put activity_manager_native_boot use_freezer true && echo " » 已打开安卓原生墓碑 (^^)"
     fi
 fi
+######
+exit 0

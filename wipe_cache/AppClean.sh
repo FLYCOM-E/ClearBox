@@ -20,9 +20,8 @@ fi
 AppDir="/data/data"
 ClearDone=0
 ######
-[ ! -d "$work_dir/清理规则" ] && mkdir -p "$work_dir/清理规则"
-######
-[ -z "$(ls "$work_dir/清理规则/")" ] && echo " » 无App清理配置！" && exit 0
+[ ! -d "$work_dir/清理规则" ] && mkdir -p "$work_dir/清理规则" && echo " » 无App清理配置！" && exit 1
+[ -z "$(ls "$work_dir/清理规则/")" ] && echo " » 无App清理配置！" && exit 1
 ######
 service()
 {
