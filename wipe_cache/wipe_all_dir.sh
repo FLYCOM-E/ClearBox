@@ -38,7 +38,10 @@ MediaCache &
 
 "$bin_dir/busybox" find "$dir/" -type f -name "*.log" -delete &
 "$bin_dir/busybox" find "$dir/" -type f -name "*.LOG" -delete &
-"$bin_dir/busybox" find "$dir/" -type d -empty -delete &
+# 如stopstorage（内部储存固定）已开启则不清理空文件夹
+if [ "$stopstorage" = 0 ]; then
+    "$bin_dir/busybox" find "$dir/" -type d -empty -delete &
+fi
 wait
 
 echo " » 内部储存垃圾删除完成！"
@@ -69,6 +72,7 @@ ls /storage | grep .*- | while read diskdir; do
 
     "$bin_dir/busybox" find "$dir2/" -type f -name "*.log" -delete &
     "$bin_dir/busybox" find "$dir2/" -type f -name "*.LOG" -delete &
+    # 处理外部储存因此不检查内部储存固定功能状态
     "$bin_dir/busybox" find "$dir2/" -type d -empty -delete &
     wait
     

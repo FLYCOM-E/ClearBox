@@ -18,6 +18,13 @@ else
     exec 2>>/dev/null
 fi
 ######
+grep '1=' "$work_dir/RunStart" >>/dev/null 2>&1 || echo "1=" >>"$work_dir/RunStart"
+grep '2=' "$work_dir/RunStart" >>/dev/null 2>&1 || echo "2=" >>"$work_dir/RunStart"
+grep '3=' "$work_dir/RunStart" >>/dev/null 2>&1 || echo "3=" >>"$work_dir/RunStart"
+grep '4=' "$work_dir/RunStart" >>/dev/null 2>&1 || echo "4=" >>"$work_dir/RunStart"
+grep '5=' "$work_dir/RunStart" >>/dev/null 2>&1 || echo "5=" >>"$work_dir/RunStart"
+grep 'reset=' "$work_dir/RunStart" >>/dev/null 2>&1 || echo "reset=" >>"$work_dir/RunStart"
+
 [ -n "$ClearApk_disk" ] && sed -i 's|ClearApk_disk=[0-9]*||g' "$work_dir/settings.prop"
 [ -n "$ClearZip_disk" ] && sed -i 's|ClearZip_disk=[0-9]*||g' "$work_dir/settings.prop"
 [ -n "$ClearFont_disk" ] && sed -i 's|ClearFont_disk=[0-9]*||g' "$work_dir/settings.prop"
