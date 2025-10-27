@@ -81,8 +81,8 @@ StartSettings
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
 if [ "$stopcache" = 1 ]; then
-    killall StopCache 2>/dev/null; nohup setsid StopCache >>/dev/null &
-    echo -n "*/30 * * * * killall StopCache 2>/dev/null; nohup setsid StopCache >>/dev/null &" > "$work_dir/CRON/StopCache/root"
+    ps -A | grep StopCache || nohup setsid StopCache >>/dev/null &
+    echo -n "*/30 * * * * ps -A | grep StopCache || nohup setsid StopCache >>/dev/null &" > "$work_dir/CRON/StopCache/root"
 else
     echo -n "" > "$work_dir/CRON/StopCache/root"
 fi
