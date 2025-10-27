@@ -52,6 +52,7 @@ int main(int COMI, char * COM[])
         return ClearCache();
     }
     if (strcasecmp(COM[1], "-v") == 0 ||
+       strcasecmp(COM[1], "-version") == 0 ||
        strcasecmp(COM[1], "--version") == 0)
     {
         return version();
@@ -176,18 +177,26 @@ int work_dir()
 //此函数用于获取模块版本
 int version()
 {
-    int var = 0;
-    char command[256] = "";
-    snprintf(command, sizeof(command), "grep 'version=' '%s/module.prop' | cut -f2 -d '='", home);
+    char * var_fp = NULL;
+    char var[64] = "", module_file[64] = "";
+    snprintf(module_file, sizeof(module_file), "%s/module.prop", home);
+    FILE * module_file_fp = fopen(module_file, "r");
     
-    printf("ClearBox Version: ");
-    fflush(stdout); //刷新缓冲区
-    
-    var = system(command);
-    if (var != 0)
+    if (module_file_fp)
     {
-        printf(" » Run Error!\n");
-        return 1;
+        while (fgets(var, sizeof(var), module_file_fp))
+        {
+            if (strstr(var, "version="))
+            {
+                var_fp = strtok(var, "=");
+                var_fp = strtok(NULL, "=");
+                if (var_fp)
+                {
+                    printf("ClearBox Version: %s", var_fp);
+                }
+            }
+        }
+        fclose(module_file_fp);
     }
     
     return 0;
