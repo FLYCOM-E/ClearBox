@@ -114,7 +114,7 @@ int main()
     }
     else
     {
-        //Else说明文件打开失败可能未初始化，因此初始化文件
+        //Else说明文件可能未初始化，因此初始化文件
         FILE * RunStart_File_fp = fopen(RunStart_File, "w");
         if (RunStart_File_fp)
         {
@@ -123,9 +123,17 @@ int main()
         }
     }
     
+    //为渐进式等待初始化变量
+    int cycle_count = 0, cycle_time = 10, max_cycle_time = 30;
     //Start the cycle
     for ( ; ; )
     {
+        //这里检查渐进等待时间，超过30则保持不再增长
+        if (cycle_time > max_cycle_time)
+        {
+            cycle_time = max_cycle_time;
+        }
+        
         //获取前台软件包名
         char NowPackageName[64] = "";
         FILE * NowPackageName_fp = popen("dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '", "r");
@@ -133,20 +141,34 @@ int main()
         NowPackageName[strcspn(NowPackageName, "\n")] = 0;
         pclose(NowPackageName_fp);
     
-        //检查屏幕状态是否关闭
-        if (strstr(NowPackageName, "StatusBar"))
+        //检查屏幕状态是否关闭或为控制中心、电源菜单
+        //NotificationShade是A12及以上控制中心新名称
+        if (strstr(NowPackageName, "NotificationShade") ||
+           strstr(NowPackageName, "StatusBar") ||
+           strstr(NowPackageName, "ActionsDialog"))
         {
-            printf(" » Top App is SystemUI or Screen is Off\n");
-            sleep(15);
-            //这里15秒感觉短了点，但考虑如果用户只是下拉SystemUI就不能设置太长，以后考虑更新判断方式
+            //渐进式等待
+            cycle_count++;
+            if (cycle_count == 5)
+            {
+                cycle_time += 2;
+                cycle_count = 0;
+            }
+            sleep(cycle_time);
             continue;
         }
         
         //检查上一次前台App是否与当前一致
         if (strcmp(NowPackageName, NowApp1) == 0)
         {
-            printf(" » App Not Cycle\n");
-            sleep(10);
+            //渐进式等待
+            cycle_count++;
+            if (cycle_count == 5)
+            {
+                cycle_time += 2;
+                cycle_count = 0;
+            }
+            sleep(cycle_time);
             continue;
         }
         else
@@ -158,6 +180,9 @@ int main()
                 fprintf(RunStart_File_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", NowPackageName, NowApp1, NowApp2, NowApp3, NowApp4, NowApp5);
                 fclose(RunStart_File_fp);
             }
+            
+            cycle_count = 0;
+            cycle_time = 10;
         }
         
         usleep(50000);
@@ -246,7 +271,7 @@ int main()
             closedir(microDir);
         }
         
-        sleep(10);
+        sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
     }
     
     return 0;
