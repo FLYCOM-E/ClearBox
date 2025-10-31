@@ -8,14 +8,14 @@
 //home目录
 char home[256] = "/data/adb/modules/wipe_cache";
 
-int RunService();
-int md_menu();
-int ClearCache();
-int bin_dir();
-int home_dir();
-int work_dir();
-int version();
-int md_help();
+static int RunService();
+static int md_menu();
+static int ClearCache();
+static int bin_dir();
+static int home_dir();
+static int work_dir();
+static int version();
+static int md_help();
 
 int main(int COMI, char * COM[])
 {
@@ -73,7 +73,7 @@ int main(int COMI, char * COM[])
 }
 
 //此函数用于更新运行模块server
-int RunService()
+static int RunService()
 {
     int end = 0;
     char command[256] = "";
@@ -94,7 +94,7 @@ int RunService()
 }
 
 //此函数用于启动模块终端UI脚本
-int md_menu()
+static int md_menu()
 {
     int end = 0;
     char command[256] = "";
@@ -111,7 +111,7 @@ int md_menu()
 }
 
 //此函数用于清理操作
-int ClearCache()
+static int ClearCache()
 {
     int end = 0;
     char command[256] = "";
@@ -128,7 +128,7 @@ int ClearCache()
 }
 
 //此函数用于检查root方案并返回对应busybox路径
-int bin_dir()
+static int bin_dir()
 {
     DIR * dir_1 = opendir("/data/adb/magisk");
     DIR * dir_2 = opendir("/data/adb/ap");
@@ -161,21 +161,21 @@ int bin_dir()
 }
 
 //此函数用于输出home路径
-int home_dir()
+static int home_dir()
 {
     printf("%s\n", home);
     return 0;
 }
 
 //此函数用于输出work路径
-int work_dir()
+static int work_dir()
 {
     printf("/data/adb/wipe_cache\n");
     return 0;
 }
 
 //此函数用于获取模块版本
-int version()
+static int version()
 {
     char * var_fp = NULL;
     char var[64] = "", module_file[64] = "";
@@ -203,7 +203,7 @@ int version()
 }
 
 //help
-int md_help()
+static int md_help()
 {
     printf("\nUsage: ClearBox\n");
     printf("or ClearBox [ OPTION ]:\n");

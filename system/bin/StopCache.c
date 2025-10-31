@@ -2,11 +2,10 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <dirent.h>
 
-int Stopdata_app(int COMI, char * COM[]);
+static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workDir);
 
 int main()
 {
@@ -36,7 +35,7 @@ int main()
     pclose(cardname_fp);
     
     //定义储存文件
-    char RunStart_File[64] = "", checkSettings[128] = "";
+    char RunStart_File[64] = "";
     snprintf(RunStart_File, sizeof(RunStart_File), "%s/RunStart", work_dir);
     
     //定义待处理app临时储存变量
@@ -185,90 +184,21 @@ int main()
             cycle_time = 10;
         }
         
-        usleep(50000);
-        
-        //提取更新RunStart储存值
-        char str[64] = "";
-        char * str_fp = NULL;
-        FILE * RunStart_File_fp = fopen(RunStart_File, "r");
-        
-        if (RunStart_File_fp)
-        {
-            //循环遍历获取储存值
-            while (fgets(str, sizeof(str), RunStart_File_fp) != NULL)
-            {
-                str[strcspn(str, "\n")] = 0;
-                
-                //if匹配，如没找到对应值或值为空则跳过（保持原空值）
-                if (strstr(str, "1="))
-                {
-                    str_fp = strtok(str, "=");
-                    str_fp = strtok(NULL, "=");
-                    if (str_fp)
-                    {
-                        strcpy(NowApp1, str_fp);
-                    }
-                }
-                else if (strstr(str, "2="))
-                {
-                    str_fp = strtok(str, "=");
-                    str_fp = strtok(NULL, "=");
-                    if (str_fp)
-                    {
-                        strcpy(NowApp2, str_fp);
-                    }
-                }
-                else if (strstr(str, "3="))
-                {
-                    str_fp = strtok(str, "=");
-                    str_fp = strtok(NULL, "=");
-                    if (str_fp)
-                    {
-                        strcpy(NowApp3, str_fp);
-                    }
-                }
-                else if (strstr(str, "4="))
-                {
-                    str_fp = strtok(str, "=");
-                    str_fp = strtok(NULL, "=");
-                    if (str_fp)
-                    {
-                        strcpy(NowApp4, str_fp);
-                    }
-                }
-                else if (strstr(str, "5="))
-                {
-                    str_fp = strtok(str, "=");
-                    str_fp = strtok(NULL, "=");
-                    if (str_fp)
-                    {
-                        strcpy(NowApp5, str_fp);
-                    }
-                }
-                else if (strstr(str, "reset="))
-                {
-                    str_fp = strtok(str, "=");
-                    str_fp = strtok(NULL, "=");
-                    if (str_fp)
-                    {
-                        strcpy(reset_app, str_fp);
-                    }
-                }
-            }
-            fclose(RunStart_File_fp);
-        }
+        //更新值
+        snprintf(reset_app, sizeof(reset_app), "%s", NowApp5);
+        snprintf(NowApp5, sizeof(NowApp5), "%s", NowApp4);
+        snprintf(NowApp4, sizeof(NowApp4), "%s", NowApp3);
+        snprintf(NowApp3, sizeof(NowApp3), "%s", NowApp2);
+        snprintf(NowApp2, sizeof(NowApp2), "%s", NowApp1);
+        snprintf(NowApp1, sizeof(NowApp1), "%s", NowPackageName);
         
         //调用处理函数
-        char * Stopdata_app_A[4] = {data_dir, NowApp1, reset_app, work_dir};
-        Stopdata_app(3, Stopdata_app_A);
+        Stopdata_app(data_dir, NowApp1, reset_app, work_dir);
         
         //如果存在拓展SD则处理
-        DIR * microDir = opendir(micro_dir);
-        if (microDir)
+        if (access(micro_dir, F_OK) == 0)
         {
-            char * Stopdata_app_B[4] = {micro_dir, NowApp1, reset_app, work_dir};
-            Stopdata_app(3, Stopdata_app_B);
-            closedir(microDir);
+            Stopdata_app(micro_dir, NowApp1, reset_app, work_dir);
         }
         
         sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
@@ -278,43 +208,64 @@ int main()
 }
 
 //此函数用于StopApp缓存
-int Stopdata_app(int COMI, char * COM[])
+static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workDir)
 {
-    //检查参数数量
-    if (COMI != 3)
+    char topAppDir[128] = "", resetAppDir[128] = "", topAppCommand[128] = "", resetAppCommand[128] = "", whiteList[128] = "";
+    snprintf(topAppDir, sizeof(topAppDir), "%s/%s", dir, topApp);                              //topApp缓存目录定义
+    snprintf(resetAppDir, sizeof(resetAppDir), "%s/%s", dir, resetApp);                           //resetApp缓存目录定义
+    snprintf(topAppCommand, sizeof(topAppCommand), "chattr -R +i %s/cache", topAppDir);    //topApp缓存阻止命令
+    snprintf(resetAppCommand, sizeof(resetAppCommand), "chattr -R -i %s/cache", resetAppDir); //resetApp缓存阻止命令
+    snprintf(whiteList, sizeof(whiteList), "%s/whitelist.prop", workDir);                           //定义WhiteList
+    int inWhiteList = 0;
+    
+    //检查缓存目录是否真实存在
+    if (access(topAppDir, F_OK) == 0)
     {
-        printf(" » Err\n");
-    }
-    
-    //App目录定义
-    char NowApp1_dir[128] = "", reset_app_dir[128] = "";
-    snprintf(NowApp1_dir, sizeof(NowApp1_dir), "%s/%s", COM[0], COM[1]);
-    snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s", COM[0], COM[2]);
-    
-    //命令定义
-    char StopNowApp1[128] = "", Reset_app[128] = "", CheckWhitelist[128] = "";
-    snprintf(StopNowApp1, sizeof(StopNowApp1), "chattr -R +i %s/cache", NowApp1_dir);
-    snprintf(Reset_app, sizeof(Reset_app), "chattr -R -i %s/cache", reset_app_dir);
-    snprintf(CheckWhitelist, sizeof(CheckWhitelist), "grep %s %s/whitelist.prop >>/dev/null 2>&1", COM[1], COM[3]);
-    
-    DIR * dir1 = opendir(NowApp1_dir);
-    if (dir1)
-    {
-        int i = system(CheckWhitelist);
-        if (i != 0)
+        //检查是否位于白名单
+        char package[64] = "";
+        FILE * whiteList_fp = fopen(whiteList, "r");
+        if (whiteList_fp)
         {
-            system(StopNowApp1);
-            printf(" » Stop: %s\n", COM[1]);
+            while (fgets(package, sizeof(package), whiteList_fp))
+            {
+                package[strcspn(package, "\n")] = 0;
+                
+                if (strcmp(topApp, package) == 0)
+                {
+                    //如果在白名单找到该包名则将inWhiteList置1
+                    inWhiteList = 1;
+                }
+            }
+            fclose(whiteList_fp);
         }
-        closedir(dir1);
+        
+        //检查inWhiteList = 0时执行缓存阻止
+        if (inWhiteList == 0)
+        {
+            int i = system(topAppCommand);
+            if (i == 0)
+            {
+                printf(" » Stop: %s\n", topApp);
+            }
+            else
+            {
+                printf(" » Stop: %s Error\n", topApp);
+            }
+        }
     }
     
-    DIR * dir2 = opendir(reset_app_dir);
-    if (dir2)
+    //检查缓存目录是否真实存在
+    if (access(resetAppDir, F_OK) == 0)
     {
-        system(Reset_app);
-        printf(" » Reset: %s\n", COM[2]);
-        closedir(dir2);
+        int i = system(resetAppCommand);
+        if (i == 0)
+        {
+            printf(" » Reset: %s\n", resetApp);
+        }
+        else
+        {
+            printf(" » Reset: %s Error\n", resetApp);
+        }
     }
     
     return 0;
