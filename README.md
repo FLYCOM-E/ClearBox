@@ -11,7 +11,7 @@
 
 __支持任意终端/软件调用 **bin** 命令 **`ClearBox -c`** 执行一键优化清理__
 
-__兼容 **Magisk、Apatch、KernelSU** 及其类似分支管理器__
+__兼容 **Magisk、APatch、KernelSU** 及其分支管理器__
 
 
    ## 操作方式：
