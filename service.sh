@@ -38,7 +38,6 @@ StartSettings()
     mkdir -p "$work_dir/清理规则"
     mkdir -p "$work_dir/清理配置"
     mkdir -p "$work_dir/文件格式配置"
-    mkdir -p "$work_dir/CRON/StopCache"
     mkdir -p "$work_dir/CRON/ClearCache"
     mkdir -p "$work_dir/CRON/FileAll"
     mkdir -p "$work_dir/CRON/ClearDir"
