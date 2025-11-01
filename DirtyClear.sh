@@ -32,6 +32,7 @@ grep 'reset=' "$work_dir/RunStart" >>/dev/null 2>&1 || echo "reset=" >>"$work_di
 sed -i '/^$/d' "$work_dir/settings.prop"
 
 rm -r "$home_dir/CRON"
+rm -r "$work_dir/CRON/StopCache"
 rm -f "$work_dir/root_backup"
 rm -f "$work_dir/root_backup1"
 rm -f "$work_dir/root_backup2"
