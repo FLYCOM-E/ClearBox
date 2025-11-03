@@ -60,7 +60,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    strcpy(NowApp1, str_fp);
+                    snprintf(NowApp1, sizeof(NowApp1), "%s", str_fp);
                 }
             }
             else if (strstr(str, "2="))
@@ -69,7 +69,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    strcpy(NowApp2, str_fp);
+                    snprintf(NowApp2, sizeof(NowApp2), "%s", str_fp);
                 }
             }
             else if (strstr(str, "3="))
@@ -78,7 +78,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    strcpy(NowApp3, str_fp);
+                    snprintf(NowApp3, sizeof(NowApp3), "%s", str_fp);
                 }
             }
             else if (strstr(str, "4="))
@@ -87,7 +87,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    strcpy(NowApp4, str_fp);
+                    snprintf(NowApp4, sizeof(NowApp4), "%s", str_fp);
                 }
             }
             else if (strstr(str, "5="))
@@ -96,7 +96,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    strcpy(NowApp5, str_fp);
+                    snprintf(NowApp5, sizeof(NowApp5), "%s", str_fp);
                 }
             }
             else if (strstr(str, "reset="))
@@ -105,7 +105,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    strcpy(reset_app, str_fp);
+                    snprintf(reset_app, sizeof(reset_app), "%s", str_fp);
                 }
             }
         }

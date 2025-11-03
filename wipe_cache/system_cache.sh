@@ -27,7 +27,7 @@ for userid_dir in "$data_dir1"/*; do
         fi
         if [ ! -d "$userid_dir/$SystemAppList" ]; then
             continue
-        elif [ "$(du -s "$userid_dir/$SystemAppList/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
+        elif [ "$(du -s -m "$userid_dir/$SystemAppList/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
             echo " » 跳过 $SystemAppList"
             continue
         fi

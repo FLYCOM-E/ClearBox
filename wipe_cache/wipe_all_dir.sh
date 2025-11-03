@@ -23,6 +23,11 @@ dir="/storage/emulated/0"
 ls "$dir/Android/data/" | while read cd1; do
     if grep "$cd1" "$whitelist" >/dev/null; then
         continue
+    elif [ ! -d "$dir/Android/data/$cd1/cache" ]; then
+        continue
+    elif [ "$(du -s -m "$dir/Android/data/$cd1/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
+        echo " » 跳过 $UserAppList"
+        continue
     fi
     rm -rf "$dir/Android/data/$cd1/cache/"*
 done
@@ -57,6 +62,11 @@ ls /storage | grep .*- | while read diskdir; do
     ls "$dir2/Android/data/" | while read cd2; do
         if grep "$cd2" "$whitelist" >/dev/null; then
            continue
+        elif [ ! -d "$dir/Android/data/$cd2/cache" ]; then
+            continue
+        elif [ "$(du -s -m "$dir/Android/data/$cd2/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
+            echo " » 跳过 $UserAppList"
+            continue
         fi
         rm -rf "$dir/Android/data/$cd2/cache/"*
     done

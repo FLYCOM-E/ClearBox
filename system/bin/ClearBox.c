@@ -6,15 +6,21 @@
 #include <dirent.h>
 
 //home目录
-char home[256] = "/data/adb/modules/wipe_cache";
+#define home_dir "/data/adb/modules/wipe_cache"
+//work目录
+#define work_dir "/data/adb/wipe_cache"
+//bin目录
+#define BinDir_1 "/data/adb/magisk"
+#define BinDir_2 "/data/adb/ap"
+#define BinDir_3 "/data/adb/ksu"
 
 static int RunService();
 static int md_menu();
 static int ClearCache();
-static int bin_dir();
-static int home_dir();
-static int work_dir();
-static int version();
+static int PrintBinDir();
+static int PrintHomeDir();
+static int PrintWorkDir();
+static int GetVersion();
 static int md_help();
 
 int main(int COMI, char * COM[])
@@ -33,15 +39,15 @@ int main(int COMI, char * COM[])
     }
     if (strcasecmp(COM[1], "-h") == 0)
     {
-        return home_dir();
+        return PrintHomeDir();
     }
     if (strcasecmp(COM[1], "-w") == 0)
     {
-        return work_dir();
+        return PrintWorkDir();
     }
     if (strcasecmp(COM[1], "-b") == 0)
     {
-        return bin_dir();
+        return PrintBinDir();
     }
     if (strcasecmp(COM[1], "-u") == 0)
     {
@@ -55,7 +61,7 @@ int main(int COMI, char * COM[])
        strcasecmp(COM[1], "-version") == 0 ||
        strcasecmp(COM[1], "--version") == 0)
     {
-        return version();
+        return GetVersion();
     }
     if (strcasecmp(COM[1], "-help") == 0 ||
        strcasecmp(COM[1], "--help") == 0 ||
@@ -77,7 +83,7 @@ static int RunService()
 {
     int end = 0;
     char command[256] = "";
-    snprintf(command, sizeof(command), "sh '%s/service.sh' >>/dev/null 2>&1", home);
+    snprintf(command, sizeof(command), "sh '%s/service.sh' >>/dev/null 2>&1", home_dir);
     
     end = system(command);
     if (end == 0)
@@ -86,7 +92,7 @@ static int RunService()
     }
     else
     {
-        printf(" » Run Error! \n");
+        printf(" » Run `service.sh` Error! \n");
         return 1;
     }
     
@@ -98,12 +104,12 @@ static int md_menu()
 {
     int end = 0;
     char command[256] = "";
-    snprintf(command, sizeof(command), "bash '%s/Menu.sh'", home);
+    snprintf(command, sizeof(command), "bash '%s/Menu.sh'", home_dir);
     
     end = system(command);
     if (end != 0)
     {
-        printf(" » Run Error! \n");
+        printf(" » Start Menu Error! \n");
         return 1;
     }
     
@@ -115,12 +121,12 @@ static int ClearCache()
 {
     int end = 0;
     char command[256] = "";
-    snprintf(command, sizeof(command), "bash '%s/all.sh' ClearAll", home);
+    snprintf(command, sizeof(command), "bash '%s/all.sh' ClearAll", home_dir);
     
     end = system(command);
     if (end != 0)
     {
-        printf(" » Run Error! \n");
+        printf(" » Clear Error! \n");
         return 1;
     }
     
@@ -128,28 +134,21 @@ static int ClearCache()
 }
 
 //此函数用于检查root方案并返回对应busybox路径
-static int bin_dir()
+static int PrintBinDir()
 {
-    DIR * dir_1 = opendir("/data/adb/magisk");
-    DIR * dir_2 = opendir("/data/adb/ap");
-    DIR * dir_3 = opendir("/data/adb/ksu");
-    
-    if (dir_1 != NULL)
+    if (access(BinDir_1, F_OK) == 0)
     {
-        printf("/data/adb/magisk\n");
-        closedir(dir_1);
+        printf("%s\n", BinDir_1);
         return 0;
     }
-    else if (dir_2 != NULL)
+    else if (access(BinDir_2, F_OK) == 0)
     {
-        printf("/data/adb/ap/bin\n");
-        closedir(dir_2);
+        printf("%s\n", BinDir_2);
         return 0;
     }
-    else if (dir_3 != NULL)
+    else if (access(BinDir_3, F_OK) == 0)
     {
-        printf("/data/adb/ksu/bin\n");
-        closedir(dir_3);
+        printf("%s\n", BinDir_3);
         return 0;
     }
     else
@@ -161,27 +160,27 @@ static int bin_dir()
 }
 
 //此函数用于输出home路径
-static int home_dir()
+static int PrintHomeDir()
 {
-    printf("%s\n", home);
+    printf("%s\n", home_dir);
     return 0;
 }
 
 //此函数用于输出work路径
-static int work_dir()
+static int PrintWorkDir()
 {
-    printf("/data/adb/wipe_cache\n");
+    printf("%s\n", work_dir);
     return 0;
 }
 
 //此函数用于获取模块版本
-static int version()
+static int GetVersion()
 {
     char * var_fp = NULL;
     char var[64] = "", module_file[64] = "";
-    snprintf(module_file, sizeof(module_file), "%s/module.prop", home);
-    FILE * module_file_fp = fopen(module_file, "r");
+    snprintf(module_file, sizeof(module_file), "%s/module.prop", home_dir);
     
+    FILE * module_file_fp = fopen(module_file, "r");
     if (module_file_fp)
     {
         while (fgets(var, sizeof(var), module_file_fp))
@@ -198,6 +197,11 @@ static int version()
         }
         fclose(module_file_fp);
     }
+    else
+    {
+        printf("Get Version Error !\n");
+        return 1;
+    }
     
     return 0;
 }
@@ -206,21 +210,21 @@ static int version()
 static int md_help()
 {
     printf("\nUsage: ClearBox\n");
-    printf("or ClearBox [ OPTION ]:\n");
-    printf("    -u\n");
-    printf("           ~ Update Profile\n");
-    printf("    -c\n");
-    printf("           ~ Run Clear All\n");
-    printf("    -v\n");
-    printf("           ~ Version\n");
-    printf("    -b\n");
-    printf("           ~ Root Manager Busybox Bin Dir\n");
-    printf("    -h\n");
-    printf("           ~ ClearBox Module Home Dir\n");
-    printf("    -w\n");
-    printf("           ~ ClearBox Module Work Dir\n");
-    printf("    -help\n");
-    printf("           ~ Help\n\n");
+    printf("Or ClearBox -[OPTION]:\n");
+    printf("\t-u\n");
+    printf("\t\t~ Update Profile\n");
+    printf("\t-c\n");
+    printf("\t\t~ Run Clear All\n");
+    printf("\t-v\n");
+    printf("\t\t~ Version\n");
+    printf("\t-b\n");
+    printf("\t\t~ Root Manager Busybox Bin Dir\n");
+    printf("\t-h\n");
+    printf("\t\t~ ClearBox Module Home Dir\n");
+    printf("\t-w\n");
+    printf("\t\t~ ClearBox Module Work Dir\n");
+    printf("\t-help\n");
+    printf("\t\t~ Help\n\n");
     
     return 0;
 }

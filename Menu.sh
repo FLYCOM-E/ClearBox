@@ -805,19 +805,19 @@ $(echo -e "\033[44m[外部储存相关]\033[0m")
                      ;;
                    6)
                      clear
-                     echo " » 当前最小大小为 $ClearCacheSize"
+                     echo " » 当前最小大小为 $ClearCacheSize M"
                      echo -n " » 是否设置新值？(y/N):"
                      read put
                      case "$put" in
                          y | Y)
-                           echo -n " » 请输入新值：(单位：字节. 范围：10M):"
+                           echo -n " » 请输入新值：(单位：兆（M）. 范围：100M):"
                            read put
                            if ! echo "$put" | grep [0-9] >>/dev/null; then
                                "$bin_dir/busybox" echo -ne "\033[1;32m » 请输入纯数字！设置失败！！\033[0m"
                            elif [ "$put" -lt 1 ]; then
-                               "$bin_dir/busybox" echo -ne "\033[1;32m » 设置大小小于1字节！设置失败！！\033[0m"
-                           elif [ "$put" -ge 10485760 ]; then
-                               "$bin_dir/busybox" echo -ne "\033[1;32m » 设置大小超过10兆！设置失败！！\033[0m"
+                               "$bin_dir/busybox" echo -ne "\033[1;32m » 设置大小小于1兆！设置失败！！\033[0m"
+                           elif [ "$put" -ge 100 ]; then
+                               "$bin_dir/busybox" echo -ne "\033[1;32m » 设置大小超过100兆！设置失败！！\033[0m"
                            else
                                sed -i 's/ClearCacheSize=[0-9]*/ClearCacheSize='"$put"'/g' "$work_dir/settings.prop"
                                echo " » 设定成功！"
