@@ -116,6 +116,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
          ;;
        6)
          clear
+         [ -z "$(ls "$work_dir/清理规则/")" ] && echo " » 无App清理配置！" && return 1
          count=0
          echo "      "
          "$bin_dir/busybox" echo -e "\033[44m[软件清理，建议预检查配置文件]\033[0m"

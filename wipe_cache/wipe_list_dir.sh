@@ -20,7 +20,7 @@ fi
 ######
 mkdir -p "$work_dir/清理配置"
 ######
-[ -z "$(ls "$work_dir/清理配置/")" ] && exit 0
+[ -z "$(ls "$work_dir/清理配置/")" ] && echo " » 无清理规则！" && exit 1
 for Pro_File in "$work_dir/清理配置"/*; do
     Pro_File_Name=$(echo "$Pro_File" | cut -f6 -d '/')
     
