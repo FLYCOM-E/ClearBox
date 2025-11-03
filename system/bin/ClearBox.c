@@ -11,8 +11,8 @@
 #define work_dir "/data/adb/wipe_cache"
 //bin目录
 #define BinDir_1 "/data/adb/magisk"
-#define BinDir_2 "/data/adb/ap"
-#define BinDir_3 "/data/adb/ksu"
+#define BinDir_2 "/data/adb/ap/bin"
+#define BinDir_3 "/data/adb/ksu/bin"
 
 static int RunService();
 static int md_menu();
