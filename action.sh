@@ -18,7 +18,6 @@ else
     exec 2>>/dev/null
 fi
 ######
-sh "$home_dir/all.sh" ClearAll &
-wait
+"$home_dir/BashCore" ClearAll
 
 exit 0

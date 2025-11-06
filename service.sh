@@ -30,7 +30,7 @@ StartSettings()
     [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$FileClear_Disk" ] && echo "FileClear_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
     [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=1024" >> "$work_dir/settings.prop" && ReSource=1
+    [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=5" >> "$work_dir/settings.prop" && ReSource=1
     }
     ######
     prosetting()

@@ -26,7 +26,7 @@ ls "$dir/Android/data/" | while read cd1; do
     elif [ ! -d "$dir/Android/data/$cd1/cache" ]; then
         continue
     elif [ "$(du -s -m "$dir/Android/data/$cd1/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
-        echo " » 跳过 $UserAppList"
+        echo " » 跳过 $cd1"
         continue
     fi
     rm -rf "$dir/Android/data/$cd1/cache/"*
@@ -65,7 +65,7 @@ ls /storage | grep .*- | while read diskdir; do
         elif [ ! -d "$dir/Android/data/$cd2/cache" ]; then
             continue
         elif [ "$(du -s -m "$dir/Android/data/$cd2/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
-            echo " » 跳过 $UserAppList"
+            echo " » 跳过 $cd2"
             continue
         fi
         rm -rf "$dir/Android/data/$cd2/cache/"*

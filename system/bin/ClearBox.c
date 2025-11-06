@@ -121,7 +121,7 @@ static int ClearCache()
 {
     int end = 0;
     char command[256] = "";
-    snprintf(command, sizeof(command), "bash '%s/all.sh' ClearAll", home_dir);
+    snprintf(command, sizeof(command), "%s/BashCore ClearAll", home_dir);
     
     end = system(command);
     if (end != 0)

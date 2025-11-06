@@ -24,8 +24,6 @@ else
     DebugTitle=""
 fi
 ######
-echo "[ $(date) ]：打开终端UI" >> "$work_dir/运行日志.log"
-######
 # 菜单函数
 md_menu()
 {
@@ -55,23 +53,19 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
    case "$in_put" in
        1)
          clear
-         sh "$home_dir/all.sh" ClearAll &
-         wait
+         "$home_dir/BashCore" ClearAll
          ;;
        2)
          clear
-         sh "$home_dir/all.sh" List_Dir &
-         wait
+         "$home_dir/BashCore" List_Dir
          ;;
        3)
          clear
-         sh "$home_dir/all.sh" All_Dir &
-         wait
+         "$home_dir/BashCore" All_Dir
          ;;
        4)
          clear
-         sh "$home_dir/all.sh" ClearCache &
-         wait
+         "$home_dir/BashCore" ClearCache
          ;;
        5)
          clear
@@ -101,8 +95,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
                 case "$put_2" in
                     y | Y)
                       clear
-                      sh "$home_dir/all.sh" File_Clear "$Fname" &
-                      wait
+                      "$home_dir/BashCore" File_Clear "$Fname"
                       break
                       ;;
                     *)
@@ -139,8 +132,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
             if [ "$(echo "${Num[$C_num]}" | cut -f1 -d ',')" = "$put1" ]; then
                 Fname=$(echo "${Num[$C_num]}" | cut -f2 -d ',')
                 clear
-                sh "$home_dir/all.sh" Clear_App "$Fname" &
-                wait
+                "$home_dir/BashCore" Clear_App "$Fname"
                 break
             fi
             [ "$C_num" = "$count" ] && "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m" && break
@@ -152,8 +144,7 @@ $(echo -e "\033[44m[欢迎使用 ClearBox]\033[0m")
          case "$put_2" in
              y | Y)
                clear
-               sh "$home_dir/all.sh" Clear_SCache &
-               wait
+               "$home_dir/BashCore" Clear_SCache
                ;;
              *)
                "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -204,7 +195,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowClearTime")
                      elif [ "$day_num" -ge 30 ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 设置天数超过30天！设置失败！！\033[0m"
                      else
-                         echo "0 0 */$day_num * * sh $home_dir/all.sh ClearAll" > "$work_dir/CRON/ClearCache/root"
+                         echo "0 0 */$day_num * * $home_dir/BashCore ClearAll" > "$work_dir/CRON/ClearCache/root"
                          echo " » 设定成功！"
                      fi
                      ;;
@@ -245,7 +236,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                      elif [ "$N_num" -ge 24 ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过24小时！设置失败！！\033[0m"
                      else
-                         echo "0 */$N_num * * * sh $home_dir/all.sh File_All" > "$work_dir/CRON/FileAll/root"
+                         echo "0 */$N_num * * * $home_dir/BashCore File_All" > "$work_dir/CRON/FileAll/root"
                          echo " » 设定成功！"
                      fi
                      ;;
@@ -286,7 +277,7 @@ $(echo -e "\033[44m[设定时间    $(echo "当前设置时间：$NowFileAllTime
                      elif [ "$S_num" -ge 60 ]; then
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 设置时间超过1小时！设置失败！！\033[0m"
                      else
-                         echo "*/$S_num * * * * sh $home_dir/all.sh All_Dir" > "$work_dir/CRON/ClearDir/root"
+                         echo "*/$S_num * * * * $home_dir/BashCore All_Dir" > "$work_dir/CRON/ClearDir/root"
                          echo " » 设定成功！"
                      fi
                      ;;
@@ -327,8 +318,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                    case "$put_3" in
                        y | Y)
                          clear
-                         sh "$home_dir/all.sh" StopInstall STOP &
-                         wait
+                         "$home_dir/BashCore" StopInstall STOP
                          ;;
                        *)
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -336,8 +326,7 @@ $(echo -e "\033[44m[APP更新安装管理]\033[0m")
                    esac
                else
                    clear
-                   sh "$home_dir/all.sh" StopInstall RESET &
-                   wait
+                   "$home_dir/BashCore" StopInstall RESET
                fi
                ;;
              *)
@@ -370,8 +359,7 @@ $(echo -e "\033[44m[内部储存固定功能]\033[0m")
                    case "$put_3" in
                        y | Y)
                          clear
-                         sh "$home_dir/all.sh" StopStorage STOP &
-                         wait
+                         sh "$home_dir/BashCore" StopStorage STOP
                          ;;
                        *)
                          "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -379,8 +367,7 @@ $(echo -e "\033[44m[内部储存固定功能]\033[0m")
                    esac
                else
                    clear
-                   sh "$home_dir/all.sh" StopStorage RESET &
-                   wait
+                   "$home_dir/BashCore" StopStorage RESET
                fi
                ;;
              *)
@@ -448,10 +435,6 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
                        echo " » $package 不在软件包列表"
                        continue
                    else
-                       if pm list package -s | grep "package:$package\$" >> /dev/null; then
-                           echo " » $package 请不要添加系统软件"
-                           continue
-                       fi
                        echo "$package" >> "$work_dir/whitelist.prop"
                        echo " » $package 已成功加入白名单!"
                    fi
@@ -484,8 +467,7 @@ $(echo -e "\033[44m[阻止缓存]\033[0m")
          case "$put_4" in
              y | Y)
                clear
-               sh "$home_dir/all.sh" File_All &
-               wait
+               "$home_dir/BashCore" File_All
                ;;
              *)
                "$bin_dir/busybox" echo -ne "\033[1;32m » 您选择了否！正在返回主页！\033[0m"
@@ -509,8 +491,7 @@ $(echo -e "\033[44m[磁盘 & 软件优化]\033[0m")
          case "$put3" in
              1)
                clear
-               sh "$home_dir/all.sh" F2fs_GC &
-               wait
+               "$home_dir/BashCore" F2fs_GC
                ;;
              2)
                clear
@@ -528,8 +509,7 @@ $(echo -e "\033[44m[DEXOAT]\033[0m")
                read put3
                case "$put3" in
                    1)
-                     sh "$home_dir/all.sh" Dexoat_1 &
-                     wait
+                     "$home_dir/BashCore" Dexoat_1
                      ;;
                    2)
                      clear
@@ -550,18 +530,15 @@ $(echo -e "\033[44m[模式选择]\033[0m")
                      case "$put3" in
                          1)
                              clear
-                             sh "$home_dir/all.sh" Dexoat_2 speed &
-                             wait
+                             "$home_dir/BashCore" Dexoat_2 speed
                              ;;
                          2)
                              clear
-                             sh "$home_dir/all.sh" Dexoat_2 speed-profile &
-                             wait
+                             "$home_dir/BashCore" Dexoat_2 speed-profile
                              ;;
                          3)
                              clear
-                             sh "$home_dir/all.sh" Dexoat_2 everything &
-                             wait
+                             "$home_dir/BashCore" Dexoat_2 everything
                              ;;
                          *)
                              "$bin_dir/busybox" echo -ne "\033[1;32m » 输入错误！！正在返回主页！\033[0m"
