@@ -23,31 +23,31 @@ whitelist="$work_dir/ClearWhitelist.prop"
 ######
 WipeCache()
 {
+CleanDiskSize=0
 # 遍历清空内部储存软件cache文件夹
 for userid_dir in "$dir"/*; do
     for UserAppList in $(pm list package -3 | cut -f2 -d ':'); do
+        [ ! -d "$userid_dir/$UserAppList/cache" ] && continue
+        CacheSize=$(du -s -m "$userid_dir/$UserAppList/cache" | cut -f1 -d '	')
         if grep ^"$UserAppList" "$whitelist" >/dev/null; then
 	        continue
-	    fi
-        if [ ! -d "$userid_dir/$UserAppList" ]; then
-            continue
-        elif [ "$(du -s -m "$userid_dir/$UserAppList/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
+        elif [ "$CacheSize" -lt "$ClearCacheSize" ]; then
             echo " » 跳过 $UserAppList"
             continue
         fi
-        rm -rf "$userid_dir/$UserAppList/cache/"* &
-        rm -rf "$userid_dir/$UserAppList/code_cache/"* &
-        wait
+        rm -rf "$userid_dir/$UserAppList/cache"/*
+        rm -rf "$userid_dir/$UserAppList/code_cache"/*
         echo " » $UserAppList 缓存已清除"
+        CleanDiskSize=$((CleanDiskSize + CacheSize))
     done
 done
 }
 ######
 dir="$data_dir"
-WipeCache && echo " » 内部储存软件缓存删除完成"
+WipeCache && echo -e " >>> 内部储存软件缓存删除完成\n >>> 共清理：$CleanDiskSize兆"
 [ "$cleardisk" = 0 ] && exit 0
 if [ -d "$micro_dir" ]; then
     dir="$micro_dir"
-    WipeCache && echo " » 外部储存软件缓存删除完成"
+    WipeCache && echo -e " >>> 外部储存软件缓存删除完成\n >>> 共清理：$CleanDiskSize兆"
 fi
 exit 0
