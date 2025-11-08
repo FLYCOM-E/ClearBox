@@ -80,7 +80,7 @@ StartSettings
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
 if [ "$stopcache" = 1 ]; then
-    if ! ps -A | grep StopCache; then
+    if ! pgrep -x "StopCache"; then
         nohup setsid StopCache >>/dev/null &
     fi
 fi
