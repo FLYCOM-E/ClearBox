@@ -136,13 +136,19 @@ int main()
         //获取前台软件包名
         char NowPackageName[64] = "";
         FILE * NowPackageName_fp = popen("dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '", "r");
+        if (NowPackageName_fp == NULL)
+        {
+            printf("Get Top App Failed. Continue");
+            continue;
+        }
         fgets(NowPackageName, sizeof(NowPackageName), NowPackageName_fp);
         NowPackageName[strcspn(NowPackageName, "\n")] = 0;
         pclose(NowPackageName_fp);
     
-        //检查屏幕状态是否关闭或为控制中心、电源菜单
+        //检查屏幕状态是否关闭或为控制中心、电源菜单、空
         //NotificationShade是A12及以上控制中心新名称
-        if (strstr(NowPackageName, "NotificationShade") ||
+        if (strcmp(NowPackageName, "") == 0 ||
+           strstr(NowPackageName, "NotificationShade") ||
            strstr(NowPackageName, "StatusBar") ||
            strstr(NowPackageName, "ActionsDialog"))
         {
