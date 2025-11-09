@@ -8,8 +8,7 @@ work_dir=$(ClearBox -w)
 exec 2>>/dev/null
 ######
 set=0
-while true; do
-    [ "$(getprop sys.boot_completed)" = "1" ] || [ -d "/storage/emulated/0/" ] && break
+while [ "$(getprop sys.boot_completed)" != "1" ]; do
     [ "$set" = 120 ] && touch "$home_dir/disable" && exit 1
     set=$((set + 1))
     sleep 5
@@ -94,4 +93,5 @@ if ! pgrep -f "crond -c $work_dir/CRON/" > /dev/null; then
 fi
 ######
 chmod -R 700 "$work_dir/"
+
 exit 0

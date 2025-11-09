@@ -260,6 +260,11 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
         }
     }
     
+    if (strcmp(topApp, resetApp) == 0)
+    {
+        return 0;
+    }
+    
     //检查缓存目录是否真实存在
     if (access(resetAppDir, F_OK) == 0)
     {
