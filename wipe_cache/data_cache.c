@@ -127,7 +127,7 @@ static int WipeCache(char * workDir, char * whiteList, int ClearCacheSize)
         FILE * packageList_fp = popen("pm list package -3 2>/dev/null", "r");
         if (packageList_fp == NULL)
         {
-            printf(" » 遍历软件列表失败！\n");
+            printf(" » 获取软件列表失败！\n");
             return 0;
         }
         
@@ -171,12 +171,14 @@ static int WipeCache(char * workDir, char * whiteList, int ClearCacheSize)
                     {
                         CleanSize += CacheSize; // 记录清理大小
                         printf(" » %s 缓存已清除\n", packageList + 8);
+                        fflush(stdout);
                     }
                 }
             }
             else
             {
                 printf(" » 跳过 %s\n", packageList + 8);
+                fflush(stdout);
             }
         }
         if (packageList_fp) pclose(packageList_fp);
@@ -211,4 +213,3 @@ static int whiteListcheck(char * whiteList, char * App)
     }
     return 0;
 }
-
