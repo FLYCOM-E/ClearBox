@@ -195,7 +195,7 @@ static int clear_cache(char * home_dir)
 {
     //定义命令 & Log文件
     char command[64] = "";
-    snprintf(command, sizeof(command), "%s/wipe_cache/data_cache.sh", home_dir);
+    snprintf(command, sizeof(command), "%s/wipe_cache/data_cache", home_dir);
     if (access(command, F_OK))
     {
         return 1;
