@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <sys/wait.h>
 
 static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workDir);
 
@@ -27,7 +28,7 @@ int main()
     char data_dir[64] = "/data/data";
     
     //micro_dir定义
-    char cardname[64] = "", micro_dir[128] = "";
+    char cardname[128] = "", micro_dir[256] = "";
     FILE * cardname_fp = popen("ls /mnt/expand/ | cut -f1 -d ' '", "r");
     fgets(cardname, sizeof(cardname), cardname_fp);
     cardname[strcspn(cardname, "\n")] = 0;
@@ -39,7 +40,7 @@ int main()
     snprintf(RunStart_File, sizeof(RunStart_File), "%s/RunStart", work_dir);
     
     //定义待处理app临时储存变量
-    char NowApp1[64] = "", NowApp2[64] = "", NowApp3[64] = "", NowApp4[64] = "", NowApp5[64] = "", reset_app[64] = "";
+    char NowApp[5][64] = {0}, reset_app[64] = "";
     
     //提取RunStart储存值
     char str[64] = "";
@@ -60,7 +61,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    snprintf(NowApp1, sizeof(NowApp1), "%s", str_fp);
+                    snprintf(NowApp[0], sizeof(NowApp[0]), "%s", str_fp);
                 }
             }
             else if (strstr(str, "2="))
@@ -69,7 +70,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    snprintf(NowApp2, sizeof(NowApp2), "%s", str_fp);
+                    snprintf(NowApp[1], sizeof(NowApp[1]), "%s", str_fp);
                 }
             }
             else if (strstr(str, "3="))
@@ -78,7 +79,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    snprintf(NowApp3, sizeof(NowApp3), "%s", str_fp);
+                    snprintf(NowApp[2], sizeof(NowApp[2]), "%s", str_fp);
                 }
             }
             else if (strstr(str, "4="))
@@ -87,7 +88,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    snprintf(NowApp4, sizeof(NowApp4), "%s", str_fp);
+                    snprintf(NowApp[3], sizeof(NowApp[3]), "%s", str_fp);
                 }
             }
             else if (strstr(str, "5="))
@@ -96,7 +97,7 @@ int main()
                 str_fp = strtok(NULL, "=");
                 if (str_fp)
                 {
-                    snprintf(NowApp5, sizeof(NowApp5), "%s", str_fp);
+                    snprintf(NowApp[4], sizeof(NowApp[4]), "%s", str_fp);
                 }
             }
             else if (strstr(str, "reset="))
@@ -164,7 +165,7 @@ int main()
         }
         
         //检查上一次前台App是否与当前一致
-        if (strcmp(NowPackageName, NowApp1) == 0)
+        if (strcmp(NowPackageName, NowApp[0]) == 0)
         {
             //渐进式等待
             cycle_count++;
@@ -182,7 +183,7 @@ int main()
             FILE * RunStart_File_fp = fopen(RunStart_File, "w");
             if (RunStart_File_fp)
             {
-                fprintf(RunStart_File_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", NowPackageName, NowApp1, NowApp2, NowApp3, NowApp4, NowApp5);
+                fprintf(RunStart_File_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", NowPackageName, NowApp[0], NowApp[1], NowApp[2], NowApp[3], NowApp[4]);
                 fclose(RunStart_File_fp);
             }
             
@@ -191,20 +192,20 @@ int main()
         }
         
         //更新值
-        snprintf(reset_app, sizeof(reset_app), "%s", NowApp5);
-        snprintf(NowApp5, sizeof(NowApp5), "%s", NowApp4);
-        snprintf(NowApp4, sizeof(NowApp4), "%s", NowApp3);
-        snprintf(NowApp3, sizeof(NowApp3), "%s", NowApp2);
-        snprintf(NowApp2, sizeof(NowApp2), "%s", NowApp1);
-        snprintf(NowApp1, sizeof(NowApp1), "%s", NowPackageName);
+        snprintf(reset_app, sizeof(reset_app), "%s", NowApp[4]);
+        snprintf(NowApp[4], sizeof(NowApp[4]), "%s", NowApp[3]);
+        snprintf(NowApp[3], sizeof(NowApp[3]), "%s", NowApp[2]);
+        snprintf(NowApp[2], sizeof(NowApp[2]), "%s", NowApp[1]);
+        snprintf(NowApp[1], sizeof(NowApp[1]), "%s", NowApp[0]);
+        snprintf(NowApp[0], sizeof(NowApp[0]), "%s", NowPackageName);
         
         //调用处理函数
-        Stopdata_app(data_dir, NowApp1, reset_app, work_dir);
+        Stopdata_app(data_dir, NowApp[0], reset_app, work_dir);
         
         //如果存在拓展SD则处理
         if (access(micro_dir, F_OK) == 0)
         {
-            Stopdata_app(micro_dir, NowApp1, reset_app, work_dir);
+            Stopdata_app(micro_dir, NowApp[0], reset_app, work_dir);
         }
         
         sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
@@ -216,12 +217,10 @@ int main()
 //此函数用于StopApp缓存
 static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workDir)
 {
-    char topAppDir[128] = "", resetAppDir[128] = "", topAppCommand[128] = "", resetAppCommand[128] = "", whiteList[128] = "";
-    snprintf(topAppDir, sizeof(topAppDir), "%s/%s", dir, topApp);                              //topApp缓存目录定义
-    snprintf(resetAppDir, sizeof(resetAppDir), "%s/%s", dir, resetApp);                           //resetApp缓存目录定义
-    snprintf(topAppCommand, sizeof(topAppCommand), "chattr -R +i %s/cache", topAppDir);    //topApp缓存阻止命令
-    snprintf(resetAppCommand, sizeof(resetAppCommand), "chattr -R -i %s/cache", resetAppDir); //resetApp缓存阻止命令
-    snprintf(whiteList, sizeof(whiteList), "%s/whitelist.prop", workDir);                           //定义WhiteList
+    char topAppDir[256] = "", resetAppDir[256] = "", whiteList[128] = "";
+    snprintf(topAppDir, sizeof(topAppDir), "%s/%s/cache", dir, topApp);     //topApp缓存目录定义
+    snprintf(resetAppDir, sizeof(resetAppDir), "%s/%s/cache", dir, resetApp); //resetApp缓存目录定义
+    snprintf(whiteList, sizeof(whiteList), "%s/whitelist.prop", workDir);       //定义WhiteList
     int inWhiteList = 0;
     
     //检查缓存目录是否真实存在
@@ -240,6 +239,7 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
                 {
                     //如果在白名单找到该包名则将inWhiteList置1
                     inWhiteList = 1;
+                    break;
                 }
             }
             fclose(whiteList_fp);
@@ -248,17 +248,39 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
         //检查inWhiteList = 0时执行缓存阻止
         if (inWhiteList == 0)
         {
-            int i = system(topAppCommand);
-            if (i == 0)
+            pid_t newPid = fork();
+            if (newPid == -1)
             {
-                printf(" » Stop: %s\n", topApp);
+                printf(" » Stop: %s : Fork Err\n", topApp);
+                goto reset; // 失败后直接跳过Stop部分
+            }
+            if (newPid == 0)
+            {
+                execlp("chattr", "StopCacheChattr", "-R", "+i", topAppDir, NULL);
+                _exit(127);
             }
             else
             {
-                printf(" » Stop: %s Error\n", topApp);
+                int end = 0;
+                if (waitpid(newPid, &end, 0) == -1)
+                {
+                    printf(" » Stop: %s : Wait Err\n", topApp);
+                    goto reset; // 失败后直接跳过Stop部分
+                }
+                
+                if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
+                {
+                    printf(" » Stop: %s\n", topApp);
+                }
+                else
+                {
+                    printf(" » Stop: %s Error\n", topApp);
+                }
             }
         }
     }
+    
+    reset:
     
     if (strcmp(topApp, resetApp) == 0)
     {
@@ -268,16 +290,35 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
     //检查缓存目录是否真实存在
     if (access(resetAppDir, F_OK) == 0)
     {
-        int i = system(resetAppCommand);
-        if (i == 0)
+        pid_t newPid = fork();
+        if (newPid == -1)
         {
-            printf(" » Reset: %s\n", resetApp);
+            printf(" » Reset: %s : Fork Err\n", resetApp);
+            return 1;
+        }
+        if (newPid == 0)
+        {
+            execlp("chattr", "StopCacheChattr", "-R", "-i", resetAppDir, NULL);
+            _exit(127);
         }
         else
         {
-            printf(" » Reset: %s Error\n", resetApp);
+            int end = 0;
+            if (waitpid(newPid, &end, 0) == -1)
+            {
+                printf(" » Reset: %s Error : Wait Err\n", resetApp);
+                return 1;
+            }
+            
+            if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
+            {
+                printf(" » Reset: %s\n", resetApp);
+            }
+            else
+            {
+                printf(" » Reset: %s Error\n", resetApp);
+            }
         }
     }
-    
     return 0;
 }
