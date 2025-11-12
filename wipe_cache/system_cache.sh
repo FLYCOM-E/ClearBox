@@ -22,13 +22,7 @@ data_dir1="/data/user"
 # 遍历清空系统组件cache文件夹
 for userid_dir in "$data_dir1"/*; do
     for SystemAppList in $(pm list package -s | cut -f2 -d ':'); do
-        if grep ^"$SystemAppList" "$whitelist" >/dev/null; then
-            continue
-        fi
         if [ ! -d "$userid_dir/$SystemAppList" ]; then
-            continue
-        elif [ "$(du -s -m "$userid_dir/$SystemAppList/cache" | cut -f1 -d '	')" -lt "$ClearCacheSize" ]; then
-            echo " » 跳过 $SystemAppList"
             continue
         fi
         rm -r "$userid_dir/$SystemAppList/cache/"* &
