@@ -11,7 +11,6 @@ fi
 bin_dir=$(ClearBox -b)
 home_dir=$(ClearBox -h)
 work_dir=$(ClearBox -w)
-source "$work_dir/settings.prop"
 if [ "$DebugPro" = 1 ]; then
     exec 2>>"$work_dir/运行日志.log"
 else
@@ -797,6 +796,7 @@ clear
 ######
 # 运行函数
 while true; do
+    source "$work_dir/settings.prop"
     md_menu
     sleep 1
 done

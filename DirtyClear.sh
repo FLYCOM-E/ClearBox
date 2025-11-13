@@ -35,6 +35,4 @@ rm -f "$work_dir/root_backup1"
 rm -f "$work_dir/root_backup2"
 rm -f "$work_dir/root_backup3"
 
-exit 0
-
-
+true

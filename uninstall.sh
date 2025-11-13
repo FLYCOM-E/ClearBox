@@ -21,8 +21,6 @@ fi
 # 还原模块设置并执行卸载
 uninstall_md()
 {
-sed -E -i 's/(stopinstall|stopcache)=1/\1=0/g' "$work_dir/settings.prop"
-sh "$home_dir/service.sh"
 touch "$home_dir/disable"
 touch "$home_dir/remove"
 chattr -R -i /data
@@ -35,5 +33,4 @@ echo " » 感谢您的使用与支持，欢迎下次光临😋！！"
 sleep 3
 pm uninstall "wipe.cache.module"
 rm -r "$work_dir"
-rm -r "$home_dir"
 exit 0

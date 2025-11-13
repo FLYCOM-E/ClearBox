@@ -49,7 +49,8 @@ int main()
     */
     char * key_fp = NULL;
     int ClearCacheSize = 0, cleardisk = 0;
-    char settingsFile[64] = "", key[32] ="";
+    char settingsFile[strlen(work_dir) + 32], key[32] ="";
+    settingsFile[0] = '\n';
     snprintf(settingsFile, sizeof(settingsFile), "%s/settings.prop", work_dir);
     FILE * settingsFile_fp = fopen(settingsFile, "r");
     if (settingsFile_fp)
@@ -196,7 +197,7 @@ static int WipeCache(char * workDir, char * whiteList, int ClearCacheSize)
 */
 static int whiteListcheck(char * whiteList, char * App)
 {
-    // 打开白名单文件并遍历查找
+    // 打开白名单文件并遍历查找包名
     char package[64] = "";
     FILE * whiteList_fp = fopen(whiteList, "r");
     if (whiteList_fp)

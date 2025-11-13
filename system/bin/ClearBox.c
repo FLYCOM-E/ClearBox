@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <strings.h>
 #include <dirent.h>
+#include <sys/wait.h>
 
 //home目录
 #define home_dir "/data/adb/modules/wipe_cache"
@@ -13,6 +14,8 @@
 #define BinDir_1 "/data/adb/magisk"
 #define BinDir_2 "/data/adb/ap/bin"
 #define BinDir_3 "/data/adb/ksu/bin"
+
+static int Run(char * bash, char * str);
 
 static int RunService();
 static int md_menu();
@@ -33,7 +36,8 @@ int main(int COMI, char * COM[])
     }
     
     //定义调用
-    if (COMI < 2)
+    if (COMI < 2 ||
+       strcasecmp(COM[1], "-m") == 0)
     {
         return md_menu();
     }
@@ -78,21 +82,63 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
+// 通用函数，用于运行脚本
+static int Run(char * bash, char * str)
+{
+    char * args[4] = {NULL};
+    if (strstr(bash, ".sh"))
+    {
+        args[0] = "bash";
+        args[1] = bash;
+        args[2] = str;
+        args[3] = NULL;
+    }
+    else
+    {
+        args[0] = bash;
+        args[1] = str;
+        args[2] = NULL;
+    }
+    
+    pid_t newPid = fork();
+    if (newPid == -1)
+    {
+        return 1;
+    }
+    if (newPid == 0)
+    {
+        execvp(args[0], args);
+        _exit(1);
+    }
+    else
+    {
+        int end = 0;
+        if (waitpid(newPid, &end, 0) == -1)
+        {
+            return 1;
+        }
+        if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
+        {
+            return 1;
+        }
+    }
+    
+    return 0;
+}
+
 //此函数用于更新运行模块server
 static int RunService()
 {
-    int end = 0;
-    char command[256] = "";
-    snprintf(command, sizeof(command), "sh '%s/service.sh' >>/dev/null 2>&1", home_dir);
+    char bash[128] = "";
+    snprintf(bash, sizeof(bash), "%s/service.sh", home_dir);
     
-    end = system(command);
-    if (end == 0)
+    if (Run(bash, "") == 0)
     {
         printf(" » Done\n");
     }
     else
     {
-        printf(" » Run `service.sh` Error! \n");
+        printf(" » Run Service error\n");
         return 1;
     }
     
@@ -102,14 +148,16 @@ static int RunService()
 //此函数用于启动模块终端UI脚本
 static int md_menu()
 {
-    int end = 0;
-    char command[256] = "";
-    snprintf(command, sizeof(command), "bash '%s/Menu.sh'", home_dir);
+    char bash[128] = "";
+    snprintf(bash, sizeof(bash), "%s/Menu.sh", home_dir);
     
-    end = system(command);
-    if (end != 0)
+    if (Run(bash, "") == 0)
     {
-        printf(" » Start Menu Error! \n");
+        printf(" » Bye！欢迎再来❤️❤️\n");
+    }
+    else
+    {
+        printf(" » Start Menu error\n");
         return 1;
     }
     
@@ -119,14 +167,12 @@ static int md_menu()
 //此函数用于清理操作
 static int ClearCache()
 {
-    int end = 0;
-    char command[256] = "";
-    snprintf(command, sizeof(command), "%s/BashCore ClearAll", home_dir);
+    char bash[128] = "";
+    snprintf(bash, sizeof(bash), "%s/BashCore", home_dir);
     
-    end = system(command);
-    if (end != 0)
+    if (Run(bash, "ClearAll") != 0)
     {
-        printf(" » Clear Error! \n");
+        printf(" » Start Clear Error! \n");
         return 1;
     }
     
@@ -192,18 +238,16 @@ static int GetVersion()
                 if (var_fp)
                 {
                     printf("ClearBox Version: %s", var_fp);
+                    fclose(module_file_fp);
+                    return 0;
                 }
             }
         }
-        fclose(module_file_fp);
-    }
-    else
-    {
-        printf("Get Version Error !\n");
-        return 1;
     }
     
-    return 0;
+    fclose(module_file_fp);
+    printf("Get Version Error !\n");
+    return 1;
 }
 
 //help
@@ -211,6 +255,8 @@ static int md_help()
 {
     printf("\nUsage: ClearBox\n");
     printf("Or ClearBox -[OPTION]:\n");
+    printf("\t-m\n");
+    printf("\t\t~ Screen Menu\n");
     printf("\t-u\n");
     printf("\t\t~ Update Profile\n");
     printf("\t-c\n");
