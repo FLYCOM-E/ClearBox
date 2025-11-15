@@ -7,6 +7,9 @@
 #include <sys/types.h>
 #include <string.h>
 #include <stdbool.h>
+#include <sys/wait.h>
+
+static int Run(char * cmd, char * str, char * str2);
 
 static int clear_cache(char * home_dir);
 static int clear_scache(char * home_dir);
@@ -28,16 +31,13 @@ static int freezer(char * home_dir);
 
 int main(int COMI, char * COM[])
 {
-    int i = 0;
-    
     uid_t nowUid = getuid();
     if (nowUid != 0)
     {
         printf(" » Please use root privileges!\n");
         return 1;
     }
-    i = system("ClearBox -v >>/dev/null 2>&1");
-    if (i != 0)
+    if (system("ClearBox -v >>/dev/null 2>&1") != 0)
     {
         printf(" » 模块加载异常，请排查反馈！\n");
         return 1;
@@ -55,7 +55,7 @@ int main(int COMI, char * COM[])
     {
         fgets(home_dir, sizeof(home_dir), home_dir_fp);
         home_dir[strcspn(home_dir, "\n")] = 0;
-        fclose(home_dir_fp);
+        pclose(home_dir_fp);
     }
     
     //work_dir定义
@@ -65,7 +65,7 @@ int main(int COMI, char * COM[])
     {
         fgets(work_dir, sizeof(work_dir), work_dir_fp);
         work_dir[strcspn(work_dir, "\n")] = 0;
-        fclose(work_dir_fp);
+        pclose(work_dir_fp);
     }
     
     //Check and Off the Selinux
@@ -79,12 +79,12 @@ int main(int COMI, char * COM[])
         
         if (strcmp(checkSelinux, "Enforcing") == 0)
         {
-            i = system("setenforce 0");
-            if (i == 0)
+            if (system("setenforce 0") == 0)
             {
                 OffSelinux = 1;
             }
         }
+        pclose(checkSelinux_fp);
     }
     
     //获取当前时间（用于log）
@@ -186,13 +186,59 @@ int main(int COMI, char * COM[])
     }
     
     //ON the Selinux
-    if (OffSelinux == 1)
+    if (OffSelinux == 1) system("setenforce 1");
+    if (logFile_i) fclose(logFile_fp);
+    
+    return 0;
+}
+
+// 一个通用函数，用途：执行脚本
+static int Run(char * cmd, char * str, char * str2)
+{
+    if (access(cmd, F_OK))
     {
-        system("setenforce 1");
+        return 1;
     }
-    if (logFile_i)
+    
+    char * args[5] = {NULL};
+    
+    if (strstr(cmd, ".sh"))
     {
-        fclose(logFile_fp);
+        args[0] = "bash";
+        args[1] = cmd;
+        args[2] = str;
+        args[3] = str2;
+        args[4] = NULL;
+    }
+    else
+    {
+        args[0] = cmd;
+        args[1] = str;
+        args[2] = str2;
+        args[3] = NULL;
+    }
+    
+    pid_t newPid = fork();
+    if (newPid == -1)
+    {
+        return 1;
+    }
+    if (newPid == 0)
+    {
+        execvp(args[0], args);
+        _exit(1);
+    }
+    else
+    {
+        int end = 0;
+        if (waitpid(newPid, &end, 0) == -1)
+        {
+            return 1;
+        }
+        if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
+        {
+            return 1;
+        }
     }
     
     return 0;
@@ -205,11 +251,7 @@ static int clear_cache(char * home_dir)
     char command[strlen(home_dir) + 32];
     command[0] = '\0';
     snprintf(command, sizeof(command), "%s/wipe_cache/data_cache", home_dir);
-    if (access(command, F_OK))
-    {
-        return 1;
-    }
-    return system(command);
+    return Run(command, "", "");
 }
 
 // 清理系统软件缓存
@@ -217,12 +259,8 @@ static int clear_scache(char * home_dir)
 {
     char command[strlen(home_dir) + 32];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/system_cache.sh", home_dir);
-    if (access(command, F_OK))
-    {
-        return 1;
-    }
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/system_cache", home_dir);
+    return Run(command, "", "");
 }
 
 // 运行处理自定义规则
@@ -231,11 +269,7 @@ static int list_dir(char * home_dir)
     char command[strlen(home_dir) + 32];
     command[0] = '\0';
     snprintf(command, sizeof(command), "%s/wipe_cache/wipe_list_dir.sh", home_dir);
-    if (access(command, F_OK))
-    {
-        return 1;
-    }
-    return system(command);
+    return Run(command, "", "");
 }
 
 // 清理储存目录
@@ -248,7 +282,7 @@ static int all_dir(char * home_dir)
     {
         return 1;
     }
-    return system(command);
+    return Run(command, "", "");
 }
 
 // 运行规则清理、清理储存目录
@@ -293,8 +327,8 @@ static int clear_tar(char * home_dir, char * work_dir)
         command_2[0] = '\0';
         snprintf(command_1, sizeof(command_1), "%s/wipe_cache/ClearService1.sh", home_dir);
         snprintf(command_2, sizeof(command_2), "%s/wipe_cache/ClearService2.sh", home_dir);
-        system(command_1);
-        system(command_2);
+        Run(command_1, "", "");
+        Run(command_2, "", "");
     }
     
     return 0;
@@ -306,10 +340,10 @@ static int FileClear(char * home_dir, char * str)
     char command_1[strlen(home_dir) + 64], command_2[strlen(home_dir) + 64];
     command_1[0] = '\0';
     command_2[0] = '\0';
-    snprintf(command_1, sizeof(command_1), "%s/wipe_cache/ClearService1.sh %s", home_dir, str);
-    snprintf(command_2, sizeof(command_2), "%s/wipe_cache/ClearService2.sh %s", home_dir, str);
-    system(command_1);
-    system(command_2);
+    snprintf(command_1, sizeof(command_1), "%s/wipe_cache/ClearService1.sh", home_dir);
+    snprintf(command_2, sizeof(command_2), "%s/wipe_cache/ClearService2.sh", home_dir);
+    Run(command_1, str, "");
+    Run(command_2, str, "");
     return 0;
 }
 
@@ -318,8 +352,8 @@ static int ClearApp(char * home_dir, char * str)
 {
     char command[strlen(home_dir) + 64];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/AppClean.sh %s", home_dir, str);
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/AppClean.sh", home_dir);
+    return Run(command, str, "");
 }
 
 // 自定义格式文件归类
@@ -330,8 +364,8 @@ static int file_all(char * home_dir)
     command_2[0] = '\0';
     snprintf(command_1, sizeof(command_1), "%s/wipe_cache/file_1.sh", home_dir);
     snprintf(command_2, sizeof(command_2), "%s/wipe_cache/file_2.sh", home_dir);
-    system(command_1);
-    system(command_2);
+    Run(command_1, "", "");
+    Run(command_2, "", "");
     return 0;
 }
 
@@ -369,8 +403,8 @@ static int file_all2(char * home_dir, char * work_dir)
         command_2[0] = '\0';
         snprintf(command_1, sizeof(command_1), "%s/wipe_cache/file_1.sh", home_dir);
         snprintf(command_2, sizeof(command_2), "%s/wipe_cache/file_2.sh", home_dir);
-        system(command_1);
-        system(command_2);
+        Run(command_1, "", "");
+        Run(command_2, "", "");
     }
     
     return 0;
@@ -381,8 +415,8 @@ static int STOPInstall(char * home_dir, char * str)
 {
     char command[strlen(home_dir) + 64];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/StopInstall.sh %s", home_dir, str);
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/StopInstall.sh", home_dir);
+    return Run(command, str, "");
 }
 
 // 内部储存固定
@@ -390,8 +424,8 @@ static int STOPStorage(char * home_dir, char * str)
 {
     char command[strlen(home_dir) + 64];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/StopStorage.sh %s", home_dir, str);
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/StopStorage.sh", home_dir);
+    return Run(command, str, "");
 }
 
 // 磁盘GC
@@ -399,8 +433,8 @@ static int f2fs_GC(char * home_dir)
 {
     char command[strlen(home_dir) + 32];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/f2fs_GC.sh F2FS_GC", home_dir);
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/f2fs_GC.sh", home_dir);
+    return Run(command, "F2FS_GC", "");
 }
 
 // 快速GC
@@ -408,8 +442,8 @@ static int fast_GC(char * home_dir)
 {
     char command[strlen(home_dir) + 32];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/f2fs_GC.sh FAST_GC", home_dir);
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/f2fs_GC.sh", home_dir);
+    return Run(command, "FAST_GC", "");
 }
 
 // Dexoat 优化1：触发系统Dexoat
@@ -417,8 +451,8 @@ static int Dexoat_SYSTEM_DEXOAT(char * home_dir)
 {
     char command[strlen(home_dir) + 32];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh SYSTEM_DEXOAT", home_dir);
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh", home_dir);
+    return Run(command, "SYSTEM_DEXOAT", "");
 }
 
 // Dexoat 优化2：自定义模式Dexoat
@@ -426,8 +460,8 @@ static int Dexoat_FAST_DEXOAT(char * home_dir, char * str)
 {
     char command[strlen(home_dir) + 64];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh FAST_DEXOAT %s", home_dir, str);
-    return system(command);
+    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh", home_dir);
+    return Run(command, "FAST_DEXOAT", str);
 }
 
 // 其它优化，打开原生墓碑
@@ -436,5 +470,5 @@ static int freezer(char * home_dir)
     char command[strlen(home_dir) + 32];
     command[0] = '\0';
     snprintf(command, sizeof(command), "%s/wipe_cache/FreeZer.sh", home_dir);
-    return system(command);
+    return Run(command, "", "");
 }

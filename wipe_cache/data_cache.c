@@ -25,7 +25,7 @@ int main()
     char work_dir[64] = "";
     FILE * work_dir_fp = popen("ClearBox -w 2>/dev/null", "r");
     fgets(work_dir, sizeof(work_dir), work_dir_fp);
-    fclose(work_dir_fp);
+    pclose(work_dir_fp);
     work_dir[strcspn(work_dir, "\n")] = 0;
     
     // data_dir定义
@@ -103,8 +103,8 @@ int ClearCacheSize
 static int WipeCache(char * workDir, char * whiteList, int ClearCacheSize)
 {
     // 定义所需变量
-    int CacheSize = 0, CleanSize = 0;
-    char CacheSize_C[16] = "", AppDir[128] = "", packageList[128] = "", command[128] = "", clearCommand[128] = "";
+    int CacheSize = 0, CleanSize = 0, count = 0, noCount = 0;
+    char CacheSize_C[16] = "", AppDir[256] = "", packageList[256] = "", command[256] = "", clearCommand[256] = "";
     
     // 打开user目录
     struct dirent * uiddir;
@@ -172,13 +172,19 @@ static int WipeCache(char * workDir, char * whiteList, int ClearCacheSize)
                     {
                         CleanSize += CacheSize; // 记录清理大小
                         printf(" » %s 缓存已清除\n", packageList + 8);
+                        count++;
                         fflush(stdout);
+                    }
+                    else
+                    {
+                        noCount++;
                     }
                 }
             }
             else
             {
                 printf(" » 跳过 %s\n", packageList + 8);
+                noCount++;
                 fflush(stdout);
             }
         }
@@ -187,6 +193,7 @@ static int WipeCache(char * workDir, char * whiteList, int ClearCacheSize)
     
     if (uiddir_fp) closedir(uiddir_fp);
     // 返回总清理大小
+    printf(" >>> 共清理 %d 个软件，%d 个软件无需清理\n", count, noCount);
     return CleanSize;
 }
 
