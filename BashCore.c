@@ -95,7 +95,7 @@ int main(int COMI, char * COM[])
     
     //定义并预打开Log文件
     bool logFile_i = true;
-    char logFile[strlen(work_dir) + 16];
+    char logFile[strlen(work_dir) + 32];
     logFile[0] = '\0';
     snprintf(logFile, sizeof(logFile), "%s/运行日志.log", work_dir);
     FILE * logFile_fp = fopen(logFile, "a");
