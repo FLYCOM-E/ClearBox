@@ -182,7 +182,7 @@ int main(int COMI, char * COM[])
     }
     else
     {
-        printf(" » 传入参数错误！");
+        printf(" » 传入参数错误！\n");
     }
     
     //ON the Selinux
