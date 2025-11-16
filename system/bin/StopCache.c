@@ -16,6 +16,11 @@ int main()
         printf(" » Please use root privileges!\n");
         return 1;
     }
+    if (system("ClearBox -v >/dev/null 2>&1") != 0)
+    {
+        printf(" » 模块加载异常，请排查反馈！\n");
+        return 1;
+    }
     
     //work_dir定义
     char work_dir[64] = "";
@@ -123,8 +128,17 @@ int main()
         }
     }
     
+    // 如果包名含“/”则丢弃
+    for (int i = 0; i < 5; i++)
+    {
+        if (strstr(NowApp[i], "/") != NULL)
+        {
+            NowApp[i][0] = '\0';
+        }
+    }
+    
     //为渐进式等待初始化变量
-    int cycle_count = 0, cycle_time = 10, max_cycle_time = 30;
+    int cycle_count = 0, cycle_time = 10, max_cycle_time = 30, maxGetError = 0;
     //Start the cycle
     for ( ; ; )
     {
@@ -140,11 +154,19 @@ int main()
         if (NowPackageName_fp == NULL)
         {
             printf("Get Top App Failed. Continue");
+            maxGetError++;
+            if (maxGetError == 10)
+            {
+                printf("Get Top App Error, Timeout...\n");
+                return 1;
+            }
+            sleep(5);
             continue;
         }
         fgets(NowPackageName, sizeof(NowPackageName), NowPackageName_fp);
         NowPackageName[strcspn(NowPackageName, "\n")] = 0;
         pclose(NowPackageName_fp);
+        maxGetError = 0;
     
         //检查屏幕状态是否关闭或为控制中心、电源菜单、空
         //NotificationShade是A12及以上控制中心新名称
@@ -224,7 +246,8 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
     int inWhiteList = 0;
     
     //检查缓存目录是否真实存在
-    if (access(topAppDir, F_OK) == 0)
+    if (access(topAppDir, F_OK) == 0 &&
+       strstr(topAppDir, "../") == NULL)
     {
         //检查是否位于白名单
         char package[64] = "";
@@ -288,7 +311,8 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
     }
     
     //检查缓存目录是否真实存在
-    if (access(resetAppDir, F_OK) == 0)
+    if (access(resetAppDir, F_OK) == 0 &&
+       strstr(resetAppDir, "../") == NULL)
     {
         pid_t newPid = fork();
         if (newPid == -1)
