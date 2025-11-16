@@ -6,6 +6,8 @@
 #include <dirent.h>
 #include <sys/wait.h>
 
+#define DEBUG 0
+
 static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workDir);
 
 int main()
@@ -137,6 +139,28 @@ int main()
         }
     }
     
+    // 调试模式关闭则创建子进程脱离终端
+    if (DEBUG == 0)
+    {
+        pid_t PID = fork();
+        if (PID == -1)
+        {
+            printf(" » 进程启动失败！\n");
+            return 1;
+        }
+        else if (PID != 0)
+        {
+            exit(0);
+        }
+        setsid();
+        
+        int fd = open("/dev/null", O_RDWR);
+        dup2(fd, STDIN_FILENO);
+        dup2(fd, STDOUT_FILENO);
+        dup2(fd, STDERR_FILENO);
+        close(fd);
+    }
+    
     //为渐进式等待初始化变量
     int cycle_count = 0, cycle_time = 10, max_cycle_time = 30, maxGetError = 0;
     //Start the cycle
@@ -158,6 +182,7 @@ int main()
             if (maxGetError == 10)
             {
                 printf("Get Top App Error, Timeout...\n");
+                pclose(NowPackageName_fp);
                 return 1;
             }
             sleep(5);
