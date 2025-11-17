@@ -490,6 +490,7 @@ case "$in_put" in
       echo -e "\033[93m \t0：立即生效当前配置（免重启）\033[0m\n"
       echo -e "\033[93m \t1：清理设置\033[0m\n"
       echo -e "\033[93m \t00：关于\033[0m\n"
+      echo -e "\033[93m \t01：卸载模块（！\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
       read put3
@@ -729,7 +730,6 @@ case "$in_put" in
             echo -e "\033[92m     CCC  LLLL  EEEEEE  A     A   R    R\033[0m\n\n"
             echo -e "\033[93m \t1：GitHub\033[0m\n"
             echo -e "\033[93m \t2：模块内测\033[0m\n"
-            echo -e "\033[93m \t3：卸载模块（！\033[0m\n"
             if [ "$DebugPro" = "1" ]; then
                 DebugTitle=$(echo -en "\033[91m 调试模式已打开 \033[0m")
                 echo -e "\t\t\t\t$DebugTitle"
@@ -752,24 +752,24 @@ case "$in_put" in
                       echo " » 跳转失败！"
                   fi
                   ;;
-                3)
-                  echo -en " » 确定完全卸载 ClearBox 并清理残留😉？(y/n): "
-                  read unput
-                  case "$unput" in
-                      y | Y)
-                        sh "$home_dir/uninstall.sh" &
-                        wait && clear && exit 0
-                        ;;
-                      *)
-                        echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
-                        ;;
-                  esac
-                  ;;
                 *)
                   echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
                   ;;
             esac
             [ "$OffSelinux" = 1 ] && setenforce 1
+            ;;
+          01)
+            echo -en " » 确定完全卸载 ClearBox 并清理残留😉？(y/n): "
+            read unput
+            case "$unput" in
+                y | Y)
+                  sh "$home_dir/uninstall.sh" &
+                  wait && clear && exit 0
+                  ;;
+                *)
+                  echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
+                  ;;
+            esac
             ;;
           *)
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
