@@ -778,6 +778,7 @@ case "$in_put" in
         ;;
     e | E)
       clear
+      echo " » Bye！欢迎再来❤️❤️"
       exit 0
       ;;
     *)

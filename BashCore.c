@@ -31,8 +31,7 @@ static int freezer(char * home_dir);
 
 int main(int COMI, char * COM[])
 {
-    uid_t nowUid = getuid();
-    if (nowUid != 0)
+    if (getuid() != 0)
     {
         printf(" » Please use root privileges!\n");
         return 1;

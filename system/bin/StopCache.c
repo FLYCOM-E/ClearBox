@@ -12,8 +12,7 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
 
 int main()
 {
-    uid_t nowuid = getuid();
-    if (nowuid != 0)
+    if (getuid() != 0)
     {
         printf(" » Please use root privileges!\n");
         return 1;

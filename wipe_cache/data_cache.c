@@ -9,8 +9,7 @@ static int whiteListcheck(char * whiteList, char * App);
 
 int main()
 {
-    uid_t nowUid = getuid();
-    if (nowUid != 0)
+    if (getuid() != 0)
     {
         printf(" » 请授予root权限！");
         return 1;

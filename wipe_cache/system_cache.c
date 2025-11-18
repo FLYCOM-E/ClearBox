@@ -9,8 +9,7 @@
 
 int main()
 {
-    uid_t nowUid = getuid();
-    if (nowUid != 0)
+    if (getuid() != 0)
     {
         printf(" » 请授予root权限！\n");
         return 1;

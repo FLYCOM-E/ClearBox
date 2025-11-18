@@ -151,11 +151,7 @@ static int md_menu()
     char bash[128] = "";
     snprintf(bash, sizeof(bash), "%s/Menu.sh", home_dir);
     
-    if (Run(bash, "") == 0)
-    {
-        printf(" » Bye！欢迎再来❤️❤️\n");
-    }
-    else
+    if (Run(bash, "") != 0)
     {
         printf(" » Start Menu error\n");
         return 1;
