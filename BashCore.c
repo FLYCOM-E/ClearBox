@@ -352,7 +352,7 @@ static int ClearApp(char * home_dir, char * str)
 {
     char command[strlen(home_dir) + 64];
     command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/AppClean.sh", home_dir);
+    snprintf(command, sizeof(command), "%s/wipe_cache/AppClean", home_dir);
     return Run(command, str, "");
 }
 
