@@ -29,6 +29,12 @@ AllDexOat()
 echo " » 自定义模式编译：$option_mode..."
 cmd package compile -m "$option_mode" -f -a
 }
+
+DexOatReset()
+{
+echo " » 还原Dexoat..."
+cmd package compile -m everything -f -a
+}
 ######
 option_mode="$2"
 AppPackage="$3"
@@ -39,6 +45,9 @@ case "$1" in
     FAST_DEXOAT)
         [ -z "$option_mode" ] && echo " » ERROR：需要一个参数，未传入模式！" && exit 1
         AllDexOat
+        ;;
+    RESET)
+        DexOatReset
         ;;
     *)
         [ -z "$1" ] && echo " » ERROR：需要一个参数，未传入选项名称！" && exit 1

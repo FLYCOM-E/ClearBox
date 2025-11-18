@@ -27,6 +27,7 @@ static int f2fs_GC(char * home_dir);
 static int fast_GC(char * home_dir);
 static int Dexoat_SYSTEM_DEXOAT(char * home_dir);
 static int Dexoat_FAST_DEXOAT(char * home_dir, char * str);
+static int Dexoat_RESET(char * home_dir);
 static int freezer(char * home_dir);
 
 int main(int COMI, char * COM[])
@@ -174,6 +175,11 @@ int main(int COMI, char * COM[])
     {
         Dexoat_FAST_DEXOAT(home_dir, COM[2]);
         fprintf(logFile_fp, "[%s] 自定义模式Dexoat\n", nowTime);
+    }
+    else if (strcasecmp(COM[1], "Dexoat_3") == 0)
+    {
+        Dexoat_RESET(home_dir);
+        fprintf(logFile_fp, "[%s] Dexoat RESET\n", nowTime);
     }
     else if (strcasecmp(COM[1], "Freezer") == 0)
     {
@@ -445,7 +451,7 @@ static int fast_GC(char * home_dir)
     return Run(command, "FAST_GC", "");
 }
 
-// Dexoat 优化1：触发系统Dexoat
+// Dexoat 模式1：触发系统Dexoat
 static int Dexoat_SYSTEM_DEXOAT(char * home_dir)
 {
     char command[strlen(home_dir) + 32];
@@ -454,13 +460,22 @@ static int Dexoat_SYSTEM_DEXOAT(char * home_dir)
     return Run(command, "SYSTEM_DEXOAT", "");
 }
 
-// Dexoat 优化2：自定义模式Dexoat
+// Dexoat 模式2：自定义模式Dexoat
 static int Dexoat_FAST_DEXOAT(char * home_dir, char * str)
 {
     char command[strlen(home_dir) + 64];
     command[0] = '\0';
     snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh", home_dir);
     return Run(command, "FAST_DEXOAT", str);
+}
+
+// Dexoat 模式3：Dexoat还原
+static int Dexoat_RESET(char * home_dir)
+{
+    char command[strlen(home_dir) + 64];
+    command[0] = '\0';
+    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh", home_dir);
+    return Run(command, "RESET", "");
 }
 
 // 其它优化，打开原生墓碑
