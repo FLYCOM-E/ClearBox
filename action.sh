@@ -9,6 +9,7 @@ elif ! ClearBox -v >/dev/null; then
 fi
 ######
 home_dir=$(ClearBox -h)
+work_dir=$(ClearBox -w)
 source "$work_dir/settings.prop"
 if [ "$DebugPro" = 1 ]; then
     exec 2>>"$work_dir/运行日志.log"
