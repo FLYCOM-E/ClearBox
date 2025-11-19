@@ -7,8 +7,10 @@
 #include <sys/wait.h>
 
 #define DEBUG 0
+#define MAX_PACKAGE_NAME 128
+#define data_dir "/data/data"
 
-static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workDir);
+static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir);
 
 int main()
 {
@@ -26,115 +28,117 @@ int main()
     //work_dir定义
     char work_dir[64] = "";
     FILE * work_dir_fp = popen("ClearBox -w", "r");
-    fgets(work_dir, sizeof(work_dir), work_dir_fp);
-    work_dir[strcspn(work_dir, "\n")] = 0;
-    pclose(work_dir_fp);
-    
-    //data_dir定义
-    char data_dir[64] = "/data/data";
+    if (work_dir_fp)
+    {
+        fgets(work_dir, sizeof(work_dir), work_dir_fp);
+        work_dir[strcspn(work_dir, "\n")] = 0;
+        pclose(work_dir_fp);
+    }
     
     //micro_dir定义
-    char cardname[128] = "", micro_dir[256] = "";
-    FILE * cardname_fp = popen("ls /mnt/expand/ | cut -f1 -d ' '", "r");
-    fgets(cardname, sizeof(cardname), cardname_fp);
-    cardname[strcspn(cardname, "\n")] = 0;
-    snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user/0", cardname);
-    pclose(cardname_fp);
+    char card_id[128] = "", micro_dir[256] = "";
+    FILE * card_id_fp = popen("ls /mnt/expand/ | cut -f1 -d ' '", "r");
+    if (card_id_fp)
+    {
+        fgets(card_id, sizeof(card_id), card_id_fp);
+        card_id[strcspn(card_id, "\n")] = 0;
+        snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user/0", card_id);
+        pclose(card_id_fp);
+    }
     
     //定义储存文件
-    char RunStart_File[64] = "";
-    snprintf(RunStart_File, sizeof(RunStart_File), "%s/RunStart", work_dir);
+    char rom_file[64] = "";
+    snprintf(rom_file, sizeof(rom_file), "%s/RunStart", work_dir);
     
     //定义待处理app临时储存变量
-    char NowApp[5][64] = {0}, reset_app[64] = "";
+    char top_app_list[5][MAX_PACKAGE_NAME] = {0}, reset_app[MAX_PACKAGE_NAME] = "";
     
     //提取RunStart储存值
-    char str[64] = "";
-    char * str_fp = NULL;
-    FILE * RunStart_File_fp = fopen(RunStart_File, "r");
-    
-    if (RunStart_File_fp)
+    char rom_key_line[MAX_PACKAGE_NAME] = "";
+    char * rom_key_line_p = NULL;
+    FILE * rom_file_fp = fopen(rom_file, "r");
+    if (rom_file_fp)
     {
         //循环遍历获取储存值
-        while (fgets(str, sizeof(str), RunStart_File_fp) != NULL)
+        while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp) != NULL)
         {
-            str[strcspn(str, "\n")] = 0;
+            rom_key_line[strcspn(rom_key_line, "\n")] = 0;
             
             //if匹配，如没找到对应值或值为空则跳过（保持原空值）
-            if (strstr(str, "1="))
+            if (strstr(rom_key_line, "1="))
             {
-                str_fp = strtok(str, "=");
-                str_fp = strtok(NULL, "=");
-                if (str_fp)
+                rom_key_line_p = strtok(rom_key_line, "=");
+                rom_key_line_p = strtok(NULL, "=");
+                if (rom_key_line_p)
                 {
-                    snprintf(NowApp[0], sizeof(NowApp[0]), "%s", str_fp);
+                    snprintf(top_app_list[0], sizeof(top_app_list[0]), "%s", rom_key_line_p);
                 }
             }
-            else if (strstr(str, "2="))
+            else if (strstr(rom_key_line, "2="))
             {
-                str_fp = strtok(str, "=");
-                str_fp = strtok(NULL, "=");
-                if (str_fp)
+                rom_key_line_p = strtok(rom_key_line, "=");
+                rom_key_line_p = strtok(NULL, "=");
+                if (rom_key_line_p)
                 {
-                    snprintf(NowApp[1], sizeof(NowApp[1]), "%s", str_fp);
+                    snprintf(top_app_list[1], sizeof(top_app_list[1]), "%s", rom_key_line_p);
                 }
             }
-            else if (strstr(str, "3="))
+            else if (strstr(rom_key_line, "3="))
             {
-                str_fp = strtok(str, "=");
-                str_fp = strtok(NULL, "=");
-                if (str_fp)
+                rom_key_line_p = strtok(rom_key_line, "=");
+                rom_key_line_p = strtok(NULL, "=");
+                if (rom_key_line_p)
                 {
-                    snprintf(NowApp[2], sizeof(NowApp[2]), "%s", str_fp);
+                    snprintf(top_app_list[2], sizeof(top_app_list[2]), "%s", rom_key_line_p);
                 }
             }
-            else if (strstr(str, "4="))
+            else if (strstr(rom_key_line, "4="))
             {
-                str_fp = strtok(str, "=");
-                str_fp = strtok(NULL, "=");
-                if (str_fp)
+                rom_key_line_p = strtok(rom_key_line, "=");
+                rom_key_line_p = strtok(NULL, "=");
+                if (rom_key_line_p)
                 {
-                    snprintf(NowApp[3], sizeof(NowApp[3]), "%s", str_fp);
+                    snprintf(top_app_list[3], sizeof(top_app_list[3]), "%s", rom_key_line_p);
                 }
             }
-            else if (strstr(str, "5="))
+            else if (strstr(rom_key_line, "5="))
             {
-                str_fp = strtok(str, "=");
-                str_fp = strtok(NULL, "=");
-                if (str_fp)
+                rom_key_line_p = strtok(rom_key_line, "=");
+                rom_key_line_p = strtok(NULL, "=");
+                if (rom_key_line_p)
                 {
-                    snprintf(NowApp[4], sizeof(NowApp[4]), "%s", str_fp);
+                    snprintf(top_app_list[4], sizeof(top_app_list[4]), "%s", rom_key_line_p);
                 }
             }
-            else if (strstr(str, "reset="))
+            else if (strstr(rom_key_line, "reset="))
             {
-                str_fp = strtok(str, "=");
-                str_fp = strtok(NULL, "=");
-                if (str_fp)
+                rom_key_line_p = strtok(rom_key_line, "=");
+                rom_key_line_p = strtok(NULL, "=");
+                if (rom_key_line_p)
                 {
-                    snprintf(reset_app, sizeof(reset_app), "%s", str_fp);
+                    snprintf(reset_app, sizeof(reset_app), "%s", rom_key_line_p);
                 }
             }
         }
-        fclose(RunStart_File_fp);
+        fclose(rom_file_fp);
     }
     else
     {
         //Else说明文件可能未初始化，因此初始化文件
-        FILE * RunStart_File_fp = fopen(RunStart_File, "w");
-        if (RunStart_File_fp)
+        FILE * rom_file_fp = fopen(rom_file, "w");
+        if (rom_file_fp)
         {
-            fprintf(RunStart_File_fp, "1=\n2=\n3=\n4=\n5=\nreset=");
-            fclose(RunStart_File_fp);
+            fprintf(rom_file_fp, "1=\n2=\n3=\n4=\n5=\nreset=");
+            fclose(rom_file_fp);
         }
     }
     
-    // 如果包名含“/”则丢弃
+    // 如果包名含“ / ”则丢弃
     for (int i = 0; i < 5; i++)
     {
-        if (strstr(NowApp[i], "/") != NULL)
+        if (strstr(top_app_list[i], "/") != NULL)
         {
-            NowApp[i][0] = '\0';
+            top_app_list[i][0] = '\0';
         }
     }
     
@@ -153,15 +157,18 @@ int main()
         }
         setsid();
         
-        int fd = open("/dev/null", O_RDWR);
-        dup2(fd, STDIN_FILENO);
-        dup2(fd, STDOUT_FILENO);
-        dup2(fd, STDERR_FILENO);
-        close(fd);
+        int std = open("/dev/null", O_RDWR);
+        dup2(std, STDIN_FILENO);
+        dup2(std, STDOUT_FILENO);
+        dup2(std, STDERR_FILENO);
+        close(std);
     }
     
-    //为渐进式等待初始化变量
-    int cycle_count = 0, cycle_time = 10, max_cycle_time = 30, maxGetError = 0;
+    /* 
+    初始化变量
+    全局错误值／空等待次数／渐进等待时间（变化）／最大渐进等待时间（秒）／获取前台App失败次数／最大获取前台App失败次数
+    */
+    int end = 0, cycle_count = 0, cycle_time = 10, max_cycle_time = 30, get_error = 0, max_get_error = 10;
     //Start the cycle
     for ( ; ; )
     {
@@ -172,32 +179,32 @@ int main()
         }
         
         //获取前台软件包名
-        char NowPackageName[64] = "";
-        FILE * NowPackageName_fp = popen("dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '", "r");
-        if (NowPackageName_fp == NULL)
+        char top_app[MAX_PACKAGE_NAME] = "";
+        FILE * top_app_fp = popen("dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '", "r");
+        if (top_app_fp == NULL)
         {
-            printf("Get Top App Failed. Continue");
-            maxGetError++;
-            if (maxGetError == 10)
+            get_error++;
+            if (get_error == max_get_error)
             {
                 printf("Get Top App Error, Timeout...\n");
-                pclose(NowPackageName_fp);
-                return 1;
+                end = 1;
+                break;
             }
             sleep(5);
+            printf("Get Top App Failed. Continue");
             continue;
         }
-        fgets(NowPackageName, sizeof(NowPackageName), NowPackageName_fp);
-        NowPackageName[strcspn(NowPackageName, "\n")] = 0;
-        pclose(NowPackageName_fp);
-        maxGetError = 0;
+        fgets(top_app, sizeof(top_app), top_app_fp);
+        top_app[strcspn(top_app, "\n")] = 0;
+        pclose(top_app_fp);
+        get_error = 0;
     
         //检查屏幕状态是否关闭或为控制中心、电源菜单、空
         //NotificationShade是A12及以上控制中心新名称
-        if (strcmp(NowPackageName, "") == 0 ||
-           strstr(NowPackageName, "NotificationShade") ||
-           strstr(NowPackageName, "StatusBar") ||
-           strstr(NowPackageName, "ActionsDialog"))
+        if (strcmp(top_app, "") == 0 ||
+           strstr(top_app, "NotificationShade") ||
+           strstr(top_app, "StatusBar") ||
+           strstr(top_app, "ActionsDialog"))
         {
             //渐进式等待
             cycle_count++;
@@ -211,7 +218,7 @@ int main()
         }
         
         //检查上一次前台App是否与当前一致
-        if (strcmp(NowPackageName, NowApp[0]) == 0)
+        if (strcmp(top_app, top_app_list[0]) == 0)
         {
             //渐进式等待
             cycle_count++;
@@ -223,87 +230,83 @@ int main()
             sleep(cycle_time);
             continue;
         }
-        else
+        
+        // Reset cycle*
+        cycle_count = 0;
+        cycle_time = 10;
+        
+        //更新当前包名记录
+        snprintf(reset_app, sizeof(reset_app), "%s", top_app_list[4]);
+        snprintf(top_app_list[4], sizeof(top_app_list[4]), "%s", top_app_list[3]);
+        snprintf(top_app_list[3], sizeof(top_app_list[3]), "%s", top_app_list[2]);
+        snprintf(top_app_list[2], sizeof(top_app_list[2]), "%s", top_app_list[1]);
+        snprintf(top_app_list[1], sizeof(top_app_list[1]), "%s", top_app_list[0]);
+        snprintf(top_app_list[0], sizeof(top_app_list[0]), "%s", top_app);
+        
+        FILE * RunStart_File_fp = fopen(rom_file, "w");
+        if (RunStart_File_fp)
         {
-            //更新当前包名记录
-            FILE * RunStart_File_fp = fopen(RunStart_File, "w");
-            if (RunStart_File_fp)
-            {
-                fprintf(RunStart_File_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", NowPackageName, NowApp[0], NowApp[1], NowApp[2], NowApp[3], NowApp[4]);
-                fclose(RunStart_File_fp);
-            }
-            
-            cycle_count = 0;
-            cycle_time = 10;
+            fprintf(RunStart_File_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", top_app_list[0], top_app_list[1], top_app_list[2], top_app_list[3], top_app_list[4], reset_app);
+            fclose(RunStart_File_fp);
         }
         
-        //更新值
-        snprintf(reset_app, sizeof(reset_app), "%s", NowApp[4]);
-        snprintf(NowApp[4], sizeof(NowApp[4]), "%s", NowApp[3]);
-        snprintf(NowApp[3], sizeof(NowApp[3]), "%s", NowApp[2]);
-        snprintf(NowApp[2], sizeof(NowApp[2]), "%s", NowApp[1]);
-        snprintf(NowApp[1], sizeof(NowApp[1]), "%s", NowApp[0]);
-        snprintf(NowApp[0], sizeof(NowApp[0]), "%s", NowPackageName);
-        
         //调用处理函数
-        Stopdata_app(data_dir, NowApp[0], reset_app, work_dir);
-        
-        //如果存在拓展SD则处理
-        if (access(micro_dir, F_OK) == 0)
+        stopAppCache(data_dir, top_app_list[0], reset_app, work_dir);
+        if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
         {
-            Stopdata_app(micro_dir, NowApp[0], reset_app, work_dir);
+            stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir);
         }
         
         sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
     }
     
-    return 0;
+    return end;
 }
 
 //此函数用于StopApp缓存
-static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workDir)
+static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir)
 {
-    char topAppDir[256] = "", resetAppDir[256] = "", whiteList[128] = "";
-    snprintf(topAppDir, sizeof(topAppDir), "%s/%s/cache", dir, topApp);     //topApp缓存目录定义
-    snprintf(resetAppDir, sizeof(resetAppDir), "%s/%s/cache", dir, resetApp); //resetApp缓存目录定义
-    snprintf(whiteList, sizeof(whiteList), "%s/whitelist.prop", workDir);       //定义WhiteList
-    int inWhiteList = 0;
+    char top_app_dir[256] = "", reset_app_dir[256] = "", whitelist_file[128] = "";
+    snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);     //topApp缓存目录定义
+    snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app); //resetApp缓存目录定义
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/whitelist.prop", work_dir);   //定义WhiteList
+    int in_whitelist = 0;
     
     //检查缓存目录是否真实存在
-    if (access(topAppDir, F_OK) == 0 &&
-       strstr(topAppDir, "../") == NULL)
+    if (access(top_app_dir, F_OK) == 0 &&
+       strstr(top_app_dir, "/../") == NULL)
     {
         //检查是否位于白名单
-        char package[64] = "";
-        FILE * whiteList_fp = fopen(whiteList, "r");
-        if (whiteList_fp)
+        char whitelist_line[64] = "";
+        FILE * whitelist_fp = fopen(whitelist_file, "r");
+        if (whitelist_fp)
         {
-            while (fgets(package, sizeof(package), whiteList_fp))
+            while (fgets(whitelist_line, sizeof(whitelist_line), whitelist_fp))
             {
-                package[strcspn(package, "\n")] = 0;
+                whitelist_line[strcspn(whitelist_line, "\n")] = 0;
                 
-                if (strcmp(topApp, package) == 0)
+                if (strcmp(top_app, whitelist_line) == 0)
                 {
-                    //如果在白名单找到该包名则将inWhiteList置1
-                    inWhiteList = 1;
+                    //如果在白名单找到该包名则将 in_whitelist 置 1
+                    in_whitelist = 1;
                     break;
                 }
             }
-            fclose(whiteList_fp);
+            fclose(whitelist_fp);
         }
         
-        //检查inWhiteList = 0时执行缓存阻止
-        if (inWhiteList == 0)
+        //检查 in_whitelist = 0 时执行缓存阻止
+        if (in_whitelist == 0)
         {
             pid_t newPid = fork();
             if (newPid == -1)
             {
-                printf(" » Stop: %s : Fork Err\n", topApp);
+                printf(" » Stop: %s : Fork Err\n", top_app);
                 goto reset; // 失败后直接跳过Stop部分
             }
             if (newPid == 0)
             {
-                execlp("chattr", "StopCacheChattr", "-R", "+i", topAppDir, NULL);
+                execlp("chattr", "StopCacheChattr", "-R", "+i", top_app_dir, NULL);
                 _exit(127);
             }
             else
@@ -311,17 +314,17 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
                 int end = 0;
                 if (waitpid(newPid, &end, 0) == -1)
                 {
-                    printf(" » Stop: %s : Wait Err\n", topApp);
+                    printf(" » Stop: %s : Wait Err\n", top_app);
                     goto reset; // 失败后直接跳过Stop部分
                 }
                 
                 if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
                 {
-                    printf(" » Stop: %s\n", topApp);
+                    printf(" » Stop: %s\n", top_app);
                 }
                 else
                 {
-                    printf(" » Stop: %s Error\n", topApp);
+                    printf(" » Stop: %s Error\n", top_app);
                 }
             }
         }
@@ -329,24 +332,24 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
     
     reset:
     
-    if (strcmp(topApp, resetApp) == 0)
+    if (strcmp(top_app, reset_app) == 0)
     {
         return 0;
     }
     
     //检查缓存目录是否真实存在
-    if (access(resetAppDir, F_OK) == 0 &&
-       strstr(resetAppDir, "../") == NULL)
+    if (access(reset_app_dir, F_OK) == 0 &&
+       strstr(reset_app_dir, "../") == NULL)
     {
         pid_t newPid = fork();
         if (newPid == -1)
         {
-            printf(" » Reset: %s : Fork Err\n", resetApp);
+            printf(" » Reset: %s : Fork Err\n", reset_app);
             return 1;
         }
         if (newPid == 0)
         {
-            execlp("chattr", "StopCacheChattr", "-R", "-i", resetAppDir, NULL);
+            execlp("chattr", "StopCacheChattr", "-R", "-i", reset_app_dir, NULL);
             _exit(127);
         }
         else
@@ -354,17 +357,17 @@ static int Stopdata_app(char * dir, char * topApp, char * resetApp, char * workD
             int end = 0;
             if (waitpid(newPid, &end, 0) == -1)
             {
-                printf(" » Reset: %s Error : Wait Err\n", resetApp);
+                printf(" » Reset: %s Error : Wait Err\n", reset_app);
                 return 1;
             }
             
             if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
             {
-                printf(" » Reset: %s\n", resetApp);
+                printf(" » Reset: %s\n", reset_app);
             }
             else
             {
-                printf(" » Reset: %s Error\n", resetApp);
+                printf(" » Reset: %s Error\n", reset_app);
             }
         }
     }

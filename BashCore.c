@@ -11,24 +11,24 @@
 
 static int Run(char * cmd, char * str, char * str2);
 
-static int clear_cache(char * home_dir);
-static int clear_scache(char * home_dir);
-static int list_dir(char * home_dir);
-static int all_dir(char * home_dir);
-static int dir_file(char * home_dir);
-static int clear_tar(char * home_dir, char * work_dir);
-static int FileClear(char * home_dir, char * str);
-static int ClearApp(char * home_dir, char * str);
-static int file_all(char * home_dir);
-static int file_all2(char * home_dir, char * work_dir);
-static int STOPInstall(char * home_dir, char * str);
-static int STOPStorage(char * home_dir, char * str);
-static int f2fs_GC(char * home_dir);
-static int fast_GC(char * home_dir);
-static int Dexoat_SYSTEM_DEXOAT(char * home_dir);
-static int Dexoat_FAST_DEXOAT(char * home_dir, char * str);
-static int Dexoat_RESET(char * home_dir);
-static int freezer(char * home_dir);
+static int clearCache(char * home_dir);
+static int clearSystemCache(char * home_dir);
+static int listDir(char * home_dir);
+static int allDir(char * home_dir);
+static int dirFile(char * home_dir);
+static int clearTar(char * home_dir, char * work_dir);
+static int fileClear(char * home_dir, char * str);
+static int clearApp(char * home_dir, char * str);
+static int fileAll(char * home_dir);
+static int fileAll2(char * home_dir, char * work_dir);
+static int stopInstall(char * home_dir, char * str);
+static int stopStorage(char * home_dir, char * str);
+static int f2fsGC(char * home_dir);
+static int fastGC(char * home_dir);
+static int DexoatSYSTEM_DEXOAT(char * home_dir);
+static int DexoatFAST_DEXOAT(char * home_dir, char * str);
+static int DexoatRESET(char * home_dir);
+static int FreeZer(char * home_dir);
 
 int main(int COMI, char * COM[])
 {
@@ -69,121 +69,121 @@ int main(int COMI, char * COM[])
     }
     
     //Check and Off the Selinux
-    int OffSelinux = 0;
-    char checkSelinux[16] = "";
-    FILE * checkSelinux_fp = popen("getenforce", "r");
-    if (checkSelinux_fp)
+    int off_selinux = 0;
+    char check_selinux[16] = "";
+    FILE * check_selinux_fp = popen("getenforce", "r");
+    if (check_selinux_fp)
     {
-        fgets(checkSelinux, sizeof(checkSelinux), checkSelinux_fp);
-        checkSelinux[strcspn(checkSelinux, "\n")] = 0;
+        fgets(check_selinux, sizeof(check_selinux), check_selinux_fp);
+        check_selinux[strcspn(check_selinux, "\n")] = 0;
         
-        if (strcmp(checkSelinux, "Enforcing") == 0)
+        if (strcasecmp(check_selinux, "Enforcing") == 0)
         {
             if (system("setenforce 0") == 0)
             {
-                OffSelinux = 1;
+                off_selinux = 1;
             }
         }
-        pclose(checkSelinux_fp);
+        pclose(check_selinux_fp);
     }
     
     //获取当前时间（用于log）
-    char nowTime[64] = "";
-    time_t nowTimeC = time(NULL);
-    struct tm * t = localtime(&nowTimeC);
-    strftime(nowTime, sizeof(nowTime), "%m-%d %H:%M:%S", t);
+    char now_time[64] = "";
+    time_t now_time_tmp = time(NULL);
+    struct tm * t_tmp = localtime(&now_time_tmp);
+    strftime(now_time, sizeof(now_time), "%m-%d %H:%M:%S", t_tmp);
     
     //定义并预打开Log文件
-    bool logFile_i = true;
-    char logFile[strlen(work_dir) + 32];
-    logFile[0] = '\0';
-    snprintf(logFile, sizeof(logFile), "%s/运行日志.log", work_dir);
-    FILE * logFile_fp = fopen(logFile, "a");
-    if (logFile_fp == NULL)
+    bool in_log_file = true;
+    char log_file[strlen(work_dir) + 32];
+    log_file[0] = '\0';
+    snprintf(log_file, sizeof(log_file), "%s/运行日志.log", work_dir);
+    FILE * log_file_fp = fopen(log_file, "a");
+    if (log_file_fp == NULL)
     {
-        logFile_fp = stderr;
-        logFile_i = false;
+        log_file_fp = stderr;
+        in_log_file = false;
     }
     
     // 根据输入参数执行对应操作
     if (strcasecmp(COM[1], "ClearAll") == 0)
     {
-        clear_cache(home_dir);
-        dir_file(home_dir);
-        clear_tar(home_dir, work_dir);
-        file_all2(home_dir, work_dir);
-        fast_GC(home_dir);
-        freezer(home_dir);
-        fprintf(logFile_fp, "[%s] 一键优化清理\n", nowTime);
+        clearCache(home_dir);
+        dirFile(home_dir);
+        clearTar(home_dir, work_dir);
+        fileAll2(home_dir, work_dir);
+        fastGC(home_dir);
+        FreeZer(home_dir);
+        fprintf(log_file_fp, "[%s] 一键优化清理\n", now_time);
     }
     else if (strcasecmp(COM[1], "ClearCache") == 0)
     {
-        clear_cache(home_dir);
-        fprintf(logFile_fp, "[%s] 清理第三方软件缓存\n", nowTime);
+        clearCache(home_dir);
+        fprintf(log_file_fp, "[%s] 清理第三方软件缓存\n", now_time);
     }
     else if (strcasecmp(COM[1], "Clear_SCache") == 0)
     {
-        clear_scache(home_dir);
-        fprintf(logFile_fp, "[%s] 清理系统软件缓存\n", nowTime);
+        clearSystemCache(home_dir);
+        fprintf(log_file_fp, "[%s] 清理系统软件缓存\n", now_time);
     }
     else if (strcasecmp(COM[1], "List_Dir") == 0)
     {
-        list_dir(home_dir);
-        fprintf(logFile_fp, "[%s] 自定义规则清理\n", nowTime);
+        listDir(home_dir);
+        fprintf(log_file_fp, "[%s] 自定义规则清理\n", now_time);
     }
     else if (strcasecmp(COM[1], "All_Dir") == 0)
     {
-        all_dir(home_dir);
-        fprintf(logFile_fp, "[%s] 清理储存目录\n", nowTime);
+        allDir(home_dir);
+        fprintf(log_file_fp, "[%s] 清理储存目录\n", now_time);
     }
     else if (strcasecmp(COM[1], "File_Clear") == 0)
     {
-        FileClear(home_dir, COM[2]);
-        fprintf(logFile_fp, "[%s] 自定义文件清理\n", nowTime);
+        fileClear(home_dir, COM[2]);
+        fprintf(log_file_fp, "[%s] 自定义文件清理\n", now_time);
     }
     else if (strcasecmp(COM[1], "Clear_App") == 0)
     {
-        ClearApp(home_dir, COM[2]);
-        fprintf(logFile_fp, "[%s] 自定义软件清理\n", nowTime);
+        clearApp(home_dir, COM[2]);
+        fprintf(log_file_fp, "[%s] 自定义软件清理\n", now_time);
     }
     else if (strcasecmp(COM[1], "File_All") == 0)
     {
-        file_all(home_dir);
-        fprintf(logFile_fp, "[%s] 自定义文件归类\n", nowTime);
+        fileAll(home_dir);
+        fprintf(log_file_fp, "[%s] 自定义文件归类\n", now_time);
     }
     else if (strcasecmp(COM[1], "StopInstall") == 0)
     {
-        STOPInstall(home_dir, COM[2]);
-        fprintf(logFile_fp, "[%s] %s阻止安装\n", nowTime, COM[2]);
+        stopInstall(home_dir, COM[2]);
+        fprintf(log_file_fp, "[%s] %s阻止安装\n", now_time, COM[2]);
     }
     else if (strcasecmp(COM[1], "StopStorage") == 0)
     {
-        STOPStorage(home_dir, COM[2]);
-        fprintf(logFile_fp, "[%s] %s内部储存固定\n", nowTime, COM[2]);
+        stopStorage(home_dir, COM[2]);
+        fprintf(log_file_fp, "[%s] %s内部储存固定\n", now_time, COM[2]);
     }
     else if (strcasecmp(COM[1], "F2fs_GC") == 0)
     {
-        f2fs_GC(home_dir);
-        fprintf(logFile_fp, "[%s] F2FS GC\n", nowTime);
+        f2fsGC(home_dir);
+        fprintf(log_file_fp, "[%s] F2FS GC\n", now_time);
     }
     else if (strcasecmp(COM[1], "Dexoat_1") == 0)
     {
-        Dexoat_SYSTEM_DEXOAT(home_dir);
-        fprintf(logFile_fp, "[%s] 触发系统Dexoat\n", nowTime);
+        DexoatSYSTEM_DEXOAT(home_dir);
+        fprintf(log_file_fp, "[%s] 触发系统Dexoat\n", now_time);
     }
     else if (strcasecmp(COM[1], "Dexoat_2") == 0)
     {
-        Dexoat_FAST_DEXOAT(home_dir, COM[2]);
-        fprintf(logFile_fp, "[%s] 自定义模式Dexoat\n", nowTime);
+        DexoatFAST_DEXOAT(home_dir, COM[2]);
+        fprintf(log_file_fp, "[%s] 自定义模式Dexoat\n", now_time);
     }
     else if (strcasecmp(COM[1], "Dexoat_3") == 0)
     {
-        Dexoat_RESET(home_dir);
-        fprintf(logFile_fp, "[%s] Dexoat RESET\n", nowTime);
+        DexoatRESET(home_dir);
+        fprintf(log_file_fp, "[%s] Dexoat RESET\n", now_time);
     }
     else if (strcasecmp(COM[1], "Freezer") == 0)
     {
-        freezer(home_dir);
+        FreeZer(home_dir);
     }
     else
     {
@@ -191,8 +191,8 @@ int main(int COMI, char * COM[])
     }
     
     //ON the Selinux
-    if (OffSelinux == 1) system("setenforce 1");
-    if (logFile_i) fclose(logFile_fp);
+    if (off_selinux == 1) system("setenforce 1");
+    if (in_log_file) fclose(log_file_fp);
     
     return 0;
 }
@@ -205,22 +205,21 @@ static int Run(char * cmd, char * str, char * str2)
         return 1;
     }
     
-    char * args[5] = {NULL};
-    
+    char * command_args[5] = {NULL};
     if (strstr(cmd, ".sh"))
     {
-        args[0] = "bash";
-        args[1] = cmd;
-        args[2] = str;
-        args[3] = str2;
-        args[4] = NULL;
+        command_args[0] = "bash";
+        command_args[1] = cmd;
+        command_args[2] = str;
+        command_args[3] = str2;
+        command_args[4] = NULL;
     }
     else
     {
-        args[0] = cmd;
-        args[1] = str;
-        args[2] = str2;
-        args[3] = NULL;
+        command_args[0] = cmd;
+        command_args[1] = str;
+        command_args[2] = str2;
+        command_args[3] = NULL;
     }
     
     pid_t newPid = fork();
@@ -230,7 +229,7 @@ static int Run(char * cmd, char * str, char * str2)
     }
     if (newPid == 0)
     {
-        execvp(args[0], args);
+        execvp(command_args[0], command_args);
         _exit(1);
     }
     else
@@ -250,132 +249,128 @@ static int Run(char * cmd, char * str, char * str2)
 }
 
 // 清理第三方软件缓存
-static int clear_cache(char * home_dir)
+static int clearCache(char * home_dir)
 {
     //定义命令 & Log文件
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/data_cache", home_dir);
-    return Run(command, "", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/data_cache", home_dir);
+    return Run(bash, "", "");
 }
 
 // 清理系统软件缓存
-static int clear_scache(char * home_dir)
+static int clearSystemCache(char * home_dir)
 {
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/system_cache", home_dir);
-    return Run(command, "", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/system_cache", home_dir);
+    return Run(bash, "", "");
 }
 
 // 运行处理自定义规则
-static int list_dir(char * home_dir)
+static int listDir(char * home_dir)
 {
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/wipe_list_dir.sh", home_dir);
-    return Run(command, "", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/wipe_list_dir.sh", home_dir);
+    return Run(bash, "", "");
 }
 
 // 清理储存目录
-static int all_dir(char * home_dir)
+static int allDir(char * home_dir)
 {
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/wipe_all_dir.sh", home_dir);
-    if (access(command, F_OK))
-    {
-        return 1;
-    }
-    return Run(command, "", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/wipe_all_dir.sh", home_dir);
+    return Run(bash, "", "");
 }
 
 // 运行规则清理、清理储存目录
-static int dir_file(char * home_dir)
+static int dirFile(char * home_dir)
 {
-    list_dir(home_dir);
-    all_dir(home_dir);
+    listDir(home_dir);
+    allDir(home_dir);
     return 0;
 }
 
 // 根据prop配置，清理全部文件（仅用于一键/自动清理 该选项打开状态
-static int clear_tar(char * home_dir, char * work_dir)
+static int clearTar(char * home_dir, char * work_dir)
 {
     int clearall = 0;
-    char * key = NULL;
-    char settingsFile[strlen(work_dir) + 32], temp[64] = "";
-    settingsFile[0] = '\0';
-    snprintf(settingsFile, sizeof(settingsFile), "%s/settings.prop", work_dir);
-    FILE * settingsFile_fp = fopen(settingsFile, "r");
-    if (settingsFile_fp)
+    char * line_key = NULL;
+    char settings_file[strlen(work_dir) + 32], settings_file_line[64] = "";
+    settings_file[0] = '\0';
+    snprintf(settings_file, sizeof(settings_file), "%s/settings.prop", work_dir);
+    FILE * settings_file_fp = fopen(settings_file, "r");
+    if (settings_file_fp)
     {
-        while (fgets(temp, sizeof(temp), settingsFile_fp))
+        while (fgets(settings_file_line, sizeof(settings_file_line), settings_file_fp))
         {
-            temp[strcspn(temp, "\n")] = 0;
-            if (strstr(temp, "clearall="))
+            settings_file_line[strcspn(settings_file_line, "\n")] = 0;
+            if (strstr(settings_file_line, "clearall="))
             {
-                key = strtok(temp, "=");
-                key = strtok(NULL, "=");
-                if (strcmp(key, "1") == 0)
+                line_key = strtok(settings_file_line, "=");
+                line_key = strtok(NULL, "=");
+                if (strcmp(line_key, "1") == 0)
                 {
                     clearall = 1;
                 }
             }
         }
-        fclose(settingsFile_fp);
+        fclose(settings_file_fp);
     }
     
     if (clearall == 1)
     {
-        char command_1[strlen(home_dir) + 32], command_2[strlen(home_dir) + 32];
-        command_1[0] = '\0';
-        command_2[0] = '\0';
-        snprintf(command_1, sizeof(command_1), "%s/wipe_cache/ClearService1.sh", home_dir);
-        snprintf(command_2, sizeof(command_2), "%s/wipe_cache/ClearService2.sh", home_dir);
-        Run(command_1, "", "");
-        Run(command_2, "", "");
+        char bash_1[strlen(home_dir) + 32], bash_2[strlen(home_dir) + 32];
+        bash_1[0] = '\0';
+        bash_2[0] = '\0';
+        snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/ClearService1.sh", home_dir);
+        snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/ClearService2.sh", home_dir);
+        Run(bash_1, "", "");
+        Run(bash_2, "", "");
     }
     
     return 0;
 }
 
 // 自定义格式文件清理
-static int FileClear(char * home_dir, char * str)
+static int fileClear(char * home_dir, char * str)
 {
-    char command_1[strlen(home_dir) + 64], command_2[strlen(home_dir) + 64];
-    command_1[0] = '\0';
-    command_2[0] = '\0';
-    snprintf(command_1, sizeof(command_1), "%s/wipe_cache/ClearService1.sh", home_dir);
-    snprintf(command_2, sizeof(command_2), "%s/wipe_cache/ClearService2.sh", home_dir);
-    Run(command_1, str, "");
-    Run(command_2, str, "");
+    char bash_1[strlen(home_dir) + 64], bash_2[strlen(home_dir) + 64];
+    bash_1[0] = '\0';
+    bash_2[0] = '\0';
+    snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/ClearService1.sh", home_dir);
+    snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/ClearService2.sh", home_dir);
+    Run(bash_1, str, "");
+    Run(bash_2, str, "");
     return 0;
 }
 
 // 自定义软件 规则清理
-static int ClearApp(char * home_dir, char * str)
+static int clearApp(char * home_dir, char * str)
 {
-    char command[strlen(home_dir) + 64];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/AppClean", home_dir);
-    return Run(command, str, "");
+    char bash[strlen(home_dir) + 64];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/AppClean", home_dir);
+    return Run(bash, str, "");
 }
 
 // 自定义格式文件归类
-static int file_all(char * home_dir)
+static int fileAll(char * home_dir)
 {
-    char command_1[strlen(home_dir) + 32], command_2[strlen(home_dir) + 32];
-    command_1[0] = '\0';
-    command_2[0] = '\0';
-    snprintf(command_1, sizeof(command_1), "%s/wipe_cache/file_1.sh", home_dir);
-    snprintf(command_2, sizeof(command_2), "%s/wipe_cache/file_2.sh", home_dir);
-    Run(command_1, "", "");
-    Run(command_2, "", "");
+    char bash_1[strlen(home_dir) + 32], bash_2[strlen(home_dir) + 32];
+    bash_1[0] = '\0';
+    bash_2[0] = '\0';
+    snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/file_1.sh", home_dir);
+    snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/file_2.sh", home_dir);
+    Run(bash_1, "", "");
+    Run(bash_2, "", "");
     return 0;
 }
 
 // 根据prop决定是否运行文件归类（仅用于一键/自动清理 该选项打开状态
-static int file_all2(char * home_dir, char * work_dir)
+static int fileAll2(char * home_dir, char * work_dir)
 {
     int fileall = 0;
     char * key = NULL;
@@ -403,86 +398,86 @@ static int file_all2(char * home_dir, char * work_dir)
     
     if (fileall == 1)
     {
-        char command_1[strlen(home_dir) + 32], command_2[strlen(home_dir) + 32];
-        command_1[0] = '\0';
-        command_2[0] = '\0';
-        snprintf(command_1, sizeof(command_1), "%s/wipe_cache/file_1.sh", home_dir);
-        snprintf(command_2, sizeof(command_2), "%s/wipe_cache/file_2.sh", home_dir);
-        Run(command_1, "", "");
-        Run(command_2, "", "");
+        char bash_1[strlen(home_dir) + 32], bash_2[strlen(home_dir) + 32];
+        bash_1[0] = '\0';
+        bash_2[0] = '\0';
+        snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/file_1.sh", home_dir);
+        snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/file_2.sh", home_dir);
+        Run(bash_1, "", "");
+        Run(bash_2, "", "");
     }
     
     return 0;
 }
 
 // 阻止安装
-static int STOPInstall(char * home_dir, char * str)
+static int stopInstall(char * home_dir, char * str)
 {
-    char command[strlen(home_dir) + 64];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/StopInstall.sh", home_dir);
-    return Run(command, str, "");
+    char bash[strlen(home_dir) + 64];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/StopInstall.sh", home_dir);
+    return Run(bash, str, "");
 }
 
 // 内部储存固定
-static int STOPStorage(char * home_dir, char * str)
+static int stopStorage(char * home_dir, char * str)
 {
-    char command[strlen(home_dir) + 64];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/StopStorage.sh", home_dir);
-    return Run(command, str, "");
+    char bash[strlen(home_dir) + 64];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/StopStorage.sh", home_dir);
+    return Run(bash, str, "");
 }
 
 // 磁盘GC
-static int f2fs_GC(char * home_dir)
+static int f2fsGC(char * home_dir)
 {
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/f2fs_GC.sh", home_dir);
-    return Run(command, "F2FS_GC", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/f2fs_GC.sh", home_dir);
+    return Run(bash, "F2FS_GC", "");
 }
 
 // 快速GC
-static int fast_GC(char * home_dir)
+static int fastGC(char * home_dir)
 {
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/f2fs_GC.sh", home_dir);
-    return Run(command, "FAST_GC", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/f2fs_gc.sh", home_dir);
+    return Run(bash, "FAST_GC", "");
 }
 
 // Dexoat 模式1：触发系统Dexoat
-static int Dexoat_SYSTEM_DEXOAT(char * home_dir)
+static int DexoatSYSTEM_DEXOAT(char * home_dir)
 {
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh", home_dir);
-    return Run(command, "SYSTEM_DEXOAT", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/Dexoat.sh", home_dir);
+    return Run(bash, "SYSTEM_DEXOAT", "");
 }
 
 // Dexoat 模式2：自定义模式Dexoat
-static int Dexoat_FAST_DEXOAT(char * home_dir, char * str)
+static int DexoatFAST_DEXOAT(char * home_dir, char * str)
 {
-    char command[strlen(home_dir) + 64];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh", home_dir);
-    return Run(command, "FAST_DEXOAT", str);
+    char bash[strlen(home_dir) + 64];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/Dexoat.sh", home_dir);
+    return Run(bash, "FAST_DEXOAT", str);
 }
 
 // Dexoat 模式3：Dexoat还原
-static int Dexoat_RESET(char * home_dir)
+static int DexoatRESET(char * home_dir)
 {
-    char command[strlen(home_dir) + 64];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/Dexoat.sh", home_dir);
-    return Run(command, "RESET", "");
+    char bash[strlen(home_dir) + 64];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/Dexoat.sh", home_dir);
+    return Run(bash, "RESET", "");
 }
 
 // 其它优化，打开原生墓碑
-static int freezer(char * home_dir)
+static int FreeZer(char * home_dir)
 {
-    char command[strlen(home_dir) + 32];
-    command[0] = '\0';
-    snprintf(command, sizeof(command), "%s/wipe_cache/FreeZer.sh", home_dir);
-    return Run(command, "", "");
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/FreeZer.sh", home_dir);
+    return Run(bash, "", "");
 }
