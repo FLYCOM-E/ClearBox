@@ -243,11 +243,11 @@ int main()
         snprintf(top_app_list[1], sizeof(top_app_list[1]), "%s", top_app_list[0]);
         snprintf(top_app_list[0], sizeof(top_app_list[0]), "%s", top_app);
         
-        FILE * RunStart_File_fp = fopen(rom_file, "w");
-        if (RunStart_File_fp)
+        FILE * rom_file_fp = fopen(rom_file, "w");
+        if (rom_file_fp)
         {
-            fprintf(RunStart_File_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", top_app_list[0], top_app_list[1], top_app_list[2], top_app_list[3], top_app_list[4], reset_app);
-            fclose(RunStart_File_fp);
+            fprintf(rom_file_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", top_app_list[0], top_app_list[1], top_app_list[2], top_app_list[3], top_app_list[4], reset_app);
+            fclose(rom_file_fp);
         }
         
         //调用处理函数
