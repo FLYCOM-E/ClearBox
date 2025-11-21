@@ -211,10 +211,13 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 白名单检查函数，接收白名单文件路径、软件包名
 返回类型：int
     1代表在白名单中找到匹配项
+    0代表未找到
+    -1代表白名单查看失败
 */
 static int whiteListCheck(char * whitelist_file, char * App)
 {
     // 打开白名单文件并遍历查找包名
+    int end = 0;
     char package_line[64] = "";
     FILE * whitelist_file_fp = fopen(whitelist_file, "r");
     if (whitelist_file_fp)
@@ -224,10 +227,15 @@ static int whiteListCheck(char * whitelist_file, char * App)
             package_line[strcspn(package_line, "\n")] = 0;
             if (strcmp(package_line, App) == 0)
             {
-                return 1;
+                end = 1;
             }
         }
         fclose(whitelist_file_fp);
     }
-    return 0;
+    else
+    {
+        end = -1;
+    }
+    
+    return end;
 }
