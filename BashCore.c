@@ -11,6 +11,7 @@
 
 static int Run(char * cmd, char * str, char * str2);
 
+static int configFunction(char * home_dir, char * mode, char * config_file);
 static int clearCache(char * home_dir);
 static int clearSystemCache(char * home_dir);
 static int listDir(char * home_dir);
@@ -185,6 +186,10 @@ int main(int COMI, char * COM[])
     {
         FreeZer(home_dir);
     }
+    else if (strcasecmp(COM[1], "configManager") == 0)
+    {
+        configFunction(home_dir, COM[2], COM[3]);
+    }
     else
     {
         printf(" » 传入参数错误！\n");
@@ -246,6 +251,16 @@ static int Run(char * cmd, char * str, char * str2)
     }
     
     return 0;
+}
+
+// 配置备份 & 恢复
+static int configFunction(char * home_dir, char * mode, char * config_file)
+{
+    //定义命令 & Log文件
+    char bash[strlen(home_dir) + 32];
+    bash[0] = '\0';
+    snprintf(bash, sizeof(bash), "%s/ConfigManager.sh", home_dir);
+    return Run(bash, mode, config_file);
 }
 
 // 清理第三方软件缓存

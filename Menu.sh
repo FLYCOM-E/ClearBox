@@ -309,7 +309,7 @@ case "$in_put" in
                 case "$put_3" in
                     y | Y)
                       clear
-                      sh "$home_dir/BashCore" StopStorage STOP
+                      "$home_dir/BashCore" StopStorage STOP
                       ;;
                     *)
                       echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -494,7 +494,8 @@ case "$in_put" in
       echo -e "\033[93m \t0：立即生效当前配置（免重启）\033[0m\n"
       echo -e "\033[93m \t1：清理设置\033[0m\n"
       echo -e "\033[93m \t00：关于\033[0m\n"
-      echo -e "\033[93m \t01：卸载模块（！\033[0m\n"
+      echo -e "\033[93m \t01：配置备份\033[0m\n"
+      echo -e "\033[93m \t02：卸载模块（！\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
       read put3
@@ -763,6 +764,31 @@ case "$in_put" in
             [ "$OffSelinux" = 1 ] && setenforce 1
             ;;
           01)
+            clear
+            echo -e "\033[104m [配置管理]\033[0m"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -e "\033[93m \t1：备份\033[0m\n"
+            echo -e "\033[93m \t2：恢复\033[0m\n"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -en " 请输入相应序号:"
+            read backup_put
+            case "$backup_put" in
+                1)
+                  clear
+                  "$home_dir/BashCore" configManager backup
+                  ;;
+                2)
+                  clear
+                  echo -en " » 请输入配置文件完整路径: "
+                  read configFile
+                  "$home_dir/BashCore" configManager recovery "$configFile"
+                  ;;
+                *)
+                  echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
+                  ;;
+            esac
+            ;;
+          02)
             echo -en " » 确定完全卸载 ClearBox 并清理残留😉？(y/n): "
             read unput
             case "$unput" in
