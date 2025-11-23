@@ -44,7 +44,6 @@ case "$1" in
       rm -r "$tempDir"
       ;;
     recovery)
-      [ ! -f "$2" ] && echo " » 文件不存在！"; exit 1
       if ! echo "$2" | grep ".bz2" >/dev/null 2>&1; then
           echo " » 文件后缀应为 .bz2！请确认是否正确选择文件"
           echo " » 否则可能导入垃圾文件！"
