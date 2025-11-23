@@ -99,7 +99,8 @@ getevent -qlc 1 2>> /dev/null | while read -r A; do
               D=1
           fi
       fi
-      rm -r "$TMPDIR/"
+      rm "$TMPDIR/ClearBox.apk" >/dev/null 2>&1
+      rm "$MODPATH/ClearBox.apk" >/dev/null 2>&1
       [ "$RESET" = 1 ] && "$home_dir/BashCore" StopInstall STOP >/dev/null
       ;;
   esac
