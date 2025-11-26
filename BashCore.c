@@ -96,7 +96,7 @@ int main(int COMI, char * COM[])
     
     //定义并预打开Log文件
     bool in_log_file = true;
-    char log_file[strlen(work_dir) + 32];
+    char log_file[strlen(work_dir) + 64];
     log_file[0] = '\0';
     snprintf(log_file, sizeof(log_file), "%s/运行日志.log", work_dir);
     FILE * log_file_fp = fopen(log_file, "a");
@@ -115,72 +115,150 @@ int main(int COMI, char * COM[])
         fileAll2(home_dir, work_dir);
         fastGC(home_dir);
         FreeZer(home_dir);
-        fprintf(log_file_fp, "[%s] 一键优化清理\n", now_time);
+        fprintf(log_file_fp, "I [%s] 一键优化清理\n", now_time);
     }
     else if (strcasecmp(COM[1], "ClearCache") == 0)
     {
-        clearCache(home_dir);
-        fprintf(log_file_fp, "[%s] 清理第三方软件缓存\n", now_time);
+        if (clearCache(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 清理第三方软件缓存\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 清理第三方软件缓存失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "Clear_SCache") == 0)
     {
-        clearSystemCache(home_dir);
-        fprintf(log_file_fp, "[%s] 清理系统软件缓存\n", now_time);
+        if (clearSystemCache(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 清理系统软件缓存\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 清理系统软件缓存失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "List_Dir") == 0)
     {
-        listDir(home_dir);
-        fprintf(log_file_fp, "[%s] 自定义规则清理\n", now_time);
+        if (listDir(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 自定义规则清理\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 自定义规则清理失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "All_Dir") == 0)
     {
-        allDir(home_dir);
-        fprintf(log_file_fp, "[%s] 清理储存目录\n", now_time);
+        if (allDir(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 清理储存目录\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 清理储存目录失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "File_Clear") == 0)
     {
-        fileClear(home_dir, COM[2]);
-        fprintf(log_file_fp, "[%s] 自定义文件清理\n", now_time);
+        if (fileClear(home_dir, COM[2]) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 自定义文件清理\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 自定义文件清理失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "Clear_App") == 0)
     {
-        clearApp(home_dir, COM[2]);
-        fprintf(log_file_fp, "[%s] 自定义软件清理\n", now_time);
+        if (clearApp(home_dir, COM[2]) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 自定义软件清理\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 自定义软件清理失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "File_All") == 0)
     {
-        fileAll(home_dir);
-        fprintf(log_file_fp, "[%s] 自定义文件归类\n", now_time);
+        if (fileAll(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 自定义文件归类\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 自定义文件归类失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "StopInstall") == 0)
     {
-        stopInstall(home_dir, COM[2]);
-        fprintf(log_file_fp, "[%s] %s阻止安装\n", now_time, COM[2]);
+        if (stopInstall(home_dir, COM[2]) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] %s 阻止安装\n", now_time, COM[2]);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] %s 阻止安装失败\n", now_time, COM[2]);
+        }
     }
     else if (strcasecmp(COM[1], "StopStorage") == 0)
     {
-        stopStorage(home_dir, COM[2]);
-        fprintf(log_file_fp, "[%s] %s内部储存固定\n", now_time, COM[2]);
+        if (stopStorage(home_dir, COM[2]) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] %s 内部储存固定\n", now_time, COM[2]);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] %s 内部储存固定失败\n", now_time, COM[2]);
+        }
     }
     else if (strcasecmp(COM[1], "F2fs_GC") == 0)
     {
-        f2fsGC(home_dir);
-        fprintf(log_file_fp, "[%s] F2FS GC\n", now_time);
+        if (f2fsGC(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] F2FS GC\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] F2FS GC 失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "Dexoat_1") == 0)
     {
-        DexoatSYSTEM_DEXOAT(home_dir);
-        fprintf(log_file_fp, "[%s] 触发系统Dexoat\n", now_time);
+        if (DexoatSYSTEM_DEXOAT(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 触发系统Dexoat\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 触发系统Dexoat失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "Dexoat_2") == 0)
     {
-        DexoatFAST_DEXOAT(home_dir, COM[2]);
-        fprintf(log_file_fp, "[%s] 自定义模式Dexoat\n", now_time);
+        if (DexoatFAST_DEXOAT(home_dir, COM[2]) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] 自定义模式Dexoat\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] 自定义模式Dexoat失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "Dexoat_3") == 0)
     {
-        DexoatRESET(home_dir);
-        fprintf(log_file_fp, "[%s] Dexoat RESET\n", now_time);
+        if (DexoatRESET(home_dir) == 0)
+        {
+            fprintf(log_file_fp, "I [%s] Dexoat RESET\n", now_time);
+        }
+        else
+        {
+            fprintf(log_file_fp, "E [%s] Dexoat RESET 失败\n", now_time);
+        }
     }
     else if (strcasecmp(COM[1], "Freezer") == 0)
     {
