@@ -5,6 +5,7 @@
 #include <strings.h>
 #include <dirent.h>
 #include <sys/wait.h>
+#include <string.h>
 
 //home目录
 #define home_dir "/data/adb/modules/wipe_cache"

@@ -5,6 +5,8 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #define DEBUG 0
 #define MAX_PACKAGE_NAME 128

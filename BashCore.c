@@ -287,7 +287,7 @@ static int listDir(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/wipe_list_dir.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/wipe_cache/wipe_list_dir", home_dir);
     return Run(bash, "", "");
 }
 

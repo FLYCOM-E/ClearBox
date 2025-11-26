@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define data_dir "/data/user"
 

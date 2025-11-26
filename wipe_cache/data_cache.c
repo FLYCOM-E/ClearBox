@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <string.h>
 
 #define data_dir "/data/user"
 #define WHITELIST_FILE "ClearWhitelist.prop"
