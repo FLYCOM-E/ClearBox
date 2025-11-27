@@ -9,7 +9,7 @@ Execution time is as fast as ✈️ compared with ordinary cleanup software on t
 
 __Any terminal/software can invoke the **bin** command **`ClearBox -c`** to perform one-click optimization and cleanup__
 
-__Compatible with **Magisk, APatch, KernelSU** and their branch managers__
+__Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) and their branch managers__
 
 
    ## How to use:
