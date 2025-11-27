@@ -187,6 +187,3 @@ CRON自动功能设置。
 > 模块内测请前往
 >[**ClearBox**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
 >[更多玩机交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
-
-
-> *此 **README** 以最新 **Debug** 版本为准
