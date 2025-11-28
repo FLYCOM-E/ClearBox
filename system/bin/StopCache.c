@@ -23,7 +23,7 @@ int main()
     }
     if (system("ClearBox -v >/dev/null 2>&1") != 0)
     {
-        printf(" » 模块加载异常，请排查反馈！\n");
+        printf(" » ClearBox is Error! \n");
         return 1;
     }
     
@@ -150,7 +150,7 @@ int main()
         pid_t PID = fork();
         if (PID == -1)
         {
-            printf(" » 进程启动失败！\n");
+            printf(" » Start Server Failed! \n");
             return 1;
         }
         else if (PID != 0)

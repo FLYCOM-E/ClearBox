@@ -1,7 +1,7 @@
 id=wipe_cache
 name=ClearBox
 version=V4.9.7_Debug
-versionCode=74
+versionCode=75
 author=By FlyCome
 description=快速优化清理 && 阻止缓存生成 && More...
 #updateJson=

@@ -2,6 +2,7 @@
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1
+######
 update=0
 if ClearBox -v >/dev/null; then
     work_dir=$(ClearBox -w)
@@ -13,8 +14,8 @@ if ClearBox -v >/dev/null; then
 fi
 uninstall()
 {
-rm "$ZIPFILE"
-rm -r "$MODPATH"
+    rm "$ZIPFILE"
+    rm -r "$MODPATH"
 }
 ######
 if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
@@ -32,20 +33,19 @@ echo -e " » 音量上键 Volume Up：    中文 Chinese"
 echo -e " » 音量下键 Volume Down：  英语 English\n"
 case "$(getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
-        Lang="zh-CN"
-        source "$MODPATH/语言包/zh-CN.conf"
-        ;;
+      Lang="zh-CN"
+      ;;
     *KEY_VOLUMEDOWN*)
-        Lang="en-US"
-        source "$MODPATH/语言包/en-US.conf"
-        ;;
+      Lang="en-US"
+      ;;
     *)
-        uninstall
-        echo " » 选择错误 Tick Error！\n"
-        exit 1
-        ;;
-        
+      uninstall
+      echo " » 选择错误 Tick Error！\n"
+      exit 1
+      ;;
 esac
+mv "$MODPATH/语言包/$Lang.conf" "$MODPATH/语言包/Local.conf"
+source "$MODPATH/语言包/Local.conf"
 ######
 echo -e "=====================================================\n"
 if [ -d "/data/adb/magisk" ]; then
@@ -75,8 +75,7 @@ else
     echo -e " » $TICKUPDATEAPP_3\n"
 fi
 ######
-getevent -qlc 1 2>> /dev/null | while read -r A; do
-  case "$A" in
+case "$(getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP* | *KEY_VOLUMEDOWN*)
       sleep 0.1
       echo -e " » $NOTINSTALLAPP💔\n"
@@ -127,8 +126,7 @@ getevent -qlc 1 2>> /dev/null | while read -r A; do
       rm -rf "$MODPATH/APKS" >/dev/null 2>&1
       [ "$RESET" = 1 ] && "$home_dir/BashCore" StopInstall STOP >/dev/null
       ;;
-  esac
-done
+esac
 ######
 rm -r "$MODPATH/META-INF" >/dev/null
 ######
