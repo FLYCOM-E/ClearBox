@@ -11,6 +11,8 @@
 #define DEBUG 0
 #define MAX_PACKAGE_NAME 128
 #define data_dir "/data/data"
+#define ROM_NAME "RunStart"
+#define WHITELIST_NAME "whitelist.prop"
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir);
 
@@ -50,7 +52,7 @@ int main()
     
     //定义储存文件
     char rom_file[64] = "";
-    snprintf(rom_file, sizeof(rom_file), "%s/RunStart", work_dir);
+    snprintf(rom_file, sizeof(rom_file), "%s/%s", work_dir, ROM_NAME);
     
     //定义待处理app临时储存变量
     char top_app_list[5][MAX_PACKAGE_NAME] = {0}, reset_app[MAX_PACKAGE_NAME] = "";
@@ -200,27 +202,17 @@ int main()
         top_app[strcspn(top_app, "\n")] = 0;
         pclose(top_app_fp);
         get_error = 0;
-    
-        //检查屏幕状态是否关闭或为控制中心、电源菜单、空
-        //NotificationShade是A12及以上控制中心新名称
+        
+        /*
+        检查上一次前台App是否与当前一致
+        检查屏幕状态是否关闭或为控制中心、电源菜单、空
+        NotificationShade是A12及以上控制中心新名称
+        */
         if (strcmp(top_app, "") == 0 ||
            strstr(top_app, "NotificationShade") ||
            strstr(top_app, "StatusBar") ||
-           strstr(top_app, "ActionsDialog"))
-        {
-            //渐进式等待
-            cycle_count++;
-            if (cycle_count == 5)
-            {
-                cycle_time += 2;
-                cycle_count = 0;
-            }
-            sleep(cycle_time);
-            continue;
-        }
-        
-        //检查上一次前台App是否与当前一致
-        if (strcmp(top_app, top_app_list[0]) == 0)
+           strstr(top_app, "ActionsDialog") ||
+           strcmp(top_app, top_app_list[0]) == 0)
         {
             //渐进式等待
             cycle_count++;
@@ -268,13 +260,15 @@ int main()
 //此函数用于StopApp缓存
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir)
 {
-    char top_app_dir[256] = "", reset_app_dir[256] = "", whitelist_file[128] = "";
+    char top_app_dir[strlen(dir) + strlen(top_app) + 16];
+    char reset_app_dir[strlen(dir) + strlen(reset_app) + 16];
+    char whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 8];
     snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);     //topApp缓存目录定义
     snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app); //resetApp缓存目录定义
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/whitelist.prop", work_dir);   //定义WhiteList
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);   //定义WhiteList
     int in_whitelist = 0;
     
-    //检查缓存目录是否真实存在
+    //检查缓存目录是否真实存在并过滤路径逃逸
     if (access(top_app_dir, F_OK) == 0 &&
        strstr(top_app_dir, "/../") == NULL)
     {
@@ -339,9 +333,9 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
         return 0;
     }
     
-    //检查缓存目录是否真实存在
+    //检查缓存目录是否真实存在并过滤路径逃逸
     if (access(reset_app_dir, F_OK) == 0 &&
-       strstr(reset_app_dir, "../") == NULL)
+       strstr(reset_app_dir, "/../") == NULL)
     {
         pid_t newPid = fork();
         if (newPid == -1)
