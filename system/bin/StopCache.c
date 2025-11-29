@@ -10,7 +10,7 @@
 
 #define DEBUG 0
 #define MAX_PACKAGE_NAME 128
-#define data_dir "/data/data"
+#define DATA_DIR "/data/data"
 #define ROM_NAME "RunStart"
 #define WHITELIST_NAME "whitelist.prop"
 #define GET_TOPAPP "dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '"
@@ -246,7 +246,7 @@ int main()
         }
         
         //调用处理函数
-        stopAppCache(data_dir, top_app_list[0], reset_app, work_dir);
+        stopAppCache(DATA_DIR, top_app_list[0], reset_app, work_dir);
         if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
         {
             stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir);
