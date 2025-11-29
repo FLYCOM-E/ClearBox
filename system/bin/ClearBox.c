@@ -16,6 +16,11 @@
 #define BinDir_2 "/data/adb/ap/bin"
 #define BinDir_3 "/data/adb/ksu/bin"
 
+#define MODULE_PROP "module.prop"
+#define MODULE_SERVICE_BASH "service.sh"
+#define MODULE_TTYMENU_BASH "Menu.sh"
+#define MODULE_BASHCORE "BashCore"
+
 static int Run(char * bash, char * str);
 
 static int updateConfig();
@@ -130,7 +135,7 @@ static int Run(char * bash, char * str)
 static int updateConfig()
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/service.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s", home_dir, MODULE_SERVICE_BASH);
     if (Run(bash, "") == 0)
     {
         printf(" » Done\n");
@@ -148,7 +153,7 @@ static int updateConfig()
 static int ttyMenu()
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/Menu.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s", home_dir, MODULE_TTYMENU_BASH);
     if (Run(bash, "") != 0)
     {
         printf(" » Start Menu error\n");
@@ -162,7 +167,7 @@ static int ttyMenu()
 static int clearCache()
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/BashCore", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s", home_dir, MODULE_BASHCORE);
     if (Run(bash, "ClearAll") != 0)
     {
         printf(" » Start Clear Error! \n");
@@ -214,7 +219,7 @@ static int getVersion()
 {
     char * key_p = NULL;
     char module_file_line[64] = "", module_file[64] = "";
-    snprintf(module_file, sizeof(module_file), "%s/module.prop", home_dir);
+    snprintf(module_file, sizeof(module_file), "%s/%s", home_dir, MODULE_PROP);
     
     FILE * module_file_fp = fopen(module_file, "r");
     if (module_file_fp)

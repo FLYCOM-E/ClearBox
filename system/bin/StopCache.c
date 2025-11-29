@@ -13,6 +13,7 @@
 #define data_dir "/data/data"
 #define ROM_NAME "RunStart"
 #define WHITELIST_NAME "whitelist.prop"
+#define GET_TOPAPP "dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '"
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir);
 
@@ -184,7 +185,7 @@ int main()
         
         //获取前台软件包名
         char top_app[MAX_PACKAGE_NAME] = "";
-        FILE * top_app_fp = popen("dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '", "r");
+        FILE * top_app_fp = popen(GET_TOPAPP, "r");
         if (top_app_fp == NULL)
         {
             get_error++;

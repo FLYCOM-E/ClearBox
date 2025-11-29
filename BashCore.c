@@ -9,6 +9,10 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 
+#define SETTINGS_FILE_NAME "settings.prop"
+#define LOG_FILE_NAME "运行日志.log"
+#define BASH_DIR "wipe_cache"
+
 static int Run(char * cmd, char * str, char * str2);
 
 static int configFunction(char * home_dir, char * mode, char * config_file);
@@ -98,7 +102,7 @@ int main(int COMI, char * COM[])
     bool in_log_file = true;
     char log_file[strlen(work_dir) + 64];
     log_file[0] = '\0';
-    snprintf(log_file, sizeof(log_file), "%s/运行日志.log", work_dir);
+    snprintf(log_file, sizeof(log_file), "%s/%s", work_dir, LOG_FILE_NAME);
     FILE * log_file_fp = fopen(log_file, "a");
     if (log_file_fp == NULL)
     {
@@ -347,7 +351,7 @@ static int clearCache(char * home_dir)
     //定义命令 & Log文件
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/data_cache", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/data_cache", home_dir, BASH_DIR);
     return Run(bash, "", "");
 }
 
@@ -356,7 +360,7 @@ static int clearSystemCache(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/system_cache", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/system_cache", home_dir, BASH_DIR);
     return Run(bash, "", "");
 }
 
@@ -365,7 +369,7 @@ static int listDir(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/wipe_list_dir", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/wipe_list_dir", home_dir, BASH_DIR);
     return Run(bash, "", "");
 }
 
@@ -374,7 +378,7 @@ static int allDir(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/wipe_all_dir.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/wipe_all_dir.sh", home_dir, BASH_DIR);
     return Run(bash, "", "");
 }
 
@@ -393,7 +397,7 @@ static int clearTar(char * home_dir, char * work_dir)
     char * line_key = NULL;
     char settings_file[strlen(work_dir) + 32], settings_file_line[64] = "";
     settings_file[0] = '\0';
-    snprintf(settings_file, sizeof(settings_file), "%s/settings.prop", work_dir);
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
     FILE * settings_file_fp = fopen(settings_file, "r");
     if (settings_file_fp)
     {
@@ -418,8 +422,8 @@ static int clearTar(char * home_dir, char * work_dir)
         char bash_1[strlen(home_dir) + 32], bash_2[strlen(home_dir) + 32];
         bash_1[0] = '\0';
         bash_2[0] = '\0';
-        snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/ClearService1.sh", home_dir);
-        snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/ClearService2.sh", home_dir);
+        snprintf(bash_1, sizeof(bash_1), "%s/%s/ClearService1.sh", home_dir, BASH_DIR);
+        snprintf(bash_2, sizeof(bash_2), "%s/%s/ClearService2.sh", home_dir, BASH_DIR);
         Run(bash_1, "", "");
         Run(bash_2, "", "");
     }
@@ -433,8 +437,8 @@ static int fileClear(char * home_dir, char * str)
     char bash_1[strlen(home_dir) + 64], bash_2[strlen(home_dir) + 64];
     bash_1[0] = '\0';
     bash_2[0] = '\0';
-    snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/ClearService1.sh", home_dir);
-    snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/ClearService2.sh", home_dir);
+    snprintf(bash_1, sizeof(bash_1), "%s/%s/ClearService1.sh", home_dir, BASH_DIR);
+    snprintf(bash_2, sizeof(bash_2), "%s/%s/ClearService2.sh", home_dir, BASH_DIR);
     Run(bash_1, str, "");
     Run(bash_2, str, "");
     return 0;
@@ -445,7 +449,7 @@ static int clearApp(char * home_dir, char * str)
 {
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/AppClean", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/AppClean", home_dir, BASH_DIR);
     return Run(bash, str, "");
 }
 
@@ -455,8 +459,8 @@ static int fileAll(char * home_dir)
     char bash_1[strlen(home_dir) + 32], bash_2[strlen(home_dir) + 32];
     bash_1[0] = '\0';
     bash_2[0] = '\0';
-    snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/file_1.sh", home_dir);
-    snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/file_2.sh", home_dir);
+    snprintf(bash_1, sizeof(bash_1), "%s/%s/file_1.sh", home_dir, BASH_DIR);
+    snprintf(bash_2, sizeof(bash_2), "%s/%s/file_2.sh", home_dir, BASH_DIR);
     Run(bash_1, "", "");
     Run(bash_2, "", "");
     return 0;
@@ -468,7 +472,7 @@ static int fileAll2(char * home_dir, char * work_dir)
     int fileall = 0;
     char * key = NULL;
     char temp[64] = "", settingsFile[strlen(work_dir) + 32];
-    snprintf(settingsFile, sizeof(settingsFile), "%s/settings.prop", work_dir);
+    snprintf(settingsFile, sizeof(settingsFile), "%s/%s", work_dir, SETTINGS_FILE_NAME);
     FILE * settingsFile_fp = fopen(settingsFile, "r");
     if (settingsFile_fp)
     {
@@ -494,8 +498,8 @@ static int fileAll2(char * home_dir, char * work_dir)
         char bash_1[strlen(home_dir) + 32], bash_2[strlen(home_dir) + 32];
         bash_1[0] = '\0';
         bash_2[0] = '\0';
-        snprintf(bash_1, sizeof(bash_1), "%s/wipe_cache/file_1.sh", home_dir);
-        snprintf(bash_2, sizeof(bash_2), "%s/wipe_cache/file_2.sh", home_dir);
+        snprintf(bash_1, sizeof(bash_1), "%s/%s/file_1.sh", home_dir, BASH_DIR);
+        snprintf(bash_2, sizeof(bash_2), "%s/%s/file_2.sh", home_dir, BASH_DIR);
         Run(bash_1, "", "");
         Run(bash_2, "", "");
     }
@@ -508,7 +512,7 @@ static int stopInstall(char * home_dir, char * str)
 {
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/StopInstall.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/StopInstall.sh", home_dir, BASH_DIR);
     return Run(bash, str, "");
 }
 
@@ -517,7 +521,7 @@ static int stopStorage(char * home_dir, char * str)
 {
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/StopStorage.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/StopStorage.sh", home_dir, BASH_DIR);
     return Run(bash, str, "");
 }
 
@@ -526,7 +530,7 @@ static int f2fsGC(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/f2fs_GC.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/f2fs_GC.sh", home_dir, BASH_DIR);
     return Run(bash, "F2FS_GC", "");
 }
 
@@ -535,7 +539,7 @@ static int fastGC(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/f2fs_gc.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/f2fs_gc.sh", home_dir, BASH_DIR);
     return Run(bash, "FAST_GC", "");
 }
 
@@ -544,7 +548,7 @@ static int DexoatSYSTEM_DEXOAT(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/Dexoat.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
     return Run(bash, "SYSTEM_DEXOAT", "");
 }
 
@@ -553,7 +557,7 @@ static int DexoatFAST_DEXOAT(char * home_dir, char * str)
 {
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/Dexoat.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
     return Run(bash, "FAST_DEXOAT", str);
 }
 
@@ -562,7 +566,7 @@ static int DexoatRESET(char * home_dir)
 {
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/Dexoat.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
     return Run(bash, "RESET", "");
 }
 
@@ -571,6 +575,6 @@ static int FreeZer(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/wipe_cache/FreeZer.sh", home_dir);
+    snprintf(bash, sizeof(bash), "%s/%s/FreeZer.sh", home_dir, BASH_DIR);
     return Run(bash, "", "");
 }

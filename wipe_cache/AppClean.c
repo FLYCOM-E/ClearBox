@@ -8,6 +8,8 @@
 #include <string.h>
 
 #define MAX_PACKAGE 128
+#define DATA_DIR "/data/data"
+#define CONFIG_DIR_NAME "清理规则"
 
 int findPackageInProFile(char * package, char * config_file);
 
@@ -38,9 +40,6 @@ int main(int COMI, char * COM[])
     char app_package[MAX_PACKAGE] = "";
     snprintf(app_package, sizeof(app_package), "%s", COM[1]);
     
-    // data dir
-    char data_dir[64] = "/data/data";
-    
     // work dir
     char work_dir[64] = "";
     FILE * work_dir_fp = popen("ClearBox -w", "r");
@@ -51,7 +50,7 @@ int main(int COMI, char * COM[])
     // config dir
     char config_dir[strlen(work_dir) + 16];
     config_dir[0] = '\0';
-    snprintf(config_dir, sizeof(config_dir), "%s/清理规则", work_dir);
+    snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     if (access(config_dir, F_OK) != 0)
     {
         printf(" » 无App清理配置！\n");
@@ -99,7 +98,7 @@ int main(int COMI, char * COM[])
         
         // 遍历配置文件
         int count = 0;
-        char app_dir[strlen(data_dir) + 64];
+        char app_dir[64 + MAX_PACKAGE + 2];
         app_dir[0] = '\0'; 
         char len_str[256] = "", app_name[64] = "";
         char * app_package_fp = NULL, * app_name_fp = NULL;
@@ -121,7 +120,7 @@ int main(int COMI, char * COM[])
                 if (app_package_fp && app_name_fp)
                 {
                     snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                  //软件名称
-                    snprintf(app_dir, sizeof(app_dir), "%s/%s", data_dir, app_package_fp + 1);   //软件目录
+                    snprintf(app_dir, sizeof(app_dir), "%s/%s", DATA_DIR, app_package_fp + 1);   //软件目录
                     
                     if (access(app_dir, F_OK) == 0)
                     {

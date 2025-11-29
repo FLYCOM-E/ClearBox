@@ -1,4 +1,4 @@
-// 此Core来自ClearBox模块，用于清空内部储存软件缓存
+    // 此Core来自ClearBox模块，用于清空内部储存软件缓存
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -7,6 +7,11 @@
 
 #define data_dir "/data/user"
 #define WHITELIST_FILE "ClearWhitelist.prop"
+#define SETTINGS_FILE "settings.prop"
+
+#define GET_APPLIST "pm list package -3 2>/dev/null"
+#define GET_DIR_SIZE "du -s -m %s 2>/dev/null"
+#define CLEAR_CACHE "rm -r %s/* >/dev/null 2>&1"
 
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
 static int whiteListCheck(char * whitelist_file, char * App);
@@ -58,7 +63,7 @@ int main()
     int ClearCacheSize = 0, cleardisk = 0;
     char settings_file[strlen(work_dir) + 32], key_len[32] ="";
     settings_file[0] = '\n';
-    snprintf(settings_file, sizeof(settings_file), "%s/settings.prop", work_dir);
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     FILE * settings_file_fp = fopen(settings_file, "r");
     if (settings_file_fp)
     {
@@ -132,7 +137,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
         }
         
         // 获取第三方软件包名列表
-        FILE * package_list_fp = popen("pm list package -3 2>/dev/null", "r");
+        FILE * package_list_fp = popen(GET_APPLIST, "r");
         if (package_list_fp == NULL)
         {
             printf(" » 获取软件列表失败！\n");
@@ -157,7 +162,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             // 调用du命令获取软件缓存目录大小（单位：兆）
             char get_cache_size[strlen(app_cache_dir) + 32];
             get_cache_size[0] = '\0';
-            snprintf(get_cache_size, sizeof(get_cache_size), "du -s -m %s 2>/dev/null", app_cache_dir);
+            snprintf(get_cache_size, sizeof(get_cache_size), GET_DIR_SIZE, app_cache_dir);
             FILE * CacheSize_fp = popen(get_cache_size, "r");
             if (CacheSize_fp == NULL)
             {
@@ -178,7 +183,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                 {
                     char clear_command[strlen(app_cache_dir) + 32];
                     clear_command[0] = '\0';
-                    snprintf(clear_command, sizeof(clear_command), "rm -r %s/* >/dev/null 2>&1", app_cache_dir);
+                    snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_dir);
                     if (system(clear_command) == 0)
                     {
                         clean_size += cache_size; // 记录清理大小

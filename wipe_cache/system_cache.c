@@ -6,7 +6,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_PACKAGE 128
 #define data_dir "/data/user"
+
+#define GET_S_APPLIST "pm list package -s 2>/dev/null"
+#define CLEAR_CACHE "rm -r %s/* 2>/dev/null"
 
 int main()
 {
@@ -17,7 +21,7 @@ int main()
     }
     
     int count = 0, no_count = 0;
-    char app_cache_path[256] = "", package_list_line[128] = "";
+    char app_cache_path[256] = "", package_list_line[MAX_PACKAGE] = "";
     
     struct dirent * uid_dir = NULL;
     DIR * uid_dir_dp = opendir(data_dir);
@@ -36,7 +40,7 @@ int main()
         }
         
         // 遍历清空系统组件cache文件夹
-        FILE * package_list = popen("pm list package -s 2>/dev/null", "r");
+        FILE * package_list = popen(GET_S_APPLIST, "r");
         if (package_list == NULL)
         {
             printf("系统软件列表获取失败\n");
@@ -56,7 +60,7 @@ int main()
             else
             {
                 char clear_command[256] = "";
-                snprintf(clear_command, sizeof(clear_command), "rm -r %s/* 2>/dev/null", app_cache_path);
+                snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_path);
                 if (system(clear_command) == 0)
                 {
                     printf(" » %s 缓存已清除\n", package_list_line + 8);
@@ -79,7 +83,6 @@ int main()
     
     // 清除“MTP主机”组件数据可解决MTP连接文件显示不全的问题
     system("pm clear com.android.mtp >/dev/null 2>&1");
-    
     // 清空系统缓存
     system("rm -r /cache/* 2>/dev/null");
     system("rm -r /data/resource-cache/* 2>/dev/null");
@@ -88,6 +91,5 @@ int main()
     
     printf(" >>> 系统缓存已清空！建议重启系统！\n");
     printf(" >>> 共清理 %d 个系统软件，%d 个系统软件无需清理\n", count, no_count);
-    
     return 0;
 }
