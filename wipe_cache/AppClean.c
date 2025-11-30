@@ -20,31 +20,41 @@ int main(int COMI, char * COM[])
         printf(" » 请授予root权限！\n");
         return 1;
     }
-    if (system("ClearBox -v >/dev/null 2>&1") != 0)
+    if (COMI < 5)
     {
-        printf(" » 模块加载异常，请排查反馈！\n");
-        return 1;
-    }
-    if (COMI < 2)
-    {
-        printf(" » ERROR：需要一个参数，未传入软件名称！\n");
+        printf(" » ERROR：未正确传递软件包名、配置文件目录！\n");
         return 1;
     }
     
-    // 接收传入包名
-    if (strlen(COM[1]) > MAX_PACKAGE)
+    // Get work_dir & package
+    char work_dir[64] = "", app_package[MAX_PACKAGE] = "";
+    for (int i = 0; i < COMI - 1; i++)
     {
-        printf(" » 传入包名过长！长度 %zu，限制 %d\n", strlen(COM[1]), MAX_PACKAGE);
+        if (strcmp(COM[i], "-w") == 0)
+        {
+            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+        }
+        if (strcmp(COM[i], "-p") == 0)
+        {
+            if (strlen(COM[i + 1]) > MAX_PACKAGE)
+            {
+                printf(" » 传入包名过长！限制 %d\n", MAX_PACKAGE);
+                return 1;
+            }
+            snprintf(app_package, sizeof(app_package), "%s", COM[i + 1]);
+        }
+    }
+    if (strcmp(work_dir, "") == 0)
+    {
+        printf(" » 未传入配置目录！\n");
         return 1;
     }
-    char app_package[MAX_PACKAGE] = "";
-    snprintf(app_package, sizeof(app_package), "%s", COM[1]);
-    
-    // work dir
-    char work_dir[64] = "";
-    FILE * work_dir_fp = popen("ClearBox -w", "r");
-    fgets(work_dir, sizeof(work_dir), work_dir_fp);
-    pclose(work_dir_fp);
+    if (strcmp(app_package, "") == 0)
+    {
+        printf(" » 未传入包名！\n");
+        return 1;
+    }
+    app_package[strcspn(app_package, "\n")] = 0;
     work_dir[strcspn(work_dir, "\n")] = 0;
     
     // config dir

@@ -13,7 +13,7 @@
 #define LOG_FILE_NAME "运行日志.log"
 #define BASH_DIR "wipe_cache"
 
-static int Run(char * cmd, char * str, char * str2);
+static int Run(char * cmd, char * str, char * str2, char * str3, char * str4);
 
 static int configFunction(char * home_dir, char * mode, char * config_file);
 static int clearCache(char * home_dir);
@@ -23,7 +23,7 @@ static int allDir(char * home_dir);
 static int dirFile(char * home_dir);
 static int clearTar(char * home_dir, char * work_dir);
 static int fileClear(char * home_dir, char * str);
-static int clearApp(char * home_dir, char * str);
+static int clearApp(char * home_dir, char * work_dir, char * str);
 static int fileAll(char * home_dir);
 static int fileAll2(char * home_dir, char * work_dir);
 static int stopInstall(char * home_dir, char * str);
@@ -178,7 +178,7 @@ int main(int COMI, char * COM[])
     }
     else if (strcasecmp(COM[1], "Clear_App") == 0)
     {
-        if (clearApp(home_dir, COM[2]) == 0)
+        if (clearApp(home_dir, work_dir, COM[2]) == 0)
         {
             fprintf(log_file_fp, "I [%s] 自定义软件清理\n", now_time);
         }
@@ -285,28 +285,32 @@ int main(int COMI, char * COM[])
 }
 
 // 一个通用函数，用途：执行脚本
-static int Run(char * cmd, char * str, char * str2)
+static int Run(char * cmd, char * str, char * str2, char * str3, char * str4)
 {
     if (access(cmd, F_OK))
     {
         return 1;
     }
     
-    char * command_args[5] = {NULL};
+    char * command_args[7] = {NULL};
     if (strstr(cmd, ".sh"))
     {
         command_args[0] = "bash";
         command_args[1] = cmd;
         command_args[2] = str;
         command_args[3] = str2;
-        command_args[4] = NULL;
+        command_args[4] = str3;
+        command_args[5] = str4;
+        command_args[6] = NULL;
     }
     else
     {
         command_args[0] = cmd;
         command_args[1] = str;
         command_args[2] = str2;
-        command_args[3] = NULL;
+        command_args[3] = str3;
+        command_args[4] = str4;
+        command_args[5] = NULL;
     }
     
     pid_t newPid = fork();
@@ -342,7 +346,7 @@ static int configFunction(char * home_dir, char * mode, char * config_file)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/ConfigManager.sh", home_dir);
-    return Run(bash, mode, config_file);
+    return Run(bash, mode, config_file, "", "");
 }
 
 // 清理第三方软件缓存
@@ -352,7 +356,7 @@ static int clearCache(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/data_cache", home_dir, BASH_DIR);
-    return Run(bash, "", "");
+    return Run(bash, "", "", "", "");
 }
 
 // 清理系统软件缓存
@@ -361,7 +365,7 @@ static int clearSystemCache(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/system_cache", home_dir, BASH_DIR);
-    return Run(bash, "", "");
+    return Run(bash, "", "", "", "");
 }
 
 // 运行处理自定义规则
@@ -370,7 +374,7 @@ static int listDir(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/wipe_list_dir", home_dir, BASH_DIR);
-    return Run(bash, "", "");
+    return Run(bash, "", "", "", "");
 }
 
 // 清理储存目录
@@ -379,7 +383,7 @@ static int allDir(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/wipe_all_dir.sh", home_dir, BASH_DIR);
-    return Run(bash, "", "");
+    return Run(bash, "", "", "", "");
 }
 
 // 运行规则清理、清理储存目录
@@ -424,8 +428,8 @@ static int clearTar(char * home_dir, char * work_dir)
         bash_2[0] = '\0';
         snprintf(bash_1, sizeof(bash_1), "%s/%s/ClearService1.sh", home_dir, BASH_DIR);
         snprintf(bash_2, sizeof(bash_2), "%s/%s/ClearService2.sh", home_dir, BASH_DIR);
-        Run(bash_1, "", "");
-        Run(bash_2, "", "");
+        Run(bash_1, "", "", "", "");
+        Run(bash_2, "", "", "", "");
     }
     
     return 0;
@@ -439,18 +443,18 @@ static int fileClear(char * home_dir, char * str)
     bash_2[0] = '\0';
     snprintf(bash_1, sizeof(bash_1), "%s/%s/ClearService1.sh", home_dir, BASH_DIR);
     snprintf(bash_2, sizeof(bash_2), "%s/%s/ClearService2.sh", home_dir, BASH_DIR);
-    Run(bash_1, str, "");
-    Run(bash_2, str, "");
+    Run(bash_1, str, "", "", "");
+    Run(bash_2, str, "", "", "");
     return 0;
 }
 
 // 自定义软件 规则清理
-static int clearApp(char * home_dir, char * str)
+static int clearApp(char * home_dir, char * work_dir, char * str)
 {
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/AppClean", home_dir, BASH_DIR);
-    return Run(bash, str, "");
+    return Run(bash, "-p", str, "-w", work_dir);
 }
 
 // 自定义格式文件归类
@@ -461,8 +465,8 @@ static int fileAll(char * home_dir)
     bash_2[0] = '\0';
     snprintf(bash_1, sizeof(bash_1), "%s/%s/file_1.sh", home_dir, BASH_DIR);
     snprintf(bash_2, sizeof(bash_2), "%s/%s/file_2.sh", home_dir, BASH_DIR);
-    Run(bash_1, "", "");
-    Run(bash_2, "", "");
+    Run(bash_1, "", "", "", "");
+    Run(bash_2, "", "", "", "");
     return 0;
 }
 
@@ -500,8 +504,8 @@ static int fileAll2(char * home_dir, char * work_dir)
         bash_2[0] = '\0';
         snprintf(bash_1, sizeof(bash_1), "%s/%s/file_1.sh", home_dir, BASH_DIR);
         snprintf(bash_2, sizeof(bash_2), "%s/%s/file_2.sh", home_dir, BASH_DIR);
-        Run(bash_1, "", "");
-        Run(bash_2, "", "");
+        Run(bash_1, "", "", "", "");
+        Run(bash_2, "", "", "", "");
     }
     
     return 0;
@@ -513,7 +517,7 @@ static int stopInstall(char * home_dir, char * str)
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/StopInstall.sh", home_dir, BASH_DIR);
-    return Run(bash, str, "");
+    return Run(bash, str, "", "", "");
 }
 
 // 内部储存固定
@@ -522,7 +526,7 @@ static int stopStorage(char * home_dir, char * str)
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/StopStorage.sh", home_dir, BASH_DIR);
-    return Run(bash, str, "");
+    return Run(bash, str, "", "", "");
 }
 
 // 磁盘GC
@@ -531,7 +535,7 @@ static int f2fsGC(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/f2fs_GC.sh", home_dir, BASH_DIR);
-    return Run(bash, "F2FS_GC", "");
+    return Run(bash, "F2FS_GC", "", "", "");
 }
 
 // 快速GC
@@ -540,7 +544,7 @@ static int fastGC(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/f2fs_gc.sh", home_dir, BASH_DIR);
-    return Run(bash, "FAST_GC", "");
+    return Run(bash, "FAST_GC", "", "", "");
 }
 
 // Dexoat 模式1：触发系统Dexoat
@@ -549,7 +553,7 @@ static int DexoatSYSTEM_DEXOAT(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
-    return Run(bash, "SYSTEM_DEXOAT", "");
+    return Run(bash, "SYSTEM_DEXOAT", "", "", "");
 }
 
 // Dexoat 模式2：自定义模式Dexoat
@@ -558,7 +562,7 @@ static int DexoatFAST_DEXOAT(char * home_dir, char * str)
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
-    return Run(bash, "FAST_DEXOAT", str);
+    return Run(bash, "FAST_DEXOAT", str, "", "");
 }
 
 // Dexoat 模式3：Dexoat还原
@@ -567,7 +571,7 @@ static int DexoatRESET(char * home_dir)
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
-    return Run(bash, "RESET", "");
+    return Run(bash, "RESET", "", "", "");
 }
 
 // 其它优化，打开原生墓碑
@@ -576,5 +580,5 @@ static int FreeZer(char * home_dir)
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/FreeZer.sh", home_dir, BASH_DIR);
-    return Run(bash, "", "");
+    return Run(bash, "", "", "", "");
 }
