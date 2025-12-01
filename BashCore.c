@@ -18,9 +18,8 @@ static int Run(char * cmd, char * str, char * str2, char * str3, char * str4);
 static int configFunction(char * home_dir, char * mode, char * config_file);
 static int clearCache(char * home_dir, char * work_dir);
 static int clearSystemCache(char * home_dir);
-static int listDir(char * home_dir);
+static int listDir(char * home_dir, char * work_dir);
 static int allDir(char * home_dir);
-static int dirFile(char * home_dir);
 static int clearTar(char * home_dir, char * work_dir);
 static int fileClear(char * home_dir, char * str);
 static int clearApp(char * home_dir, char * work_dir, char * str);
@@ -114,7 +113,8 @@ int main(int COMI, char * COM[])
     if (strcasecmp(COM[1], "ClearAll") == 0)
     {
         clearCache(home_dir, work_dir);
-        dirFile(home_dir);
+        listDir(home_dir, work_dir);
+        allDir(home_dir);
         clearTar(home_dir, work_dir);
         fileAll2(home_dir, work_dir);
         fastGC(home_dir);
@@ -145,7 +145,7 @@ int main(int COMI, char * COM[])
     }
     else if (strcasecmp(COM[1], "List_Dir") == 0)
     {
-        if (listDir(home_dir) == 0)
+        if (listDir(home_dir, work_dir) == 0)
         {
             fprintf(log_file_fp, "I [%s] 自定义规则清理\n", now_time);
         }
@@ -369,12 +369,12 @@ static int clearSystemCache(char * home_dir)
 }
 
 // 运行处理自定义规则
-static int listDir(char * home_dir)
+static int listDir(char * home_dir, char * work_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/wipe_list_dir", home_dir, BASH_DIR);
-    return Run(bash, "", "", "", "");
+    return Run(bash, "-w", work_dir, "", "");
 }
 
 // 清理储存目录
@@ -384,14 +384,6 @@ static int allDir(char * home_dir)
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/wipe_all_dir.sh", home_dir, BASH_DIR);
     return Run(bash, "", "", "", "");
-}
-
-// 运行规则清理、清理储存目录
-static int dirFile(char * home_dir)
-{
-    listDir(home_dir);
-    allDir(home_dir);
-    return 0;
 }
 
 // 根据prop配置，清理全部文件（仅用于一键/自动清理 该选项打开状态
