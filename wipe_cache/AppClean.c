@@ -32,7 +32,13 @@ int main(int COMI, char * COM[])
     {
         if (strcmp(COM[i], "-w") == 0)
         {
+            if (access(COM[i + 1], F_OK) != 0)
+            {
+                printf(" » 配置目录不存在！\n");
+                return 1;
+            }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+            work_dir[strcspn(work_dir, "\n")] = 0;
         }
         if (strcmp(COM[i], "-p") == 0)
         {
@@ -42,6 +48,7 @@ int main(int COMI, char * COM[])
                 return 1;
             }
             snprintf(app_package, sizeof(app_package), "%s", COM[i + 1]);
+            app_package[strcspn(app_package, "\n")] = 0;
         }
     }
     if (strcmp(work_dir, "") == 0)
@@ -54,8 +61,6 @@ int main(int COMI, char * COM[])
         printf(" » 未传入包名！\n");
         return 1;
     }
-    app_package[strcspn(app_package, "\n")] = 0;
-    work_dir[strcspn(work_dir, "\n")] = 0;
     
     // config dir
     char config_dir[strlen(work_dir) + 16];

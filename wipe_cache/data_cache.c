@@ -16,27 +16,38 @@
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
 static int whiteListCheck(char * whitelist_file, char * App);
 
-int main()
+int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！");
+        printf(" » 请授予root权限！\n");
         return 1;
     }
-    if (system("ClearBox -v >/dev/null 2>&1") != 0)
+    else if (COMI < 2)
     {
-        printf(" » 模块加载异常，请排查反馈！\n");
+        printf(" » 未传入配置路径！\n");
         return 1;
     }
     
     // work_dir定义
     char work_dir[64] = "";
-    FILE * work_dir_fp = popen("ClearBox -w 2>/dev/null", "r");
-    if (work_dir_fp)
+    for (int i = 0; i < COMI - 1; i++)
     {
-        fgets(work_dir, sizeof(work_dir), work_dir_fp);
-        pclose(work_dir_fp);
-        work_dir[strcspn(work_dir, "\n")] = 0;
+        if (strcmp(COM[i], "-w") == 0)
+        {
+            if (access(COM[i + 1], F_OK) != 0)
+            {
+                printf(" » 配置路径不存在！\n");
+                return 1;
+            }
+            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+            work_dir[strcspn(work_dir, "\n")] = 0;
+        }
+    }
+    if (strcmp(work_dir, "") == 0)
+    {
+        printf(" » 配置路径参数为空！\n");
+        return 1;
     }
     
     // micro_dir定义

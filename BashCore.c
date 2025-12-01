@@ -16,7 +16,7 @@
 static int Run(char * cmd, char * str, char * str2, char * str3, char * str4);
 
 static int configFunction(char * home_dir, char * mode, char * config_file);
-static int clearCache(char * home_dir);
+static int clearCache(char * home_dir, char * work_dir);
 static int clearSystemCache(char * home_dir);
 static int listDir(char * home_dir);
 static int allDir(char * home_dir);
@@ -113,7 +113,7 @@ int main(int COMI, char * COM[])
     // 根据输入参数执行对应操作
     if (strcasecmp(COM[1], "ClearAll") == 0)
     {
-        clearCache(home_dir);
+        clearCache(home_dir, work_dir);
         dirFile(home_dir);
         clearTar(home_dir, work_dir);
         fileAll2(home_dir, work_dir);
@@ -123,7 +123,7 @@ int main(int COMI, char * COM[])
     }
     else if (strcasecmp(COM[1], "ClearCache") == 0)
     {
-        if (clearCache(home_dir) == 0)
+        if (clearCache(home_dir, work_dir) == 0)
         {
             fprintf(log_file_fp, "I [%s] 清理第三方软件缓存\n", now_time);
         }
@@ -350,13 +350,13 @@ static int configFunction(char * home_dir, char * mode, char * config_file)
 }
 
 // 清理第三方软件缓存
-static int clearCache(char * home_dir)
+static int clearCache(char * home_dir, char * work_dir)
 {
     //定义命令 & Log文件
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
     snprintf(bash, sizeof(bash), "%s/%s/data_cache", home_dir, BASH_DIR);
-    return Run(bash, "", "", "", "");
+    return Run(bash, "-w", work_dir, "", "");
 }
 
 // 清理系统软件缓存
