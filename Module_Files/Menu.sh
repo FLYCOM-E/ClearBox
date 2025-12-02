@@ -431,6 +431,8 @@ case "$in_put" in
           1)
             clear
             "$home_dir/BashCore" F2fs_GC
+            echo -en "\033[92m » 回车返回\033[0m"
+            read cache
             ;;
           2)
             clear
