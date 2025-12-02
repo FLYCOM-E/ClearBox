@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+// 节点名称
 #define SYSFS_PATH "/sys/fs/f2fs"
 #define SYSFS_FILE_NAME "gc_urgent"
 #define SYSFS_DIRTY_FILE "dirty_segments"
@@ -11,6 +12,8 @@
 
 static int F2FS_GC();
 static int IDLE_MAINT();
+static int get_f2fs_dirty(char * dirty_file);
+static int get_f2fs_free(char * free_file);
 
 int main(int COMI, char * COM[])
 {
@@ -41,6 +44,7 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
+// 紧急GC
 static int F2FS_GC()
 {
     // GetProp
@@ -72,7 +76,6 @@ static int F2FS_GC()
         printf(" » 您的设备不是 F2FS 文件系统\n » 维护仅支持 F2FS 环境！\n");
         return 1;
     }
-    
     // 检测是否支持当前gc方案
     if (access(f2fs_sysfs_file, F_OK) != 0)
     {
@@ -81,115 +84,127 @@ static int F2FS_GC()
     }
     
     // Get Dirty & Free
-    int dirty = 0, free = 0;
-    
-    char dirty_cache[4] = "";
-    FILE * dirty_fp = fopen(f2fs_sysfs_dirty_file, "r");
-    if (dirty_fp)
-    {
-        fgets(dirty_cache, sizeof(dirty_cache), dirty_fp);
-        dirty = atoi(dirty_cache);
-    }
-    else
-    {
-        printf(" » 警告：获取当前脏段失败！\n");
-    }
-    char free_cache[4] = "";
-    FILE * free_fp = fopen(f2fs_sysfs_free_file, "r");
-    if (free_fp)
-    {
-        fgets(free_cache, sizeof(free_cache), free_fp);
-        free = atoi(free_cache);
-    }
-    else
-    {
-        printf(" » 警告：获取当前空闲段失败！\n");
-    }
-    
-    printf(" » 目前脏段: %d\n", dirty);
-    printf(" » 目前空闲段: %d\n\n", free);
+    int f2fs_dirty = 0, f2fs_free = 0;
+    f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
+    f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
+    printf(" » 目前脏段: %d\n", f2fs_dirty);
+    printf(" » 目前空闲段: %d\n\n", f2fs_free);
+    fflush(stdout);
     
     char cache[4] = "";
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
-    if (f2fs_sysfs_file_fp)
+    if (f2fs_sysfs_file_fp == NULL)
     {
-        if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
+        printf(" » GC启动失败! 节点打开失败！\n");
+        return 1;
+    }
+    if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
+    {
+        printf(" » GC已开始, 请您耐心等待，建议挂后台！\n");
+        fflush(stdout);
+        fclose(f2fs_sysfs_file_fp);
+    }
+    else
+    {
+        printf(" » GC启动失败! 节点写入失败！\n");
+        fclose(f2fs_sysfs_file_fp);
+        return 1;
+    }
+    
+    // 等待循环
+    // 秒 / 分
+    int time_s = 0, time_m = 0;
+    for ( ; ; )
+    {
+        time_s += 5;
+        sleep(5);
+        
+        if (time_s == 60)
         {
-            printf(" » GC已开始, 请您耐心等待，建议挂后台！\n");
+            time_s = 0;
+            time_m++;
         }
-        else
+        if (time_m == 9)
         {
-            printf(" » GC启动失败! 节点写入失败！\n");
-            fclose(free_fp);
-            fclose(dirty_fp);
-            fclose(f2fs_sysfs_file_fp);
-            return 1;
+            printf(" » GC等待超时，已结束等待！\n");
+            fflush(stdout);
+            break;
         }
         
-        int time_s = 0, time_m = 0;
-        for ( ; ; )
+        FILE * sysfs_file_fp = fopen(f2fs_sysfs_file, "r");
+        if (sysfs_file_fp)
         {
-            if (time_s == 60)
-            {
-                time_s = 0;
-                time_m++;
-            }
-            if (time_m == 9)
-            {
-                printf(" » GC等待超时，已结束等待！\n");
-                break;
-            }
-            fgets(cache, sizeof(cache), f2fs_sysfs_file_fp);
+            fgets(cache, sizeof(cache), sysfs_file_fp);
+            fclose(sysfs_file_fp);
             if (atoi(cache) == 0)
             {
                 printf(" » GC运行完成，已结束运行！\n");
+                fflush(stdout);
                 break;
             }
-            
-            printf(" » 已运行 %d 分 %d 秒...\n", time_m, time_s);
-            time_s += 5;
-            sleep(5);
         }
-        fclose(f2fs_sysfs_file_fp);
+        
+        printf(" » 已运行 %d 分 %d 秒...\n", time_m, time_s);
+        fflush(stdout);
     }
     
-    int old_dirty = dirty;
-    dirty = 0;
-    free = 0;
+    // Again Get Dirty & Free
+    int old_f2fs_dirty = f2fs_dirty;
+    f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
+    f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
+    printf(" » 目前脏段: %d\n", f2fs_dirty);
+    printf(" » 目前空闲段: %d\n\n", f2fs_free);
     
-    if (dirty_fp)
+    if (old_f2fs_dirty > f2fs_dirty)
     {
-        fgets(dirty_cache, sizeof(dirty_cache), dirty_fp);
-        fclose(dirty_fp);
-        dirty = atoi(dirty_cache);
+        printf(" » 磁盘脏块减少 %d\n", old_f2fs_dirty - f2fs_dirty);
+    }
+    else
+    {
+        printf(" » 磁盘脏块增加 %d\n » GC可能仍在优化或并不适合您的设备！\n", f2fs_dirty - old_f2fs_dirty);
+    }
+    
+    printf(" » GC已完成！\n");
+    fflush(stdout);
+    return 0;
+}
+
+// 获取磁盘脏段
+static int get_f2fs_dirty(char * dirty_file)
+{
+    char cache[4] = "";
+    FILE * f2fs_dirty_fp = fopen(dirty_file, "r");
+    if (f2fs_dirty_fp)
+    {
+        fgets(cache, sizeof(cache), f2fs_dirty_fp);
+        fclose(f2fs_dirty_fp);
     }
     else
     {
         printf(" » 警告：获取当前脏段失败！\n");
+        fflush(stdout);
+        return 0;
     }
-    if (free_fp)
+    return atoi(cache);
+}
+
+// 获取磁盘空闲段
+static int get_f2fs_free(char * free_file)
+{
+    char cache[4] = "";
+    FILE * f2fs_free_fp = fopen(free_file, "r");
+    if (f2fs_free_fp)
     {
-        fgets(free_cache, sizeof(free_cache), free_fp);
-        free = atoi(free_cache);
+        fgets(cache, sizeof(cache), f2fs_free_fp);
+        fclose(f2fs_free_fp);
     }
     else
     {
         printf(" » 警告：获取当前空闲段失败！\n");
+        fflush(stdout);
+        return 0;
     }
-    
-    if (old_dirty > dirty)
-    {
-        printf(" » 磁盘脏块减少 %d\n", old_dirty - dirty);
-    }
-    else
-    {
-        printf(" » 磁盘脏块增加 %d\n » GC可能仍在优化或并不适合您的设备！\n", dirty - old_dirty);
-    }
-    
-    fclose(free_fp);
-    fclose(dirty_fp);
-    printf(" » GC已完成！\n");
-    return 0;
+    return atoi(cache);
 }
 
 static int IDLE_MAINT()
