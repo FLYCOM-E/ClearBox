@@ -525,7 +525,7 @@ static int f2fsGC(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/%s/f2fs_GC.sh", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/f2fs_GC", home_dir, BASH_DIR);
     return Run(bash, "F2FS_GC", "", "", "");
 }
 
@@ -534,7 +534,7 @@ static int fastGC(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/%s/f2fs_gc.sh", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/f2fs_GC", home_dir, BASH_DIR);
     return Run(bash, "FAST_GC", "", "", "");
 }
 
