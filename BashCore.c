@@ -30,8 +30,7 @@ static int stopStorage(char * home_dir, char * str);
 static int f2fsGC(char * home_dir);
 static int fastGC(char * home_dir);
 static int DexoatSYSTEM_DEXOAT(char * home_dir);
-static int DexoatFAST_DEXOAT(char * home_dir, char * str);
-static int DexoatRESET(char * home_dir);
+static int DexoatCUST_DEXOAT(char * home_dir, char * str);
 static int FreeZer(char * home_dir);
 
 int main(int COMI, char * COM[])
@@ -244,7 +243,7 @@ int main(int COMI, char * COM[])
     }
     else if (strcasecmp(COM[1], "Dexoat_2") == 0)
     {
-        if (DexoatFAST_DEXOAT(home_dir, COM[2]) == 0)
+        if (DexoatCUST_DEXOAT(home_dir, COM[2]) == 0)
         {
             fprintf(log_file_fp, "I [%s] 自定义模式Dexoat\n", now_time);
         }
@@ -255,7 +254,7 @@ int main(int COMI, char * COM[])
     }
     else if (strcasecmp(COM[1], "Dexoat_3") == 0)
     {
-        if (DexoatRESET(home_dir) == 0)
+        if (DexoatCUST_DEXOAT(home_dir, "space") == 0)
         {
             fprintf(log_file_fp, "I [%s] Dexoat RESET\n", now_time);
         }
@@ -544,26 +543,17 @@ static int DexoatSYSTEM_DEXOAT(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/Dexoat", home_dir, BASH_DIR);
     return Run(bash, "SYSTEM_DEXOAT", "", "", "");
 }
 
 // Dexoat 模式2：自定义模式Dexoat
-static int DexoatFAST_DEXOAT(char * home_dir, char * str)
+static int DexoatCUST_DEXOAT(char * home_dir, char * str)
 {
     char bash[strlen(home_dir) + 64];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/Dexoat", home_dir, BASH_DIR);
     return Run(bash, "FAST_DEXOAT", str, "", "");
-}
-
-// Dexoat 模式3：Dexoat还原
-static int DexoatRESET(char * home_dir)
-{
-    char bash[strlen(home_dir) + 64];
-    bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/%s/Dexoat.sh", home_dir, BASH_DIR);
-    return Run(bash, "RESET", "", "", "");
 }
 
 // 其它优化，打开原生墓碑
