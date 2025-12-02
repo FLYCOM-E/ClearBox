@@ -6,9 +6,9 @@
 
 int main()
 {
-    if (getuid() != 0 || getuid() != 2000)
+    if (getuid() != 0)
     {
-        printf(" » 权限错误！需要UID：0、2000\n");
+        printf(" » 请使用Root权限！\n");
         return 1;
     }
     
