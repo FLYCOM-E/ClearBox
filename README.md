@@ -1,11 +1,25 @@
-![image](Doc_images/ClearBox.png)
+![image](ClearBox.png)
+
 
 >[!CAUTION]
 > 主分支目前处于不稳定状态。项目正在全面转C，另外Release与主分支差异过大，如果您是普通用户下载Release即可，尝鲜用户可以自行编译体验（不建议）。
 
-   ## Other?
-### [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/Doc_images/README_en-US.md)
 
+   ## Other?
+### [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md)
+
+
+   # 构建安装：
+```
+sudo apt install zip make
+
+CC=clang #(如果构建设备非最终设备架构，请使用交叉编译工具）
+
+git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox/
+
+make -j4 && make module_tar && make clean
+```
+刷入 **ClearBox.zip**
 
 
    # 什么是 **ClearBox** ？

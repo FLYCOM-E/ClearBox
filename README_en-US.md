@@ -1,6 +1,21 @@
 >[!CAUTION]
 > The main branch is currently unstable. The project is being fully ported to C. In addition, the differences between the Release and the main branch are too large. If you are an ordinary user, just download the Release. Early-access users can compile and experience it by themselves (not recommended).
 
+
+   # Build and Install:
+
+```
+sudo apt install zip make
+
+CC=clang # (Use cross-compilation tools if the build device architecture differs from the target device)
+
+git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox/
+
+make -j4 && make module_tar && make clean
+```
+Flash ClearBox.zip
+
+
    # What is **ClearBox**?
 
 **ClearBox** is a deep & fast cleanup module that can one-click delete all software caches, installation packages, compressed archives, junk files, and empty folders for your device, block cache, file classification, prevent software updates/installations, and perform periodic optimization/cleanup & file classification (no background). It supports adding custom cleanup rules and file cleanup/organization.

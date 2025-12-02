@@ -77,7 +77,7 @@ int main(int COMI, char * COM[])
         
         printf(" » 处理 %s 配置📍\n", config_file_name -> d_name);
         
-        int count = 0, read_config = 0;
+        int count = 0;
         char config_file_line[256] = "", dir[256] = "";
         while (fgets(config_file_line, sizeof(config_file_line), config_file_fp))
         {
