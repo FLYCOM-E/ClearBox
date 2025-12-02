@@ -561,6 +561,6 @@ static int FreeZer(char * home_dir)
 {
     char bash[strlen(home_dir) + 32];
     bash[0] = '\0';
-    snprintf(bash, sizeof(bash), "%s/%s/FreeZer.sh", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/FreeZer", home_dir, BASH_DIR);
     return Run(bash, "", "", "", "");
 }
