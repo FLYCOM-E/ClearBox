@@ -2,7 +2,7 @@
 > The main branch is currently unstable. The project is being fully ported to C. In addition, the differences between the Release and the main branch are too large. If you are an ordinary user, just download the Release. Early-access users can compile and experience it by themselves (not recommended).
 
 
-   ## Build and Install:
+   ## [Release](https://github.com/FLYCOM-E/ClearBox/releases) Or Build and Install:
 
 ```
 sudo apt install zip make
