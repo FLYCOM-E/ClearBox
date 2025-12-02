@@ -9,7 +9,9 @@
 ### [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md)
 
 
-   ## [Release](https://github.com/FLYCOM-E/ClearBox/releases) 或 构建安装：
+   # 安装？
+
+   ## [**Release**](https://github.com/FLYCOM-E/ClearBox/releases) 或 构建安装：
 ```
 sudo apt install zip make
 
