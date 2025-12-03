@@ -21,9 +21,11 @@ all: $(ALL_FILE)
 .PHONY: all
 
 $(core_bin_dir)/ClearBox: src/ClearBox.c
+	@mkdir -p $(core_bin_dir)
 	$(CC) $(CFLAGS) src/ClearBox.c -o $(core_bin_dir)/ClearBox
 
 $(core_bin_dir)/StopCache: src/StopCache.c
+	@mkdir -p $(core_bin_dir)
 	$(CC) $(CFLAGS) src/StopCache.c -o $(core_bin_dir)/StopCache
 
 $(home_dir)/BashCore: src/BashCore.c
@@ -58,7 +60,7 @@ $(bin_dir)/StopStorage: src/StopStorage.c
 
 clean: 
 	@rm $(ALL_FILE)
-	@rm -rf Build
+	@cd $(home_dir) && rm -rf system
 	@echo " » 清理完成！\n » Clean Done! "
 
 module_tar: 

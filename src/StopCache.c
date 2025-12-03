@@ -15,7 +15,7 @@
 #define WHITELIST_NAME "whitelist.prop"
 #define GET_TOPAPP "dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '"
 
-static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir);
+static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
 
 int main()
 {
@@ -38,6 +38,16 @@ int main()
         fgets(work_dir, sizeof(work_dir), work_dir_fp);
         work_dir[strcspn(work_dir, "\n")] = 0;
         pclose(work_dir_fp);
+    }
+    
+    //bin_dir定义
+    char bin_dir[128] = "";
+    FILE * bin_dir_fp = popen("ClearBox -b", "r");
+    if (bin_dir_fp)
+    {
+        fgets(bin_dir, sizeof(bin_dir), bin_dir_fp);
+        bin_dir[strcspn(bin_dir, "\n")] = 0;
+        pclose(bin_dir_fp);
     }
     
     //micro_dir定义
@@ -246,10 +256,10 @@ int main()
         }
         
         //调用处理函数
-        stopAppCache(DATA_DIR, top_app_list[0], reset_app, work_dir);
+        stopAppCache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir);
         if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
         {
-            stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir);
+            stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir);
         }
         
         sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
@@ -259,15 +269,23 @@ int main()
 }
 
 //此函数用于StopApp缓存
-static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir)
+static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir)
 {
     char top_app_dir[strlen(dir) + strlen(top_app) + 16];
     char reset_app_dir[strlen(dir) + strlen(reset_app) + 16];
     char whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 8];
-    snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);     //topApp缓存目录定义
-    snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app); //resetApp缓存目录定义
+    char busybox_bin[strlen(bin_dir) + 32];
+    snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);              //topApp缓存目录定义
+    snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app);         //resetApp缓存目录定义
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);   //定义WhiteList
+    snprintf(busybox_bin, sizeof(busybox_bin), "%s/busybox", bin_dir);                  //定义BusyBox
     int in_whitelist = 0;
+    
+    if (access(busybox_bin, F_OK) != 0)
+    {
+        printf(" » BusyBox Not Find! \n");
+        return 1;
+    }
     
     //检查缓存目录是否真实存在并过滤路径逃逸
     if (access(top_app_dir, F_OK) == 0 &&
@@ -303,7 +321,7 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
             }
             if (newPid == 0)
             {
-                execlp("chattr", "StopCacheChattr", "-R", "+i", top_app_dir, NULL);
+                execlp(busybox_bin, "busybox", "chattr", "-R", "+i", top_app_dir, NULL);
                 _exit(127);
             }
             else
@@ -346,7 +364,7 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
         }
         if (newPid == 0)
         {
-            execlp("chattr", "StopCacheChattr", "-R", "-i", reset_app_dir, NULL);
+            execlp(busybox_bin, "busybox", "chattr", "-R", "-i", reset_app_dir, NULL);
             _exit(127);
         }
         else
