@@ -13,7 +13,9 @@ ALL_FILE = $(core_bin_dir)/ClearBox \
 			$(bin_dir)/FreeZer \
 			$(bin_dir)/system_cache \
 			$(bin_dir)/wipe_list_dir \
-			$(bin_dir)/f2fs_GC
+			$(bin_dir)/f2fs_GC \
+			$(bin_dir)/StopInstall \
+			$(bin_dir)/StopStorage
 
 all: $(ALL_FILE)
 .PHONY: all
@@ -48,10 +50,17 @@ $(bin_dir)/wipe_list_dir: src/wipe_list_dir.c
 $(bin_dir)/f2fs_GC: src/f2fs_GC.c
 	$(CC) $(CFLAGS) src/f2fs_GC.c -o $(bin_dir)/f2fs_GC
 
+$(bin_dir)/StopInstall: src/StopInstall.c
+	$(CC) $(CFLAGS) src/StopInstall.c -o $(bin_dir)/StopInstall
+
+$(bin_dir)/StopStorage: src/StopStorage.c
+	$(CC) $(CFLAGS) src/StopStorage.c -o $(bin_dir)/StopStorage
+
 clean: 
 	@rm $(ALL_FILE)
-	@echo "清理完成！Clean Done! "
+	@rm -rf Build
+	@echo " » 清理完成！\n » Clean Done! "
 
 module_tar: 
 	@cd $(home_dir) && zip -r ../ClearBox.zip *
-	@echo "打包完成，成品：ClearBox.zip！Tar Done, Is: ClearBox.zip! "
+	@echo " » 打包完成，成品：ClearBox.zip！\n » Tar Done, Is: ClearBox.zip! "
