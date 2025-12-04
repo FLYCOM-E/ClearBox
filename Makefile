@@ -5,8 +5,8 @@ core_bin_dir = Module_Files/system/bin
 bin_dir = Module_Files/wipe_cache
 
 ALL_FILE = $(core_bin_dir)/ClearBox \
-			$(core_bin_dir)/StopCache \
 			$(home_dir)/BashCore \
+			$(bin_dir)/StopCache \
 			$(bin_dir)/AppClean \
 			$(bin_dir)/data_cache \
 			$(bin_dir)/Dexoat \
@@ -24,9 +24,8 @@ $(core_bin_dir)/ClearBox: src/ClearBox.c
 	@mkdir -p $(core_bin_dir)
 	$(CC) $(CFLAGS) src/ClearBox.c -o $(core_bin_dir)/ClearBox
 
-$(core_bin_dir)/StopCache: src/StopCache.c
-	@mkdir -p $(core_bin_dir)
-	$(CC) $(CFLAGS) src/StopCache.c -o $(core_bin_dir)/StopCache
+$(bin_dir)/StopCache: src/StopCache.c
+	$(CC) $(CFLAGS) src/StopCache.c -o $(bin_dir)/StopCache
 
 $(home_dir)/BashCore: src/BashCore.c
 	$(CC) $(CFLAGS) src/BashCore.c -o $(home_dir)/BashCore

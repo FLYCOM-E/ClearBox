@@ -14,50 +14,75 @@
 #define ROM_NAME "RunStart"
 #define WHITELIST_NAME "whitelist.prop"
 #define GET_TOPAPP "dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '"
+#define MICRO_DATA_PATH "/mnt/expand/%s/user/0"
+#define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
 
-int main()
+int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
         printf(" » Please use root privileges!\n");
         return 1;
     }
-    if (system("ClearBox -v >/dev/null 2>&1") != 0)
+    if (COMI < 4)
     {
-        printf(" » ClearBox is Error! \n");
+        printf(" » Cmd args Failed! \n");
         return 1;
     }
     
-    //work_dir定义
-    char work_dir[64] = "";
-    FILE * work_dir_fp = popen("ClearBox -w", "r");
-    if (work_dir_fp)
+    char work_dir[64] = "", bin_dir[128] = "";
+    for (int i = 0; i < COMI - 1; i++)
     {
-        fgets(work_dir, sizeof(work_dir), work_dir_fp);
-        work_dir[strcspn(work_dir, "\n")] = 0;
-        pclose(work_dir_fp);
+        if (strcmp(COM[i], "-w") == 0) //work_dir定义
+        {
+            if (strlen(COM[i + 1]) > 60)
+            {
+                printf(" » Config dir is Long! \n");
+                return 1;
+            }
+            else if (access(COM[i + 1], F_OK) != 0)
+            {
+                printf(" » Config dir Not Find! \n");
+                return 1;
+            }
+            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+        }
+        if (strcmp(COM[i], "-b") == 0) //bin_dir定义
+        {
+            if (strlen(COM[i + 1]) > 60)
+            {
+                printf(" » Bin dir is Long! \n");
+                return 1;
+            }
+            else if (access(COM[i + 1], F_OK) != 0)
+            {
+                printf(" » Bin dir Not Find! \n");
+                return 1;
+            }
+            snprintf(bin_dir, sizeof(bin_dir), "%s", COM[i + 1]);
+        }
     }
-    
-    //bin_dir定义
-    char bin_dir[128] = "";
-    FILE * bin_dir_fp = popen("ClearBox -b", "r");
-    if (bin_dir_fp)
+    if (strcmp(work_dir, "") == 0)
     {
-        fgets(bin_dir, sizeof(bin_dir), bin_dir_fp);
-        bin_dir[strcspn(bin_dir, "\n")] = 0;
-        pclose(bin_dir_fp);
+        printf(" » Config dir Not Find! \n");
+        return 1;
+    }
+    if (strcmp(bin_dir, "") == 0)
+    {
+        printf(" » Bin dir Not Find! \n");
+        return 1;
     }
     
     //micro_dir定义
     char card_id[128] = "", micro_dir[256] = "";
-    FILE * card_id_fp = popen("ls /mnt/expand/ | cut -f1 -d ' '", "r");
+    FILE * card_id_fp = popen(GET_SD_ID, "r");
     if (card_id_fp)
     {
         fgets(card_id, sizeof(card_id), card_id_fp);
         card_id[strcspn(card_id, "\n")] = 0;
-        snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user/0", card_id);
+        snprintf(micro_dir, sizeof(micro_dir), MICRO_DATA_PATH, card_id);
         pclose(card_id_fp);
     }
     
@@ -283,7 +308,7 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
     
     if (access(busybox_bin, F_OK) != 0)
     {
-        printf(" » BusyBox Not Find! \n");
+        printf(" » BusyBox Bin Not Find! \n");
         return 1;
     }
     
