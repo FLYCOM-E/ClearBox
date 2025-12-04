@@ -11,7 +11,7 @@
 #define DATA_DIR "/data/data"
 #define CONFIG_DIR_NAME "清理规则"
 
-int findPackageInProFile(char * package, char * config_file);
+static int findPackageInProFile(char * package, char * config_file);
 
 int main(int COMI, char * COM[])
 {
@@ -242,7 +242,7 @@ int main(int COMI, char * COM[])
 检查配置是否包含传入包名（预期配置）
 出现异常返回-1，找到返回1，未找到返回0
 */
-int findPackageInProFile(char * package, char * config_file)
+static int findPackageInProFile(char * package, char * config_file)
 {
     int end = 0;
     char config_len[256] = "";

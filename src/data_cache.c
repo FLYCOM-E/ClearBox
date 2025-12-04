@@ -5,10 +5,9 @@
 #include <dirent.h>
 #include <string.h>
 
-#define data_dir "/data/user"
+#define DATA_DIR "/data/user"
 #define WHITELIST_FILE "ClearWhitelist.prop"
 #define SETTINGS_FILE "settings.prop"
-
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_DIR_SIZE "du -s -m %s 2>/dev/null"
 #define CLEAR_CACHE "rm -r %s/* >/dev/null 2>&1"
@@ -98,7 +97,7 @@ int main(int COMI, char * COM[])
     }
     
     //调用处理函数
-    int clear_size = wipeCache(data_dir, whitelist_file, ClearCacheSize);
+    int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
     printf(" >>> 内部储存软件缓存删除完成\n >>> 共清理：%d兆\n", clear_size);
     // cleardisk = 1：允许清理拓展SD缓存
     if (cleardisk == 1)

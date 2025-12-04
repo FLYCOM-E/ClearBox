@@ -7,22 +7,17 @@
 #include <sys/wait.h>
 #include <string.h>
 
-//home目录
 #define home_dir "/data/adb/modules/wipe_cache"
-//work目录
 #define work_dir "/data/adb/wipe_cache"
-//bin目录
 #define BinDir_1 "/data/adb/magisk"
 #define BinDir_2 "/data/adb/ap/bin"
 #define BinDir_3 "/data/adb/ksu/bin"
-
 #define MODULE_PROP "module.prop"
 #define MODULE_SERVICE_BASH "service.sh"
 #define MODULE_TTYMENU_BASH "Menu.sh"
 #define MODULE_BASHCORE "BashCore"
 
 static int Run(char * bash, char * str);
-
 static int updateConfig();
 static int ttyMenu();
 static int clearCache();

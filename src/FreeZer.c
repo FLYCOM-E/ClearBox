@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#define GET_SDK "getprop ro.build.version.sdk"
+#define SET_FREEZER "device_config put activity_manager_native_boot use_freezer true"
+
 int main()
 {
     if (getuid() != 0)
@@ -14,7 +17,7 @@ int main()
     
     int sdk = 0;
     char sdk_str[4] = "";
-    FILE * sdk_fp = popen("getprop ro.build.version.sdk", "r");
+    FILE * sdk_fp = popen(GET_SDK, "r");
     if (sdk_fp)
     {
         fgets(sdk_str, sizeof(sdk_str), sdk_fp);
@@ -30,7 +33,7 @@ int main()
     
     if (sdk >= 30)
     {
-        if (system("device_config put activity_manager_native_boot use_freezer true") == 0)
+        if (system(SET_FREEZER) == 0)
         {
             printf(" » 已打开安卓原生墓碑 (^^)\n");
         }

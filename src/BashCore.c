@@ -14,7 +14,6 @@
 #define BASH_DIR "wipe_cache"
 
 static int Run(char * args[]);
-
 static int configFunction(char * home_dir, char * mode, char * config_file);
 static int clearCache(char * home_dir, char * work_dir);
 static int clearSystemCache(char * home_dir);

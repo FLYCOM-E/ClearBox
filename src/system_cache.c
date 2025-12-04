@@ -7,8 +7,7 @@
 #include <string.h>
 
 #define MAX_PACKAGE 128
-#define data_dir "/data/user"
-
+#define DATA_DIR "/data/user"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 #define CLEAR_CACHE "rm -r %s/* 2>/dev/null"
 
@@ -24,7 +23,7 @@ int main()
     char app_cache_path[256] = "", package_list_line[MAX_PACKAGE] = "";
     
     struct dirent * uid_dir = NULL;
-    DIR * uid_dir_dp = opendir(data_dir);
+    DIR * uid_dir_dp = opendir(DATA_DIR);
     if (uid_dir_dp == NULL)
     {
         printf(" » 软件目录打开失败！\n");
@@ -51,7 +50,7 @@ int main()
         while (fgets(package_list_line, sizeof(package_list_line), package_list))
         {
             package_list_line[strcspn(package_list_line, "\n")] = 0;
-            snprintf(app_cache_path, sizeof(app_cache_path), "%s/%s/%s/cache", data_dir, uid_dir -> d_name, package_list_line + 8);
+            snprintf(app_cache_path, sizeof(app_cache_path), "%s/%s/%s/cache", DATA_DIR, uid_dir -> d_name, package_list_line + 8);
             
             if (access(app_cache_path, F_OK) != 0)
             {

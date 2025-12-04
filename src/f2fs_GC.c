@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-// 节点名称
 #define SYSFS_PATH "/sys/fs/f2fs"
 #define SYSFS_FILE_NAME "gc_urgent"
 #define SYSFS_DIRTY_FILE "dirty_segments"
