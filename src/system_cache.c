@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_PACKAGE 128
+#define MAX_PACKAGE 256
 #define DATA_DIR "/data/user"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 #define CLEAR_CACHE "rm -r %s/* 2>/dev/null"

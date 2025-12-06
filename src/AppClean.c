@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <string.h>
 
-#define MAX_PACKAGE 128
+#define MAX_PACKAGE 256
 #define DATA_DIR "/data/data"
 #define CONFIG_DIR_NAME "清理规则"
 

@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 
 #define DEBUG 0
-#define MAX_PACKAGE_NAME 128
+#define MAX_PACKAGE_NAME 256
 #define DATA_DIR "/data/data"
 #define ROM_NAME "RunStart"
 #define WHITELIST_NAME "whitelist.prop"
