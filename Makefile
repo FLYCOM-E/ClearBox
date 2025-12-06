@@ -13,6 +13,7 @@ ALL_FILE = $(core_bin_dir)/ClearBox \
 			$(bin_dir)/FreeZer \
 			$(bin_dir)/system_cache \
 			$(bin_dir)/wipe_list_dir \
+			$(bin_dir)/wipe_all_dir \
 			$(bin_dir)/f2fs_GC \
 			$(bin_dir)/StopInstall \
 			$(bin_dir)/StopStorage
@@ -47,6 +48,9 @@ $(bin_dir)/system_cache: src/system_cache.c
 
 $(bin_dir)/wipe_list_dir: src/wipe_list_dir.c
 	$(CC) $(CFLAGS) src/wipe_list_dir.c -o $(bin_dir)/wipe_list_dir
+
+$(bin_dir)/wipe_all_dir: src/wipe_all_dir.c
+	$(CC) $(CFLAGS) src/wipe_all_dir.c -o $(bin_dir)/wipe_all_dir
 
 $(bin_dir)/f2fs_GC: src/f2fs_GC.c
 	$(CC) $(CFLAGS) src/f2fs_GC.c -o $(bin_dir)/f2fs_GC

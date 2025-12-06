@@ -211,6 +211,7 @@ static int IDLE_MAINT()
     printf(" » 开始快速磁盘优化，请您耐心等待，可以离开前台！\n");
     if (system("sm idle-maint run >/dev/null") == 0)
     {
+        // 这玩意很多时候不支持也返回成功，懒得详细检查了（（
         printf(" » 优化完成，可以试试更激进的GC优化哦 (・∀・)\n");
         return 0;
     }

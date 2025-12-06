@@ -1,4 +1,4 @@
-    // 此Core来自ClearBox模块，用于清空内部储存软件缓存
+// 此Core来自ClearBox模块，用于清空内部储存软件缓存
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
