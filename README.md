@@ -30,14 +30,10 @@ make -j4 && make module_tar && make clean
 
 执行所用时间相对市面上普通清理软件来说快如✈️
 
-__支持任意终端/软件调用 **bin** 命令 **`ClearBox -c`** 执行一键优化清理__
-
 __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其分支管理器__
 
 
    ## 操作方式：
-
-> ：终端以 **root** 身份键入 **`ClearBox`** 或 **`ClearBox -m`** 进入功能菜单
 
 > ：安装使用模块 **ClearBox** 软件（会在模块安装时询问
 

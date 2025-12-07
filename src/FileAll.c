@@ -1,0 +1,239 @@
+// 此Core来自ClearBox模块，用于内部储存指定格式文件清理
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
+#define F_DIR "/data/media/0/Documents"
+#define SETTINGS_FILE_NAME "settings.prop"
+#define CONFIG_DIR_NAME "文件格式配置"
+#define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
+#define STORAGES_DIR "/storage/%s"
+
+static int ClearService(char * work_dir, char * storage_dir);
+static int FindFile(char * storage, char * name, char * str);
+
+int main(int COMI, char * COM[])
+{
+    if (getuid() != 0)
+    {
+        printf(" » 请授予root权限！\n");
+        return 1;
+    }
+    if (COMI < 3)
+    {
+        printf(" » 参数不足！\n");
+        return 1;
+    }
+    
+    char work_dir[64] = "";
+    for (int i = 0; i < COMI - 1; i++)
+    {
+        if (strcmp(COM[i], "-w") == 0)
+        {
+            if (strlen(COM[i + 1]) > 60)
+            {
+                printf(" » 传入配置路径过长！\n");
+                return 1;
+            }
+            if (access(COM[i + 1], F_OK) != 0)
+            {
+                printf(" » 配置路径不存在/无法访问！\n");
+                return 1;
+            }
+            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+        }
+    }
+    if (strcmp(work_dir, "") == 0)
+    {
+        printf(" » 未传入配置路径！\n");
+        return 1;
+    }
+    
+    int Fileall_Disk = 0;
+    char data_dir[128] = "",
+         sdcard_dir[128] = "",
+         sdcard_id[16] = "",
+         settings_file[strlen(work_dir) + 16],
+         settings_file_line[64] = "";
+    
+    FILE * sdcard_id_fp = popen(GET_SDCARD_ID, "r");
+    if (sdcard_id_fp)
+    {
+        fgets(sdcard_id, sizeof(sdcard_id), sdcard_id_fp);
+        pclose(sdcard_id_fp);
+        sdcard_id[strcspn(sdcard_id, "\n")] = 0;
+        if (strcmp(sdcard_id, "") == 0)
+        {
+            strcpy(sdcard_id, "(null)");
+        }
+    }
+    
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
+    snprintf(data_dir, sizeof(data_dir), STORAGES_DIR, "emulated/0");
+    snprintf(sdcard_dir, sizeof(sdcard_dir), STORAGES_DIR, sdcard_id);
+    
+    // 打开设置信息文件并查找对应值
+    FILE * settings_file_fp = fopen(settings_file, "r");
+    if (settings_file_fp)
+    {
+        while (fgets(settings_file_line, sizeof(settings_file_line), settings_file_fp))
+        {
+            settings_file_line[strcspn(settings_file_line, "\n")] = 0;
+            if (strcmp(settings_file_line, "Fileall_Disk=1") == 0)
+            {
+                Fileall_Disk = 1;
+            }
+        }
+        fclose(settings_file_fp);
+    }
+    
+    if (ClearService(work_dir, data_dir) == 0)
+    {
+        printf(" » 内部储存文件归类成功！\n");
+    }
+    else
+    {
+        printf(" » 内部储存文件归类失败！\n");
+    }
+    
+    if (Fileall_Disk == 1)
+    {
+        if (access(sdcard_dir, F_OK) == 0)
+        {
+            if (ClearService(work_dir, sdcard_dir) == 0)
+            {
+                printf(" » 外部储存文件归类成功！\n");
+            }
+            else
+            {
+                printf(" » 外部储存文件归类失败！\n");
+            }
+        }
+    }
+    
+    return 0;
+}
+
+static int ClearService(char * work_dir, char * storage_dir)
+{   
+    if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
+    {
+        return 1;
+    }
+    
+    char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
+    snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
+    
+    struct dirent * entry;
+    DIR * config_dir_dp = opendir(config_dir);
+    if (config_dir_dp == NULL)
+    {
+        printf(" » %s 配置目录打开失败！\n", config_dir);
+        return 1;
+    }
+    
+    while ((entry = readdir(config_dir_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+           strcmp(entry -> d_name, "..") == 0)
+        {
+            continue;
+        }
+        
+        char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2],
+             config_file_name[strlen(entry -> d_name) + 2];
+        
+        snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
+        snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
+        
+        char * config_file_name_p = strtok(config_file_name, ".");
+        char file_dir[strlen(F_DIR) + strlen(config_file_name_p) + 8];
+        snprintf(file_dir, sizeof(file_dir), "%s/%s", F_DIR, config_file_name_p);
+        
+        mkdir(F_DIR, 0755);
+        mkdir(file_dir, 0775);
+        
+        if (access(F_DIR, F_OK) != 0 || access(file_dir, F_OK) != 0)
+        {
+            return 1;
+        }
+        
+        int all_count = 0;
+        char config_file_line[64] = "";
+        FILE * config_file_fp = fopen(config_file, "r");
+        if (config_file_fp == NULL)
+        {
+            printf(" » %s 配置文件打开失败！\n", config_file);
+        }
+        
+        while (fscanf(config_file_fp, "%s", config_file_line) == 1)
+        {
+            if (strstr(config_file_line, "#"))
+            {
+                continue;
+            }
+            all_count += FindFile(storage_dir, file_dir, config_file_line);
+        }
+        fclose(config_file_fp);
+        printf(" » 已归类 %d 个 %s\n", all_count, config_file_name_p);
+        fflush(stdout);
+    }
+    closedir(config_dir_dp);
+    return 0;
+}
+
+static int FindFile(char * storage, char * file_dir, char * str)
+{
+    if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)
+    {
+        return -1;
+    }
+    
+    int file_count = 0;
+    struct dirent * entry;
+    struct stat file_stat;
+    DIR * storage_dp = opendir(storage);
+    if (storage_dp == NULL)
+    {
+        return -1;
+    }
+    
+    while ((entry = readdir(storage_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+           strcmp(entry -> d_name, "..") == 0)
+        {
+            continue;
+        }
+        
+        char file_name[strlen(entry -> d_name) + 2];
+        snprintf(file_name, sizeof(file_name), "%s", entry -> d_name);
+        char path[strlen(storage) + strlen(entry -> d_name) + 32];
+        snprintf(path, sizeof(path), "%s/%s", storage, entry -> d_name);
+        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 32];
+        snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
+        
+        if (stat(path, &file_stat) == -1)
+        {
+            continue;
+        }
+        
+        if (S_ISDIR(file_stat.st_mode))
+        {
+            file_count += FindFile(path, file_dir, str);
+        }
+        else
+        {
+            char * str_p = strrchr(file_name, '.');
+            if (str_p != NULL && strcmp(str_p + 1, str) == 0)
+            {
+                rename(path, end_path);
+                file_count++;
+            }
+        }
+    }
+    closedir(storage_dp);
+    return file_count;
+}

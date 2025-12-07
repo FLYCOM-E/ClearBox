@@ -3,15 +3,12 @@
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！"
     exit 1
-elif ! ClearBox -v >/dev/null; then
-    echo " » 模块加载异常，请排查反馈！"
-    exit 1
 fi
 ######
 backupDir="/sdcard/Android/ClearBox"
 tempDir="/data/local/ClearBox_temp"
-work_dir=$(ClearBox -w)
-bin_dir=$(ClearBox -b)
+work_dir="$1"
+bin_dir="$2"
 source "$work_dir/settings.prop"
 if [ "$DebugPro" = 1 ]; then
     exec 2>>"$work_dir/运行日志.log"
@@ -20,7 +17,7 @@ else
 fi
 Version=$(ClearBox -v | cut -f3 -d " ")
 ######
-case "$1" in
+case "$3" in
     backup)
       mkdir -p "$tempDir"
       mkdir -p "$backupDir"
@@ -44,7 +41,7 @@ case "$1" in
       rm -r "$tempDir"
       ;;
     recovery)
-      if ! echo "$2" | grep ".bz2" >/dev/null 2>&1; then
+      if ! echo "$4" | grep ".bz2" >/dev/null 2>&1; then
           echo " » 文件后缀应为 .bz2！请确认是否正确选择文件"
           echo " » 否则可能导入垃圾文件！"
           exit 1

@@ -3,13 +3,18 @@
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！"
     exit 1
-elif ! ClearBox -v >/dev/null; then
-    echo " » 模块加载异常，请排查反馈！"
-    exit 1
 fi
 ######
-home_dir=$(ClearBox -h)
-work_dir=$(ClearBox -w)
+export home_dir=${0%/*}
+export work_dir="/data/adb/wipe_cache"
+if [ -d "/data/adb/magisk" ]; then
+    export bin_dir="/data/adb/magisk"
+elif [ -d "/data/adb/ap/bin" ]; then
+    export bin_dir="/data/adb/ap/bin"
+elif [ -d "/data/adb/ksu/bin" ]; then
+    export bin_dir="/data/adb/ksu/bin"
+fi
+######
 if [ "$DebugPro" = 1 ]; then
     exec 2>>"$work_dir/运行日志.log"
 else
@@ -521,11 +526,10 @@ case "$in_put" in
             echo -e "\033[104m [清理设置]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：外部储存相关设置\033[0m\n"
-            echo -e "\033[93m \t2：$i4一键及定时自动清理时清理所有文件\033[0m\n"
-            echo -e "\033[93m \t3：$i5一键及定时自动清理时运行文件归类\033[0m\n"
-            echo -e "\033[93m \t4：新增清理白名单\033[0m\n"
-            echo -e "\033[93m \t5：取消白名单软件\033[0m\n"
-            echo -e "\033[93m \t6：缓存清理跳过大小\033[0m\n"
+            echo -e "\033[93m \t2：$i5一键及定时自动清理时运行文件归类\033[0m\n"
+            echo -e "\033[93m \t3：新增清理白名单\033[0m\n"
+            echo -e "\033[93m \t4：取消白名单软件\033[0m\n"
+            echo -e "\033[93m \t5：缓存清理跳过大小\033[0m\n"
             echo -e "\033[96m==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
             read put5
@@ -619,25 +623,6 @@ case "$in_put" in
                   esac
                   ;;
                 2)
-                  if [ "$i3" = "开启" ]; then
-                      echo -en " » 确认？(y): "
-                      read put_5
-                      case "$put_5" in
-                          y | Y)
-                            clear
-                            [ "$clearall" = 0 ] && sed -i 's/clearall=0/clearall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
-                            ;;
-                          *)
-                            echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
-                            ;;
-                      esac
-                  else
-                      clear
-                      sed -i 's/clearall=1/clearall=0/g' "$work_dir/settings.prop"
-                      echo " » 已关闭！"
-                  fi
-                  ;;
-                3)
                   if [ "$i4" = "开启" ]; then
                       echo -en " » 确认？(y): "
                       read put_6
@@ -656,7 +641,7 @@ case "$in_put" in
                       echo " » 已关闭！"
                   fi
                   ;;
-                4)
+                3)
                   clear
                   # Off SELinux
                   [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
@@ -682,7 +667,7 @@ case "$in_put" in
                   # Reset SELinux
                   [ "$OffSelinux" = 1 ] && setenforce 1
                   ;;
-                5)
+                4)
                   clear
                   echo -en " » 请输入软件包名（空格分隔）："
                   read packages
@@ -696,7 +681,7 @@ case "$in_put" in
                       fi
                   done
                   ;;
-                6)
+                5)
                   clear
                   echo " » 当前最小大小为 $ClearCacheSize M"
                   echo -n " » 是否设置新值？(y/N):"

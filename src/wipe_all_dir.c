@@ -8,7 +8,7 @@
 #define MAX_PACKAHE 256
 #define SETTINGS_FILE_NAME "settings.prop"
 #define WHITELIST "%s/ClearWhitelist.prop"
-#define STORAGES_DIR "/storage/%s/"
+#define STORAGES_DIR "/storage/%s"
 #define COMMAND_D "rm -r %s/* 2>/dev/null"
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
 #define DELETE_LOGFILE "\"%s/busybox\" find %s -type f -name \"*.log\" -delete"
@@ -89,6 +89,10 @@ int main(int COMI, char * COM[])
         fgets(sdcard_id, sizeof(sdcard_id), sdcard_id_fp);
         pclose(sdcard_id_fp);
         sdcard_id[strcspn(sdcard_id, "\n")] = 0;
+        if (strcmp(sdcard_id, "") == 0)
+        {
+            strcpy(sdcard_id, "(null)");
+        }
     }
     
     // 拼接路径

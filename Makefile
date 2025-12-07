@@ -1,11 +1,9 @@
 CFLAGS = --static -O2 -s -Wall
 
 home_dir = Module_Files
-core_bin_dir = Module_Files/system/bin
 bin_dir = Module_Files/wipe_cache
 
-ALL_FILE = $(core_bin_dir)/ClearBox \
-			$(home_dir)/BashCore \
+ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/StopCache \
 			$(bin_dir)/AppClean \
 			$(bin_dir)/data_cache \
@@ -16,16 +14,15 @@ ALL_FILE = $(core_bin_dir)/ClearBox \
 			$(bin_dir)/wipe_all_dir \
 			$(bin_dir)/f2fs_GC \
 			$(bin_dir)/StopInstall \
-			$(bin_dir)/StopStorage
+			$(bin_dir)/StopStorage \
+			$(bin_dir)/ClearService \
+			$(bin_dir)/FileAll
 
 all: $(ALL_FILE)
 .PHONY: all
 
-$(core_bin_dir)/ClearBox: src/ClearBox.c
-	@mkdir -p $(core_bin_dir)
-	$(CC) $(CFLAGS) src/ClearBox.c -o $(core_bin_dir)/ClearBox
-
 $(bin_dir)/StopCache: src/StopCache.c
+	@mkdir -p $(bin_dir)
 	$(CC) $(CFLAGS) src/StopCache.c -o $(bin_dir)/StopCache
 
 $(home_dir)/BashCore: src/BashCore.c
@@ -61,9 +58,15 @@ $(bin_dir)/StopInstall: src/StopInstall.c
 $(bin_dir)/StopStorage: src/StopStorage.c
 	$(CC) $(CFLAGS) src/StopStorage.c -o $(bin_dir)/StopStorage
 
+$(bin_dir)/ClearService: src/ClearService.c
+	$(CC) $(CFLAGS) src/ClearService.c -o $(bin_dir)/ClearService
+
+$(bin_dir)/FileAll: src/FileAll.c
+	$(CC) $(CFLAGS) src/FileAll.c -o $(bin_dir)/FileAll
+
 clean: 
 	@rm $(ALL_FILE)
-	@cd $(home_dir) && rm -rf system
+	@cd $(home_dir) && rm -rf wipe_cache
 	@echo " » 清理完成！\n » Clean Done! "
 
 module_tar: 

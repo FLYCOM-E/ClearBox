@@ -23,14 +23,10 @@ Flash ClearBox.zip
 
 Execution time is as fast as ✈️ compared with ordinary cleanup software on the market.
 
-__Any terminal/software can invoke the **bin** command **`ClearBox -c`** to perform one-click optimization and cleanup__
-
 __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) and their branch managers__
 
 
    ## How to use:
-
-> ：In terminal, type **`ClearBox`** or **`ClearBox -m`** as **root** to enter the function menu
 
 > ：Install and use the module **ClearBox** app (asked during module installation)
 

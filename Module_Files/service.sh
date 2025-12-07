@@ -2,9 +2,16 @@
 # ClearBox
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！" && exit 1
 ######
-home_dir=${0%/*}
-bin_dir=$(ClearBox -b)
-work_dir=$(ClearBox -w)
+export home_dir=${0%/*}
+export work_dir="/data/adb/wipe_cache"
+if [ -d "/data/adb/magisk" ]; then
+    export bin_dir="/data/adb/magisk"
+elif [ -d "/data/adb/ap/bin" ]; then
+    export bin_dir="/data/adb/ap/bin"
+elif [ -d "/data/adb/ksu/bin" ]; then
+    export bin_dir="/data/adb/ksu/bin"
+fi
+######
 exec 2>/dev/null
 ######
 set=0

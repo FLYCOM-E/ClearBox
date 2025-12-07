@@ -2,16 +2,15 @@
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1
+home_dir="/data/adb/modules/wipe_cache"
+work_dir="/data/adb/wipe_cache"
 ######
 update=0
-if ClearBox -v >/dev/null; then
-    work_dir=$(ClearBox -w)
-    home_dir=$(ClearBox -h)
-    if [ -d "$work_dir" ] && [ -d "$home_dir" ]; then
-        source "$work_dir/settings.prop"
-        update=1
-    fi
+if [ -d "$work_dir" ] && [ -d "$home_dir" ]; then
+    source "$work_dir/settings.prop"
+    update=1
 fi
+######
 uninstall()
 {
     rm "$ZIPFILE"
