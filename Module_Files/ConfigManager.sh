@@ -19,7 +19,7 @@ if [ "$DebugPro" = 1 ]; then
 else
     exec 2>>/dev/null
 fi
-Version=$(ClearBox -v | cut -f3 -d " ")
+Version=$(grep version "$home_dir/module.prop" | cut -f2 -d "=")
 ######
 case "$1" in
     backup)

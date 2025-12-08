@@ -17,7 +17,7 @@ if [ "$DebugPro" = 1 ]; then
 else
     exec 2>>/dev/null
 fi
-Version=$(cat "$home_dir/module.prop" | grep version | cut -f2 -d "=")
+Version=$(grep version "$home_dir/module.prop" | cut -f2 -d "=")
 ######
 # 菜单函数
 md_menu()
@@ -507,7 +507,7 @@ case "$in_put" in
       case "$put3" in
           0)
             clear
-            ClearBox -U
+            sh "$home_dir/service.sh"
             ;;
           1)
             clear
