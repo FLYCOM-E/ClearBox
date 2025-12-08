@@ -23,7 +23,7 @@ int main(int COMI, char * COM[])
     }
     if (COMI < 2)
     {
-        printf(" » ERROR：需要一个参数，未传入选项名称！\n");
+        printf(" » 参数不足！\n");
         return 1;
     }
     

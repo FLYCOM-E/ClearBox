@@ -20,7 +20,7 @@ int main(int COMI, char * COM[])
     }
     if (COMI < 2)
     {
-        printf(" » 未传入工作目录路径！\n");
+        printf(" » 参数不足！\n");
         return 1;
     }
     
@@ -115,11 +115,11 @@ int main(int COMI, char * COM[])
                 {
                     if (remove_all(config_file_line) == 0)
                     {
-                        printf(" » 删除 %s 成功\n", config_file_line);
+                        printf(" » 清理 %s 成功\n", config_file_line);
                     }
                     else
                     {
-                        printf(" » 删除 %s 失败\n", config_file_line);
+                        printf(" » 清理 %s 失败\n", config_file_line);
                     }
                 }
                 else
@@ -140,11 +140,11 @@ int main(int COMI, char * COM[])
                 }
                 if (remove_all(path) == 0)
                 {
-                    printf(" » 删除 %s 成功\n", path);
+                    printf(" » 清理 %s 成功\n", path);
                 }
                 else
                 {
-                    printf(" » 删除 %s 失败\n", path);
+                    printf(" » 清理 %s 失败\n", path);
                 }
             }
         }

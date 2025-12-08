@@ -27,7 +27,7 @@ int main(int COMI, char * COM[])
     }
     if (COMI < 5)
     {
-        printf(" » 参数不够！\n");
+        printf(" » 参数不足！\n");
         return 1;
     }
     
@@ -118,7 +118,7 @@ int main(int COMI, char * COM[])
     // 处理内部储存
     if (DeleteAppCache(data_dir, work_dir) == 0 && DelateMediaCache(bin_dir, data_dir) == 0)
     {
-        printf(" » 内部储存垃圾删除完成！\n");
+        printf(" » 内部储存垃圾清理完成！\n");
     }
     if (cleardisk == 1) // 允许清理外部储存
     {
@@ -126,7 +126,7 @@ int main(int COMI, char * COM[])
         {
             if (DeleteAppCache(sdcard_dir, work_dir) == 0 && DelateMediaCache(bin_dir, sdcard_dir) == 0)
             {
-                printf(" » 外部储存 %s 垃圾删除完成！\n", sdcard_id);
+                printf(" » 外部储存 %s 垃圾清理完成！\n", sdcard_id);
             }
         }
     }
@@ -191,12 +191,12 @@ static int DeleteAppCache(char * data_path, char * work_dir)
         snprintf(command, sizeof(command), COMMAND_D, app_path);
         if (system(command) == 0)
         {
-            printf(" » 删除 %s\n", entry -> d_name);
+            printf(" » 清理 %s 储存缓存\n", entry -> d_name);
             clean_count++;
         }
         else
         {
-            printf(" » 删除 %s 失败！\n", entry -> d_name);
+            printf(" » 清理 %s 储存缓存失败！\n", entry -> d_name);
         }
     }
     closedir(app_data_dir_dp);

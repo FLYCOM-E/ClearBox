@@ -16,7 +16,7 @@ int main(int COMI, char * COM[])
     }
     if (COMI < 2)
     {
-        printf(" » 未指定模式！至少需要一个参数！\n");
+        printf(" » 参数不足！\n");
         return 1;
     }
     
@@ -45,12 +45,14 @@ int main(int COMI, char * COM[])
 static int SystemDexOat()
 {
     printf(" » 正在进行系统默认 Dexoat...\n");
+    fflush(stdout);
     return system("cmd package bg-dexopt-job");
 }
 
 static int CustDexOat(char * mode)
 {
     printf(" » 正在运行模式 %s 编译...\n", mode);
+    fflush(stdout);
     char command[strlen(mode) + 64];
     snprintf(command, sizeof(command), "cmd package compile -m %s -f -a", mode);
     return system(command);

@@ -5,14 +5,11 @@ if [ ! "$(whoami)" = "root" ]; then
     exit 1
 fi
 ######
-export home_dir=${0%/*}
-export work_dir="/data/adb/wipe_cache"
-if [ -d "/data/adb/magisk" ]; then
-    export bin_dir="/data/adb/magisk"
-elif [ -d "/data/adb/ap/bin" ]; then
-    export bin_dir="/data/adb/ap/bin"
-elif [ -d "/data/adb/ksu/bin" ]; then
-    export bin_dir="/data/adb/ksu/bin"
+if [ ! -f "/data/adb/wipe_cache/PATH" ]; then
+    echo " » Error：PATH读取错误！"
+    exit 1
+else
+    source "/data/adb/wipe_cache/PATH"
 fi
 ######
 source "$work_dir/settings.prop"

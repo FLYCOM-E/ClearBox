@@ -37,6 +37,8 @@ __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 > ：安装使用模块 **ClearBox** 软件（会在模块安装时询问
 
+> ：打开终端 **UI** 功能在任意终端键入 **`ClearBox`** 使用
+
    ## 简介功能：
    
 ### **1**：一键优化清理

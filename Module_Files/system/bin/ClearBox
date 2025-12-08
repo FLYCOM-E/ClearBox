@@ -5,14 +5,11 @@ if [ ! "$(whoami)" = "root" ]; then
     exit 1
 fi
 ######
-export home_dir=${0%/*}
-export work_dir="/data/adb/wipe_cache"
-if [ -d "/data/adb/magisk" ]; then
-    export bin_dir="/data/adb/magisk"
-elif [ -d "/data/adb/ap/bin" ]; then
-    export bin_dir="/data/adb/ap/bin"
-elif [ -d "/data/adb/ksu/bin" ]; then
-    export bin_dir="/data/adb/ksu/bin"
+if [ ! -f "/data/adb/wipe_cache/PATH" ]; then
+    echo " » Error：PATH读取错误！"
+    exit 1
+else
+    source "/data/adb/wipe_cache/PATH"
 fi
 ######
 if [ "$DebugPro" = 1 ]; then
@@ -500,6 +497,7 @@ case "$in_put" in
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -e "\033[93m \t0：立即生效当前配置（免重启）\033[0m\n"
       echo -e "\033[93m \t1：清理设置\033[0m\n"
+      echo -e "\033[93m \t2：终端UI开关\033[0m\n"
       echo -e "\033[93m \t00：关于\033[0m\n"
       echo -e "\033[93m \t01：配置备份\033[0m\n"
       echo -e "\033[93m \t02：卸载模块（！\033[0m\n"
@@ -711,6 +709,40 @@ case "$in_put" in
                   ;;
               esac
               ;;
+          2)
+            clear
+            if [ -f "$home_dir/skip_mount" ]; then
+                echo -n " » 是否开启终端UI？您将可以在任意终端键入`ClearBox`命令进入该UI（y/N）:"
+                read put
+                case "$put" in
+                    y | Y)
+                      if rm "$home_dir/skip_mount" 2>/dev/null; then
+                          echo " » 已开启，重启生效！"
+                      else
+                          echo " » 开启失败！！"
+                      fi
+                      ;;
+                    *)
+                      echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
+                      ;;
+                esac
+            else
+                echo -n " » 是否关闭终端UI？（y/N）:"
+                read put
+                case "$put" in
+                    y | Y)
+                      if touch "$home_dir/skip_mount" 2>/dev/null; then
+                          echo " » 已关闭，重启生效！"
+                      else
+                          echo " » 关闭失败！"
+                      fi
+                      ;;
+                    *)
+                      echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
+                      ;;
+                esac
+            fi
+            ;;
           00)
             clear
             [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1

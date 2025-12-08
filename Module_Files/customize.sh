@@ -2,11 +2,11 @@
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1
-home_dir="/data/adb/modules/wipe_cache"
-work_dir="/data/adb/wipe_cache"
-######
+SHOUT_S="0.3"
+LONG_S="1"
 update=0
-if [ -d "$work_dir" ] && [ -d "$home_dir" ]; then
+if [ -f "/data/adb/wipe_cache/PATH" ]; then
+    source "/data/adb/wipe_cache/PATH"
     source "$work_dir/settings.prop"
     update=1
 fi
@@ -27,8 +27,11 @@ else
 fi
 ######
 echo -e "=====================================================\n"
+sleep "$SHOUT_S"
 echo -e " » 请选择语言 Please select a language：\n"
+sleep "$SHOUT_S"
 echo -e " » 音量上键 Volume Up：    中文 Chinese"
+sleep "$LONG_S"
 echo -e " » 音量下键 Volume Down：  英语 English\n"
 case "$(getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
@@ -46,6 +49,7 @@ esac
 mv "$MODPATH/语言包/$Lang.conf" "$MODPATH/语言包/Local.conf"
 source "$MODPATH/语言包/Local.conf"
 ######
+sleep "$SHOUT_S"
 echo -e "=====================================================\n"
 if [ -d "/data/adb/magisk" ]; then
     echo -e " » $USEMAGISKROOT 🔥\n"
@@ -55,50 +59,47 @@ elif [ -d "/data/adb/ksu" ]; then
     echo -e " » $USEKERNELSUROOT 🔥\n"
 else
     echo -e " » $CHECKROOTERROR! \n"
-    sleep 0.1
+    sleep "$SHOUT_S"
     echo -e " » $INSTALLERROR❗\n"
     uninstall
     exit 1
 fi
 ######
+sleep "$SHOUT_S"
 echo -e "=====================================================\n"
 if pm list package -3 | grep "wipe.cache.module" >/dev/null 2>&1; then
-    sleep 0.1
+    sleep "$SHOUT_S"
     echo -e " » $TICKUPDATEAPP\n"
-    sleep 1
+    sleep "$LONG_S"
     echo -e " » $TICKUPDATEAPP_1\n"
 else
-    sleep 0.1
+    sleep "$SHOUT_S"
     echo -e " » $TICKUPDATEAPP_2\n"
-    sleep 1
+    sleep "$LONG_S"
     echo -e " » $TICKUPDATEAPP_3\n"
 fi
 ######
 case "$(getevent -qlc 1 2>/dev/null)" in
-    *KEY_VOLUMEUP* | *KEY_VOLUMEDOWN*)
-      sleep 0.1
-      echo -e " » $NOTINSTALLAPP💔\n"
-      ;;
-    *)
+    *KEY_VOLUMEUP*)
       if [ "$update" = 1 ]; then
           if [ "$stopinstall" = 1 ]; then
               "$home_dir/BashCore" StopInstall RESET >/dev/null
               RESET=1
           fi
       fi
-      sleep 0.1
+      sleep "$SHOUT_S"
       echo -e " » $INSTALLAPP❤\n"
       cp "$MODPATH/APKS/ClearBox_$Lang.apk" "$TMPDIR/"
       chmod +x "$TMPDIR/ClearBox_$Lang.apk"
       if pm install -r "$TMPDIR/ClearBox_$Lang.apk" >/dev/null; then
-          sleep 0.1
-          echo -e " » $INSTALL_APP_SUCCESSFUL✅\n"
+          sleep "$SHOUT_S"
+          echo -e " » $SUCCESSFUL✅\n"
       else
-          sleep 0.1
+          sleep "$SHOUT_S"
           echo -e " » $INSTALL_APP_FAILED❌\n"
-          sleep 0.1
+          sleep "$SHOUT_S"
           echo -e " » $INSTALL_APP_TRY\n"
-          sleep 0.1
+          sleep "$SHOUT_S"
           if [ ! -f "$MODPATH/APKS/ClearBox_$Lang.apk" ]; then
               echo -e " » $APKNOTFIND\n"
               uninstall; exit 1
@@ -112,12 +113,12 @@ case "$(getevent -qlc 1 2>/dev/null)" in
           chmod +x "$TMPDIR/ClearBox_$Lang.apk"
           pm uninstall "wipe.cache.module" >/dev/null
           if pm install -r "$TMPDIR/ClearBox_$Lang.apk" >/dev/null; then
-              sleep 0.1
-              echo -e " » $INSTALL_APP_SUCCESSFUL✅\n"
+              sleep "$SHOUT_S"
+              echo -e " » $SUCCESSFUL✅\n"
           else
-              sleep 0.1
+              sleep "$SHOUT_S"
               echo -e " » $INSTALL_APP_FAILED❌\n"
-              sleep 0.1
+              sleep "$SHOUT_S"
               echo -e " » $INSTALLERROR\n"
           fi
       fi
@@ -125,13 +126,37 @@ case "$(getevent -qlc 1 2>/dev/null)" in
       rm -rf "$MODPATH/APKS" >/dev/null 2>&1
       [ "$RESET" = 1 ] && "$home_dir/BashCore" StopInstall STOP >/dev/null
       ;;
+    *)
+      sleep "$SHOUT_S"
+      echo -e " » $NOTINSTALLAPP💔\n"
+      ;;
 esac
 ######
-rm -r "$MODPATH/META-INF" >/dev/null
-######
+sleep "$SHOUT_S"
 echo -e "=====================================================\n"
-sleep 0.1
+sleep "$SHOUT_S"
+echo -e " » $TICKUPDATETUI\n"
+sleep "$LONG_S"
+echo -e " » $TICKUPDATETUI_1\n"
+sleep "$LONG_S"
+echo -e " » $TICKUPDATETUI_2\n"
+case "$(getevent -qlc 1 2>/dev/null)" in
+    *KEY_VOLUMEUP*)
+      rm "$MODPATH/skip_mount" 2>/dev/null
+      ;;
+    *)
+      touch "$MODPATH/skip_mount" 2>/dev/null
+      ;;
+esac
+sleep "$SHOUT_S"
+echo -e " » $SUCCESSFUL✅\n"
+######
+rm -r "$MODPATH/META-INF" >/dev/null
+sleep "$SHOUT_S"
+echo -e "=====================================================\n"
+sleep "$SHOUT_S"
 echo -e " » $INSTALLTHANKS🎉🎉🎉\n"
-sleep 0.1
+sleep "$SHOUT_S"
 echo -e " » $INSTALLDONE ✨\n"
+sleep "$SHOUT_S"
 echo -e "=====================================================\n"

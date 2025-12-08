@@ -21,7 +21,7 @@ int main(int COMI, char * COM[])
     }
     if (COMI < 6)
     {
-        printf(" » 参数不够！\n");
+        printf(" » 参数不足！\n");
         return 1;
     }
     

@@ -22,7 +22,7 @@ int main(int COMI, char * COM[])
     }
     if (COMI < 5)
     {
-        printf(" » ERROR：未正确传递软件包名、配置文件目录！\n");
+        printf(" » 参数不足！\n");
         return 1;
     }
     
@@ -192,7 +192,7 @@ int main(int COMI, char * COM[])
                     pid_t newPid = fork();
                     if (newPid == -1)
                     {
-                        printf(" » 删除 %s 失败！(Fork)\n", len_str);
+                        printf(" » 清理 %s 失败！(Fork)\n", len_str);
                         continue;
                     }
                     if (newPid == 0)
@@ -205,12 +205,12 @@ int main(int COMI, char * COM[])
                         int end = 0;
                         if (waitpid(newPid, &end, 0) == -1)
                         {
-                            printf(" » 删除 %s 失败！(Wait)\n", len_str);
+                            printf(" » 清理 %s 失败！(Wait)\n", len_str);
                             continue;
                         }
                         if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
                         {
-                            printf(" » 删除 %s 失败！\n", len_str);
+                            printf(" » 清理 %s 失败！\n", len_str);
                             continue;
                         }
                     }

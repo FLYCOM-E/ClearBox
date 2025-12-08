@@ -88,7 +88,7 @@ int main()
     system("rm -r /data/system/package_cache/* 2>/dev/null");
     system("rm -r /data/dalvik-cache/* 2>/dev/null");
     
-    printf(" >>> 系统缓存已清空！建议重启系统！\n");
-    printf(" >>> 共清理 %d 个系统软件，%d 个系统软件无需清理\n", count, no_count);
+    printf(" » 系统缓存已清空！建议重启系统！\n");
+    printf(" » 共清理 %d 个系统软件，%d 个系统软件无需清理\n", count, no_count);
     return 0;
 }

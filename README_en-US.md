@@ -28,7 +28,9 @@ __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch*
 
    ## How to use:
 
-> ：Install and use the module **ClearBox** app (asked during module installation)
+> ：Install and use the module **ClearBox** app (asked during module installation
+
+> ：Enable the terminal **UI** feature by typing **`ClearBox`** in any terminal
 
    ## Brief functions:
    

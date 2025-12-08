@@ -12,6 +12,9 @@ elif [ -d "/data/adb/ksu/bin" ]; then
     export bin_dir="/data/adb/ksu/bin"
 fi
 ######
+mkdir -p "$work_dir"
+echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir/PATH"
+######
 exec 2>/dev/null
 ######
 set=0

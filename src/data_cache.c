@@ -25,7 +25,7 @@ int main(int COMI, char * COM[])
     }
     else if (COMI < 2)
     {
-        printf(" » 未传入配置路径！\n");
+        printf(" » 参数不足！\n");
         return 1;
     }
     
@@ -99,14 +99,14 @@ int main(int COMI, char * COM[])
     
     //调用处理函数
     int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
-    printf(" >>> 内部储存软件缓存删除完成\n >>> 共清理：%d兆\n", clear_size);
+    printf(" » 内部储存软件缓存删除完成\n » 共清理：%d兆\n", clear_size);
     // cleardisk = 1：允许清理拓展SD缓存
     if (cleardisk == 1)
     {
         if (access(micro_dir, F_OK) == 0)
         {
             clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
-            printf(" >>> 外部储存软件缓存删除完成\n >>> 共清理：%d兆\n", clear_size);
+            printf(" » 外部储存软件缓存删除完成\n » 共清理：%d兆\n", clear_size);
         }
     }
     
@@ -220,7 +220,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     
     if (uid_dir_dp) closedir(uid_dir_dp);
     // 返回总清理大小
-    printf(" >>> 共清理 %d 个软件，%d 个软件无需清理\n", count, no_count);
+    printf(" » 共清理 %d 个软件，%d 个软件无需清理\n", count, no_count);
     return clean_size;
 }
 

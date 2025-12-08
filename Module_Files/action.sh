@@ -3,9 +3,14 @@
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！"
     exit 1
-if
+fi
+if [ ! -f "/data/adb/wipe_cache/PATH" ]; then
+    echo " » Error：PATH读取错误！"
+    exit 1
+else
+    source "/data/adb/wipe_cache/PATH"
+fi
 ######
-home_dir=${0%/*}
 "$home_dir/BashCore" ClearAll
 
 exit 0
