@@ -15,7 +15,7 @@
 ```
 sudo apt install zip make
 
-CC=clang #(如果构建设备非最终设备架构，请使用交叉编译工具）
+export CC=clang #(如果构建设备非最终设备架构，请使用交叉编译工具）
 
 git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox/
 

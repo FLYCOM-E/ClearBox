@@ -76,8 +76,8 @@ int main(int COMI, char * COM[])
         return 1;
     }
     
-    // 遍历配置目录 
-    int get_config = 0;
+    // 遍历配置目录
+    int get_config = 0; // 已成功读取目标配置。需要声明在目录读取循环外部，不然后面读不到
     struct dirent * config_name;
     DIR * config_dir_fp = opendir(config_dir);
     if (config_dir_fp == NULL)
@@ -115,6 +115,7 @@ int main(int COMI, char * COM[])
         }
         
         // 遍历配置文件
+        get_config = 0; // 配置读取标志清零，新配置新的开始
         int count = 0;
         char app_dir[64 + MAX_PACKAGE];
         char len_str[256] = "", app_name[128] = "";
@@ -130,90 +131,40 @@ int main(int COMI, char * COM[])
             格式：
             @<软件包名>/<软件名称>
             */
-            if (strstr(len_str, "@"))
+            if (get_config == 0)
             {
-                app_package_fp = strtok(len_str, "/");
-                app_name_fp = strtok(NULL, "/");
-                if (app_package_fp && app_name_fp)
+                if (strstr(len_str, "@"))
                 {
-                    snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                  //软件名称
-                    snprintf(app_dir, sizeof(app_dir), "%s/%s", DATA_DIR, app_package_fp + 1);   //软件目录
-                    
-                    if (access(app_dir, F_OK) == 0)
+                    app_package_fp = strtok(len_str, "/");
+                    app_name_fp = strtok(NULL, "/");
+                    if (app_package_fp && app_name_fp)
                     {
-                        printf(" » 清理 %s &\n", app_name);
-                        get_config = 1;
-                        continue;
+                        snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                  //软件名称
+                        snprintf(app_dir, sizeof(app_dir), "%s/%s", DATA_DIR, app_package_fp + 1);   //软件目录
+                        
+                        if (access(app_dir, F_OK) == 0)
+                        {
+                            printf(" » 清理 %s &\n", app_name);
+                            get_config = 1; //注意这里设置了已读取配置信息标志
+                            continue;
+                        }
+                        else
+                        {
+                            printf(" » %s：配置指定软件未找到！\n", config_name -> d_name);
+                            break;
+                        }
                     }
                     else
                     {
-                        printf(" » %s：配置指定软件未找到！\n", config_name -> d_name);
+                        if (app_package_fp == NULL)
+                        {
+                            printf(" » %s 配置声明错误，未正确填写包名！\n", config_name -> d_name);
+                        }
+                        else if (app_name_fp == NULL)
+                        {
+                            printf(" » %s 配置声明错误，未正确填写软件名称！\n", config_name -> d_name);
+                        }
                         break;
-                    }
-                }
-                else
-                {
-                    printf(" » %s 配置声明错误\n", config_name -> d_name);
-                    break;
-                }
-            }
-            else
-            {
-                // get_config = 1: 已读取文件声明信息
-                if (get_config == 1)
-                {
-                    char app_cf_dir[strlen(app_dir) + strlen(len_str) + 2];
-                    snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, len_str);
-                    
-                    char * len_str_ptr = len_str;
-                    while(isspace(* len_str_ptr)) len_str_ptr++;
-                    // 如果该行被注释则返回
-                    if (* len_str_ptr == '#')
-                    {
-                        continue;
-                    }
-                    // 配置不应以／开头！
-                    if (* len_str_ptr == '/')
-                    {
-                        printf(" » %s 配置第 %d 行存在危险错误：从“／”开始！\n", config_name -> d_name, count);
-                        continue;
-                    }
-                    // 防止路径逃逸
-                    if (strstr(len_str, "/../"))
-                    {
-                        printf(" » %s 配置第 %d 行存在错误：路径逃逸！", config_name -> d_name, count);
-                        continue;
-                    }
-                    // 这可以避免很多 rm 报错
-                    if (access(app_cf_dir, F_OK) != 0)
-                    {
-                        continue;
-                    }
-                    
-                    pid_t newPid = fork();
-                    if (newPid == -1)
-                    {
-                        printf(" » 清理 %s 失败！(Fork)\n", len_str);
-                        continue;
-                    }
-                    if (newPid == 0)
-                    {
-                        execlp("rm", "rm", "-r", app_cf_dir, NULL);
-                        _exit(1);
-                    }
-                    else
-                    {
-                        int end = 0;
-                        if (waitpid(newPid, &end, 0) == -1)
-                        {
-                            printf(" » 清理 %s 失败！(Wait)\n", len_str);
-                            continue;
-                        }
-                        if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
-                        {
-                            printf(" » 清理 %s 失败！\n", len_str);
-                            continue;
-                        }
                     }
                 }
                 else
@@ -221,6 +172,67 @@ int main(int COMI, char * COM[])
                     printf(" » %s 配置错误！请在第一行正确填写声明\n", config_name -> d_name);
                     break;
                 }
+            }
+            else if (get_config == 1) // 1: 已读取文件声明信息
+            {
+                char app_cf_dir[strlen(app_dir) + strlen(len_str) + 2];
+                snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, len_str);
+                
+                char * len_str_ptr = len_str;
+                while(isspace(* len_str_ptr)) len_str_ptr++;
+                // 如果该行被注释则返回
+                if (* len_str_ptr == '#')
+                {
+                    continue;
+                }
+                // 配置不应以／开头！
+                if (* len_str_ptr == '/')
+                {
+                    printf(" » %s 配置第 %d 行存在危险错误：从“／”开始！\n", config_name -> d_name, count);
+                    continue;
+                }
+                // 防止路径逃逸
+                if (strstr(len_str, "/../"))
+                {
+                    printf(" » %s 配置第 %d 行存在错误：路径逃逸！", config_name -> d_name, count);
+                    continue;
+                }
+                // 这可以避免很多 rm 报错
+                if (access(app_cf_dir, F_OK) != 0)
+                {
+                    continue;
+                }
+                
+                pid_t newPid = fork();
+                if (newPid == -1)
+                {
+                    printf(" » 清理 %s 失败！(Fork)\n", len_str);
+                    continue;
+                }
+                if (newPid == 0)
+                {
+                    execlp("rm", "rm", "-r", app_cf_dir, NULL);
+                    _exit(1);
+                }
+                else
+                {
+                    int end = 0;
+                    if (waitpid(newPid, &end, 0) == -1)
+                    {
+                        printf(" » 清理 %s 失败！(Wait)\n", len_str);
+                        continue;
+                    }
+                    if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
+                    {
+                        printf(" » 清理 %s 失败！\n", len_str);
+                        continue;
+                    }
+                }
+            }
+            else
+            {
+                printf(" » %s 配置错误！请在第一行正确填写声明\n", config_name -> d_name);
+                break;
             }
         }
         fclose(config_fp);

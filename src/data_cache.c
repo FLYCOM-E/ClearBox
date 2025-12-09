@@ -66,10 +66,6 @@ int main(int COMI, char * COM[])
         snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", card_id);
     }
     
-    // whiteList定义
-    char whitelist_file[strlen(work_dir) + 32];
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
-    
     /* 
     读取：
     ClearCacheSize（缓存清理限制大小）
@@ -102,15 +98,29 @@ int main(int COMI, char * COM[])
     }
     
     //调用处理函数
-    int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
-    printf(" » 内部储存软件缓存删除完成\n » 共清理：%d兆\n", clear_size);
+    int clear_size = wipeCache(DATA_DIR, ClearCacheSize);
+    if (clear_size == -1)
+    {
+        printf(" » 内部储存软件缓存清理失败\n");
+    }
+    else
+    {
+        printf(" » 内部储存软件缓存清理完成\n » 共清理：%d兆\n", clear_size);
+    }
     // cleardisk = 1：允许清理拓展SD缓存
     if (cleardisk == 1)
     {
         if (access(micro_dir, F_OK) == 0)
         {
-            clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
-            printf(" » 外部储存软件缓存删除完成\n » 共清理：%d兆\n", clear_size);
+            clear_size = wipeCache(micro_dir, ClearCacheSize);
+            if (clear_size == -1)
+            {
+                printf(" » 外部储存软件缓存清理失败\n");
+            }
+            else
+            }
+                printf(" » 外部储存软件缓存清理完成\n » 共清理：%d兆\n", clear_size);
+            }
         }
     }
     
@@ -119,16 +129,21 @@ int main(int COMI, char * COM[])
 }
 
 /* 
-此函数用于清理软件缓存，返回总清理大小，接收参数：
-char work_dir
-    软件数据目录，这里统一使用xxx/user，自动处理可能的多用户情况，兼容拓展SD
-char whitelist_file
-    白名单文件（完整路径）
-int ClearCacheSize
-    缓存清理限制大小
+此函数用于清理软件缓存，返回总清理大小
+接收：
+    char * work_dir
+        软件数据目录，这里统一使用xxx/user，自动处理可能的多用户情况，兼容拓展SD
+    int * ClearCacheSize
+        缓存清理限制大小
+返回：
+    成功返回清理垃圾大小（单位：兆M），失败返回-1
 */
-static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
+static int wipeCache(char * work_dir, int ClearCacheSize)
 {
+    // whiteList定义
+    char whitelist_file[strlen(work_dir) + 32];
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
+    
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
     char cache_size_char[16] = "", app_cache_dir[256] = "", package_list_line[MAX_PACKAHE] = "";
@@ -139,7 +154,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     if (uid_dir_dp == NULL)
     {
         printf(" » 目录打开失败！\n");
-        return 0;
+        return -1;
     }
     
     // while遍历user目录（处理多用户
@@ -156,7 +171,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
         if (package_list_fp == NULL)
         {
             printf(" » 获取软件列表失败！\n");
-            return 1;
+            return -1;
         }
         
         // 遍历第三方用户软件包名列表
@@ -227,7 +242,10 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 }
 
 /* 
-白名单检查函数，接收白名单文件路径、软件包名
+白名单检查函数
+接收：
+    char * whitelist_file白名单文件
+    char * App 软件包名
 返回类型：int
     1代表在白名单中找到匹配项
     0代表未找到
@@ -255,6 +273,5 @@ static int whiteListCheck(char * whitelist_file, char * App)
     {
         end = -1;
     }
-    
     return end;
 }

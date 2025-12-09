@@ -131,6 +131,16 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
+/*
+文件配置读取函数
+接收：
+    char * name 配置文件名称（会直接作为配置名称使用，不带后缀）
+    char * work_dir 配置文件目录，注意只是根配置目录不是完整配置路径，这个由宏决定
+    char * storage_dir 储存根目录
+返回：
+    1：错误
+    0：成功
+*/
 static int ClearService(char * name, char * work_dir, char * storage_dir)
 {   
     if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
@@ -153,6 +163,7 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
     if (config_file_fp == NULL)
     {
         printf(" » %s 配置文件打开失败！\n", config_file);
+        return 1;
     }
     
     while (fscanf(config_file_fp, "%s", config_file_line) == 1)
@@ -169,6 +180,14 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
     return 0;
 }
 
+/*
+递归查找删除函数
+传入：
+    char * storage 开始查找目录
+    char * str 要删除的文件后缀
+返回：
+    成功返回已清理文件数，失败返回-1
+*/
 static int FindFile(char * storage, char * str)
 {
     if (access(storage, F_OK) != 0)

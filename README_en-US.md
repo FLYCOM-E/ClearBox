@@ -8,7 +8,7 @@
 ```
 sudo apt install zip make
 
-CC=clang # (Use cross-compilation tools if the build device architecture differs from the target device)
+export CC=clang # (Use cross-compilation tools if the build device architecture differs from the target device)
 
 git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox/
 
