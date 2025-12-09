@@ -8,8 +8,8 @@
 #include <string.h>
 
 #define MAX_PACKAGE 256
-#define DATA_DIR "/data/data"
-#define CONFIG_DIR_NAME "清理规则"
+#define DATA_DIR "/data/data" //Max Size 62
+#define CONFIG_DIR_NAME "清理规则" // Max Size 14
 
 static int findPackageInProFile(char * package, char * config_file);
 
@@ -27,14 +27,19 @@ int main(int COMI, char * COM[])
     }
     
     // Get work_dir & package
-    char work_dir[64] = "", app_package[MAX_PACKAGE] = "";
+    char work_dir[128] = "", app_package[MAX_PACKAGE] = "";
     for (int i = 0; i < COMI - 1; i++)
     {
         if (strcmp(COM[i], "-w") == 0)
         {
+            if (strlen(COM[i + 1]) > 128)
+            {
+                printf(" » 配置路径过长！\n");
+                return 1;
+            }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置目录不存在！\n");
+                printf(" » 配置路径不存在！\n");
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -64,7 +69,6 @@ int main(int COMI, char * COM[])
     
     // config dir
     char config_dir[strlen(work_dir) + 16];
-    config_dir[0] = '\0';
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     if (access(config_dir, F_OK) != 0)
     {
@@ -92,7 +96,6 @@ int main(int COMI, char * COM[])
         
         //config_file: 配置文件
         char config_file[strlen(config_dir) + strlen(config_name -> d_name) + 2];
-        config_file[0] = '\0';
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_name -> d_name);
         
         // 这个函数目标是检查配置文件是否为目标配置文件
@@ -113,9 +116,8 @@ int main(int COMI, char * COM[])
         
         // 遍历配置文件
         int count = 0;
-        char app_dir[64 + MAX_PACKAGE + 2];
-        app_dir[0] = '\0'; 
-        char len_str[256] = "", app_name[64] = "";
+        char app_dir[64 + MAX_PACKAGE];
+        char len_str[256] = "", app_name[128] = "";
         char * app_package_fp = NULL, * app_name_fp = NULL;
         
         while (fgets(len_str, sizeof(len_str), config_fp))
@@ -161,12 +163,11 @@ int main(int COMI, char * COM[])
                 if (get_config == 1)
                 {
                     char app_cf_dir[strlen(app_dir) + strlen(len_str) + 2];
-                    app_cf_dir[0] = '\0';
                     snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, len_str);
                     
                     char * len_str_ptr = len_str;
-                    // 如果该行被注释则返回
                     while(isspace(* len_str_ptr)) len_str_ptr++;
+                    // 如果该行被注释则返回
                     if (* len_str_ptr == '#')
                     {
                         continue;
@@ -222,10 +223,8 @@ int main(int COMI, char * COM[])
                 }
             }
         }
-        
         fclose(config_fp);
     }
-    
     closedir(config_dir_fp);
     
     if (get_config == 1)
@@ -264,7 +263,7 @@ static int findPackageInProFile(char * package, char * config_file)
             end = 1;
         }
     }
-    if (config_file_fp) fclose(config_file_fp);
+    fclose(config_file_fp);
     
     return end;
 }

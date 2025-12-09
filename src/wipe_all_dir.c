@@ -6,13 +6,13 @@
 #include <dirent.h>
 
 #define MAX_PACKAHE 256
-#define SETTINGS_FILE_NAME "settings.prop"
+#define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define WHITELIST "%s/ClearWhitelist.prop"
-#define STORAGES_DIR "/storage/%s"
-#define COMMAND_D "rm -r %s/* 2>/dev/null"
+#define STORAGES_DIR "/storage/%s" //Max Size 100
+#define COMMAND_D "rm -r %s/* 2>/dev/null" //Max Size 30
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
-#define DELETE_LOGFILE "\"%s/busybox\" find %s -type f -name \"*.log\" -delete"
-#define DELETE_DIR "\"%s/busybox\" find %s -type d -empty -delete"
+#define DELETE_LOGFILE "\"%s/busybox\" find %s -type f -name \"*.log\" -delete" //Max Size 62
+#define DELETE_DIR "\"%s/busybox\" find %s -type d -empty -delete" //Max Size 62
 
 static int DeleteAppCache(char * data_path, char * work_dir);
 static int CheckWhiteList(char * package, char * whitelist_file);
@@ -32,12 +32,12 @@ int main(int COMI, char * COM[])
     }
     
     // 循环获取传入配置文件、Bin文件目录
-    char work_dir[64] = "", bin_dir[128] = "";
+    char work_dir[128] = "", bin_dir[128] = "";
     for (int i = 0; i < COMI - 1; i++)
     {
         if (strcmp(COM[i], "-w") == 0)
         {
-            if (strlen(COM[i + 1]) > 60)
+            if (strlen(COM[i + 1]) > 128)
             {
                 printf(" » 配置路径过长！\n");
                 return 1;
@@ -48,10 +48,11 @@ int main(int COMI, char * COM[])
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+            work_dir[strcspn(work_dir, "\n")] = 0;
         }
         if (strcmp(COM[i], "-b") == 0)
         {
-            if (strlen(COM[i + 1]) > 60)
+            if (strlen(COM[i + 1]) > 128)
             {
                 printf(" » Bin路径过长！\n");
                 return 1;
@@ -62,16 +63,17 @@ int main(int COMI, char * COM[])
                 return 1;
             }
             snprintf(bin_dir, sizeof(bin_dir), "%s", COM[i + 1]);
+            bin_dir[strcspn(bin_dir, "\n")] = 0;
         }
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置路径！\n");
+        printf(" » 未传入配置目录！\n");
         return 1;
     }
     if (strcmp(bin_dir, "") == 0)
     {
-        printf(" » 未传入Bin路径！\n");
+        printf(" » 未传入Bin目录！\n");
         return 1;
     }
     
@@ -151,7 +153,8 @@ static int DeleteAppCache(char * data_path, char * work_dir)
     
     // 拼接/定义路径
     int clean_count = 0;
-    char whitelist_file[strlen(work_dir) + strlen(WHITELIST) + 2], app_data_path[strlen(data_path) + 32];
+    char whitelist_file[strlen(work_dir) + strlen(WHITELIST) + 2],
+         app_data_path[strlen(data_path) + 32];
     snprintf(app_data_path, sizeof(app_data_path), "%s/Android/data", data_path);
     snprintf(whitelist_file, sizeof(whitelist_file), WHITELIST, work_dir);
     
@@ -286,7 +289,8 @@ static int DelateMediaCache(char * bin_dir, char * storage_dir)
     }
     closedir(dir_dp);
     
-    char d_log_command[strlen(storage_dir) + 64], d_dir_command[strlen(storage_dir) + 64];
+    char d_log_command[strlen(bin_dir) + strlen(storage_dir) + 64],
+         d_dir_command[strlen(bin_dir) + strlen(storage_dir) + 64];
     snprintf(d_log_command, sizeof(d_log_command), DELETE_LOGFILE, bin_dir, storage_dir);
     snprintf(d_dir_command, sizeof(d_dir_command), DELETE_DIR, bin_dir, storage_dir);
     

@@ -24,11 +24,16 @@ int main(int COMI, char * COM[])
         return 1;
     }
     
-    char work_dir[64] = "";
+    char work_dir[128] = "";
     for (int i = 0; i < COMI - 1; i++)
     {
         if (strcmp(COM[i], "-w") == 0)
         {
+            if (strlen(COM[i + 1]) > 128)
+            {
+                printf(" » 配置路径过长！\n");
+                return 1;
+            }
             if (access(COM[i + 1], F_OK) != 0)
             {
                 printf(" » 配置路径不可访问！\n");
@@ -40,12 +45,11 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 配置路径参数为空！\n");
+        printf(" » 未传入配置目录！\n");
         return 1;
     }
     
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
-    config_dir[0] = '\0';
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
     struct dirent * config_file_name;
@@ -65,7 +69,6 @@ int main(int COMI, char * COM[])
         }
         
         char config_file[strlen(config_file_name -> d_name) + strlen(config_dir) + 2];
-        config_file[0] = '\0';
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_file_name -> d_name);
         
         FILE * config_file_fp = fopen(config_file, "r");
@@ -131,8 +134,8 @@ int main(int COMI, char * COM[])
             else
             {
                 char path[strlen(config_file_line) + strlen(dir) + 16];
-                path[0] = '\0';
                 snprintf(path, sizeof(path), "%s/%s", dir, config_file_line);
+                
                 if (access(path, F_OK) != 0)
                 {
                     printf(" » %d 行错误：路径错误或不存在\n", count);

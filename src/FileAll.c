@@ -6,10 +6,10 @@
 #include <sys/stat.h>
 
 #define F_DIR "/data/media/0/Documents"
-#define SETTINGS_FILE_NAME "settings.prop"
+#define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置"
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
-#define STORAGES_DIR "/storage/%s"
+#define STORAGES_DIR "/storage/%s" //Max Size 100
 
 static int ClearService(char * work_dir, char * storage_dir);
 static int FindFile(char * storage, char * name, char * str);
@@ -27,14 +27,14 @@ int main(int COMI, char * COM[])
         return 1;
     }
     
-    char work_dir[64] = "";
+    char work_dir[128] = "";
     for (int i = 0; i < COMI - 1; i++)
     {
         if (strcmp(COM[i], "-w") == 0)
         {
-            if (strlen(COM[i + 1]) > 60)
+            if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 传入配置路径过长！\n");
+                printf(" » 配置路径过长！\n");
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
@@ -43,11 +43,12 @@ int main(int COMI, char * COM[])
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+            work_dir[strcspn(work_dir, "\n")] = 0;
         }
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置路径！\n");
+        printf(" » 未传入配置目录！\n");
         return 1;
     }
     

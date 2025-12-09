@@ -5,9 +5,9 @@
 #include <stdlib.h>
 
 #define SYSFS_PATH "/sys/fs/f2fs"
-#define SYSFS_FILE_NAME "gc_urgent"
-#define SYSFS_DIRTY_FILE "dirty_segments"
-#define SYSFS_FREE_FILE "free_segments"
+#define SYSFS_FILE_NAME "gc_urgent" //Max Size 14
+#define SYSFS_DIRTY_FILE "dirty_segments" //Max Size 14
+#define SYSFS_FREE_FILE "free_segments" //Max Size 14
 
 static int F2FS_GC();
 static int IDLE_MAINT();

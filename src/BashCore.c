@@ -10,8 +10,8 @@
 #include <sys/wait.h>
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
-#define SETTINGS_FILE_NAME "settings.prop"
-#define LOG_FILE_NAME "运行日志.log"
+#define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
+#define LOG_FILE_NAME "运行日志.log" //Max Size 14
 #define BASH_DIR "wipe_cache"
 
 static int Run(char * args[]);
@@ -127,8 +127,7 @@ int main(int COMI, char * COM[])
     
     //定义并预打开Log文件
     bool in_log_file = true;
-    char log_file[128] = "";
-    log_file[0] = '\0';
+    char log_file[strlen(work_dir) + 16];
     snprintf(log_file, sizeof(log_file), "%s/%s", work_dir, LOG_FILE_NAME);
     FILE * log_file_fp = fopen(log_file, "a");
     if (log_file_fp == NULL)
@@ -416,7 +415,7 @@ static int fileAll2(char * home_dir, char * work_dir)
 {
     int fileall = 0;
     char * key = NULL;
-    char temp[64] = "", settingsFile[128] = "";
+    char temp[64] = "", settingsFile[strlen(work_dir) + 16];
     snprintf(settingsFile, sizeof(settingsFile), "%s/%s", work_dir, SETTINGS_FILE_NAME);
     FILE * settingsFile_fp = fopen(settingsFile, "r");
     if (settingsFile_fp)

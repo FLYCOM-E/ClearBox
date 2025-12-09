@@ -7,11 +7,11 @@
 
 #define MAX_PACKAHE 256
 #define DATA_DIR "/data/user"
-#define WHITELIST_FILE "ClearWhitelist.prop"
-#define SETTINGS_FILE "settings.prop"
+#define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
+#define SETTINGS_FILE "settings.prop" //Max Size 30
 #define GET_APPLIST "pm list package -3 2>/dev/null"
-#define GET_DIR_SIZE "du -s -m %s 2>/dev/null"
-#define CLEAR_CACHE "rm -r %s/* >/dev/null 2>&1"
+#define GET_DIR_SIZE "du -s -m %s 2>/dev/null" //Max Size 30
+#define CLEAR_CACHE "rm -r %s/* >/dev/null 2>&1" //Max Size 30
 
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
 static int whiteListCheck(char * whitelist_file, char * App);
@@ -30,11 +30,16 @@ int main(int COMI, char * COM[])
     }
     
     // work_dir定义
-    char work_dir[64] = "";
+    char work_dir[128] = "";
     for (int i = 0; i < COMI - 1; i++)
     {
         if (strcmp(COM[i], "-w") == 0)
         {
+            if (strlen(COM[i + 1]) > 128)
+            {
+                printf(" » 配置路径过长！\n");
+                return 1;
+            }
             if (access(COM[i + 1], F_OK) != 0)
             {
                 printf(" » 配置路径不存在！\n");
@@ -46,7 +51,7 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 配置路径参数为空！\n");
+        printf(" » 未传入配置目录！\n");
         return 1;
     }
     
@@ -62,7 +67,7 @@ int main(int COMI, char * COM[])
     }
     
     // whiteList定义
-    char whitelist_file[64] = "";
+    char whitelist_file[strlen(work_dir) + 32];
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
     
     /* 
@@ -73,7 +78,6 @@ int main(int COMI, char * COM[])
     char * key_len_fp = NULL;
     int ClearCacheSize = 0, cleardisk = 0;
     char settings_file[strlen(work_dir) + 32], key_len[32] ="";
-    settings_file[0] = '\n';
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     FILE * settings_file_fp = fopen(settings_file, "r");
     if (settings_file_fp)
@@ -172,7 +176,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             
             // 调用du命令获取软件缓存目录大小（单位：兆）
             char get_cache_size[strlen(app_cache_dir) + 32];
-            get_cache_size[0] = '\0';
             snprintf(get_cache_size, sizeof(get_cache_size), GET_DIR_SIZE, app_cache_dir);
             FILE * CacheSize_fp = popen(get_cache_size, "r");
             if (CacheSize_fp == NULL)
@@ -193,7 +196,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                 if (whiteListCheck(whitelist_file, package_list_line + 8) == 0)
                 {
                     char clear_command[strlen(app_cache_dir) + 32];
-                    clear_command[0] = '\0';
                     snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_dir);
                     if (system(clear_command) == 0)
                     {

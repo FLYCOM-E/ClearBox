@@ -11,10 +11,10 @@
 #define DEBUG 0
 #define MAX_PACKAGE_NAME 256
 #define DATA_DIR "/data/data"
-#define ROM_NAME "RunStart"
+#define ROM_NAME "RunStart" //Max Size 30
 #define WHITELIST_NAME "whitelist.prop"
 #define GET_TOPAPP "dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '"
-#define MICRO_DATA_PATH "/mnt/expand/%s/user/0"
+#define MICRO_DATA_PATH "/mnt/expand/%s/user/0" //Max Size 100
 #define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
@@ -32,12 +32,12 @@ int main(int COMI, char * COM[])
         return 1;
     }
     
-    char work_dir[64] = "", bin_dir[128] = "";
+    char work_dir[128] = "", bin_dir[128] = "";
     for (int i = 0; i < COMI - 1; i++)
     {
         if (strcmp(COM[i], "-w") == 0) //work_dir定义
         {
-            if (strlen(COM[i + 1]) > 60)
+            if (strlen(COM[i + 1]) > 128)
             {
                 printf(" » Config dir is Long! \n");
                 return 1;
@@ -48,10 +48,11 @@ int main(int COMI, char * COM[])
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
+            work_dir[strcspn(work_dir, "\n")] = 0;
         }
         if (strcmp(COM[i], "-b") == 0) //bin_dir定义
         {
-            if (strlen(COM[i + 1]) > 60)
+            if (strlen(COM[i + 1]) > 128)
             {
                 printf(" » Bin dir is Long! \n");
                 return 1;
@@ -62,6 +63,7 @@ int main(int COMI, char * COM[])
                 return 1;
             }
             snprintf(bin_dir, sizeof(bin_dir), "%s", COM[i + 1]);
+            bin_dir[strcspn(bin_dir, "\n")] = 0;
         }
     }
     if (strcmp(work_dir, "") == 0)
@@ -87,7 +89,7 @@ int main(int COMI, char * COM[])
     }
     
     //定义储存文件
-    char rom_file[64] = "";
+    char rom_file[strlen(work_dir) + 32];
     snprintf(rom_file, sizeof(rom_file), "%s/%s", work_dir, ROM_NAME);
     
     //定义待处理app临时储存变量
@@ -296,10 +298,10 @@ int main(int COMI, char * COM[])
 //此函数用于StopApp缓存
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir)
 {
-    char top_app_dir[strlen(dir) + strlen(top_app) + 16];
-    char reset_app_dir[strlen(dir) + strlen(reset_app) + 16];
-    char whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 8];
-    char busybox_bin[strlen(bin_dir) + 32];
+    char top_app_dir[strlen(dir) + strlen(top_app) + 16],
+         reset_app_dir[strlen(dir) + strlen(reset_app) + 16],
+         whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 8],
+         busybox_bin[strlen(bin_dir) + 32];
     snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);              //topApp缓存目录定义
     snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app);         //resetApp缓存目录定义
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);   //定义WhiteList

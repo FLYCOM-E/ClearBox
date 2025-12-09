@@ -7,9 +7,9 @@
 #include <string.h>
 
 #define MAX_PACKAGE 256
-#define DATA_DIR "/data/user"
+#define DATA_DIR "/data/user" //Max Size 10
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
-#define CLEAR_CACHE "rm -r %s/* 2>/dev/null"
+#define CLEAR_CACHE "rm -r %s/* 2>/dev/null" //Max Size 62
 
 int main()
 {
@@ -20,7 +20,8 @@ int main()
     }
     
     int count = 0, no_count = 0;
-    char app_cache_path[256] = "", package_list_line[MAX_PACKAGE] = "";
+    char app_cache_path[MAX_PACKAGE + 16],
+         package_list_line[MAX_PACKAGE] = "";
     
     struct dirent * uid_dir = NULL;
     DIR * uid_dir_dp = opendir(DATA_DIR);
@@ -58,7 +59,7 @@ int main()
             }
             else
             {
-                char clear_command[256] = "";
+                char clear_command[strlen(app_cache_path) + 64];
                 snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_path);
                 if (system(clear_command) == 0)
                 {
