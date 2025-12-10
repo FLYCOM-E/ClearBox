@@ -1,7 +1,7 @@
 // 此Core来自ClearBox模块，用于内部储存指定格式文件清理
 #include "BashCore.h"
 
-#define F_DIR "/data/media/0/Documents"
+#define F_DIR_NAME "Documents"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置"
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
@@ -128,8 +128,11 @@ static int ClearService(char * work_dir, char * storage_dir)
         return 1;
     }
     
-    char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
+    char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2], f_dir[strlen(storage_dir) + strlen(F_DIR_NAME) + 8];
+    
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
+    snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, F_DIR_NAME);
+    mkdir(f_dir, 0775);
     
     struct dirent * entry;
     DIR * config_dir_dp = opendir(config_dir);
@@ -154,13 +157,12 @@ static int ClearService(char * work_dir, char * storage_dir)
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
         
         char * config_file_name_p = strtok(config_file_name, ".");
-        char file_dir[strlen(F_DIR) + strlen(config_file_name_p) + 8];
-        snprintf(file_dir, sizeof(file_dir), "%s/%s", F_DIR, config_file_name_p);
+        char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_file_name_p) + 8];
+        snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_file_name_p);
         
-        mkdir(F_DIR, 0755);
         mkdir(file_dir, 0775);
         
-        if (access(F_DIR, F_OK) != 0 || access(file_dir, F_OK) != 0)
+        if (access(file_dir, F_OK) != 0)
         {
             return 1;
         }
@@ -171,6 +173,7 @@ static int ClearService(char * work_dir, char * storage_dir)
         if (config_file_fp == NULL)
         {
             printf(" » %s 配置文件打开失败！\n", config_file);
+            continue;
         }
         
         while (fscanf(config_file_fp, "%s", config_file_line) == 1)
@@ -202,7 +205,7 @@ static int FindFile(char * storage, char * file_dir, char * str)
 {
     if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)
     {
-        return -1;
+        return 0;
     }
     
     int file_count = 0;
@@ -211,7 +214,7 @@ static int FindFile(char * storage, char * file_dir, char * str)
     DIR * storage_dp = opendir(storage);
     if (storage_dp == NULL)
     {
-        return -1;
+        return 0;
     }
     
     while ((entry = readdir(storage_dp)))
@@ -243,8 +246,14 @@ static int FindFile(char * storage, char * file_dir, char * str)
             char * str_p = strrchr(file_name, '.');
             if (str_p != NULL && strcmp(str_p + 1, str) == 0)
             {
-                rename(path, end_path);
-                file_count++;
+                if (rename(path, end_path) != 0)
+                {
+                    printf("%s: 移动失败\n", path);
+                }
+                else
+                {
+                    file_count++;
+                }
             }
         }
     }
