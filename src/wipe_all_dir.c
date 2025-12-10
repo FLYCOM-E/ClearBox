@@ -5,7 +5,7 @@
 #include <string.h>
 #include <dirent.h>
 
-#define MAX_PACKAHE 256
+#define MAX_PACKAGE 256
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define WHITELIST "%s/ClearWhitelist.prop"
 #define STORAGES_DIR "/storage/%s" //Max Size 100
@@ -223,7 +223,7 @@ static int CheckWhiteList(char * package, char * whitelist_file)
     {
         return -1;
     }
-    char line[MAX_PACKAHE] = "";
+    char line[MAX_PACKAGE] = "";
     FILE * whilelist_file_fp = fopen(whitelist_file, "r");
     if (whilelist_file_fp)
     {

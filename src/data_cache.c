@@ -6,7 +6,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#define MAX_PACKAHE 256
+#define MAX_PACKAGE 256
 #define DATA_DIR "/data/user"
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
 #define SETTINGS_FILE "settings.prop" //Max Size 30
@@ -146,7 +146,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 {
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
-    char app_cache_dir[256] = "", package_list_line[MAX_PACKAHE] = "";
+    char app_cache_dir[256] = "", package_list_line[MAX_PACKAGE] = "";
     
     // 打开user目录
     struct dirent * uid_dir;
@@ -241,7 +241,7 @@ static int whiteListCheck(char * whitelist_file, char * App)
 {
     // 打开白名单文件并遍历查找包名
     int end = 0;
-    char package_line[MAX_PACKAHE] = "";
+    char package_line[MAX_PACKAGE] = "";
     FILE * whitelist_file_fp = fopen(whitelist_file, "r");
     if (whitelist_file_fp)
     {
