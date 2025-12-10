@@ -1,9 +1,5 @@
 // 此Core来自ClearBox模块，用于内部储存指定格式文件清理
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <dirent.h>
-#include <sys/stat.h>
+#include "BashCore.h"
 
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置" //Max Size 30

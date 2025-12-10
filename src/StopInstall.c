@@ -1,8 +1,5 @@
 // 此脚本来自ClearBox模块，用于阻止安装功能
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include "BashCore.h"
 
 #define DATA_DIR "/data/app"
 #define MICRO_DIR "/mnt/expand/%s/app" //Max Size 100

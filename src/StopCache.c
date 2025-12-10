@@ -1,12 +1,5 @@
 // By ClearBox StopCache
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <dirent.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <sys/stat.h>
+#include "BashCore.h"
 
 #define DEBUG 0
 #define MAX_PACKAGE_NAME 256

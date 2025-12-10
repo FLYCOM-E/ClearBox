@@ -1,13 +1,6 @@
 //By ClearBox
 // 此Core来自ClearBox模块，用于根据传入参数调用清理脚本
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/types.h>
-#include <string.h>
-#include <stdbool.h>
-#include <sys/wait.h>
+#include "BashCore.h"
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14

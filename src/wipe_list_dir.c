@@ -1,11 +1,5 @@
 // 此脚本来自ClearBox模块，用于自定义规则清理/干掉文件目录
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <ctype.h>
-#include <sys/wait.h>
-#include <string.h>
+#include "BashCore.h"
 
 #define CONFIG_DIR_NAME "清理配置"
 

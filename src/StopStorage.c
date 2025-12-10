@@ -1,8 +1,5 @@
 // 此脚本来自ClearBox模块，用于内部储存固定功能
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include "BashCore.h"
 
 #define DATA_DIR "/data/media/0"
 #define STOP_COMMAND "%s/busybox chattr +i %s 2>/dev/null" //Max Size 62

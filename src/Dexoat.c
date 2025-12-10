@@ -1,8 +1,5 @@
 // 此Core来自ClearBox模块，用于运行DexOat
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include "BashCore.h"
 
 static int SystemDexOat();
 static int CustDexOat(char * mode);

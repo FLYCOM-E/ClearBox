@@ -1,11 +1,5 @@
 // 此脚本来自ClearBox模块，用于自定义规则软件内部清理
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <ctype.h>
-#include <sys/wait.h>
-#include <string.h>
+#include "BashCore.h"
 
 #define MAX_PACKAGE 256
 #define DATA_DIR "/data/data" //Max Size 62

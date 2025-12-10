@@ -1,8 +1,5 @@
 // 此Core来自ClearBox模块，用于打开原生安卓墓碑模式（其实Shell可能更适合？
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include "BashCore.h"
 
 #define GET_SDK "getprop ro.build.version.sdk"
 #define SET_FREEZER "device_config put activity_manager_native_boot use_freezer true"

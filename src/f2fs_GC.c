@@ -1,8 +1,5 @@
 // 此脚本来自ClearBox模块，用于运行紧急GC优化，原理来自Coolapk@Amktiao，感谢大佬
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include "BashCore.h"
 
 #define SYSFS_PATH "/sys/fs/f2fs"
 #define SYSFS_FILE_NAME "gc_urgent" //Max Size 14

@@ -1,9 +1,5 @@
 // 此脚本来自ClearBox模块，用于删除垃圾缓存及空文件夹
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <dirent.h>
+#include "BashCore.h"
 
 #define MAX_PACKAGE 256
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14

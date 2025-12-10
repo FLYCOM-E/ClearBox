@@ -1,10 +1,5 @@
 // 此Core来自ClearBox模块，用于清空内部储存软件缓存
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <string.h>
-#include <sys/stat.h>
+#include "BashCore.h"
 
 #define MAX_PACKAGE 256
 #define DATA_DIR "/data/user"
