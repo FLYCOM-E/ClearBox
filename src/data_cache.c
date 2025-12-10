@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #define MAX_PACKAHE 256
 #define DATA_DIR "/data/user"
@@ -15,6 +16,7 @@
 
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
 static int whiteListCheck(char * whitelist_file, char * App);
+static int GetPathSize(char * path);
 
 int main(int COMI, char * COM[])
 {
@@ -66,6 +68,10 @@ int main(int COMI, char * COM[])
         snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", card_id);
     }
     
+    // whiteList定义
+    char whitelist_file[strlen(work_dir) + 32];
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
+    
     /* 
     读取：
     ClearCacheSize（缓存清理限制大小）
@@ -98,7 +104,7 @@ int main(int COMI, char * COM[])
     }
     
     //调用处理函数
-    int clear_size = wipeCache(DATA_DIR, ClearCacheSize);
+    int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
     if (clear_size == -1)
     {
         printf(" » 内部储存软件缓存清理失败\n");
@@ -112,20 +118,19 @@ int main(int COMI, char * COM[])
     {
         if (access(micro_dir, F_OK) == 0)
         {
-            clear_size = wipeCache(micro_dir, ClearCacheSize);
+            clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
             if (clear_size == -1)
             {
                 printf(" » 外部储存软件缓存清理失败\n");
             }
             else
-            }
+            {
                 printf(" » 外部储存软件缓存清理完成\n » 共清理：%d兆\n", clear_size);
             }
         }
     }
     
     return 0;
-    
 }
 
 /* 
@@ -138,15 +143,11 @@ int main(int COMI, char * COM[])
 返回：
     成功返回清理垃圾大小（单位：兆M），失败返回-1
 */
-static int wipeCache(char * work_dir, int ClearCacheSize)
+static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 {
-    // whiteList定义
-    char whitelist_file[strlen(work_dir) + 32];
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
-    
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
-    char cache_size_char[16] = "", app_cache_dir[256] = "", package_list_line[MAX_PACKAHE] = "";
+    char app_cache_dir[256] = "", package_list_line[MAX_PACKAHE] = "";
     
     // 打开user目录
     struct dirent * uid_dir;
@@ -182,47 +183,35 @@ static int wipeCache(char * work_dir, int ClearCacheSize)
             // 拼接软件缓存目录，避免完整遍历user下所有目录
             snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", work_dir, uid_dir -> d_name, package_list_line + 8);
             
-            // 本来不打算在这里检查，毕竟下面du就有检查目录是否存在的作用
-            // 但发现用du合并检查会有莫名的漏网之鱼（（
             if (access(app_cache_dir, F_OK) != 0)
             {
                 continue;
             }
             
-            // 调用du命令获取软件缓存目录大小（单位：兆）
-            char get_cache_size[strlen(app_cache_dir) + 32];
-            snprintf(get_cache_size, sizeof(get_cache_size), GET_DIR_SIZE, app_cache_dir);
-            FILE * CacheSize_fp = popen(get_cache_size, "r");
-            if (CacheSize_fp == NULL)
-            {
-                continue;
-            }
-            fgets(cache_size_char, sizeof(cache_size_char), CacheSize_fp);
-            pclose(CacheSize_fp);
-            cache_size_char[strcspn(cache_size_char, "\t")] = 0;
-            
-            // 将char类型缓存大小转换为int
-            cache_size = atoi(cache_size_char);
+            // 获取缓存大小（兆M）
+            cache_size = GetPathSize(app_cache_dir);
             
             // 比较大小，如果值小于缓存清理限制大小则跳过
             if (cache_size > ClearCacheSize)
             {
                 // 调用白名单检查函数，在清理白名单则跳过
-                if (whiteListCheck(whitelist_file, package_list_line + 8) == 0)
+                if (whiteListCheck(whitelist_file, package_list_line + 8) == 1)
                 {
-                    char clear_command[strlen(app_cache_dir) + 32];
-                    snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_dir);
-                    if (system(clear_command) == 0)
-                    {
-                        clean_size += cache_size; // 记录清理大小
-                        printf(" » %s 缓存已清除\n", package_list_line + 8);
-                        count++;
-                        fflush(stdout);
-                    }
-                    else
-                    {
-                        no_count++;
-                    }
+                    continue;
+                }
+                
+                char clear_command[strlen(app_cache_dir) + 32];
+                snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_dir);
+                if (system(clear_command) == 0)
+                {
+                    clean_size += cache_size; // 记录清理大小
+                    printf(" » %s 缓存已清除\n", package_list_line + 8);
+                    count++;
+                    fflush(stdout);
+                }
+                else
+                {
+                    no_count++;
                 }
             }
             else
@@ -274,4 +263,56 @@ static int whiteListCheck(char * whitelist_file, char * App)
         end = -1;
     }
     return end;
+}
+
+/*
+获取磁盘占用大小
+接收：
+    char * path 路径/文件
+返回：
+    大小。单位：兆（M）
+*/
+static int GetPathSize(char * path)
+{
+    if (access(path, F_OK) != 0)
+    {
+        return 0;
+    }
+    
+    long size = 0;
+    struct dirent * entry;
+    struct stat file_stat;
+    DIR * path_dp = opendir(path);
+    if (path_dp == NULL)
+    {
+        return 0;
+    }
+    
+    while ((entry = readdir(path_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+           strcmp(entry -> d_name, "..") == 0)
+        {
+            continue;
+        }
+        
+        char dir[strlen(path) + strlen(entry -> d_name) + 2];
+        snprintf(dir, sizeof(dir), "%s/%s", path, entry -> d_name);
+        
+        if (stat(dir, &file_stat) == -1)
+        {
+            continue;
+        }
+        if (S_ISDIR(file_stat.st_mode))
+        {
+            size += GetPathSize(dir);
+        }
+        else
+        {
+            size += file_stat.st_size;
+        }
+    }
+    
+    closedir(path_dp);
+    return (int)(size / 1024 / 1024);
 }
