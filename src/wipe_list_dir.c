@@ -159,6 +159,13 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
+/*
+文件/目录删除函数
+接收：
+    char * path 文件/目录
+返回：
+    int 成功返回0，失败返回1
+*/
 static int remove_all(char * path)
 {
     if (access(path, F_OK) != 0)

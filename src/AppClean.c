@@ -251,7 +251,11 @@ int main(int COMI, char * COM[])
 
 /*
 检查配置是否包含传入包名（预期配置）
-出现异常返回-1，找到返回1，未找到返回0
+接收：
+    char * package 包名
+    char * config_file 配置文件（完整路径）
+返回：
+    int 异常返回-1，找到返回1，未找到返回0
 */
 static int findPackageInProFile(char * package, char * config_file)
 {

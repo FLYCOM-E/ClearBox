@@ -137,11 +137,11 @@ int main(int COMI, char * COM[])
 
 /* 
 内/外部储存App缓存清理函数
-
-传入：储存根目录、配置文件目录
-返回：传入储存根目录不存在/无法打开返回 1，否则返回0
-
-不检查传入配置目录，由下游白名单函数检查
+接收：
+    char * data_path 储存根目录
+    char * work_dir 配置目录
+返回：
+    int 成功返回0，失败返回1
 */
 static int DeleteAppCache(char * data_path, char * work_dir)
 {
@@ -211,9 +211,11 @@ static int DeleteAppCache(char * data_path, char * work_dir)
 
 /*
 白名单检查函数
-
-接收：软件包名、白名单文件
-返回：白名单文件不存在返回 -1，找到返回 1，未找到返回 0
+接收：
+    char * package 软件包名
+    char * whitelist_file 白名单文件
+返回：
+    int 找到返回1，未找到返回0，失败返回-1
 */
 static int CheckWhiteList(char * package, char * whitelist_file)
 {
@@ -241,9 +243,11 @@ static int CheckWhiteList(char * package, char * whitelist_file)
 
 /*
 内部储存清理函数
-
-接收：Bin文件路径、储存根目录
-返回：任意传入路径不存在/打开失败返回 1，否则返回 0
+接收：
+    char * bin_dir Bin目录
+    char * storage_dir 储存根目录
+返回：
+    int 成功返回0，失败返回1
 */
 static int DelateMediaCache(char * bin_dir, char * storage_dir)
 {

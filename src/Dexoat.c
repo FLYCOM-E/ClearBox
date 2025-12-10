@@ -42,6 +42,7 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
+// 系统Dexoat
 static int SystemDexOat()
 {
     printf(" » 正在进行系统默认 Dexoat...\n");
@@ -49,6 +50,7 @@ static int SystemDexOat()
     return system("cmd package bg-dexopt-job");
 }
 
+// 自定义模式Dexoat
 static int CustDexOat(char * mode)
 {
     printf(" » 正在运行模式 %s 编译...\n", mode);

@@ -295,7 +295,18 @@ int main(int COMI, char * COM[])
     return end;
 }
 
-//此函数用于StopApp缓存
+/*
+缓存阻止实现
+接收：
+    char * dir 软件数据根目录
+    char * top_app 前台App包名
+    char * reset_app 待恢复App包名
+    char * work_dir 配置目录
+    char * bin_dir Bin目录
+返回：
+    int 成功返回0，失败返回-1
+    
+*/
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir)
 {
     char top_app_dir[strlen(dir) + strlen(top_app) + 16],

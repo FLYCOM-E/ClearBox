@@ -43,7 +43,11 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
-// 紧急GC
+/*
+紧急GC
+返回：
+    int 成功返回0，失败返回1
+*/
 static int F2FS_GC()
 {
     // GetProp
@@ -143,7 +147,18 @@ static int F2FS_GC()
             }
         }
         
-        printf(" » 已运行 %d 分 %d 秒...\n", time_m, time_s);
+        if (time_m == 0)
+        {
+            printf(" » 已运行 %d 秒...\n", time_s);
+        }
+        else if (time_s == 0)
+        {
+            printf(" » 已运行 %d 分...\n", time_m);
+        }
+        else
+        {
+            printf(" » 已运行 %d 分 %d 秒...\n", time_m, time_s);
+        }
         fflush(stdout);
     }
     
@@ -168,7 +183,13 @@ static int F2FS_GC()
     return 0;
 }
 
-// 获取磁盘脏段
+/*
+获取磁盘脏段
+接收：
+    char * dirty_file 脏段节点（完整路径）
+返回：
+    int 成功返回脏段数量，失败返回0（与脏段为0同）
+*/
 static int get_f2fs_dirty(char * dirty_file)
 {
     char cache[4] = "";
@@ -187,7 +208,13 @@ static int get_f2fs_dirty(char * dirty_file)
     return atoi(cache);
 }
 
-// 获取磁盘空闲段
+/*
+获取磁盘空闲段
+接收：
+    char * dirty_file 空闲段节点（完整路径）
+返回：
+    int 成功返回空闲段数量，失败返回0（与空闲段为0同）
+*/
 static int get_f2fs_free(char * free_file)
 {
     char cache[4] = "";
@@ -206,6 +233,7 @@ static int get_f2fs_free(char * free_file)
     return atoi(cache);
 }
 
+// 快速磁盘优化
 static int IDLE_MAINT()
 {
     printf(" » 开始快速磁盘优化，请您耐心等待，可以离开前台！\n");

@@ -117,6 +117,14 @@ int main(int COMI, char * COM[])
     return 0;
 }
 
+/*
+文件配置读取/清理函数
+接收：
+    char * work_dir 配置目录路径
+    char * storage_dir 储存根目录
+返回：
+    int 成功返回0，失败返回1
+*/
 static int ClearService(char * work_dir, char * storage_dir)
 {   
     if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
@@ -185,6 +193,15 @@ static int ClearService(char * work_dir, char * storage_dir)
     return 0;
 }
 
+/*
+文件递归查找归类函数
+接收：
+    char * storage 储存根目录
+    char * file_dir 归类目录
+    char * str 查找文件后缀
+返回：
+    int 成功返回归类文件数量，失败返回-1
+*/
 static int FindFile(char * storage, char * file_dir, char * str)
 {
     if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)

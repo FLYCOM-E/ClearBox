@@ -11,7 +11,6 @@
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
 #define SETTINGS_FILE "settings.prop" //Max Size 30
 #define GET_APPLIST "pm list package -3 2>/dev/null"
-#define GET_DIR_SIZE "du -s -m %s 2>/dev/null" //Max Size 30
 #define CLEAR_CACHE "rm -r %s/* >/dev/null 2>&1" //Max Size 30
 
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
@@ -141,7 +140,7 @@ int main(int COMI, char * COM[])
     int * ClearCacheSize
         缓存清理限制大小
 返回：
-    成功返回清理垃圾大小（单位：兆M），失败返回-1
+    int 清理垃圾大小（单位：兆M），失败返回-1
 */
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 {
@@ -235,10 +234,8 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 接收：
     char * whitelist_file白名单文件
     char * App 软件包名
-返回类型：int
-    1代表在白名单中找到匹配项
-    0代表未找到
-    -1代表白名单查看失败
+返回：
+    int 找到返回1，未找到返回0，失败返回-1
 */
 static int whiteListCheck(char * whitelist_file, char * App)
 {
@@ -270,7 +267,7 @@ static int whiteListCheck(char * whitelist_file, char * App)
 接收：
     char * path 路径/文件
 返回：
-    大小。单位：兆（M）
+    int 大小，单位：兆（M）
 */
 static int GetPathSize(char * path)
 {
@@ -312,7 +309,6 @@ static int GetPathSize(char * path)
             size += file_stat.st_size;
         }
     }
-    
     closedir(path_dp);
     return (int)(size / 1024 / 1024);
 }
