@@ -176,6 +176,8 @@ static int ClearService(char * work_dir, char * storage_dir)
             continue;
         }
         
+        printf(" » 正在归类 %s ...\n", config_file_name_p);
+        fflush(stdout);
         while (fscanf(config_file_fp, "%s", config_file_line) == 1)
         {
             if (strstr(config_file_line, "#"))
@@ -232,7 +234,8 @@ static int FindFile(char * storage, char * file_dir, char * str)
         char end_path[strlen(file_dir) + strlen(entry -> d_name) + 32];
         snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
         
-        if (stat(path, &file_stat) == -1)
+        if (strcmp(path, file_dir) == 0 ||
+           stat(path, &file_stat) == -1)
         {
             continue;
         }
