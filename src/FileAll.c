@@ -1,6 +1,8 @@
 // 此Core来自ClearBox模块，用于内部储存指定格式文件清理
 #include "BashCore.h"
 
+#define MAX_ARGS_SIZE 32
+#define CONFIG_MAX_ARGS 512
 #define F_DIR_NAME "Documents"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置"
@@ -8,7 +10,7 @@
 #define STORAGES_DIR "/storage/%s" //Max Size 100
 
 static int ClearService(char * work_dir, char * storage_dir);
-static int FindFile(char * storage, char * name, char * str);
+static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
 
 int main(int COMI, char * COM[])
 {
@@ -168,7 +170,6 @@ static int ClearService(char * work_dir, char * storage_dir)
         }
         
         int all_count = 0;
-        char config_file_line[64] = "";
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
@@ -178,14 +179,15 @@ static int ClearService(char * work_dir, char * storage_dir)
         
         printf(" » 正在归类 %s ...\n", config_file_name_p);
         fflush(stdout);
-        while (fscanf(config_file_fp, "%s", config_file_line) == 1)
+        
+        int count = 0;
+        char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
+        while (fscanf(config_file_fp, "%s", file_args[count]) == 1)
         {
-            if (strstr(config_file_line, "#"))
-            {
-                continue;
-            }
-            all_count += FindFile(storage_dir, file_dir, config_file_line);
+            count++;
         }
+        
+        all_count += FindFile(storage_dir, file_dir, file_args, count);
         fclose(config_file_fp);
         printf(" » 已归类 %d 个 %s\n", all_count, config_file_name_p);
         fflush(stdout);
@@ -203,7 +205,7 @@ static int ClearService(char * work_dir, char * storage_dir)
 返回：
     int 成功返回归类文件数量，失败返回-1
 */
-static int FindFile(char * storage, char * file_dir, char * str)
+static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count)
 {
     if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)
     {
@@ -229,9 +231,9 @@ static int FindFile(char * storage, char * file_dir, char * str)
         
         char file_name[strlen(entry -> d_name) + 2];
         snprintf(file_name, sizeof(file_name), "%s", entry -> d_name);
-        char path[strlen(storage) + strlen(entry -> d_name) + 32];
+        char path[strlen(storage) + strlen(entry -> d_name) + 64];
         snprintf(path, sizeof(path), "%s/%s", storage, entry -> d_name);
-        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 32];
+        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 64];
         snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
         
         if (strcmp(path, file_dir) == 0 ||
@@ -242,20 +244,26 @@ static int FindFile(char * storage, char * file_dir, char * str)
         
         if (S_ISDIR(file_stat.st_mode))
         {
-            file_count += FindFile(path, file_dir, str);
+            file_count += FindFile(path, file_dir, args, count);
         }
         else
         {
             char * str_p = strrchr(file_name, '.');
-            if (str_p != NULL && strcmp(str_p + 1, str) == 0)
+            if (str_p != NULL)
             {
-                if (rename(path, end_path) != 0)
+                for (int i = 0; i < count; i++)
                 {
-                    printf("%s: 移动失败\n", path);
-                }
-                else
-                {
-                    file_count++;
+                    if (strcasecmp(args[i], str_p + 1) == 0)
+                    {
+                        if (rename(path, end_path) == 0)
+                        {
+                            file_count++;
+                        }
+                        else
+                        {
+                            printf(" » %s 移动失败\n", path);
+                        }
+                    }
                 }
             }
         }

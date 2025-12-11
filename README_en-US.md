@@ -82,8 +82,6 @@ Configuration directory： **`/data/adb/wipe-cache/文件格式配置`**
 
 Configuration way：Create a **conf** document file in the configuration directory. The file name will be displayed in the cleanup page as the corresponding cleanup item name. Fill in the custom file suffixes in this file, separated by spaces.
 
-Add **`#`** before the file suffix to block that format, e.g.：apk = #apk. This can also be used to comment text, but note that it must be separated by spaces, i.e. **# 这是注释** 👈 is wrong
-
 The software/terminal cleanup page will be dynamically built according to the configuration file
 
 Scope：file cleanup, and the file classification mentioned later

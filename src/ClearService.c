@@ -1,13 +1,15 @@
 // 此Core来自ClearBox模块，用于内部储存指定格式文件清理
 #include "BashCore.h"
 
+#define MAX_ARGS_SIZE 32
+#define CONFIG_MAX_ARGS 512
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置" //Max Size 30
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
 #define STORAGES_DIR "/storage/%s" //Max Size 100
 
 static int ClearService(char * name, char * work_dir, char * storage_dir);
-static int FindFile(char * storage, char * str);
+static int FindFile(char * storage, char file_args[][MAX_ARGS_SIZE], int count);
 
 int main(int COMI, char * COM[])
 {
@@ -154,7 +156,6 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
     }
     
     int clear_count = 0;
-    char config_file_line[64] = "";
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
     {
@@ -162,15 +163,15 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
         return 1;
     }
     
-    while (fscanf(config_file_fp, "%s", config_file_line) == 1)
+    int count = 0;
+    char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
+    while (fscanf(config_file_fp, "%s", file_args[count]) == 1)
     {
-        if (strstr(config_file_line, "#"))
-        {
-            continue;
-        }
-        clear_count += FindFile(storage_dir, config_file_line);
+        count++;
     }
     fclose(config_file_fp);
+    
+    clear_count += FindFile(storage_dir, file_args, count);
     printf(" » 已清理 %d 个 %s\n", clear_count, name);
     return 0;
 }
@@ -183,7 +184,7 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
 返回：
     int 已清理文件数，失败返回-1
 */
-static int FindFile(char * storage, char * str)
+static int FindFile(char * storage, char file_args[][MAX_ARGS_SIZE], int count)
 {
     if (access(storage, F_OK) != 0)
     {
@@ -219,15 +220,27 @@ static int FindFile(char * storage, char * str)
         
         if (S_ISDIR(file_stat.st_mode))
         {
-            file_count += FindFile(path, str);
+            file_count += FindFile(path, file_args, count);
         }
         else
         {
             char * str_p = strrchr(file_name, '.');
-            if (str_p != NULL && strcmp(str_p + 1, str) == 0)
+            if (str_p != NULL)
             {
-                remove(path);
-                file_count++;
+                for (int i = 0; i < count; i++)
+                {
+                    if (strcasecmp(file_args[i], str_p + 1) == 0)
+                    {
+                        if (remove(path) == 0)
+                        {
+                            file_count++;
+                        }
+                        else
+                        {
+                            printf(" » 删除 %s 失败！\n", path);
+                        }
+                    }
+                }
             }
         }
     }
