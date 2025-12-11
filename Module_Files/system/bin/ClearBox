@@ -17,7 +17,7 @@ if [ "$DebugPro" = 1 ]; then
 else
     exec 2>>/dev/null
 fi
-Version=$(grep version "$home_dir/module.prop" | cut -f2 -d "=")
+Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
 ######
 # 菜单函数
 md_menu()
