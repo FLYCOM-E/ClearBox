@@ -30,42 +30,42 @@ StartSettings()
 {
     PropSetting()
     {
-    [ -z "$stopcache" ] && echo "stopcache=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$stopstorage" ] && echo "stopstorage=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$cleardisk" ] && echo "cleardisk=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$FileClear_Disk" ] && echo "FileClear_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop" && ReSource=1
-    [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=5" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$stopcache" ] && echo "stopcache=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$stopstorage" ] && echo "stopstorage=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$cleardisk" ] && echo "cleardisk=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$FileClear_Disk" ] && echo "FileClear_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=5" >> "$work_dir/settings.prop" && ReSource=1
     }
     ######
     prosetting()
     {
-    mkdir -p "$work_dir/清理规则"
-    mkdir -p "$work_dir/清理配置"
-    mkdir -p "$work_dir/文件格式配置"
-    mkdir -p "$work_dir/CRON/ClearCache"
-    mkdir -p "$work_dir/CRON/FileAll"
-    mkdir -p "$work_dir/CRON/ClearDir"
-    ######
-    [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
-    [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
-    ######
-    if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
-        if [ -d "$home_dir/ProFile" ]; then
-            cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
-        else
-            echo "[ $(date) ] No Find ProFile! Please Reinstall Module." > "$work_dir/运行日志.log"
+        mkdir -p "$work_dir/清理规则"
+        mkdir -p "$work_dir/清理配置"
+        mkdir -p "$work_dir/文件格式配置"
+        mkdir -p "$work_dir/CRON/ClearCache"
+        mkdir -p "$work_dir/CRON/FileAll"
+        mkdir -p "$work_dir/CRON/ClearDir"
+        ######
+        [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
+        [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
+        ######
+        if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
+            if [ -d "$home_dir/ProFile" ]; then
+                cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
+            else
+                echo "[ $(date) ] No Find ProFile! Please Reinstall Module." > "$work_dir/运行日志.log"
+            fi
         fi
-    fi
-    for f in "$work_dir/文件格式配置"/*; do
-        name1=$(echo "$f" | cut -f1 -d '.')
-        name2=$(echo "$f" | cut -f2 -d '.')
-        [ ! "$name2" = "conf" ] && mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
-    done
+        for f in "$work_dir/文件格式配置"/*; do
+            name1=$(echo "$f" | cut -f1 -d '.')
+            name2=$(echo "$f" | cut -f2 -d '.')
+            [ ! "$name2" = "conf" ] && mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
+        done
     }
 ######
 if [ -d "$work_dir" ]; then

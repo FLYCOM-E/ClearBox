@@ -139,7 +139,7 @@ echo -e " » $TICKUPDATETUI\n"
 sleep "$LONG_S"
 echo -e " » $TICKUPDATETUI_1\n"
 sleep "$LONG_S"
-echo -e " » $TICKUPDATETUI_2\n"
+echo -e " » $TICKTITLE\n"
 case "$(getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
       rm "$MODPATH/skip_mount" 2>/dev/null
@@ -152,6 +152,23 @@ sleep "$SHOUT_S"
 echo -e " » $SUCCESSFUL✅\n"
 ######
 rm -r "$MODPATH/META-INF" >/dev/null
+######
+if [ "$update" = 1 ]; then
+    sleep "$SHOUT_S"
+    echo -e "=====================================================\n"
+    sleep "$SHOUT_S"
+    echo -e " » $CONFIGTITLE_1\n"
+    sleep "$LONG_S"
+    echo -e " » $CONFIGTITLE_2\n"
+    sleep "$LONG_S"
+    echo -e " » $TICKTITLE\n"
+    case "$(getevent -qlc 1 2>/dev/null)" in
+        *KEY_VOLUMEUP*)
+          cp -r "$MODPATH/ProFile/"* "$work_dir/文件格式配置/"
+          echo -e " » $SUCCESSFUL✅\n"
+          ;;
+    esac
+fi
 sleep "$SHOUT_S"
 echo -e "=====================================================\n"
 sleep "$SHOUT_S"

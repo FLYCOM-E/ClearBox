@@ -2,7 +2,6 @@
 #include "BashCore.h"
 
 #define DEBUG 0
-#define MAX_PACKAGE_NAME 256
 #define DATA_DIR "/data/data"
 #define ROM_NAME "RunStart" //Max Size 30
 #define WHITELIST_NAME "whitelist.prop"
@@ -86,10 +85,10 @@ int main(int COMI, char * COM[])
     snprintf(rom_file, sizeof(rom_file), "%s/%s", work_dir, ROM_NAME);
     
     //定义待处理app临时储存变量
-    char top_app_list[5][MAX_PACKAGE_NAME] = {0}, reset_app[MAX_PACKAGE_NAME] = "";
+    char top_app_list[5][MAX_PACKAGE] = {0}, reset_app[MAX_PACKAGE] = "";
     
     //提取RunStart储存值
-    char rom_key_line[MAX_PACKAGE_NAME] = "";
+    char rom_key_line[MAX_PACKAGE] = "";
     char * rom_key_line_p = NULL;
     FILE * rom_file_fp = fopen(rom_file, "r");
     if (rom_file_fp)
@@ -214,7 +213,7 @@ int main(int COMI, char * COM[])
         }
         
         //获取前台软件包名
-        char top_app[MAX_PACKAGE_NAME] = "";
+        char top_app[MAX_PACKAGE] = "";
         FILE * top_app_fp = popen(GET_TOPAPP, "r");
         if (top_app_fp == NULL)
         {

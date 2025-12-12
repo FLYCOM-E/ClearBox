@@ -1,7 +1,6 @@
 // 此Core来自ClearBox模块，用于清空系统缓存
 #include "BashCore.h"
 
-#define MAX_PACKAGE 256
 #define DATA_DIR "/data/user" //Max Size 10
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 #define CLEAR_CACHE "rm -r %s/* 2>/dev/null" //Max Size 62

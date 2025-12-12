@@ -10,3 +10,5 @@
 #include <stdbool.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
+#define MAX_PACKAGE 256
