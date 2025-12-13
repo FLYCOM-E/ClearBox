@@ -209,7 +209,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             // Check
             if (access(app_cache_dir, F_OK) != 0)
             {
-                printf(" » 跳过 %s\n", package_list_line + 8);
                 continue;
             }
             
