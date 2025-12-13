@@ -1,6 +1,7 @@
 // 此脚本来自ClearBox模块，用于自定义规则软件内部清理
 #include "BashCore.h"
 
+#define MAX_APP_NAME 128
 #define DATA_DIR "/data/data" //Max Size 62
 #define CONFIG_DIR_NAME "清理规则" // Max Size 14
 
@@ -111,7 +112,7 @@ int main(int COMI, char * COM[])
         get_config = 0; // 配置读取标志清零，新配置新的开始
         int count = 0;
         char app_dir[64 + MAX_PACKAGE];
-        char len_str[256] = "", app_name[128] = "";
+        char len_str[MAX_PATH] = "", app_name[MAX_APP_NAME] = "";
         char * app_package_fp = NULL, * app_name_fp = NULL;
         
         while (fgets(len_str, sizeof(len_str), config_fp))
@@ -253,7 +254,7 @@ int main(int COMI, char * COM[])
 static int findPackageInProFile(char * package, char * config_file)
 {
     int end = 0;
-    char config_len[256] = "";
+    char config_len[MAX_PACKAGE + 64] = "";
     if (access(config_file, R_OK) != 0)
     {
         end = -1;

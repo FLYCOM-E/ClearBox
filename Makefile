@@ -6,16 +6,15 @@ bin_dir = Module_Files/wipe_cache
 ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/StopCache \
 			$(bin_dir)/AppClean \
-			$(bin_dir)/data_cache \
+			$(bin_dir)/CacheClean \
 			$(bin_dir)/Dexoat \
 			$(bin_dir)/FreeZer \
-			$(bin_dir)/system_cache \
-			$(bin_dir)/wipe_list_dir \
-			$(bin_dir)/wipe_all_dir \
-			$(bin_dir)/f2fs_GC \
+			$(bin_dir)/StorageRuleClean \
+			$(bin_dir)/StorageClean \
+			$(bin_dir)/F2fs_GC \
 			$(bin_dir)/StopInstall \
 			$(bin_dir)/StopStorage \
-			$(bin_dir)/ClearService \
+			$(bin_dir)/FileClean \
 			$(bin_dir)/FileAll
 
 all: $(ALL_FILE)
@@ -31,8 +30,8 @@ $(home_dir)/BashCore: src/BashCore.c
 $(bin_dir)/AppClean: src/AppClean.c
 	$(CC) $(CFLAGS) src/AppClean.c -o $(bin_dir)/AppClean
 
-$(bin_dir)/data_cache: src/data_cache.c
-	$(CC) $(CFLAGS) src/data_cache.c -o $(bin_dir)/data_cache
+$(bin_dir)/CacheClean: src/CacheClean.c
+	$(CC) $(CFLAGS) src/CacheClean.c -o $(bin_dir)/CacheClean
 
 $(bin_dir)/Dexoat: src/Dexoat.c
 	$(CC) $(CFLAGS) src/Dexoat.c -o $(bin_dir)/Dexoat
@@ -40,17 +39,14 @@ $(bin_dir)/Dexoat: src/Dexoat.c
 $(bin_dir)/FreeZer: src/FreeZer.c
 	$(CC) $(CFLAGS) src/FreeZer.c -o $(bin_dir)/FreeZer
 
-$(bin_dir)/system_cache: src/system_cache.c
-	$(CC) $(CFLAGS) src/system_cache.c -o $(bin_dir)/system_cache
+$(bin_dir)/StorageRuleClean: src/StorageRuleClean.c
+	$(CC) $(CFLAGS) src/StorageRuleClean.c -o $(bin_dir)/StorageRuleClean
 
-$(bin_dir)/wipe_list_dir: src/wipe_list_dir.c
-	$(CC) $(CFLAGS) src/wipe_list_dir.c -o $(bin_dir)/wipe_list_dir
+$(bin_dir)/StorageClean: src/StorageClean.c
+	$(CC) $(CFLAGS) src/StorageClean.c -o $(bin_dir)/StorageClean
 
-$(bin_dir)/wipe_all_dir: src/wipe_all_dir.c
-	$(CC) $(CFLAGS) src/wipe_all_dir.c -o $(bin_dir)/wipe_all_dir
-
-$(bin_dir)/f2fs_GC: src/f2fs_GC.c
-	$(CC) $(CFLAGS) src/f2fs_GC.c -o $(bin_dir)/f2fs_GC
+$(bin_dir)/F2fs_GC: src/F2fs_GC.c
+	$(CC) $(CFLAGS) src/F2fs_GC.c -o $(bin_dir)/F2fs_GC
 
 $(bin_dir)/StopInstall: src/StopInstall.c
 	$(CC) $(CFLAGS) src/StopInstall.c -o $(bin_dir)/StopInstall
@@ -58,8 +54,8 @@ $(bin_dir)/StopInstall: src/StopInstall.c
 $(bin_dir)/StopStorage: src/StopStorage.c
 	$(CC) $(CFLAGS) src/StopStorage.c -o $(bin_dir)/StopStorage
 
-$(bin_dir)/ClearService: src/ClearService.c
-	$(CC) $(CFLAGS) src/ClearService.c -o $(bin_dir)/ClearService
+$(bin_dir)/FileClean: src/FileClean.c
+	$(CC) $(CFLAGS) src/FileClean.c -o $(bin_dir)/FileClean
 
 $(bin_dir)/FileAll: src/FileAll.c
 	$(CC) $(CFLAGS) src/FileAll.c -o $(bin_dir)/FileAll

@@ -4,13 +4,13 @@
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
-#define LOG_FILE_NAME "运行日志.log" //Max Size 14
+#define LOG_FILE_NAME "运行日志.log" //Max Size 30
 #define BASH_DIR "wipe_cache"
 
 static int Run(char * args[]);
 static int configFunction(char * home_dir, char * mode, char * config_file);
 static int clearCache(char * home_dir, char * work_dir);
-static int clearSystemCache(char * home_dir);
+static int clearSystemCache(char * home_dir, char * work_dir);
 static int listDir(char * home_dir, char * work_dir);
 static int allDir(char * home_dir, char * work_dir, char * bin_dir);
 static int fileClear(char * home_dir, char * work_dir, char * str);
@@ -120,7 +120,7 @@ int main(int COMI, char * COM[])
     
     //定义并预打开Log文件
     bool in_log_file = true;
-    char log_file[strlen(work_dir) + 16];
+    char log_file[strlen(work_dir) + 32];
     snprintf(log_file, sizeof(log_file), "%s/%s", work_dir, LOG_FILE_NAME);
     FILE * log_file_fp = fopen(log_file, "a");
     if (log_file_fp == NULL)
@@ -153,7 +153,7 @@ int main(int COMI, char * COM[])
     }
     else if (strcasecmp(COM[1], "Clear_SCache") == 0)
     {
-        if (clearSystemCache(home_dir) == 0)
+        if (clearSystemCache(home_dir, work_dir) == 0)
         {
             fprintf(log_file_fp, "I [%s] 清理系统软件缓存\n", now_time);
         }
@@ -344,17 +344,17 @@ static int configFunction(char * home_dir, char * mode, char * config_file)
 static int clearCache(char * home_dir, char * work_dir)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/data_cache", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, NULL};
+    snprintf(bash, sizeof(bash), "%s/%s/CacheClean", home_dir, BASH_DIR);
+    char * args[] = {bash, "-w", work_dir, "-m", "AppCache_3", NULL};
     return Run(args);
 }
 
 // 清理系统软件缓存
-static int clearSystemCache(char * home_dir)
+static int clearSystemCache(char * home_dir, char * work_dir)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/system_cache", home_dir, BASH_DIR);
-    char * args[] = {bash, NULL};
+    snprintf(bash, sizeof(bash), "%s/%s/CacheClean", home_dir, BASH_DIR);
+    char * args[] = {bash, "-w", work_dir, "-m", "AppCache_S", NULL};
     return Run(args);
 }
 
@@ -362,7 +362,7 @@ static int clearSystemCache(char * home_dir)
 static int listDir(char * home_dir, char * work_dir)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/wipe_list_dir", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/StorageRuleClean", home_dir, BASH_DIR);
     char * args[] = {bash, "-w", work_dir, NULL};
     return Run(args);
 }
@@ -371,7 +371,7 @@ static int listDir(char * home_dir, char * work_dir)
 static int allDir(char * home_dir, char * work_dir, char * bin_dir)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/wipe_all_dir", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/StorageClean", home_dir, BASH_DIR);
     char * args[] = {bash, "-b", bin_dir, "-w", work_dir, NULL};
     return Run(args);
 }
@@ -380,7 +380,7 @@ static int allDir(char * home_dir, char * work_dir, char * bin_dir)
 static int fileClear(char * home_dir, char * work_dir, char * str)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/ClearService", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/FileClean", home_dir, BASH_DIR);
     char * args[] = {bash, "-w", work_dir, "-m", str, NULL};
     return Run(args);
 }
@@ -462,7 +462,7 @@ static int stopStorage(char * home_dir, char * work_dir, char * bin_dir, char * 
 static int f2fsGC(char * home_dir)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/f2fs_GC", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/F2fs_GC", home_dir, BASH_DIR);
     char * args[] = {bash, "F2FS_GC", NULL};
     return Run(args);
 }
@@ -471,7 +471,7 @@ static int f2fsGC(char * home_dir)
 static int fastGC(char * home_dir)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/f2fs_GC", home_dir, BASH_DIR);
+    snprintf(bash, sizeof(bash), "%s/%s/F2fs_GC", home_dir, BASH_DIR);
     char * args[] = {bash, "FAST_GC", NULL};
     return Run(args);
 }

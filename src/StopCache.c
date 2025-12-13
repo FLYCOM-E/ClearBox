@@ -322,7 +322,7 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
        strstr(top_app_dir, "/../") == NULL)
     {
         //检查是否位于白名单
-        char whitelist_line[64] = "";
+        char whitelist_line[MAX_PACKAGE] = "";
         FILE * whitelist_fp = fopen(whitelist_file, "r");
         if (whitelist_fp)
         {

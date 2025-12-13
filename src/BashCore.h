@@ -12,3 +12,4 @@
 #include <fcntl.h>
 
 #define MAX_PACKAGE 256
+#define MAX_PATH 4096

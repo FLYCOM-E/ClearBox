@@ -91,7 +91,6 @@ static int F2FS_GC()
     printf(" » 目前空闲段: %d\n\n", f2fs_free);
     fflush(stdout);
     
-    char cache[4] = "";
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
     if (f2fs_sysfs_file_fp == NULL)
     {
@@ -112,6 +111,7 @@ static int F2FS_GC()
     }
     
     // 等待循环
+    char cache[4] = "";
     // 秒 / 分
     int time_s = 0, time_m = 0;
     for ( ; ; )
