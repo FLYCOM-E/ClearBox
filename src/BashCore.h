@@ -13,3 +13,11 @@
 
 #define MAX_PACKAGE 256
 #define MAX_PATH 4096
+
+#ifdef zh_CN
+    #include "LANG/zh_CN.h"
+#elif defined(en_US)
+    #include "LANG/en_US.h"
+#else
+    #include "LANG/zh_CN.h"
+#endif

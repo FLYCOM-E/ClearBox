@@ -1,4 +1,4 @@
-// 此Core来自ClearBox模块，用于内部储存指定格式文件清理
+// 此Code来自ClearBox模块，用于内部储存指定格式文件清理
 #include "BashCore.h"
 
 #define MAX_ARGS_SIZE 32

@@ -1,4 +1,4 @@
-// 此Core来自ClearBox模块，用于清空内部储存软件缓存
+// 此Code来自ClearBox模块，用于清空内部储存软件缓存
 #include "BashCore.h"
 
 #define DATA_DIR "/data/user" //Max Size 10
@@ -17,12 +17,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     else if (COMI < 4)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -34,12 +34,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 配置路径过长！\n");
+                printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置路径不存在！\n");
+                printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -49,7 +49,7 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 14)
             {
-                printf(" » 模式名称过长！\n");
+                printf(L_MODE_TOOLONG);
                 return 1;
             }
             snprintf(mode, sizeof(mode), "%s", COM[i + 1]);
@@ -58,12 +58,12 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置目录！\n");
+        printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (strcmp(mode, "") == 0)
     {
-        printf(" » 未传入模式！\n");
+        printf(L_ARG_MODE_ERR);
         return 1;
     }
     
@@ -120,11 +120,11 @@ int main(int COMI, char * COM[])
         int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
         if (clear_size == -1)
         {
-            printf(" » 内部储存软件缓存清理失败\n");
+            printf(L_CC_CLEAR_FAILED);
         }
         else
         {
-            printf(" » 内部储存软件缓存清理完成\n » 共清理：%d兆\n", clear_size);
+            printf(L_CC_CLEAR_SUCCESSFUL, clear_size);
         }
         // cleardisk = 1：允许清理拓展SD缓存
         if (cleardisk == 1)
@@ -134,11 +134,11 @@ int main(int COMI, char * COM[])
                 clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
                 if (clear_size == -1)
                 {
-                    printf(" » 外部储存软件缓存清理失败\n");
+                    printf(L_CC_CLEAR_FAILED_SD);
                 }
                 else
                 {
-                    printf(" » 外部储存软件缓存清理完成\n » 共清理：%d兆\n", clear_size);
+                    printf(L_CC_CLEAR_SUCCESSFUL_SD, clear_size);
                 }
             }
         }
@@ -149,7 +149,7 @@ int main(int COMI, char * COM[])
     }
     else
     {
-        printf(" » 未知模式！\n");
+        printf(L_ARGS_FAILED_2);
         return 1;
     }
     
@@ -177,7 +177,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     DIR * uid_dir_dp = opendir(work_dir);
     if (uid_dir_dp == NULL)
     {
-        printf(" » 目录打开失败！\n");
+        printf(L_OPEN_PATH_FAILED, work_dir);
         return -1;
     }
     
@@ -194,7 +194,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
         FILE * package_list_fp = popen(GET_APPLIST, "r");
         if (package_list_fp == NULL)
         {
-            printf(" » 获取软件列表失败！\n");
+            printf(L_GET_APPLIST_ERROR);
             return -1;
         }
         
@@ -228,9 +228,9 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                 snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_dir);
                 if (system(clear_command) == 0)
                 {
-                    clean_size += cache_size; // 记录清理大小
-                    printf(" » %s 缓存已清除\n", package_list_line + 8);
                     count++;
+                    clean_size += cache_size; // 记录清理大小
+                    printf(L_CC_CLEAR, package_list_line + 8);
                     fflush(stdout);
                 }
                 else
@@ -240,8 +240,8 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             }
             else
             {
-                printf(" » 跳过 %s\n", package_list_line + 8);
                 no_count++;
+                printf(L_CC_CLEAR_SKIP, package_list_line + 8);
                 fflush(stdout);
             }
         }
@@ -250,7 +250,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     
     if (uid_dir_dp) closedir(uid_dir_dp);
     // 返回总清理大小
-    printf(" » 共清理 %d 个软件，%d 个软件无需清理\n", count, no_count);
+    printf(L_CC_CLEAR_APPCACHE_DONE, count, no_count);
     return clean_size;
 }
 
@@ -340,13 +340,6 @@ static int GetPathSize(char * path)
 
 static int ClearSystemCache()
 {
-    if (getuid() != 0)
-    {
-        printf(" » 请授予root权限！\n");
-        return 1;
-    }
-    
-    int count = 0, no_count = 0;
     char app_cache_path[MAX_PACKAGE + 16],
          package_list_line[MAX_PACKAGE] = "";
     
@@ -354,8 +347,8 @@ static int ClearSystemCache()
     DIR * uid_dir_dp = opendir(DATA_DIR);
     if (uid_dir_dp == NULL)
     {
-        printf(" » 软件目录打开失败！\n");
-        return 1;
+        printf(L_OPEN_PATH_FAILED, DATA_DIR);
+        return -1;
     }
     
     while ((uid_dir = readdir(uid_dir_dp)))
@@ -370,9 +363,9 @@ static int ClearSystemCache()
         FILE * package_list = popen(GET_S_APPLIST, "r");
         if (package_list == NULL)
         {
-            printf("系统软件列表获取失败\n");
+            printf(L_GET_APPLIST_ERROR);
             closedir(uid_dir_dp);
-            return 1;
+            return -1;
         }
         
         while (fgets(package_list_line, sizeof(package_list_line), package_list))
@@ -390,21 +383,12 @@ static int ClearSystemCache()
                 snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_path);
                 if (system(clear_command) == 0)
                 {
-                    printf(" » %s 缓存已清除\n", package_list_line + 8);
+                    printf(L_CC_CLEAR, package_list_line + 8);
                     fflush(stdout);
-                    count++;
-                }
-                else
-                { 
-                    printf(" » 跳过 %s\n", package_list_line + 8);
-                    fflush(stdout);
-                    no_count++;
                 }
             }
         }
-        
         pclose(package_list);
-        
     }
     closedir(uid_dir_dp);
     
@@ -416,7 +400,6 @@ static int ClearSystemCache()
     system("rm -r /data/system/package_cache/* 2>/dev/null");
     system("rm -r /data/dalvik-cache/* 2>/dev/null");
     
-    printf(" » 系统缓存已清空！建议重启系统！\n");
-    printf(" » 共清理 %d 个系统软件，%d 个系统软件无需清理\n", count, no_count);
+    printf(L_CC_CLEAR_SYSTEMCACHE);
     return 0;
 }

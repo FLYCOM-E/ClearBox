@@ -1,7 +1,21 @@
 CFLAGS = --static -O2 -s -Wall
 
+ifeq ($(strip $(CC)),)
+    $(error 编译器$CC变量设置为空！The compiler $CC variable is set to empty!)
+endif
+ifeq ($(strip $(M_LANG)),)
+    $(error 语言$M_LANG变量设置为空！The language $M_LANG variable is set to empty!)
+else
+    ifeq ($(M_LANG), zh_CN)
+        CFLAGS += -Dzh_CN
+    else ifeq ($(M_LANG), en_US)
+        CFLAGS += -Den_US
+    endif
+endif
+
 home_dir = Module_Files
 bin_dir = Module_Files/wipe_cache
+TMP_DIR = tmp
 
 ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/StopCache \
@@ -62,9 +76,13 @@ $(bin_dir)/FileAll: src/FileAll.c
 
 clean: 
 	@rm $(ALL_FILE)
+	@rm $(home_dir)/ClearBox.apk
 	@cd $(home_dir) && rm -rf wipe_cache
 	@echo " » 清理完成！\n » Clean Done! "
 
 module_tar: 
-	@cd $(home_dir) && zip -r ../ClearBox.zip *
-	@echo " » 打包完成，成品：ClearBox.zip！\n » Tar Done, Is: ClearBox.zip! "
+	@cp APKS/ClearBox_$(M_LANG).apk $(home_dir)/ClearBox.apk
+	@mv $(home_dir)/语言包/$(M_LANG).conf $(home_dir)/语言包/Local.conf
+	@cd $(home_dir) && zip -r ../ClearBox_$(M_LANG).zip *
+	@mv $(home_dir)/语言包/Local.conf $(home_dir)/语言包/$(M_LANG).conf
+	@echo " » 打包完成，成品：ClearBox_$(M_LANG).zip！\n » Tar Done, Is: ClearBox_$(M_LANG).zip! "

@@ -26,30 +26,8 @@ else
     exit 1
 fi
 ######
-echo -e "=====================================================\n"
-sleep "$SHOUT_S"
-echo -e " » 请选择语言 Please select a language：\n"
-sleep "$SHOUT_S"
-echo -e " » 音量上键 Volume Up：    中文 Chinese"
-sleep "$LONG_S"
-echo -e " » 音量下键 Volume Down：  英语 English\n"
-case "$(getevent -qlc 1 2>/dev/null)" in
-    *KEY_VOLUMEUP*)
-      Lang="zh-CN"
-      ;;
-    *KEY_VOLUMEDOWN*)
-      Lang="en-US"
-      ;;
-    *)
-      uninstall
-      echo " » 选择错误 Tick Error！\n"
-      exit 1
-      ;;
-esac
-mv "$MODPATH/语言包/$Lang.conf" "$MODPATH/语言包/Local.conf"
 source "$MODPATH/语言包/Local.conf"
 ######
-sleep "$SHOUT_S"
 echo -e "=====================================================\n"
 if [ -d "/data/adb/magisk" ]; then
     echo -e " » $USEMAGISKROOT 🔥\n"
@@ -89,9 +67,9 @@ case "$(getevent -qlc 1 2>/dev/null)" in
       fi
       sleep "$SHOUT_S"
       echo -e " » $INSTALLAPP❤\n"
-      cp "$MODPATH/APKS/ClearBox_$Lang.apk" "$TMPDIR/"
-      chmod +x "$TMPDIR/ClearBox_$Lang.apk"
-      if pm install -r "$TMPDIR/ClearBox_$Lang.apk" >/dev/null; then
+      cp "$MODPATH/APKS/ClearBox.apk" "$TMPDIR/"
+      chmod +x "$TMPDIR/ClearBox.apk"
+      if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
           sleep "$SHOUT_S"
           echo -e " » $SUCCESSFUL✅\n"
       else
@@ -100,19 +78,19 @@ case "$(getevent -qlc 1 2>/dev/null)" in
           sleep "$SHOUT_S"
           echo -e " » $INSTALL_APP_TRY\n"
           sleep "$SHOUT_S"
-          if [ ! -f "$MODPATH/APKS/ClearBox_$Lang.apk" ]; then
+          if [ ! -f "$MODPATH/APKS/ClearBox.apk" ]; then
               echo -e " » $APKNOTFIND\n"
               uninstall; exit 1
-          elif [ ! -f "$TMPDIR/ClearBox_$Lang.apk" ]; then
+          elif [ ! -f "$TMPDIR/ClearBox.apk" ]; then
                 echo -e " » $APKUNUP\n"
                 rm -r "$TMPDIR"
                 mkdir -p "$TMPDIR"
-                cp "$MODPATH/APKS/ClearBox_$Lang.apk" "$TMPDIR"
-                [ ! -f "$TMPDIR/ClearBox_$Lang.apk" ] && echo -e " » 提取失败！\n"; uninstall; exit 1
+                cp "$MODPATH/APKS/ClearBox.apk" "$TMPDIR"
+                [ ! -f "$TMPDIR/ClearBox.apk" ] && echo -e " » $APKGETERR\n"; uninstall; exit 1
           fi
-          chmod +x "$TMPDIR/ClearBox_$Lang.apk"
+          chmod +x "$TMPDIR/ClearBox.apk"
           pm uninstall "wipe.cache.module" >/dev/null
-          if pm install -r "$TMPDIR/ClearBox_$Lang.apk" >/dev/null; then
+          if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
               sleep "$SHOUT_S"
               echo -e " » $SUCCESSFUL✅\n"
           else
@@ -122,7 +100,7 @@ case "$(getevent -qlc 1 2>/dev/null)" in
               echo -e " » $INSTALLERROR\n"
           fi
       fi
-      rm "$TMPDIR/ClearBox_$Lang.apk" >/dev/null 2>&1
+      rm "$TMPDIR/ClearBox.apk" >/dev/null 2>&1
       rm -rf "$MODPATH/APKS" >/dev/null 2>&1
       [ "$RESET" = 1 ] && "$home_dir/BashCore" StopInstall STOP >/dev/null
       ;;

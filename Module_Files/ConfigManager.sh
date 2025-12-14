@@ -1,11 +1,11 @@
 #!/system/bin/sh
 #此脚本来自ClearBox模块，用于提供终端菜单UI
 if [ ! "$(whoami)" = "root" ]; then
-    echo " » 请授予root权限！"
+    echo " » 请授予root权限！Please grant root privileges!"
     exit 1
 fi
 if [ ! -f "/data/adb/wipe_cache/PATH" ]; then
-    echo " » Error：PATH读取错误！"
+    echo " » Error：PATH读取错误！PATH read error!"
     exit 1
 else
     source "/data/adb/wipe_cache/PATH"
@@ -19,6 +19,7 @@ if [ "$DebugPro" = 1 ]; then
 else
     exec 2>>/dev/null
 fi
+source "$home_dir/语言包/Local.conf"
 Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
 ######
 case "$1" in
@@ -27,39 +28,35 @@ case "$1" in
       mkdir -p "$backupDir"
       cd "$tempDir"
       cp -r "$work_dir"/* "$tempDir/"
+      rm "$tempDir/运行日志.log" "$tempDir/RunStart" "$tempDir/PATH"
       
-      rm "$tempDir/运行日志.log" "$tempDir/RunStart" 
       if "$bin_dir/busybox" tar -cjf "ClearBox_Config_$Version.tar.bz2" * >/dev/null 2>&1; then
           if mv "ClearBox_Config_$Version.tar.bz2" "$backupDir"; then
-              echo " » 配置备份成功！"
-              echo " » 路径“$backupDir/ClearBox_Config_$Version.tar.bz2”"
+              echo " » $BACKUP_SUCCESSFUL"
+              echo " » 路径PATH“$backupDir/ClearBox_Config_$Version.tar.bz2”"
           else
-              echo " » 备份失败！$backupDir 路径无法使用！"
+              echo " » $BACKUPERR_PATH"
           fi
       else
-          echo " » 备份失败！压缩包创建失败！"
-          if ! "$bin_dir/busybox" tar --help >/dev/null 2>&1; then
-              echo " » Tar 命令不存在！！"
-          fi
+          echo " » $BACKUPERR_TAR"
       fi
       rm -r "$tempDir"
       ;;
     recovery)
       if ! echo "$2" | grep ".bz2" >/dev/null 2>&1; then
-          echo " » 文件后缀应为 .bz2！请确认是否正确选择文件"
-          echo " » 否则可能导入垃圾文件！"
+          echo " » $RECOVERYERR_FILECHECK"
           exit 1
       fi
       if "$bin_dir/busybox" tar -xjf "$2" -C "$work_dir/" >/dev/null 2>&1; then
-          echo " » 配置恢复成功！"
+          echo " » $RECOVERY_SUCCESSFUL"
       else
-          echo " » 配置恢复失败！"
+          echo " » $RECOVERY_FAILED"
           if [ ! -f "$2" ]; then
-              echo " » 传入配置文件不存在！"
+              echo " » $RECOVERY_CHECKERR_1"
           fi
       fi
       ;;
     *)
-      echo " » 参数传入错误！"
+      echo " » $CONFIG_RUN_ERR"
       ;;
 esac

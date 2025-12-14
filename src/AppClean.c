@@ -1,4 +1,4 @@
-// 此脚本来自ClearBox模块，用于自定义规则软件内部清理
+// 此Code来自ClearBox模块，用于自定义规则软件内部清理
 #include "BashCore.h"
 
 #define MAX_APP_NAME 128
@@ -11,12 +11,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 5)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -28,12 +28,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 配置路径过长！\n");
+                printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置路径不存在！\n");
+                printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -43,7 +43,7 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > MAX_PACKAGE)
             {
-                printf(" » 传入包名过长！限制 %d\n", MAX_PACKAGE);
+                printf(L_PACKAGE_TOOLONG, MAX_PACKAGE);
                 return 1;
             }
             snprintf(app_package, sizeof(app_package), "%s", COM[i + 1]);
@@ -52,12 +52,12 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置目录！\n");
+        printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (strcmp(app_package, "") == 0)
     {
-        printf(" » 未传入包名！\n");
+        printf(L_ARG_PACKAGE_ERR);
         return 1;
     }
     
@@ -66,7 +66,7 @@ int main(int COMI, char * COM[])
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     if (access(config_dir, F_OK) != 0)
     {
-        printf(" » 无App清理配置！\n");
+        printf(L_AC_CONFIG_NOTFINF);
         return 1;
     }
     
@@ -76,7 +76,7 @@ int main(int COMI, char * COM[])
     DIR * config_dir_fp = opendir(config_dir);
     if (config_dir_fp == NULL)
     {
-        printf(" » %s 目录打开失败！\n", config_dir);
+        printf(L_OPEN_PATH_FAILED, config_dir);
         return 1;
     }
     
@@ -101,7 +101,6 @@ int main(int COMI, char * COM[])
         FILE * config_fp = fopen(config_file, "r");
         if (config_fp == NULL)
         {
-            printf(" » 警告：配置打开失败！非预期行为！\n");
             closedir(config_dir_fp);
             continue;
             // 这里本来应直接退出，这是异常行为
@@ -138,13 +137,13 @@ int main(int COMI, char * COM[])
                         
                         if (access(app_dir, F_OK) == 0)
                         {
-                            printf(" » 清理 %s &\n", app_name);
+                            printf(L_AC_CLEAR, app_name);
                             get_config = 1; //注意这里设置了已读取配置信息标志
                             continue;
                         }
                         else
                         {
-                            printf(" » %s：配置指定软件未找到！\n", config_name -> d_name);
+                            printf(L_AC_CONFIG_APP_NOTFIND, config_name -> d_name);
                             break;
                         }
                     }
@@ -152,18 +151,18 @@ int main(int COMI, char * COM[])
                     {
                         if (app_package_fp == NULL)
                         {
-                            printf(" » %s 配置声明错误，未正确填写包名！\n", config_name -> d_name);
+                            printf(L_AC_CONFIG_PACKAGE_ERR, config_name -> d_name);
                         }
                         else if (app_name_fp == NULL)
                         {
-                            printf(" » %s 配置声明错误，未正确填写软件名称！\n", config_name -> d_name);
+                            printf(L_AC_CONFIG_APPNAME_ERR, config_name -> d_name);
                         }
                         break;
                     }
                 }
                 else
                 {
-                    printf(" » %s 配置错误！请在第一行正确填写声明\n", config_name -> d_name);
+                    printf(L_AC_CONFIG_ERR, config_name -> d_name);
                     break;
                 }
             }
@@ -182,13 +181,13 @@ int main(int COMI, char * COM[])
                 // 配置不应以／开头！
                 if (* len_str_ptr == '/')
                 {
-                    printf(" » %s 配置第 %d 行存在危险错误：从“／”开始！\n", config_name -> d_name, count);
+                    printf(L_AC_CONFIG_ERR_1, config_name -> d_name, count);
                     continue;
                 }
                 // 防止路径逃逸
                 if (strstr(len_str, "/../"))
                 {
-                    printf(" » %s 配置第 %d 行存在错误：路径逃逸！", config_name -> d_name, count);
+                    printf(L_AC_CONFIG_ERR_2, config_name -> d_name, count);
                     continue;
                 }
                 // 这可以避免很多 rm 报错
@@ -200,7 +199,7 @@ int main(int COMI, char * COM[])
                 pid_t newPid = fork();
                 if (newPid == -1)
                 {
-                    printf(" » 清理 %s 失败！(Fork)\n", len_str);
+                    printf(L_AC_CLEAR_PATH_ERR_1, len_str);
                     continue;
                 }
                 if (newPid == 0)
@@ -213,19 +212,19 @@ int main(int COMI, char * COM[])
                     int end = 0;
                     if (waitpid(newPid, &end, 0) == -1)
                     {
-                        printf(" » 清理 %s 失败！(Wait)\n", len_str);
+                        printf(L_AC_CLEAR_PATH_ERR_2, len_str);
                         continue;
                     }
                     if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
                     {
-                        printf(" » 清理 %s 失败！\n", len_str);
+                        printf(L_AC_CLEAR_PATH_ERR_3, len_str);
                         continue;
                     }
                 }
             }
             else
             {
-                printf(" » %s 配置错误！请在第一行正确填写声明\n", config_name -> d_name);
+                printf(L_AC_CONFIG_ERR, config_name -> d_name);
                 break;
             }
         }
@@ -235,11 +234,11 @@ int main(int COMI, char * COM[])
     
     if (get_config == 1)
     {
-        printf(" » 软件规则处理成功！\n");
+        printf(L_AC_CLEAN_SUCCESSFUL);
     }
     else
     {
-        printf(" » 未找到指定软件配置或发生错误！\n");
+        printf(L_AC_CLEAN_FAILED);
     }
 }
 

@@ -1,4 +1,4 @@
-// 此脚本来自ClearBox模块，用于删除垃圾缓存及空文件夹
+// 此Code来自ClearBox模块，用于删除垃圾缓存及空文件夹
 #include "BashCore.h"
 
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14

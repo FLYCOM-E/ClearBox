@@ -1,11 +1,11 @@
 #!/system/bin/sh
 #此脚本来自ClearBox模块，用于提供一键优化清理（Root管理器端）按钮
 if [ ! "$(whoami)" = "root" ]; then
-    echo " » 请授予root权限！"
+    echo " » 请授予root权限！Please grant root privileges!"
     exit 1
 fi
 if [ ! -f "/data/adb/wipe_cache/PATH" ]; then
-    echo " » Error：PATH读取错误！"
+    echo " » Error：PATH读取错误！PATH read error!"
     exit 1
 else
     source "/data/adb/wipe_cache/PATH"

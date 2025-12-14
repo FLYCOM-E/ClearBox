@@ -1,4 +1,4 @@
-// 此脚本来自ClearBox模块，用于内部储存固定功能
+// 此Code来自ClearBox模块，用于内部储存固定功能
 #include "BashCore.h"
 
 #define DATA_DIR "/data/media/0"

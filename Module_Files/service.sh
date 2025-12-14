@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ClearBox
-[ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！" && exit 1
+[ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
 export home_dir=${0%/*}
 export work_dir="/data/adb/wipe_cache"

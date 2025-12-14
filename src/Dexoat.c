@@ -1,4 +1,4 @@
-// 此Core来自ClearBox模块，用于运行DexOat
+// 此Code来自ClearBox模块，用于运行DexOat
 #include "BashCore.h"
 
 static int SystemDexOat();

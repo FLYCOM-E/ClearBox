@@ -1,5 +1,4 @@
-//By ClearBox
-// 此Core来自ClearBox模块，用于根据传入参数调用清理脚本
+// 此Code来自ClearBox模块，用于根据传入参数调用清理脚本
 #include "BashCore.h"
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
@@ -29,19 +28,19 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » Please use root privileges!\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 2)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
     // Get PATH
     if (access(PATH_ROM_FILE, F_OK) != 0)
     {
-        printf(" » Error：PATH读取错误！\n");
+        printf(" » Error：Read PATH\n");
         return 1;
     }
     char * key_p = NULL;
@@ -52,7 +51,7 @@ int main(int COMI, char * COM[])
     FILE * path_rom_file_fp = fopen(PATH_ROM_FILE, "r");
     if (path_rom_file_fp == NULL)
     {
-        printf(" » Error：PATH读取错误！\n");
+        printf(" » Error：Read PATH\n");
         return 1;
     }
     while (fgets(path_rom_file_line, sizeof(path_rom_file_line), path_rom_file_fp))
@@ -79,17 +78,17 @@ int main(int COMI, char * COM[])
     fclose(path_rom_file_fp);
     if (access(home_dir, F_OK) != 0)
     {
-        printf(" » Error：PATH错误！\n");
+        printf(" » Error：HOME_PATH\n");
         return 1;
     }
     if (access(work_dir, F_OK) != 0)
     {
-        printf(" » Error：PATH错误！\n");
+        printf(" » Error：WORK_PATH\n");
         return 1;
     }
     if (access(bin_dir, F_OK) != 0)
     {
-        printf(" » Error：PATH错误！\n");
+        printf(" » Error：BIN_PATH\n");
         return 1;
     }
     
@@ -293,7 +292,7 @@ int main(int COMI, char * COM[])
     }
     else
     {
-        printf(" » 传入参数错误！\n");
+        printf(L_ARGS_FAILED_2);
     }
     
     //ON the Selinux

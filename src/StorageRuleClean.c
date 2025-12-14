@@ -1,4 +1,4 @@
-// 此脚本来自ClearBox模块，用于自定义规则清理/干掉文件目录
+// 此Code来自ClearBox模块，用于自定义规则清理/干掉文件目录
 #include "BashCore.h"
 
 #define CONFIG_DIR_NAME "清理配置"

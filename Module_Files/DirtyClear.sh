@@ -1,12 +1,12 @@
 #!/system/bin/sh
 #此脚本来自ClearBox模块，用于版本更新过度时清理不需要的配置和垃圾文件
 if [ ! "$(whoami)" = "root" ]; then
-    echo " » 请授予root权限！"
+    echo " » 请授予root权限！Please grant root privileges!"
     exit 1
 fi
 ######
 if [ ! -f "/data/adb/wipe_cache/PATH" ]; then
-    echo " » Error：PATH读取错误！"
+    echo " » Error：PATH读取错误！PATH read error!"
     exit 1
 else
     source "/data/adb/wipe_cache/PATH"
