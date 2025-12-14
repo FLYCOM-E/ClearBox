@@ -67,7 +67,7 @@ case "$(getevent -qlc 1 2>/dev/null)" in
       fi
       sleep "$SHOUT_S"
       echo -e " » $INSTALLAPP❤\n"
-      cp "$MODPATH/APKS/ClearBox.apk" "$TMPDIR/"
+      cp "$MODPATH/ClearBox.apk" "$TMPDIR/"
       chmod +x "$TMPDIR/ClearBox.apk"
       if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
           sleep "$SHOUT_S"
@@ -78,14 +78,14 @@ case "$(getevent -qlc 1 2>/dev/null)" in
           sleep "$SHOUT_S"
           echo -e " » $INSTALL_APP_TRY\n"
           sleep "$SHOUT_S"
-          if [ ! -f "$MODPATH/APKS/ClearBox.apk" ]; then
+          if [ ! -f "$MODPATH/ClearBox.apk" ]; then
               echo -e " » $APKNOTFIND\n"
               uninstall; exit 1
           elif [ ! -f "$TMPDIR/ClearBox.apk" ]; then
                 echo -e " » $APKUNUP\n"
                 rm -r "$TMPDIR"
                 mkdir -p "$TMPDIR"
-                cp "$MODPATH/APKS/ClearBox.apk" "$TMPDIR"
+                cp "$MODPATH/ClearBox.apk" "$TMPDIR"
                 [ ! -f "$TMPDIR/ClearBox.apk" ] && echo -e " » $APKGETERR\n"; uninstall; exit 1
           fi
           chmod +x "$TMPDIR/ClearBox.apk"
@@ -101,7 +101,7 @@ case "$(getevent -qlc 1 2>/dev/null)" in
           fi
       fi
       rm "$TMPDIR/ClearBox.apk" >/dev/null 2>&1
-      rm -rf "$MODPATH/APKS" >/dev/null 2>&1
+      rm -rf "$MODPATH/ClearBox.apk" >/dev/null 2>&1
       [ "$RESET" = 1 ] && "$home_dir/BashCore" StopInstall STOP >/dev/null
       ;;
     *)
