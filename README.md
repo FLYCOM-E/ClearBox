@@ -2,7 +2,7 @@
 
 
 >[!CAUTION]
-> 主分支目前处于不稳定状态。项目正在全面转C，另外Release与主分支差异过大，如果您是普通用户下载Release即可，尝鲜用户可以自行编译体验（不建议）。
+> 主分支暂时与 **Releases** 差异过大，如果您是普通用户下载 **Release** 即可，尝鲜用户可以自行编译体验（不建议）。**Release** 最新版本未支持国际化！
 
 
    ## Other?
@@ -11,7 +11,7 @@
 
    # 安装？
 
-   ## [**Release**](https://github.com/FLYCOM-E/ClearBox/releases) 或 构建安装：
+   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) 或 构建安装：
 ```
 sudo apt install zip make
 
