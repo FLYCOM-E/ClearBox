@@ -16,12 +16,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 3)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -32,12 +32,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 配置路径过长！\n");
+                printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置路径不存在/无法访问！\n");
+                printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -46,7 +46,7 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置目录！\n");
+        printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     
@@ -90,11 +90,11 @@ int main(int COMI, char * COM[])
     
     if (ClearService(work_dir, data_dir) == 0)
     {
-        printf(" » 内部储存文件归类成功！\n");
+        printf(L_FA_SUCCESSFUL_STORAGE);
     }
     else
     {
-        printf(" » 内部储存文件归类失败！\n");
+        printf(L_FA_FAILED_STORAGE);
     }
     
     if (Fileall_Disk == 1)
@@ -103,11 +103,11 @@ int main(int COMI, char * COM[])
         {
             if (ClearService(work_dir, sdcard_dir) == 0)
             {
-                printf(" » 外部储存文件归类成功！\n");
+                printf(L_FA_SUCCESSFUL_SD);
             }
             else
             {
-                printf(" » 外部储存文件归类失败！\n");
+                printf(L_FA_FAILED_SD);
             }
         }
     }
@@ -140,7 +140,7 @@ static int ClearService(char * work_dir, char * storage_dir)
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        printf(" » %s 配置目录打开失败！\n", config_dir);
+        printf(L_OPEN_PATH_FAILED, config_dir);
         return 1;
     }
     
@@ -173,11 +173,11 @@ static int ClearService(char * work_dir, char * storage_dir)
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
-            printf(" » %s 配置文件打开失败！\n", config_file);
+            printf(L_OPEN_FILE_FAILED, config_file);
             continue;
         }
         
-        printf(" » 正在归类 %s ...\n", config_file_name_p);
+        printf(L_FA_START, config_file_name_p);
         fflush(stdout);
         
         int count = 0;
@@ -189,7 +189,7 @@ static int ClearService(char * work_dir, char * storage_dir)
         
         all_count += FindFile(storage_dir, file_dir, file_args, count);
         fclose(config_file_fp);
-        printf(" » 已归类 %d 个 %s\n", all_count, config_file_name_p);
+        printf(L_FA_END, all_count, config_file_name_p);
         fflush(stdout);
     }
     closedir(config_dir_dp);
@@ -261,7 +261,7 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                         }
                         else
                         {
-                            printf(" » %s 移动失败\n", path);
+                            printf(L_MOVE_ERROR, path);
                         }
                     }
                 }

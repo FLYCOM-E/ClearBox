@@ -11,12 +11,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 6)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -28,12 +28,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 配置路径过长！\n");
+                printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置路径不可访问！\n");
+                printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -43,12 +43,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » Bin路径过长！\n");
+                printf(L_BIN_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » Bin路径不可访问！\n");
+                printf(L_BIN_PATH_NOTFIND);
                 return 1;
             }
             snprintf(bin_dir, sizeof(bin_dir), "%s", COM[i + 1]);
@@ -58,7 +58,7 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 5)
             {
-                printf(" » 模式错误！参数过长！\n");
+                printf(L_MODE_TOOLONG);
                 return 1;
             }
             snprintf(mode, sizeof(mode), "%s", COM[i + 1]);
@@ -67,12 +67,17 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置目录！\n");
+        printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (strcmp(bin_dir, "") == 0)
     {
-        printf(" » 未传入Bin目录！\n");
+        printf(L_ARG_BINPATH_ERR);
+        return 1;
+    }
+    if (strcmp(mode, "") == 0)
+    {
+        printf(L_ARG_MODE_ERR);
         return 1;
     }
     
@@ -84,12 +89,12 @@ int main(int COMI, char * COM[])
         snprintf(command, sizeof(command), STOP_COMMAND, bin_dir, DATA_DIR);
         if (system(command) == 0)
         {
-            printf(" » 已开启内部储存固定！\n");
+            printf(L_SS_OPEN_STOP_STORAGE_SUCCESSFUL);
             stop = 1;
         }
         else
         {
-            printf(" » 开启内部储存固定失败！\n");
+            printf(L_SS_OPEN_STOP_STORAGE_FAILED);
             return 1;
         }
     }
@@ -98,18 +103,18 @@ int main(int COMI, char * COM[])
         snprintf(command, sizeof(command), RESET_COMMAND, bin_dir, DATA_DIR);
         if (system(command) == 0)
         {
-            printf(" » 已关闭内部储存固定！\n");
+            printf(L_SS_OFF_STOP_STORAGE_SUCCESSFUL);
             stop = 0;
         }
         else
         {
-            printf(" » 关闭内部储存固定失败！\n");
+            printf(L_SS_OFF_STOP_STORAGE_FAILED);
             return 1;
         }
     }
     else
     {
-        printf(" » 未知模式！[%s]\n", mode);
+        printf(L_MODE_ERR, mode);
         return 1;
     }
     
@@ -124,7 +129,7 @@ int main(int COMI, char * COM[])
     }
     if (system(set_prop) != 0)
     {
-        printf(" » 警告：PROP设置失败！\n");
+        printf(L_W_SETPROP_ERR);
     }
     
     return 0;

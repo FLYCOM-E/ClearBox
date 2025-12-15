@@ -77,12 +77,12 @@ $(bin_dir)/FileAll: src/FileAll.c
 clean: 
 	@rm $(ALL_FILE)
 	@rm $(home_dir)/ClearBox.apk
-	@cd $(home_dir) && rm -rf wipe_cache
+	@rm -r $(home_dir)/语言包
+	@rm -r $(home_dir)/wipe_cache
 	@echo " » 清理完成！\n » Clean Done! "
 
 module_tar: 
 	@cp APKS/ClearBox_$(M_LANG).apk $(home_dir)/ClearBox.apk
-	@mv $(home_dir)/语言包/$(M_LANG).conf $(home_dir)/语言包/Local.conf
+	@mkdir -p $(home_dir)/语言包 && cp LANG_Configs/$(M_LANG).conf $(home_dir)/语言包/Local.conf
 	@cd $(home_dir) && zip -r ../ClearBox_$(M_LANG).zip *
-	@mv $(home_dir)/语言包/Local.conf $(home_dir)/语言包/$(M_LANG).conf
 	@echo " » 打包完成，成品：ClearBox_$(M_LANG).zip！\n » Tar Done, Is: ClearBox_$(M_LANG).zip! "

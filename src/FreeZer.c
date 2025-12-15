@@ -8,7 +8,7 @@ int main()
 {
     if (getuid() != 0)
     {
-        printf(" » 请使用Root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -24,7 +24,7 @@ int main()
     }
     else
     {
-        printf(" » 获取系统版本失败！\n");
+        printf(L_GET_SYSTEM_VERSION_ERR);
         return 1;
     }
     
@@ -32,11 +32,7 @@ int main()
     {
         if (system(SET_FREEZER) == 0)
         {
-            printf(" » 已打开安卓原生墓碑 (^^)\n");
-        }
-        else
-        {
-            printf(" » 打开安卓原生墓碑失败！\n");
+            printf(L_OPEN_FREEZER_SUCCESSFUL);
         }
     }
     

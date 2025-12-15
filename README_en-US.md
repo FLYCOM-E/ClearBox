@@ -8,11 +8,11 @@
 ```
 sudo apt install zip make
 
+git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox
+
 export CC=clang # (Use cross-compilation tools if the build device architecture differs from the target device)
 
 export M_LANG=en_US
-
-git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox/
 
 make -j4 && make module_tar && make clean
 ```

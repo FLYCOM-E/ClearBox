@@ -9,12 +9,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 2)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -25,12 +25,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 配置路径过长！\n");
+                printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置路径不可访问！\n");
+                printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -39,7 +39,7 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置目录！\n");
+        printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     
@@ -50,7 +50,7 @@ int main(int COMI, char * COM[])
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        printf(" » 配置目录打开失败！\n");
+        printf(L_OPEN_PATH_FAILED, config_dir);
         return 1;
     }
     
@@ -68,11 +68,11 @@ int main(int COMI, char * COM[])
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
-            printf(" » %s 配置打开失败！自动跳过\n", config_file_name -> d_name);
+            printf(L_SR_OPEN_CONFIG_ERR, config_file_name -> d_name);
             continue;
         }
         
-        printf(" » 处理 %s 配置📍\n", config_file_name -> d_name);
+        printf(L_SR_START, config_file_name -> d_name);
         
         int count = 0;
         char config_file_line[256] = "", dir[256] = "";
@@ -100,7 +100,7 @@ int main(int COMI, char * COM[])
                     snprintf(dir, sizeof(dir), "%s", key_str);
                     if (access(dir, F_OK) != 0)
                     {
-                        printf(" » %s 配置指定初始路径不存在！\n", config_file_name -> d_name);
+                        printf(L_SR_W_CONFIG_STATTPATH_ERR, config_file_name -> d_name);
                     }
                 }
                 continue;
@@ -112,16 +112,16 @@ int main(int COMI, char * COM[])
                 {
                     if (remove_all(config_file_line) == 0)
                     {
-                        printf(" » 清理 %s 成功\n", config_file_line);
+                        printf(L_SR_CLEAR_SUCCESSFUL, config_file_line);
                     }
                     else
                     {
-                        printf(" » 清理 %s 失败\n", config_file_line);
+                        printf(L_SR_CLEAR_FAILED, config_file_line);
                     }
                 }
                 else
                 {
-                    printf(" » %d 行错误：路径不存在\n", count);
+                    printf(L_SR_LINE_FAILED_PATH_ERR, count);
                     continue;
                 }
             }
@@ -132,16 +132,16 @@ int main(int COMI, char * COM[])
                 
                 if (access(path, F_OK) != 0)
                 {
-                    printf(" » %d 行错误：路径错误或不存在\n", count);
+                    printf(L_SR_LINE_FAILED_PATH_ERR, count);
                     continue;
                 }
                 if (remove_all(path) == 0)
                 {
-                    printf(" » 清理 %s 成功\n", path);
+                    printf(L_SR_CLEAR_SUCCESSFUL, path);
                 }
                 else
                 {
-                    printf(" » 清理 %s 失败\n", path);
+                    printf(L_SR_CLEAR_FAILED, path);
                 }
             }
         }
@@ -149,7 +149,7 @@ int main(int COMI, char * COM[])
     }
     closedir(config_dir_dp);
     
-    printf(" » 自定义目录处理完成！\n");
+    printf(L_SR_END);
     return 0;
 }
 

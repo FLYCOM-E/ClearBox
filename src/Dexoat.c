@@ -8,12 +8,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 2)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -25,14 +25,14 @@ int main(int COMI, char * COM[])
     {
         if (COMI < 3)
         {
-            printf(" » 需要一个参数，未传入模式！\n");
+            printf(L_ARGS_FAILED);
             return 1;
         }
         return CustDexOat(COM[2]);
     }
     else
     {
-        printf(" » 参数错误！\n");
+        printf(L_ARGS_FAILED_2);
         return 1;
     }
     
@@ -42,7 +42,7 @@ int main(int COMI, char * COM[])
 // 系统Dexoat
 static int SystemDexOat()
 {
-    printf(" » 正在进行系统默认 Dexoat...\n");
+    printf(L_DO_RUN_SYSTEM);
     fflush(stdout);
     return system("cmd package bg-dexopt-job");
 }
@@ -50,7 +50,7 @@ static int SystemDexOat()
 // 自定义模式Dexoat
 static int CustDexOat(char * mode)
 {
-    printf(" » 正在运行模式 %s 编译...\n", mode);
+    printf(L_DO_RUN_CUST, mode);
     fflush(stdout);
     char command[strlen(mode) + 64];
     snprintf(command, sizeof(command), "cmd package compile -m %s -f -a", mode);

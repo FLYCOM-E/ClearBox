@@ -15,12 +15,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 2)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -34,6 +34,7 @@ int main(int COMI, char * COM[])
     }
     else
     {
+        printf(L_ARGS_FAILED_2);
         return 1;
     }
     
@@ -73,13 +74,13 @@ static int F2FS_GC()
     // 检测是否为f2fs文件系统
     if (access(f2fs_sysfs_path, F_OK) != 0)
     {
-        printf(" » 您的设备不是 F2FS 文件系统\n » 维护仅支持 F2FS 环境！\n");
+        printf(L_FG_ERR_NOF2FS);
         return 1;
     }
     // 检测是否支持当前gc方案
     if (access(f2fs_sysfs_file, F_OK) != 0)
     {
-        printf(" » 您的设备不支持当前GC功能\n");
+        printf(L_FG_ERR_CHECK);
         return 1;
     }
     
@@ -87,25 +88,25 @@ static int F2FS_GC()
     int f2fs_dirty = 0, f2fs_free = 0;
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
-    printf(" » 目前脏段: %d\n", f2fs_dirty);
-    printf(" » 目前空闲段: %d\n\n", f2fs_free);
+    printf(L_FG_DIRTY, f2fs_dirty);
+    printf(L_FG_FREE, f2fs_free);
     fflush(stdout);
     
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
     if (f2fs_sysfs_file_fp == NULL)
     {
-        printf(" » GC启动失败! 节点打开失败！\n");
+        printf(L_FG_ERR_OPENSYSFS);
         return 1;
     }
     if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
     {
-        printf(" » GC已开始, 请您耐心等待，建议挂后台！\n");
+        printf(L_FG_START);
         fflush(stdout);
         fclose(f2fs_sysfs_file_fp);
     }
     else
     {
-        printf(" » GC启动失败! 节点写入失败！\n");
+        printf(L_FG_ERR_WRITESYSFS);
         fclose(f2fs_sysfs_file_fp);
         return 1;
     }
@@ -126,7 +127,7 @@ static int F2FS_GC()
         }
         if (time_m == 9)
         {
-            printf(" » GC等待超时，已结束等待！\n");
+            printf(L_FG_ERR_TIMEOUT);
             fflush(stdout);
             break;
         }
@@ -138,7 +139,7 @@ static int F2FS_GC()
             fclose(sysfs_file_fp);
             if (atoi(cache) == 0)
             {
-                printf(" » GC运行完成，已结束运行！\n");
+                printf(L_FG_END);
                 fflush(stdout);
                 break;
             }
@@ -146,15 +147,15 @@ static int F2FS_GC()
         
         if (time_m == 0)
         {
-            printf(" » 已运行 %d 秒...\n", time_s);
+            printf(L_FG_RUN_S, time_s);
         }
         else if (time_s == 0)
         {
-            printf(" » 已运行 %d 分...\n", time_m);
+            printf(L_FG_RUN_M, time_m);
         }
         else
         {
-            printf(" » 已运行 %d 分 %d 秒...\n", time_m, time_s);
+            printf(L_FG_RUN_MS, time_m, time_s);
         }
         fflush(stdout);
     }
@@ -163,19 +164,19 @@ static int F2FS_GC()
     int old_f2fs_dirty = f2fs_dirty;
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
-    printf(" » 目前脏段: %d\n", f2fs_dirty);
-    printf(" » 目前空闲段: %d\n\n", f2fs_free);
+    printf(L_FG_DIRTY, f2fs_dirty);
+    printf(L_FG_FREE, f2fs_free);
     
     if (old_f2fs_dirty > f2fs_dirty)
     {
-        printf(" » 磁盘脏块减少 %d\n", old_f2fs_dirty - f2fs_dirty);
+        printf(L_FG_END_DIRTY, old_f2fs_dirty - f2fs_dirty);
     }
     else
     {
-        printf(" » 磁盘脏块增加 %d\n » GC可能仍在优化或并不适合您的设备！\n", f2fs_dirty - old_f2fs_dirty);
+        printf(L_FG_END_DIRTY_2, f2fs_dirty - old_f2fs_dirty);
     }
     
-    printf(" » GC已完成！\n");
+    printf(L_FG_DONE);
     fflush(stdout);
     return 0;
 }
@@ -198,7 +199,7 @@ static int get_f2fs_dirty(char * dirty_file)
     }
     else
     {
-        printf(" » 警告：获取当前脏段失败！\n");
+        printf(L_FG_W_GET_DIRTY);
         fflush(stdout);
         return 0;
     }
@@ -223,7 +224,7 @@ static int get_f2fs_free(char * free_file)
     }
     else
     {
-        printf(" » 警告：获取当前空闲段失败！\n");
+        printf(L_FG_W_GET_FREE);
         fflush(stdout);
         return 0;
     }
@@ -233,11 +234,10 @@ static int get_f2fs_free(char * free_file)
 // 快速磁盘优化
 static int IDLE_MAINT()
 {
-    printf(" » 开始快速磁盘优化，请您耐心等待，可以离开前台！\n");
     if (system("sm idle-maint run >/dev/null") == 0)
     {
         // 这玩意很多时候不支持也返回成功，懒得详细检查了（（
-        printf(" » 优化完成，可以试试更激进的GC优化哦 (・∀・)\n");
+        printf(L_FG_FAST_GC_DONE);
         return 0;
     }
     return 1;

@@ -1,16 +1,26 @@
 // 通用宏
-#define L_NOT_USE_ROOT " » 请授予root权限！\n"
+#define L_NOT_USE_ROOT " » 请使用 Root 权限！\n"
 #define L_ARGS_FAILED " » 传入参数不足！\n"
 #define L_ARGS_FAILED_2 " » 传入参数错误！\n"
-#define L_CONFIG_PATH_NOTFIND " » 配置路径不存在！\n"
+#define L_CONFIG_PATH_NOTFIND " » 配置路径不存在/不可访问！\n"
+#define L_CONFIG_NOTFIND " » %s 配置文件不存在！\n"
 #define L_CONFIG_PATH_TOOLONG " » 配置路径过长！\n"
+#define L_BIN_PATH_NOTFIND " » Bin 路径不存在/不可访问！\n"
+#define L_BIN_PATH_TOOLONG " » Bin 路径过长！\n"
 #define L_PACKAGE_TOOLONG " » 传入包名过长！限制 %d\n"
 #define L_ARG_PACKAGE_ERR " » 未传入包名！\n"
 #define L_MODE_TOOLONG " » 模式名称过长！\n"
 #define L_ARG_MODE_ERR " » 未传入模式！\n"
+#define L_MODE_ERR " » 未知模式！[%s]\n"
 #define L_ARG_CONFIGPATH_ERR " » 未传入配置目录！\n"
+#define L_ARG_BINPATH_ERR " » 未传入 Bin 目录！\n"
 #define L_OPEN_PATH_FAILED " » %s 目录打开失败！\n"
+#define L_OPEN_FILE_FAILED " » %s 文件打开失败！\n"
 #define L_GET_APPLIST_ERROR " » 获取软件列表失败！\n"
+#define L_GET_SYSTEM_VERSION_ERR " » 获取系统版本失败！\n"
+#define L_W_SETPROP_ERR " » 警告：PROP设置失败！\n"
+#define L_MOVE_ERROR " » %s 移动失败\n"
+#define L_DELETE_ERR " » 删除 %s 失败！\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » 清理 %s &\n"
@@ -36,3 +46,79 @@
 #define L_CC_CLEAR_SKIP " » 跳过 %s\n"
 #define L_CC_CLEAR_APPCACHE_DONE " » 共清理 %d 个软件，%d 个软件无需清理\n"
 #define L_CC_CLEAR_SYSTEMCACHE " » 系统缓存已清空！建议重启系统！\n"
+
+// For Dexoat.c
+#define L_DO_RUN_SYSTEM " » 正在进行系统默认 Dexoat...\n"
+#define L_DO_RUN_CUST " » 正在运行模式 %s 编译...\n"
+
+// For F2fs_GC.c
+#define L_FG_ERR_NOF2FS " » 您的设备不是 F2FS 文件系统\n » 维护仅支持 F2FS 环境！\n"
+#define L_FG_ERR_CHECK " » 您的设备不支持当前GC功能\n"
+#define L_FG_W_GET_FREE " » 警告：获取当前空闲段失败！\n"
+#define L_FG_W_GET_DIRTY " » 警告：获取当前脏段失败！\n"
+#define L_FG_DIRTY " » 目前脏段: %d\n"
+#define L_FG_FREE " » 目前空闲段: %d\n\n"
+#define L_FG_ERR_OPENSYSFS " » GC启动失败! 节点打开失败！\n"
+#define L_FG_START " » GC已开始, 请您耐心等待，建议挂后台！\n"
+#define L_FG_ERR_WRITESYSFS " » GC启动失败! 节点写入失败！\n"
+#define L_FG_ERR_TIMEOUT " » GC等待超时，已结束等待！\n"
+#define L_FG_END " » GC运行完成，已结束运行！\n"
+#define L_FG_RUN_MS " » 已运行 %d 分 %d 秒...\n"
+#define L_FG_RUN_M " » 已运行 %d 分...\n"
+#define L_FG_RUN_S " » 已运行 %d 秒...\n"
+#define L_FG_END_DIRTY " » 磁盘脏块减少 %d\n"
+#define L_FG_END_DIRTY_2 " » 磁盘脏块增加 %d\n » GC可能仍在优化或并不适合您的设备！\n"
+#define L_FG_DONE " » GC已完成！\n"
+#define L_FG_FAST_GC_DONE " » 快速磁盘优化完成，可以试试更激进的GC优化哦 (・∀・)\n"
+
+// For FileAll.c
+#define L_FA_FAILED_STORAGE " » 内部储存文件归类失败！\n"
+#define L_FA_SUCCESSFUL_STORAGE " » 内部储存文件归类成功！\n"
+#define L_FA_FAILED_SD " » 外部储存文件归类失败！\n"
+#define L_FA_SUCCESSFUL_SD " » 外部储存文件归类成功！\n"
+#define L_FA_START " » 正在归类 %s ...\n"
+#define L_FA_END " » 已归类 %d 个 %s\n"
+
+// For FileClean.c
+#define L_FC_FAILED_STORAGE " » 清理内部储存 %s 失败！\n"
+#define L_FC_SUCCESSFUL_STORAGE " » 清理内部储存 %s 成功！\n"
+#define L_FC_FAILED_SD " » 清理外部储存 %s 失败！\n"
+#define L_FC_SUCCESSFUL_SD " » 清理外部储存 %s 成功！\n"
+#define L_FC_END " » 已清理 %d 个 %s\n"
+
+// For FreeZer.c
+#define L_OPEN_FREEZER_SUCCESSFUL " » 已打开安卓原生墓碑 (^^)\n"
+
+// For StopInstall.c
+#define L_SI_OPEN_FAILED_STORAGE " » 内部储存阻止更新失败！\n"
+#define L_SI_OPEN_SUCCESSFUL_STORAGE " » 内部储存已阻止更新！\n"
+#define L_SI_OPEN_FAILED_SD " » 外部储存阻止更新失败！\n"
+#define L_SI_OPEN_SUCCESSFUL_SD " » 外部储存已阻止更新！\n"
+#define L_SI_OFF_FAILED_STORAGE " » 内部储存关闭阻止更新失败！\n"
+#define L_SI_OFF_SUCCESSFUL_STORAGE " » 内部储存已关闭已阻止更新！\n"
+#define L_SI_OFF_FAILED_SD " » 外部储存关闭阻止更新失败！\n"
+#define L_SI_OFF_SUCCESSFUL_SD " » 外部储存已关闭阻止更新！\n"
+
+// For StopStorage.c
+#define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL " » 已开启内部储存固定！\n"
+#define L_SS_OPEN_STOP_STORAGE_FAILED " » 开启内部储存固定失败！\n"
+#define L_SS_OFF_STOP_STORAGE_SUCCESSFUL " » 已关闭内部储存固定！\n"
+#define L_SS_OFF_STOP_STORAGE_FAILED " » 关闭内部储存固定失败！\n"
+
+// For StorageClean.c
+#define L_SC_SUCCESSFUL_STORAGE " » 内部储存垃圾清理完成！\n"
+#define L_SC_SUCCESSFUL_SD " » 外部储存 %s 垃圾清理完成！\n"
+#define L_SC_CLEAR " » 清理 %s 储存缓存\n"
+#define L_SC_CLEAR_ERR " » 清理 %s 储存缓存失败！\n"
+#define L_SC_CLEAR_CACHE_DONE " » 共清理 %d 个软件缓存！\n"
+#define L_SC_CLEAR_DIRTY " » 空文件夹、log文件清理成功！\n"
+#define L_SC_CLEAR_DIRTY_ERR " » 空文件夹、log文件清理失败！\n"
+
+// For StorageRuleClean.c
+#define L_SR_OPEN_CONFIG_ERR " » %s 配置打开失败！自动跳过\n"
+#define L_SR_START " » 处理 %s 配置📍\n"
+#define L_SR_W_CONFIG_STATTPATH_ERR " » 警告：%s 配置指定初始路径不存在！\n"
+#define L_SR_CLEAR_SUCCESSFUL " » 清理 %s 成功\n"
+#define L_SR_CLEAR_FAILED " » 清理 %s 失败\n"
+#define L_SR_LINE_FAILED_PATH_ERR " » %d 行错误：路径错误/无法访问\n"
+#define L_SR_END " » 自定义目录处理完成！\n"

@@ -1,16 +1,26 @@
 // 通用宏
-#define L_NOT_USE_ROOT " » Please grant root permissions!\n"
+#define L_NOT_USE_ROOT " » Please use Root permissions!\n"
 #define L_ARGS_FAILED " » Insufficient arguments provided!\n"
 #define L_ARGS_FAILED_2 " » Incorrect arguments provided!\n"
-#define L_CONFIG_PATH_NOTFIND " » Configuration path does not exist!\n"
+#define L_CONFIG_PATH_NOTFIND " » Configuration path does not exist/is not accessible!\n"
+#define L_CONFIG_NOTFIND " » Configuration file %s does not exist!\n"
 #define L_CONFIG_PATH_TOOLONG " » Configuration path is too long!\n"
+#define L_BIN_PATH_NOTFIND " » Bin path does not exist/is not accessible!\n"
+#define L_BIN_PATH_TOOLONG " » Bin path is too long!\n"
 #define L_PACKAGE_TOOLONG " » Provided package name is too long! Limit %d\n"
 #define L_ARG_PACKAGE_ERR " » No package name provided!\n"
 #define L_MODE_TOOLONG " » Mode name is too long!\n"
 #define L_ARG_MODE_ERR " » No mode provided!\n"
+#define L_MODE_ERR " » Unknown mode! [%s]\n"
 #define L_ARG_CONFIGPATH_ERR " » No configuration directory provided!\n"
+#define L_ARG_BINPATH_ERR " » No Bin directory provided!\n"
 #define L_OPEN_PATH_FAILED " » Failed to open directory %s!\n"
+#define L_OPEN_FILE_FAILED " » Failed to open file %s!\n"
 #define L_GET_APPLIST_ERROR " » Failed to get application list!\n"
+#define L_GET_SYSTEM_VERSION_ERR " » Failed to get system version!\n"
+#define L_W_SETPROP_ERR " » Warning: PROP setting failed!\n"
+#define L_MOVE_ERROR " » Failed to move %s\n"
+#define L_DELETE_ERR " » Failed to delete %s!\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » Cleaning %s &\n"
@@ -36,3 +46,79 @@
 #define L_CC_CLEAR_SKIP " » Skipping %s\n"
 #define L_CC_CLEAR_APPCACHE_DONE " » Cleaned %d applications, %d applications did not require cleaning\n"
 #define L_CC_CLEAR_SYSTEMCACHE " » System cache cleared! Recommend restarting the system!\n"
+
+// For Dexoat.c
+#define L_DO_RUN_SYSTEM " » Performing system default Dexoat...\n"
+#define L_DO_RUN_CUST " » Running mode %s compilation...\n"
+
+// For F2fs_GC.c
+#define L_FG_ERR_NOF2FS " » Your device does not use the F2FS filesystem\n » Maintenance is only supported in F2FS environments!\n"
+#define L_FG_ERR_CHECK " » Your device does not support the current GC function\n"
+#define L_FG_W_GET_FREE " » Warning: Failed to get current free segments!\n"
+#define L_FG_W_GET_DIRTY " » Warning: Failed to get current dirty segments!\n"
+#define L_FG_DIRTY " » Current dirty segments: %d\n"
+#define L_FG_FREE " » Current free segments: %d\n\n"
+#define L_FG_ERR_OPENSYSFS " » GC startup failed! Failed to open node!\n"
+#define L_FG_START " » GC has started, please wait patiently. It is recommended to run in the background!\n"
+#define L_FG_ERR_WRITESYSFS " » GC startup failed! Failed to write to node!\n"
+#define L_FG_ERR_TIMEOUT " » GC wait timeout, waiting has been terminated!\n"
+#define L_FG_END " » GC run completed, operation has ended!\n"
+#define L_FG_RUN_MS " » Has been running for %d minutes %d seconds...\n"
+#define L_FG_RUN_M " » Has been running for %d minutes...\n"
+#define L_FG_RUN_S " » Has been running for %d seconds...\n"
+#define L_FG_END_DIRTY " » Disk dirty blocks reduced by %d\n"
+#define L_FG_END_DIRTY_2 " » Disk dirty blocks increased by %d\n » GC may still be optimizing or may not be suitable for your device!\n"
+#define L_FG_DONE " » GC completed!\n"
+#define L_FG_FAST_GC_DONE " » Fast disk optimization completed. You can try more aggressive GC optimization (・∀・)\n"
+
+// For FileAll.c
+#define L_FA_FAILED_STORAGE " » Internal storage file classification failed!\n"
+#define L_FA_SUCCESSFUL_STORAGE " » Internal storage file classification successful!\n"
+#define L_FA_FAILED_SD " » External storage file classification failed!\n"
+#define L_FA_SUCCESSFUL_SD " » External storage file classification successful!\n"
+#define L_FA_START " » Classifying %s ...\n"
+#define L_FA_END " » Classified %d %s\n"
+
+// For FileClean.c
+#define L_FC_FAILED_STORAGE " » Failed to clean internal storage %s!\n"
+#define L_FC_SUCCESSFUL_STORAGE " » Successfully cleaned internal storage %s!\n"
+#define L_FC_FAILED_SD " » Failed to clean external storage %s!\n"
+#define L_FC_SUCCESSFUL_SD " » Successfully cleaned external storage %s!\n"
+#define L_FC_END " » Cleaned %d %s\n"
+
+// For FreeZer.c
+#define L_OPEN_FREEZER_SUCCESSFUL " » Android native tombstone has been opened (^^)\n"
+
+// For StopInstall.c
+#define L_SI_OPEN_FAILED_STORAGE " » Failed to block updates in internal storage!\n"
+#define L_SI_OPEN_SUCCESSFUL_STORAGE " » Updates have been blocked in internal storage!\n"
+#define L_SI_OPEN_FAILED_SD " » Failed to block updates in external storage!\n"
+#define L_SI_OPEN_SUCCESSFUL_SD " » Updates have been blocked in external storage!\n"
+#define L_SI_OFF_FAILED_STORAGE " » Failed to disable update blocking in internal storage!\n"
+#define L_SI_OFF_SUCCESSFUL_STORAGE " » Update blocking has been disabled in internal storage!\n"
+#define L_SI_OFF_FAILED_SD " » Failed to disable update blocking in external storage!\n"
+#define L_SI_OFF_SUCCESSFUL_SD " » Update blocking has been disabled in external storage!\n"
+
+// For StopStorage.c
+#define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL " » Internal storage pinning has been enabled!\n"
+#define L_SS_OPEN_STOP_STORAGE_FAILED " » Failed to enable internal storage pinning!\n"
+#define L_SS_OFF_STOP_STORAGE_SUCCESSFUL " » Internal storage pinning has been disabled!\n"
+#define L_SS_OFF_STOP_STORAGE_FAILED " » Failed to disable internal storage pinning!\n"
+
+// For StorageClean.c
+#define L_SC_SUCCESSFUL_STORAGE " » Internal storage junk cleaning completed!\n"
+#define L_SC_SUCCESSFUL_SD " » External storage %s junk cleaning completed!\n"
+#define L_SC_CLEAR " » Cleaning %s storage cache\n"
+#define L_SC_CLEAR_ERR " » Failed to clean %s storage cache!\n"
+#define L_SC_CLEAR_CACHE_DONE " » Cleared cache of %d applications in total!\n"
+#define L_SC_CLEAR_DIRTY " » Empty folders and log files cleaned successfully!\n"
+#define L_SC_CLEAR_DIRTY_ERR " » Failed to clean empty folders and log files!\n"
+
+// For StorageRuleClean.c
+#define L_SR_OPEN_CONFIG_ERR " » Failed to open %s configuration! Automatically skipped\n"
+#define L_SR_START " » Processing %s configuration📍\n"
+#define L_SR_W_CONFIG_STATTPATH_ERR " » Warning: Starting path specified in %s configuration does not exist!\n"
+#define L_SR_CLEAR_SUCCESSFUL " » Successfully cleaned %s\n"
+#define L_SR_CLEAR_FAILED " » Failed to clean %s\n"
+#define L_SR_LINE_FAILED_PATH_ERR " » Line %d error: Path error/inaccessible\n"
+#define L_SR_END " » Custom directory processing completed!\n"

@@ -15,11 +15,11 @@
 ```
 sudo apt install zip make
 
+git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox
+
 export CC=clang #(如果构建设备非最终设备架构，请使用交叉编译工具）
 
 export M_LANG=zh_CN
-
-git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox/
 
 make -j4 && make module_tar && make clean
 ```

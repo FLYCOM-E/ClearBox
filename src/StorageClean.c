@@ -17,12 +17,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 5)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -34,12 +34,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 配置路径过长！\n");
+                printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置路径不存在/无法访问！\n");
+                printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -49,12 +49,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » Bin路径过长！\n");
+                printf(L_BIN_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » Bin路径不存在/无法访问！\n");
+                printf(L_BIN_PATH_NOTFIND);
                 return 1;
             }
             snprintf(bin_dir, sizeof(bin_dir), "%s", COM[i + 1]);
@@ -63,12 +63,12 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置目录！\n");
+        printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (strcmp(bin_dir, "") == 0)
     {
-        printf(" » 未传入Bin目录！\n");
+        printf(L_ARG_BINPATH_ERR);
         return 1;
     }
     
@@ -115,7 +115,7 @@ int main(int COMI, char * COM[])
     // 处理内部储存
     if (DeleteAppCache(data_dir, work_dir) == 0 && DelateMediaCache(bin_dir, data_dir) == 0)
     {
-        printf(" » 内部储存垃圾清理完成！\n");
+        printf(L_SC_SUCCESSFUL_STORAGE);
     }
     if (cleardisk == 1) // 允许清理外部储存
     {
@@ -123,7 +123,7 @@ int main(int COMI, char * COM[])
         {
             if (DeleteAppCache(sdcard_dir, work_dir) == 0 && DelateMediaCache(bin_dir, sdcard_dir) == 0)
             {
-                printf(" » 外部储存 %s 垃圾清理完成！\n", sdcard_id);
+                printf(L_SC_SUCCESSFUL_SD, sdcard_id);
             }
         }
     }
@@ -142,7 +142,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
 {
     if (access(data_path, F_OK) != 0)
     {
-        printf(" » 路径 %s 不存在/无权查看！\n", data_path);
+        printf(L_OPEN_PATH_FAILED, data_path);
         return 1;
     }
     
@@ -158,7 +158,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
     DIR * app_data_dir_dp = opendir(app_data_path);
     if (app_data_dir_dp == NULL)
     {
-        printf(" » 路径 %s 打开失败！！\n", data_path);
+        printf(L_OPEN_PATH_FAILED, data_path);
         return 1;
     }
     
@@ -184,23 +184,22 @@ static int DeleteAppCache(char * data_path, char * work_dir)
             continue;
         }
         
-        // 清理命令
+        // Clear
         char command[strlen(app_path) + 32];
         snprintf(command, sizeof(command), COMMAND_D, app_path);
         if (system(command) == 0)
         {
-            printf(" » 清理 %s 储存缓存\n", entry -> d_name);
+            printf(L_SC_CLEAR, entry -> d_name);
             clean_count++;
         }
         else
         {
-            printf(" » 清理 %s 储存缓存失败！\n", entry -> d_name);
+            printf(L_SC_CLEAR_ERR, entry -> d_name);
         }
     }
     closedir(app_data_dir_dp);
     
-    printf(" » 共清理 %d 个软件缓存！\n", clean_count);
-    
+    printf(L_SC_CLEAR_CACHE_DONE, clean_count);
     return 0;
 }
 
@@ -282,7 +281,7 @@ static int DelateMediaCache(char * bin_dir, char * storage_dir)
             snprintf(command, sizeof(command), COMMAND_D, path);
             if (system(command) != 0)
             {
-                printf(" » %s 删除失败！\n", path);
+                printf(L_DELETE_ERR, path);
             }
         }
     }
@@ -295,11 +294,11 @@ static int DelateMediaCache(char * bin_dir, char * storage_dir)
     
     if (system(d_log_command) == 0 && system(d_dir_command) == 0)
     {
-        printf(" » 空文件夹、log文件清理成功！\n");
+        printf(L_SC_CLEAR_DIRTY);
     }
     else
     {
-        printf(" » 空文件夹、log文件清理失败！\n");
+        printf(L_SC_CLEAR_DIRTY_ERR);
         /* 如果有人看到这里可能好奇为什么不返回 1
         因为觉得这个是否清理成功没必要影响函数返回值 */
     }

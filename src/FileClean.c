@@ -15,12 +15,12 @@ int main(int COMI, char * COM[])
 {
     if (getuid() != 0)
     {
-        printf(" » 请授予root权限！\n");
+        printf(L_NOT_USE_ROOT);
         return 1;
     }
     if (COMI < 5)
     {
-        printf(" » 参数不足！\n");
+        printf(L_ARGS_FAILED);
         return 1;
     }
     
@@ -31,12 +31,12 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 128)
             {
-                printf(" » 配置路径过长！\n");
+                printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(COM[i + 1], F_OK) != 0)
             {
-                printf(" » 配置路径不存在/无法访问！\n");
+                printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
@@ -46,7 +46,7 @@ int main(int COMI, char * COM[])
         {
             if (strlen(COM[i + 1]) > 60)
             {
-                printf(" » 传入清理项名称过长！\n");
+                printf(L_MODE_TOOLONG);
                 return 1;
             }
             snprintf(name, sizeof(name), "%s", COM[i + 1]);
@@ -55,12 +55,12 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(work_dir, "") == 0)
     {
-        printf(" » 未传入配置目录！\n");
+        printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (strcmp(name, "") == 0)
     {
-        printf(" » 未传入清理项！\n");
+        printf(L_ARG_MODE_ERR);
         return 1;
     }
     
@@ -104,11 +104,11 @@ int main(int COMI, char * COM[])
     
     if (ClearService(name, work_dir, data_dir) == 0)
     {
-        printf(" » 清理内部储存 %s 成功！\n", name);
+        printf(L_FC_SUCCESSFUL_STORAGE, name);
     }
     else
     {
-        printf(" » 清理内部储存 %s 失败！\n", name);
+        printf(L_FC_FAILED_STORAGE, name);
     }
     
     if (FileClear_Disk == 1)
@@ -117,11 +117,11 @@ int main(int COMI, char * COM[])
         {
             if (ClearService(name, work_dir, sdcard_dir) == 0)
             {
-                printf(" » 清理外部储存 %s 成功！\n", name);
+                printf(L_FC_SUCCESSFUL_SD, name);
             }
             else
             {
-                printf(" » 清理外部储存 %s 失败！\n", name);
+                printf(L_FC_FAILED_SD, name);
             }
         }
     }
@@ -151,7 +151,7 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
     
     if (access(config_file, F_OK) != 0)
     {
-        printf(" » %s 对应配置文件未找到！\n", name);
+        printf(L_CONFIG_NOTFIND, name);
         return 1;
     }
     
@@ -159,7 +159,7 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
     {
-        printf(" » %s 配置文件打开失败！\n", config_file);
+        printf(L_OPEN_FILE_FAILED, config_file);
         return 1;
     }
     
@@ -172,7 +172,7 @@ static int ClearService(char * name, char * work_dir, char * storage_dir)
     fclose(config_file_fp);
     
     clear_count += FindFile(storage_dir, file_args, count);
-    printf(" » 已清理 %d 个 %s\n", clear_count, name);
+    printf(L_FC_END, clear_count, name);
     return 0;
 }
 
@@ -237,7 +237,7 @@ static int FindFile(char * storage, char file_args[][MAX_ARGS_SIZE], int count)
                         }
                         else
                         {
-                            printf(" » 删除 %s 失败！\n", path);
+                            printf(L_DELETE_ERR, path);
                         }
                     }
                 }
