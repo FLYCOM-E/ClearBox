@@ -1,12 +1,12 @@
 ![image](ClearBox.png)
 
 
->[!CAUTION]
-> 主分支暂时与 **Releases** 差异过大，如果您是普通用户下载 **Release** 即可，尝鲜用户可以自行编译体验（不建议）。**Release** 最新版本未支持国际化！
-
-
    ## 🌍 Other?
 ### [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md)
+
+
+>[!CAUTION]
+> 主分支暂时与 **Releases** 差异过大，如果您是普通用户下载 **Release** 即可，尝鲜用户可以自行编译体验（不建议）。**Release** 最新版本未支持国际化！
 
 
    # 安装？

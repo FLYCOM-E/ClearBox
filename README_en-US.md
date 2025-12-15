@@ -1,3 +1,6 @@
+![image](ClearBox.png)
+
+
 >[!CAUTION]
 > The main branch currently differs significantly from Releases. General users are advised to download the Release version directly, while adventurous users can compile and experience it themselves (not recommended). The latest Release version does not yet support internationalization!
 
