@@ -126,7 +126,9 @@ int main(int COMI, char * COM[])
             */
             if (get_config == 0)
             {
-                if (strstr(len_str, "@"))
+                char * len_str_p = len_str;
+                while (isspace(* len_str_p)) len_str_p++;
+                if (* len_str_p == '@')
                 {
                     app_package_fp = strtok(len_str, "/");
                     app_name_fp = strtok(NULL, "/");
@@ -185,7 +187,7 @@ int main(int COMI, char * COM[])
                     continue;
                 }
                 // 防止路径逃逸
-                if (strstr(len_str, "/../"))
+                if (strstr(len_str, "../"))
                 {
                     printf(L_AC_CONFIG_ERR_2, config_name -> d_name, count);
                     continue;
@@ -256,23 +258,26 @@ static int findPackageInProFile(char * package, char * config_file)
     char config_len[MAX_PACKAGE + 64] = "";
     if (access(config_file, R_OK) != 0)
     {
-        end = -1;
+        return -1;
     }
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
     {
-        end = -1;
+        return -1;
     }
     while (fgets(config_len, sizeof(config_len), config_file_fp))
     {
         config_len[strcspn(config_len, "\n")] = 0;
-        
         if (strstr(config_len, package))
         {
-            end = 1;
+            char * config_len_p = config_len;
+            while (isspace(* config_len_p)) config_len_p++;
+            if (* config_len_p == '@')
+            {
+                end = 1;
+            }
         }
     }
     fclose(config_file_fp);
-    
     return end;
 }

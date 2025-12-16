@@ -6,12 +6,12 @@
 #define SETTINGS_FILE "settings.prop" //Max Size 30
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
-#define CLEAR_CACHE "rm -r %s/* 2>/dev/null" //Max Size 30
 
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
 static int whiteListCheck(char * whitelist_file, char * App);
-static int GetPathSize(char * path);
+static long GetPathSize(char * path);
 static int ClearSystemCache();
+static int s_remove(char * path);
 
 int main(int COMI, char * COM[])
 {
@@ -92,7 +92,7 @@ int main(int COMI, char * COM[])
         */
         char * key_len_fp = NULL;
         int ClearCacheSize = 0, cleardisk = 0;
-        char settings_file[strlen(work_dir) + 32], key_len[32] ="";
+        char settings_file[strlen(work_dir) + 32], key_len[32] = "";
         snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
         FILE * settings_file_fp = fopen(settings_file, "r");
         if (settings_file_fp)
@@ -185,7 +185,8 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     while ((uid_dir = readdir(uid_dir_dp)))
     {
         if (strcmp(uid_dir -> d_name, ".") == 0 ||
-           strcmp(uid_dir -> d_name, "..") == 0)
+           strcmp(uid_dir -> d_name, "..") == 0 ||
+           strspn(uid_dir -> d_name, "0123456789") != strlen(uid_dir -> d_name))
         {
             continue;
         }
@@ -224,9 +225,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                     continue;
                 }
                 
-                char clear_command[strlen(app_cache_dir) + 32];
-                snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_dir);
-                if (system(clear_command) == 0)
+                if (s_remove(app_cache_dir) == 0)
                 {
                     count++;
                     clean_size += cache_size; // 记录清理大小
@@ -294,7 +293,7 @@ static int whiteListCheck(char * whitelist_file, char * App)
 返回：
     long 大小，单位：字节（Byte）
 */
-static int GetPathSize(char * path)
+static long GetPathSize(char * path)
 {
     if (access(path, F_OK) != 0)
     {
@@ -379,9 +378,7 @@ static int ClearSystemCache()
             }
             else
             {
-                char clear_command[strlen(app_cache_path) + 64];
-                snprintf(clear_command, sizeof(clear_command), CLEAR_CACHE, app_cache_path);
-                if (system(clear_command) == 0)
+                if (s_remove(app_cache_path) == 0)
                 {
                     printf(L_CC_CLEAR, package_list_line + 8);
                     fflush(stdout);
@@ -401,5 +398,48 @@ static int ClearSystemCache()
     system("rm -r /data/dalvik-cache/* 2>/dev/null");
     
     printf(L_CC_CLEAR_SYSTEMCACHE);
+    return 0;
+}
+
+/*
+删除函数
+传入：
+    char * path
+返回：
+    int 成功返回0，失败返回1
+*/
+static int s_remove(char * path)
+{
+    if (access(path, F_OK) != 0)
+    {
+        return 1;
+    }
+    
+    pid_t newPid = fork();
+    if (newPid == -1)
+    {
+        return 1;
+    }
+    if (newPid == 0)
+    {
+        execlp("rm", "rm", "-r", path, NULL);
+        _exit(1);
+    }
+    else
+    {
+        int end = 0;
+        if (waitpid(newPid, &end, 0) == -1)
+        {
+            return 1;
+        }
+        if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
     return 0;
 }

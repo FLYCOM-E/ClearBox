@@ -1,6 +1,7 @@
 // 此Code来自ClearBox模块，用于运行紧急GC优化，原理来自Coolapk@Amktiao，感谢大佬
 #include "BashCore.h"
 
+#define TIMEOUT 9
 #define SYSFS_PATH "/sys/fs/f2fs"
 #define SYSFS_FILE_NAME "gc_urgent" //Max Size 14
 #define SYSFS_DIRTY_FILE "dirty_segments" //Max Size 14
@@ -112,7 +113,7 @@ static int F2FS_GC()
     }
     
     // 等待循环
-    char cache[4] = "";
+    char cache[16] = "";
     // 秒 / 分
     int time_s = 0, time_m = 0;
     for ( ; ; )
@@ -125,7 +126,7 @@ static int F2FS_GC()
             time_s = 0;
             time_m++;
         }
-        if (time_m == 9)
+        if (time_m == TIMEOUT)
         {
             printf(L_FG_ERR_TIMEOUT);
             fflush(stdout);

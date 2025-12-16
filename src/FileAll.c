@@ -230,10 +230,11 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
         }
         
         char file_name[strlen(entry -> d_name) + 2];
-        snprintf(file_name, sizeof(file_name), "%s", entry -> d_name);
         char path[strlen(storage) + strlen(entry -> d_name) + 64];
+        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 128];
+        
+        snprintf(file_name, sizeof(file_name), "%s", entry -> d_name);
         snprintf(path, sizeof(path), "%s/%s", storage, entry -> d_name);
-        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 64];
         snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
         
         if (strcmp(path, file_dir) == 0 ||
@@ -255,6 +256,13 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                 {
                     if (strcasecmp(args[i], str_p + 1) == 0)
                     {
+                        int name_i = 1;
+                        while (access(end_path, F_OK) == 0)
+                        {
+                            snprintf(end_path, sizeof(end_path), "%s/(%d)_%s", file_dir, name_i, entry -> d_name);
+                            name_i++;
+                        }
+                        
                         if (rename(path, end_path) == 0)
                         {
                             file_count++;
@@ -263,6 +271,7 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                         {
                             printf(L_MOVE_ERROR, path);
                         }
+                        break;
                     }
                 }
             }
