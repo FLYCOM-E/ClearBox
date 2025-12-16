@@ -274,20 +274,22 @@ int main(int COMI, char * COM[])
             fclose(rom_file_fp);
         }
         
+        // 这个逻辑目标为跳过不必要的缓存加解锁
+        int i = 0;
+        while (i < 5)
+        {
+            if (strcmp(reset_app, top_app_list[i]) == 0)
+            {
+                strcpy(reset_app, "null");
+                break;
+            }
+            i++;
+        }
+        
         //调用处理函数
         stopAppCache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir);
         if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
         {
-            int i = 0;
-            while (i < 5)
-            {
-                if (strcmp(reset_app, top_app_list[i]) == 0)
-                {
-                    strcpy(reset_app, "null");
-                    break;
-                }
-                i++;
-            } // 这个逻辑目标为跳过不必要的缓存解锁
             stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir);
         }
         
