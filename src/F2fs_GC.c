@@ -191,7 +191,7 @@ static int F2FS_GC()
 */
 static int get_f2fs_dirty(char * dirty_file)
 {
-    char cache[4] = "";
+    char cache[16] = "";
     FILE * f2fs_dirty_fp = fopen(dirty_file, "r");
     if (f2fs_dirty_fp)
     {
@@ -216,7 +216,7 @@ static int get_f2fs_dirty(char * dirty_file)
 */
 static int get_f2fs_free(char * free_file)
 {
-    char cache[4] = "";
+    char cache[16] = "";
     FILE * f2fs_free_fp = fopen(free_file, "r");
     if (f2fs_free_fp)
     {
