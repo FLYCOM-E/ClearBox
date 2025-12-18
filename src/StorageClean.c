@@ -4,7 +4,6 @@
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define WHITELIST "%s/ClearWhitelist.prop"
 #define STORAGES_DIR "/storage/%s" //Max Size 100
-#define COMMAND_D "rm -r %s/* 2>/dev/null" //Max Size 30
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
 #define DELETE_LOGFILE "\"%s/busybox\" find %s -type f -name \"*.log\" -delete" //Max Size 62
 #define DELETE_DIR "\"%s/busybox\" find %s -type d -empty -delete" //Max Size 62
@@ -12,6 +11,7 @@
 static int DeleteAppCache(char * data_path, char * work_dir);
 static int CheckWhiteList(char * package, char * whitelist_file);
 static int DelateMediaCache(char * bin_dir, char * storage_dir);
+static int s_remove(char * path);
 
 int main(int COMI, char * COM[])
 {
@@ -185,9 +185,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
         }
         
         // Clear
-        char command[strlen(app_path) + 32];
-        snprintf(command, sizeof(command), COMMAND_D, app_path);
-        if (system(command) == 0)
+        if (s_remove(app_path) == 0)
         {
             printf(L_SC_CLEAR, entry -> d_name);
             clean_count++;
@@ -277,9 +275,7 @@ static int DelateMediaCache(char * bin_dir, char * storage_dir)
         
         if (access(path, F_OK) == 0)
         {
-            char command[strlen(path) + 32];
-            snprintf(command, sizeof(command), COMMAND_D, path);
-            if (system(command) != 0)
+            if (s_remove(path) != 0)
             {
                 printf(L_DELETE_ERR, path);
             }
@@ -303,5 +299,48 @@ static int DelateMediaCache(char * bin_dir, char * storage_dir)
         因为觉得这个是否清理成功没必要影响函数返回值 */
     }
     
+    return 0;
+}
+
+/*
+删除函数
+传入：
+    char * path
+返回：
+    int 成功返回0，失败返回1
+*/
+static int s_remove(char * path)
+{
+    if (access(path, F_OK) != 0)
+    {
+        return 1;
+    }
+    
+    pid_t newPid = fork();
+    if (newPid == -1)
+    {
+        return 1;
+    }
+    if (newPid == 0)
+    {
+        execlp("rm", "rm", "-r", path, NULL);
+        _exit(1);
+    }
+    else
+    {
+        int end = 0;
+        if (waitpid(newPid, &end, 0) == -1)
+        {
+            return 1;
+        }
+        if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
     return 0;
 }

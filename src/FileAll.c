@@ -259,7 +259,7 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                         int name_i = 1;
                         while (access(end_path, F_OK) == 0)
                         {
-                            snprintf(end_path, sizeof(end_path), "%s/(%d)_%s", file_dir, name_i, entry -> d_name);
+                            snprintf(end_path, sizeof(end_path), "%s/%s.%d.bak", file_dir, entry -> d_name, name_i);
                             name_i++;
                         }
                         
