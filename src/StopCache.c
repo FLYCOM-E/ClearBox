@@ -88,6 +88,7 @@ int main(int COMI, char * COM[])
     char top_app_list[5][MAX_PACKAGE] = {0}, reset_app[MAX_PACKAGE] = "";
     
     //提取RunStart储存值
+    char tmp[16] = "";
     char rom_key_line[MAX_PACKAGE] = "";
     char * rom_key_line_p = NULL;
     FILE * rom_file_fp = fopen(rom_file, "r");
@@ -99,52 +100,22 @@ int main(int COMI, char * COM[])
             rom_key_line[strcspn(rom_key_line, "\n")] = 0;
             
             //if匹配，如没找到对应值或值为空则跳过（保持原空值）
-            if (strstr(rom_key_line, "1="))
+            int i = 0;
+            while (i <= 4)
             {
-                rom_key_line_p = strtok(rom_key_line, "=");
-                rom_key_line_p = strtok(NULL, "=");
-                if (rom_key_line_p)
+                snprintf(tmp, sizeof(tmp), "%d=", i + 1);
+                if (strstr(rom_key_line, tmp))
                 {
-                    snprintf(top_app_list[0], sizeof(top_app_list[0]), "%s", rom_key_line_p);
+                    rom_key_line_p = strtok(rom_key_line, "=");
+                    rom_key_line_p = strtok(NULL, "=");
+                    if (rom_key_line_p)
+                    {
+                        snprintf(top_app_list[i], sizeof(top_app_list[i]), "%s", rom_key_line_p);
+                    }
                 }
+                i++;
             }
-            else if (strstr(rom_key_line, "2="))
-            {
-                rom_key_line_p = strtok(rom_key_line, "=");
-                rom_key_line_p = strtok(NULL, "=");
-                if (rom_key_line_p)
-                {
-                    snprintf(top_app_list[1], sizeof(top_app_list[1]), "%s", rom_key_line_p);
-                }
-            }
-            else if (strstr(rom_key_line, "3="))
-            {
-                rom_key_line_p = strtok(rom_key_line, "=");
-                rom_key_line_p = strtok(NULL, "=");
-                if (rom_key_line_p)
-                {
-                    snprintf(top_app_list[2], sizeof(top_app_list[2]), "%s", rom_key_line_p);
-                }
-            }
-            else if (strstr(rom_key_line, "4="))
-            {
-                rom_key_line_p = strtok(rom_key_line, "=");
-                rom_key_line_p = strtok(NULL, "=");
-                if (rom_key_line_p)
-                {
-                    snprintf(top_app_list[3], sizeof(top_app_list[3]), "%s", rom_key_line_p);
-                }
-            }
-            else if (strstr(rom_key_line, "5="))
-            {
-                rom_key_line_p = strtok(rom_key_line, "=");
-                rom_key_line_p = strtok(NULL, "=");
-                if (rom_key_line_p)
-                {
-                    snprintf(top_app_list[4], sizeof(top_app_list[4]), "%s", rom_key_line_p);
-                }
-            }
-            else if (strstr(rom_key_line, "reset="))
+            if (strstr(rom_key_line, "reset="))
             {
                 rom_key_line_p = strtok(rom_key_line, "=");
                 rom_key_line_p = strtok(NULL, "=");
