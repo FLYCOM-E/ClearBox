@@ -25,6 +25,7 @@ uninstall_md()
 {
     touch "$home_dir/disable"
     touch "$home_dir/remove"
+    rm -r "/sdcard/Android/ClearBox"
     "$bin_dir/busybox" chattr -R -i /data/app
     "$bin_dir/busybox" chattr -R -i /data/user
     "$bin_dir/busybox" chattr -R -i /mnt/expand
