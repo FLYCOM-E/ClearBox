@@ -71,20 +71,21 @@
 #define L_FG_DONE " » GC completed!\n"
 #define L_FG_FAST_GC_DONE " » Fast disk optimization completed. You can try more aggressive GC optimization (・∀・)\n"
 
-// For FileAll.c
-#define L_FA_FAILED_STORAGE " » Internal storage file classification failed!\n"
-#define L_FA_SUCCESSFUL_STORAGE " » Internal storage file classification successful!\n"
-#define L_FA_FAILED_SD " » External storage file classification failed!\n"
-#define L_FA_SUCCESSFUL_SD " » External storage file classification successful!\n"
-#define L_FA_START " » Classifying %s ...\n"
-#define L_FA_END " » Classified %d %s\n"
+// For FileManager.c
+#define L_FM_ALL_FAILED_STORAGE " » Internal storage file organization failed!\n"
+#define L_FM_ALL_SUCCESSFUL_STORAGE " » Internal storage file organization successful!\n"
+#define L_FM_ALL_FAILED_SD " » External storage file organization failed!\n"
+#define L_FM_ALL_SUCCESSFUL_SD " » External storage file organization successful!\n"
 
-// For FileClean.c
-#define L_FC_FAILED_STORAGE " » Failed to clean internal storage %s!\n"
-#define L_FC_SUCCESSFUL_STORAGE " » Successfully cleaned internal storage %s!\n"
-#define L_FC_FAILED_SD " » Failed to clean external storage %s!\n"
-#define L_FC_SUCCESSFUL_SD " » Successfully cleaned external storage %s!\n"
-#define L_FC_END " » Cleaned %d %s\n"
+#define L_FM_CR_FAILED_STORAGE " » Internal storage file cleanup failed!\n"
+#define L_FM_CR_SUCCESSFUL_STORAGE " » Internal storage file cleanup successful!\n"
+#define L_FM_CR_FAILED_SD " » External storage file cleanup failed!\n"
+#define L_FM_CR_SUCCESSFUL_SD " » External storage file cleanup successful!\n"
+
+#define L_FM_ALL_START " » Organizing %s ...\n"
+#define L_FM_ALL_END " » Organized %d %s(s)\n"
+#define L_FM_CR_START " » Cleaning %s ...\n"
+#define L_FM_CR_END " » Cleaned %d %s(s)\n"
 
 // For FreeZer.c
 #define L_OPEN_FREEZER_SUCCESSFUL " » Android native tombstone has been opened (^^)\n"

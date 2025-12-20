@@ -9,8 +9,11 @@
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
 #define STORAGES_DIR "/storage/%s" //Max Size 100
 
-static int ClearService(char * work_dir, char * storage_dir);
+static int ClearService(char * work_dir, char * storage_dir, char * config_name);
 static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
+
+int file_clear = 0;
+int clean_done = 0;
 
 int main(int COMI, char * COM[])
 {
@@ -19,13 +22,13 @@ int main(int COMI, char * COM[])
         printf(L_NOT_USE_ROOT);
         return 1;
     }
-    if (COMI < 3)
+    if (COMI < 5)
     {
         printf(L_ARGS_FAILED);
         return 1;
     }
     
-    char work_dir[128] = "";
+    char work_dir[128] = "", config_name[64] = "", mode[64] = "";
     for (int i = 0; i < COMI - 1; i++)
     {
         if (strcmp(COM[i], "-w") == 0)
@@ -43,14 +46,52 @@ int main(int COMI, char * COM[])
             snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
             work_dir[strcspn(work_dir, "\n")] = 0;
         }
+        if (strcmp(COM[i], "-m") == 0)
+        {
+            if (strlen(COM[i + 1]) > 60)
+            {
+                printf(L_MODE_TOOLONG);
+                return 1;
+            }
+            snprintf(mode, sizeof(mode), "%s", COM[i + 1]);
+            mode[strcspn(mode, "\n")] = 0;
+        }
+        if (strcmp(COM[i], "-n") == 0)
+        {
+            if (strlen(COM[i + 1]) > 60)
+            {
+                printf(L_MODE_TOOLONG);
+                return 1;
+            }
+            snprintf(config_name, sizeof(config_name), "%s", COM[i + 1]);
+            config_name[strcspn(config_name, "\n")] = 0;
+        }
     }
     if (strcmp(work_dir, "") == 0)
     {
         printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
+    if (strcmp(mode, "fileclean") == 0)
+    {
+        if (strcmp(config_name, "") == 0)
+        {
+            printf(L_ARGS_FAILED);
+            return 1;
+        }
+        file_clear = 1;
+    }
+    else if (strcmp(mode, "fileall") == 0)
+    {
+        snprintf(config_name, sizeof(config_name), "(null)");
+    }
+    else
+    {
+        printf(L_MODE_ERR, mode);
+        return 1;
+    }
     
-    int Fileall_Disk = 0;
+    int FileClear_Disk = 0, Fileall_Disk = 0;
     char data_dir[128] = "",
          sdcard_dir[128] = "",
          sdcard_id[16] = "",
@@ -84,30 +125,74 @@ int main(int COMI, char * COM[])
             {
                 Fileall_Disk = 1;
             }
+            if (strcmp(settings_file_line, "FileClear_Disk=1") == 0)
+            {
+                FileClear_Disk = 1;
+            }
         }
         fclose(settings_file_fp);
     }
     
-    if (ClearService(work_dir, data_dir) == 0)
+    if (ClearService(work_dir, data_dir, config_name) == 0)
     {
-        printf(L_FA_SUCCESSFUL_STORAGE);
+        if (file_clear == 1)
+        {
+            printf(L_FM_CR_SUCCESSFUL_STORAGE);
+        }
+        else
+        {
+            printf(L_FM_ALL_SUCCESSFUL_STORAGE);
+        }
     }
     else
     {
-        printf(L_FA_FAILED_STORAGE);
+        if (file_clear == 1)
+        {
+            printf(L_FM_CR_FAILED_STORAGE);
+        }
+        else
+        {
+            printf(L_FM_ALL_FAILED_STORAGE);
+        }
     }
     
-    if (Fileall_Disk == 1)
+    if (file_clear == 1)
     {
-        if (access(sdcard_dir, F_OK) == 0)
+        if (FileClear_Disk != 1)
         {
-            if (ClearService(work_dir, sdcard_dir) == 0)
+            return 0;
+        }
+    }
+    else
+    {
+        if (Fileall_Disk != 1)
+        {
+            return 0;
+        }
+    }
+    
+    if (access(sdcard_dir, F_OK) == 0)
+    {
+        if (ClearService(work_dir, sdcard_dir, config_name) == 0)
+        {
+            if (file_clear == 1)
             {
-                printf(L_FA_SUCCESSFUL_SD);
+                printf(L_FM_CR_SUCCESSFUL_SD);
             }
             else
             {
-                printf(L_FA_FAILED_SD);
+                printf(L_FM_ALL_SUCCESSFUL_SD);
+            }
+        }
+        else
+        {
+            if (file_clear == 1)
+            {
+                printf(L_FM_CR_FAILED_SD);
+            }
+            else
+            {
+                printf(L_FM_ALL_FAILED_SD);
             }
         }
     }
@@ -123,7 +208,7 @@ int main(int COMI, char * COM[])
 返回：
     int 成功返回0，失败返回1
 */
-static int ClearService(char * work_dir, char * storage_dir)
+static int ClearService(char * work_dir, char * storage_dir, char * config_name)
 {   
     if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
     {
@@ -151,6 +236,19 @@ static int ClearService(char * work_dir, char * storage_dir)
         {
             continue;
         }
+        if (file_clear == 1)
+        {
+            char tmp[strlen(entry -> d_name) + 16];
+            snprintf(tmp, sizeof(tmp), "%s.conf", config_name);
+            if (strcmp(tmp, entry -> d_name) != 0)
+            {
+                continue;
+            }
+            else
+            {
+                clean_done = 1;
+            }
+        }
         
         char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2],
              config_file_name[strlen(entry -> d_name) + 2];
@@ -161,23 +259,30 @@ static int ClearService(char * work_dir, char * storage_dir)
         char * config_file_name_p = strtok(config_file_name, ".");
         char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_file_name_p) + 8];
         snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_file_name_p);
-        
-        mkdir(file_dir, 0775);
-        
-        if (access(file_dir, F_OK) != 0)
+        if (file_clear != 1)
         {
-            return 1;
+            mkdir(file_dir, 0775);
+            if (access(file_dir, F_OK) != 0)
+            {
+                return 1;
+            }
         }
         
         int all_count = 0;
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
-            printf(L_OPEN_FILE_FAILED, config_file);
             continue;
         }
         
-        printf(L_FA_START, config_file_name_p);
+        if (file_clear == 1)
+        {
+            printf(L_FM_CR_START, config_file_name_p);
+        }
+        else
+        {
+            printf(L_FM_ALL_START, config_file_name_p);
+        }
         fflush(stdout);
         
         int count = 0;
@@ -189,21 +294,41 @@ static int ClearService(char * work_dir, char * storage_dir)
         
         all_count += FindFile(storage_dir, file_dir, file_args, count);
         fclose(config_file_fp);
-        printf(L_FA_END, all_count, config_file_name_p);
+        if (file_clear == 1)
+        {
+            if (clean_done == 1)
+            {
+                printf(L_FM_CR_END, all_count, config_file_name_p);
+            }
+        }
+        else
+        {
+            printf(L_FM_ALL_END, all_count, config_file_name_p);
+        }
         fflush(stdout);
     }
     closedir(config_dir_dp);
+    
+    if (file_clear == 1)
+    {
+        if (clean_done != 1)
+        {
+            printf(L_CONFIG_NOTFIND, config_name);
+        }
+    }
+    
     return 0;
 }
 
 /*
-文件递归查找归类函数
+文件递归查找处理函数
 接收：
     char * storage 储存根目录
     char * file_dir 归类目录
-    char * str 查找文件后缀
+    char args 文件后缀列表
+    int count 文件后缀数量
 返回：
-    int 成功返回归类文件数量，失败返回-1
+    int 成功返回归类文件数量，失败返回0（不区分失败）
 */
 static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count)
 {
@@ -256,6 +381,12 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                 {
                     if (strcasecmp(args[i], str_p + 1) == 0)
                     {
+                        if (file_clear == 1)
+                        {
+                            remove(path);
+                            file_count++;
+                            break;
+                        }
                         int name_i = 1;
                         while (access(end_path, F_OK) == 0)
                         {

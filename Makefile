@@ -28,8 +28,7 @@ ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/F2fs_GC \
 			$(bin_dir)/StopInstall \
 			$(bin_dir)/StopStorage \
-			$(bin_dir)/FileClean \
-			$(bin_dir)/FileAll
+			$(bin_dir)/FileManager
 
 all: $(ALL_FILE)
 .PHONY: all
@@ -68,11 +67,8 @@ $(bin_dir)/StopInstall: src/StopInstall.c
 $(bin_dir)/StopStorage: src/StopStorage.c
 	$(CC) $(CFLAGS) src/StopStorage.c -o $(bin_dir)/StopStorage
 
-$(bin_dir)/FileClean: src/FileClean.c
-	$(CC) $(CFLAGS) src/FileClean.c -o $(bin_dir)/FileClean
-
-$(bin_dir)/FileAll: src/FileAll.c
-	$(CC) $(CFLAGS) src/FileAll.c -o $(bin_dir)/FileAll
+$(bin_dir)/FileManager: src/FileManager.c
+	$(CC) $(CFLAGS) src/FileManager.c -o $(bin_dir)/FileManager
 
 clean: 
 	@rm $(ALL_FILE)

@@ -379,8 +379,8 @@ static int allDir(char * home_dir, char * work_dir, char * bin_dir)
 static int fileClear(char * home_dir, char * work_dir, char * str)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/FileClean", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-m", str, NULL};
+    snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
+    char * args[] = {bash, "-w", work_dir, "-m", "fileclean", "-n", str, NULL};
     return Run(args);
 }
 
@@ -397,8 +397,8 @@ static int clearApp(char * home_dir, char * work_dir, char * str)
 static int fileAll(char * home_dir, char * work_dir)
 {
     char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/FileAll", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, NULL};
+    snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
+    char * args[] = {bash, "-w", work_dir, "-m", "fileall", NULL};
     return Run(args);
 }
 
@@ -432,8 +432,8 @@ static int fileAll2(char * home_dir, char * work_dir)
     if (fileall == 1)
     {
         char bash[128] = "";
-        snprintf(bash, sizeof(bash), "%s/%s/FileAll", home_dir, BASH_DIR);
-        char * args[] = {bash, "-w", work_dir, NULL};
+        snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
+        char * args[] = {bash, "-w", work_dir, "-m", "fileall", NULL};
         Run(args);
     }
     return 0;

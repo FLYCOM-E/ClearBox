@@ -71,20 +71,21 @@
 #define L_FG_DONE " » GC已完成！\n"
 #define L_FG_FAST_GC_DONE " » 快速磁盘优化完成，可以试试更激进的GC优化哦 (・∀・)\n"
 
-// For FileAll.c
-#define L_FA_FAILED_STORAGE " » 内部储存文件归类失败！\n"
-#define L_FA_SUCCESSFUL_STORAGE " » 内部储存文件归类成功！\n"
-#define L_FA_FAILED_SD " » 外部储存文件归类失败！\n"
-#define L_FA_SUCCESSFUL_SD " » 外部储存文件归类成功！\n"
-#define L_FA_START " » 正在归类 %s ...\n"
-#define L_FA_END " » 已归类 %d 个 %s\n"
+// For FileManager.c
+#define L_FM_ALL_FAILED_STORAGE " » 内部储存文件归类失败！\n"
+#define L_FM_ALL_SUCCESSFUL_STORAGE " » 内部储存文件归类成功！\n"
+#define L_FM_ALL_FAILED_SD " » 外部储存文件归类失败！\n"
+#define L_FM_ALL_SUCCESSFUL_SD " » 外部储存文件归类成功！\n"
 
-// For FileClean.c
-#define L_FC_FAILED_STORAGE " » 清理内部储存 %s 失败！\n"
-#define L_FC_SUCCESSFUL_STORAGE " » 清理内部储存 %s 成功！\n"
-#define L_FC_FAILED_SD " » 清理外部储存 %s 失败！\n"
-#define L_FC_SUCCESSFUL_SD " » 清理外部储存 %s 成功！\n"
-#define L_FC_END " » 已清理 %d 个 %s\n"
+#define L_FM_CR_FAILED_STORAGE " » 内部储存文件清理失败！\n"
+#define L_FM_CR_SUCCESSFUL_STORAGE " » 内部储存文件清理成功！\n"
+#define L_FM_CR_FAILED_SD " » 外部储存文件清理失败！\n"
+#define L_FM_CR_SUCCESSFUL_SD " » 外部储存文件清理成功！\n"
+
+#define L_FM_ALL_START " » 正在归类 %s ...\n"
+#define L_FM_ALL_END " » 已归类 %d 个 %s\n"
+#define L_FM_CR_START " » 正在清理 %s ...\n"
+#define L_FM_CR_END " » 已清理 %d 个 %s\n"
 
 // For FreeZer.c
 #define L_OPEN_FREEZER_SUCCESSFUL " » 已打开安卓原生墓碑 (^^)\n"
