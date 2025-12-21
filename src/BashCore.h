@@ -18,6 +18,8 @@
     #include "LANG/zh_CN.h"
 #elif defined(en_US)
     #include "LANG/en_US.h"
+#elif defined(zh_TW)
+    #include "LANG/zh_TW.h"
 #else
     #include "LANG/zh_CN.h"
 #endif

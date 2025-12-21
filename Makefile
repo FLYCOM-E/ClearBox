@@ -10,6 +10,8 @@ else
         CFLAGS += -Dzh_CN
     else ifeq ($(M_LANG), en_US)
         CFLAGS += -Den_US
+    else ifeq ($(M_LANG), zh_TW)
+        CFLAGS += -Dzh_TW
     endif
 endif
 

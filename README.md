@@ -1,8 +1,8 @@
 ![image](ClearBox.png)
 
 
-   ## 🌍 Other?
-### [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md)
+   ## 🌍 ？
+### [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) [**繁体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md)
 
 
 >[!CAUTION]
