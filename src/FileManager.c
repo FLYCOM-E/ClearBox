@@ -13,7 +13,6 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
 static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
 
 int file_clear = 0;
-int clean_done = 0;
 
 int main(int COMI, char * COM[])
 {
@@ -74,6 +73,7 @@ int main(int COMI, char * COM[])
     }
     if (strcmp(mode, "fileclean") == 0)
     {
+        // 文件清理模式需要传入配置名称
         if (strcmp(config_name, "") == 0)
         {
             printf(L_ARGS_FAILED);
@@ -133,6 +133,7 @@ int main(int COMI, char * COM[])
         fclose(settings_file_fp);
     }
     
+    // 调用函数（内部储存
     if (ClearService(work_dir, data_dir, config_name) == 0)
     {
         if (file_clear == 1)
@@ -156,6 +157,7 @@ int main(int COMI, char * COM[])
         }
     }
     
+    // 根据模式判断是否处理外置储存
     if (file_clear == 1)
     {
         if (FileClear_Disk != 1)
@@ -171,6 +173,7 @@ int main(int COMI, char * COM[])
         }
     }
     
+    // 调用函数（外部储存
     if (access(sdcard_dir, F_OK) == 0)
     {
         if (ClearService(work_dir, sdcard_dir, config_name) == 0)
@@ -215,6 +218,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
         return 1;
     }
     
+    int clean_done = 0;
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2], f_dir[strlen(storage_dir) + strlen(F_DIR_NAME) + 8];
     
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
@@ -296,10 +300,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
         fclose(config_file_fp);
         if (file_clear == 1)
         {
-            if (clean_done == 1)
-            {
-                printf(L_FM_CR_END, all_count, config_file_name_p);
-            }
+            printf(L_FM_CR_END, all_count, config_file_name_p);
         }
         else
         {
@@ -329,6 +330,8 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
     int count 文件后缀数量
 返回：
     int 成功返回归类文件数量，失败返回0（不区分失败）
+另：
+    自动根据全局 file_clear 值 1 判断是否为文件清理模式
 */
 static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count)
 {
