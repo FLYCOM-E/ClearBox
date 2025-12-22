@@ -1,4 +1,4 @@
-CFLAGS = --static -O2 -s -Wall
+CFLAGS = -O2 -s -Wall -llog
 
 ifeq ($(strip $(CC)),)
     $(error 编译器$CC变量设置为空！The compiler $CC variable is set to empty!)

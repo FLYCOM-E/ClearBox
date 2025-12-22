@@ -1,13 +1,14 @@
 // By ClearBox StopCache
 #include "BashCore.h"
 
-#define DEBUG 0
 #define DATA_DIR "/data/data"
 #define ROM_NAME "RunStart" //Max Size 30
 #define WHITELIST_NAME "whitelist.prop"
 #define GET_TOPAPP "dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '"
 #define MICRO_DATA_PATH "/mnt/expand/%s/user/0" //Max Size 100
 #define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"
+#define LOGPRINT __android_log_print
+#define SERVER_NAME "StopCache"
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
 
@@ -147,27 +148,23 @@ int main(int COMI, char * COM[])
         }
     }
     
-    // 调试模式关闭则创建子进程脱离终端
-    if (DEBUG == 0)
+    // 创建子进程脱离终端
+    pid_t PID = fork();
+    if (PID == -1)
     {
-        pid_t PID = fork();
-        if (PID == -1)
-        {
-            printf(" » Start Server Failed! \n");
-            return 1;
-        }
-        else if (PID != 0)
-        {
-            exit(0);
-        }
-        setsid();
-        
-        int std = open("/dev/null", O_RDWR);
-        dup2(std, STDIN_FILENO);
-        dup2(std, STDOUT_FILENO);
-        dup2(std, STDERR_FILENO);
-        close(std);
+        printf(" » Start Server Failed! \n");
+        return 1;
     }
+    else if (PID != 0)
+    {
+        exit(0);
+    }
+    setsid();
+    int std = open("/dev/null", O_RDWR);
+    dup2(std, STDIN_FILENO);
+    dup2(std, STDOUT_FILENO);
+    dup2(std, STDERR_FILENO);
+    close(std);
     
     /* 
     初始化变量
@@ -191,12 +188,12 @@ int main(int COMI, char * COM[])
             get_error++;
             if (get_error == max_get_error)
             {
-                printf("Get Top App Error, Timeout...\n");
+                LOGPRINT(ANDROID_LOG_ERROR, SERVER_NAME, "Get Top App Timeout... exit\n");
                 end = 1;
                 break;
             }
             sleep(5);
-            printf("Get Top App Failed. Continue");
+            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Get Top App Failed. Continue");
             continue;
         }
         fgets(top_app, sizeof(top_app), top_app_fp);
@@ -296,7 +293,7 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
     
     if (access(busybox_bin, F_OK) != 0)
     {
-        printf(" » BusyBox Bin Not Find! \n");
+        LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "busybox bin not Found! \n");
         return 1;
     }
     
@@ -329,7 +326,7 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
             pid_t newPid = fork();
             if (newPid == -1)
             {
-                printf(" » Stop: %s : Fork Err\n", top_app);
+                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s: Fork Error\n", top_app);
                 goto reset; // 失败后直接跳过Stop部分
             }
             if (newPid == 0)
@@ -342,17 +339,17 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
                 int end = 0;
                 if (waitpid(newPid, &end, 0) == -1)
                 {
-                    printf(" » Stop: %s : Wait Err\n", top_app);
+                    LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s: Wait Error\n", top_app);
                     goto reset; // 失败后直接跳过Stop部分
                 }
                 
                 if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
                 {
-                    printf(" » Stop: %s\n", top_app);
+                    LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Stop %s Success\n", top_app);
                 }
                 else
                 {
-                    printf(" » Stop: %s Error\n", top_app);
+                    LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s Failed\n", top_app);
                 }
             }
         }
@@ -372,7 +369,7 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
         pid_t newPid = fork();
         if (newPid == -1)
         {
-            printf(" » Reset: %s : Fork Err\n", reset_app);
+            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s: Fork Error\n", reset_app);
             return 1;
         }
         if (newPid == 0)
@@ -385,17 +382,17 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
             int end = 0;
             if (waitpid(newPid, &end, 0) == -1)
             {
-                printf(" » Reset: %s Error : Wait Err\n", reset_app);
+                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s: Wait Error\n", reset_app);
                 return 1;
             }
             
             if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
             {
-                printf(" » Reset: %s\n", reset_app);
+                LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", reset_app);
             }
             else
             {
-                printf(" » Reset: %s Error\n", reset_app);
+                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed\n", reset_app);
             }
         }
     }
