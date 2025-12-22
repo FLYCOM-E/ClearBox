@@ -30,5 +30,5 @@ export CXXFLAGS="$CFLAGS"
 export LDFLAGS="-target ${TARGET}${API}"
 
 make -j$(nproc)
-make module_tar && echo " » 打包完成，成品：ClearBox_$M_LANG.zip！\n » Tar Done, Is: ClearBox_$M_LANG.zip! "
-make clean && echo " » 清理完成！\n » Clean Done! "
+make module_tar && echo -e " » 打包完成，成品：ClearBox_$M_LANG.zip！\n » Tar Done, Is: ClearBox_$M_LANG.zip! "
+make clean && echo -e " » 清理完成！\n » Clean Done! "
