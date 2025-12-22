@@ -4,22 +4,23 @@
 >[!CAUTION]
 > The main branch currently differs significantly from Releases. General users are advised to download the Release version directly, while adventurous users can compile and experience it themselves (not recommended). The latest Release version does not yet support internationalization!
 
-   # Install ?
+   # Installation?
 
-   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) Or Build and Install:
+   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) or Build from source:
+``` shell
+#(Please configure the NDK and set the variable $NDK to the NDK root directory path)
 
-```
 sudo apt install zip make
 
-git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox
+git clone https://github.com/FLYCOM-E/ClearBox
+cd ClearBox && chmod +x *
 
-export CC=clang # (Use cross-compilation tools if the build device architecture differs from the target device)
-
+export API=21 #(Can be adjusted according to the required target API version)
 export M_LANG=en_US
 
-make -j4 && make module_tar && make clean
+./build.sh aarch64 #(Options: aarch64, armv7a, x86_64, i686)
 ```
-Flash ClearBox.zip
+Flash **ClearBox_en_US.zip**
 
 
    # What is **ClearBox**?

@@ -7,19 +7,21 @@
 
    # 安裝？
 
-   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) 或 構建安裝：
-```
+   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) 或 自行建置安裝：
+``` shell
+#(請先安裝並設定 NDK，將變數 $NDK 指向 NDK 根目錄)
+
 sudo apt install zip make
 
-git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox
+git clone https://github.com/FLYCOM-E/ClearBox
+cd ClearBox && chmod +x *
 
-export CC=clang #(如果構建設備非最終設備架構，請使用交叉編譯工具）
-
+export API=21  #(可依需求自行調整目標 API 版本)
 export M_LANG=zh_TW
 
-make -j4 && make module_tar && make clean
+./build.sh aarch64  #(可選 aarch64、armv7a、x86_64、i686)
 ```
-刷入 **ClearBox.zip**
+刷入 **ClearBox_zh_TW.zip**
 
 
    # 什麼是 **ClearBox** ？

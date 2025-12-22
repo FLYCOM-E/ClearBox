@@ -2,7 +2,7 @@
 
 
    # 🌍 ？
-> | [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) | [**繁体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) |
+> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) **|** [**繁体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
 
 
 >[!CAUTION]
@@ -12,18 +12,20 @@
    # 安装？
 
    ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) 或 构建安装：
-```
+``` shell
+#(请配置NDK并设置变量$NDK为NDK根目录路径)
+
 sudo apt install zip make
 
-git clone https://github.com/FLYCOM-E/ClearBox && cd ClearBox
+git clone https://github.com/FLYCOM-E/ClearBox
+cd ClearBox && chmod +x *
 
-export CC=clang #(如果构建设备非最终设备架构，请使用交叉编译工具）
-
+export API=21 #(可以自行根据需要调整目标api版本)
 export M_LANG=zh_CN
 
-make -j4 && make module_tar && make clean
+./build.sh aarch64 #(可选aarch64、armv7a、x86_64、i686)
 ```
-刷入 **ClearBox.zip**
+刷入 **ClearBox_zh_CN.zip**
 
 
    # 什么是 **ClearBox** ？
