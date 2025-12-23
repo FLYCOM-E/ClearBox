@@ -20,7 +20,7 @@ bin_dir = Module_Files/wipe_cache
 TMP_DIR = tmp
 
 ALL_FILE = $(home_dir)/BashCore \
-			$(bin_dir)/StopCache \
+			$(bin_dir)/StopCached \
 			$(bin_dir)/AppClean \
 			$(bin_dir)/CacheClean \
 			$(bin_dir)/Dexoat \
@@ -35,9 +35,9 @@ ALL_FILE = $(home_dir)/BashCore \
 all: $(ALL_FILE)
 .PHONY: all
 
-$(bin_dir)/StopCache: src/StopCache.c
+$(bin_dir)/StopCached: src/StopCached.c
 	@mkdir -p $(bin_dir)
-	$(CC) $(CFLAGS) src/StopCache.c -o $(bin_dir)/StopCache
+	$(CC) $(CFLAGS) src/StopCached.c -o $(bin_dir)/StopCached
 
 $(home_dir)/BashCore: src/BashCore.c
 	$(CC) $(CFLAGS) src/BashCore.c -o $(home_dir)/BashCore

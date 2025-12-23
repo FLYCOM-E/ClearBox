@@ -90,7 +90,7 @@ echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
 if [ "$stopcache" = 1 ]; then
     if ! pgrep "StopCache" >/dev/null 2>&1; then
-        "$home_dir/wipe_cache/StopCache" -b "$bin_dir" -w "$work_dir"
+        "$home_dir/wipe_cache/StopCached" -b "$bin_dir" -w "$work_dir"
     fi
 fi
 ######
