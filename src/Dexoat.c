@@ -52,7 +52,29 @@ static int CustDexOat(char * mode)
 {
     printf(L_DO_RUN_CUST, mode);
     fflush(stdout);
-    char command[strlen(mode) + 64];
-    snprintf(command, sizeof(command), "cmd package compile -m %s -f -a", mode);
-    return system(command);
+    
+    pid_t newPid = fork();
+    if (newPid == -1)
+    {
+        return 1;
+    }
+    if (newPid == 0)
+    {
+        execlp("cmd", "cmd", "package", "compile", "-m", mode, "-f", "-a", NULL);
+        _exit(127);
+    }
+    else
+    {
+        int end = 0;
+        if (waitpid(newPid, &end, 0) == -1)
+        {
+            return 1;
+        }
+        if (WIFEXITED(end) == 0 && WEXITSTATUS(end) != 0)
+        {
+            return 1;
+        }
+    }
+    
+    return 0;
 }
