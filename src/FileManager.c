@@ -1,6 +1,7 @@
 // 此Code来自ClearBox模块，用于内部储存指定格式文件清理
 #include "BashCore.h"
 
+#define MAX_CONFIG_NAME 64
 #define MAX_ARGS_SIZE 32
 #define CONFIG_MAX_ARGS 512
 #define F_DIR_NAME "Documents"
@@ -14,59 +15,63 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
 
 int file_clear = 0;
 
-int main(int COMI, char * COM[])
+int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
         printf(L_NOT_USE_ROOT);
         return 1;
     }
-    if (COMI < 5)
+    
+    argc--;
+    argv++;
+    if (argc < 5)
     {
         printf(L_ARGS_FAILED);
         return 1;
     }
     
-    char work_dir[128] = "", config_name[64] = "", mode[64] = "";
-    for (int i = 0; i < COMI - 1; i++)
+    char * work_dir = NULL;
+    char * config_name = NULL;
+    char * mode = NULL;
+    
+    while (argc > 1)
     {
-        if (strcmp(COM[i], "-w") == 0)
+        if (strcmp(argv[0], "-w") == 0)
         {
-            if (strlen(COM[i + 1]) > 128)
+            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
                 printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
-            if (access(COM[i + 1], F_OK) != 0)
+            if (access(argv[1], F_OK) != 0)
             {
                 printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
-            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
-            work_dir[strcspn(work_dir, "\n")] = 0;
+            work_dir = argv[1];
+            argc -= 2;
+            argv += 2;
         }
-        if (strcmp(COM[i], "-m") == 0)
+        else if (strcmp(argv[0], "-m") == 0)
         {
-            if (strlen(COM[i + 1]) > 60)
+            mode = argv[1];
+            argc -= 2;
+            argv += 2;
+        }
+        else if (strcmp(argv[0], "-n") == 0)
+        {
+            if (strlen(argv[1]) > MAX_CONFIG_NAME)
             {
                 printf(L_MODE_TOOLONG);
                 return 1;
             }
-            snprintf(mode, sizeof(mode), "%s", COM[i + 1]);
-            mode[strcspn(mode, "\n")] = 0;
-        }
-        if (strcmp(COM[i], "-n") == 0)
-        {
-            if (strlen(COM[i + 1]) > 60)
-            {
-                printf(L_MODE_TOOLONG);
-                return 1;
-            }
-            snprintf(config_name, sizeof(config_name), "%s", COM[i + 1]);
-            config_name[strcspn(config_name, "\n")] = 0;
+            config_name = argv[1];
+            argc -= 2;
+            argv += 2;
         }
     }
-    if (strcmp(work_dir, "") == 0)
+    if (work_dir == NULL)
     {
         printf(L_ARG_CONFIGPATH_ERR);
         return 1;
@@ -74,7 +79,7 @@ int main(int COMI, char * COM[])
     if (strcmp(mode, "fileclean") == 0)
     {
         // 文件清理模式需要传入配置名称
-        if (strcmp(config_name, "") == 0)
+        if (config_name == NULL)
         {
             printf(L_ARGS_FAILED);
             return 1;
@@ -83,7 +88,7 @@ int main(int COMI, char * COM[])
     }
     else if (strcmp(mode, "fileall") == 0)
     {
-        snprintf(config_name, sizeof(config_name), "(null)");
+        config_name = NULL;
     }
     else
     {
