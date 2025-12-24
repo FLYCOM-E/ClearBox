@@ -14,6 +14,7 @@
 
 #define MAX_PACKAGE 256
 #define MAX_PATH 4096
+#define MAX_WORK_DIR_LEN 512
 
 #ifdef zh_CN
     #include "LANG/zh_CN.h"

@@ -3,66 +3,78 @@
 
 #define MAX_APP_NAME 128
 #define DATA_DIR "/data/data" //Max Size 62
-#define CONFIG_DIR_NAME "清理规则" // Max Size 14
+#define CONFIG_DIR_NAME "清理规则"
 
 static int findPackageInProFile(char * package, char * config_file);
 
-int main(int COMI, char * COM[])
+int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
         printf(L_NOT_USE_ROOT);
         return 1;
     }
-    if (COMI < 5)
+    
+    argc--;
+    argv++;
+    if (argc < 4)
     {
         printf(L_ARGS_FAILED);
         return 1;
     }
     
+    char * work_dir = NULL;
+    char * app_package = NULL;
+    
     // Get work_dir & package
-    char work_dir[128] = "", app_package[MAX_PACKAGE] = "";
-    for (int i = 0; i < COMI - 1; i++)
+    while (argc > 1)
     {
-        if (strcmp(COM[i], "-w") == 0)
+        if (strcmp(argv[0], "-w") == 0)
         {
-            if (strlen(COM[i + 1]) > 128)
-            {
-                printf(L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(COM[i + 1], F_OK) != 0)
+            if (access(argv[1], F_OK) != 0)
             {
                 printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
-            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
-            work_dir[strcspn(work_dir, "\n")] = 0;
+            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
+            {
+                printf(L_CONFIG_PATH_TOOLONG);
+                return 1;
+            }
+            work_dir = argv[1];
+            argc -= 2;
+            argv += 2;
         }
-        if (strcmp(COM[i], "-p") == 0)
+        else if (strcmp(argv[0], "-p") == 0)
         {
-            if (strlen(COM[i + 1]) > MAX_PACKAGE)
+            if (strlen(argv[1]) > MAX_PACKAGE - 2) // -2 for '\0'
             {
                 printf(L_PACKAGE_TOOLONG, MAX_PACKAGE);
                 return 1;
             }
-            snprintf(app_package, sizeof(app_package), "%s", COM[i + 1]);
-            app_package[strcspn(app_package, "\n")] = 0;
+            app_package = argv[1];
+            argc -= 2;
+            argv += 2;
+        }
+        else
+        {
+            printf(L_ARGS_FAILED_2);
+            return 1;
         }
     }
-    if (strcmp(work_dir, "") == 0)
+    if (work_dir == NULL)
     {
         printf(L_ARG_CONFIGPATH_ERR);
         return 1;
     }
-    if (strcmp(app_package, "") == 0)
+    if (app_package == NULL)
     {
         printf(L_ARG_PACKAGE_ERR);
         return 1;
     }
     
     // config dir
-    char config_dir[strlen(work_dir) + 16];
+    char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     if (access(config_dir, F_OK) != 0)
     {
