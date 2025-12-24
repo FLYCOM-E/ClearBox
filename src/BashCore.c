@@ -24,14 +24,14 @@ static int DexoatSYSTEM_DEXOAT(char * home_dir);
 static int DexoatCUST_DEXOAT(char * home_dir, char * str);
 static int FreeZer(char * home_dir);
 
-int main(int COMI, char * COM[])
+int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
         printf(L_NOT_USE_ROOT);
         return 1;
     }
-    if (COMI < 2)
+    if (argc < 2)
     {
         printf(L_ARGS_FAILED);
         return 1;
@@ -129,7 +129,7 @@ int main(int COMI, char * COM[])
     }
     
     // 根据输入参数执行对应操作
-    if (strcasecmp(COM[1], "ClearAll") == 0)
+    if (strcasecmp(argv[1], "ClearAll") == 0)
     {
         clearCache(home_dir, work_dir);
         listDir(home_dir, work_dir);
@@ -139,7 +139,7 @@ int main(int COMI, char * COM[])
         FreeZer(home_dir);
         fprintf(log_file_fp, "I [%s] 一键优化清理\n", now_time);
     }
-    else if (strcasecmp(COM[1], "ClearCache") == 0)
+    else if (strcasecmp(argv[1], "ClearCache") == 0)
     {
         if (clearCache(home_dir, work_dir) == 0)
         {
@@ -150,7 +150,7 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 清理第三方软件缓存失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "Clear_SCache") == 0)
+    else if (strcasecmp(argv[1], "Clear_SCache") == 0)
     {
         if (clearSystemCache(home_dir, work_dir) == 0)
         {
@@ -161,7 +161,7 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 清理系统软件缓存失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "List_Dir") == 0)
+    else if (strcasecmp(argv[1], "List_Dir") == 0)
     {
         if (listDir(home_dir, work_dir) == 0)
         {
@@ -172,7 +172,7 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 自定义规则清理失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "All_Dir") == 0)
+    else if (strcasecmp(argv[1], "All_Dir") == 0)
     {
         if (allDir(home_dir, work_dir, bin_dir) == 0)
         {
@@ -183,9 +183,9 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 清理储存目录失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "File_Clear") == 0)
+    else if (strcasecmp(argv[1], "File_Clear") == 0)
     {
-        if (fileClear(home_dir, work_dir, COM[2]) == 0)
+        if (fileClear(home_dir, work_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "I [%s] 自定义文件清理\n", now_time);
         }
@@ -194,9 +194,9 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 自定义文件清理失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "Clear_App") == 0)
+    else if (strcasecmp(argv[1], "Clear_App") == 0)
     {
-        if (clearApp(home_dir, work_dir, COM[2]) == 0)
+        if (clearApp(home_dir, work_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "I [%s] 自定义软件清理\n", now_time);
         }
@@ -205,7 +205,7 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 自定义软件清理失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "File_All") == 0)
+    else if (strcasecmp(argv[1], "File_All") == 0)
     {
         if (fileAll(home_dir, work_dir) == 0)
         {
@@ -216,29 +216,29 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 自定义文件归类失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "StopInstall") == 0)
+    else if (strcasecmp(argv[1], "StopInstall") == 0)
     {
-        if (stopInstall(home_dir, work_dir, bin_dir, COM[2]) == 0)
+        if (stopInstall(home_dir, work_dir, bin_dir, argv[2]) == 0)
         {
-            fprintf(log_file_fp, "I [%s] %s 阻止安装\n", now_time, COM[2]);
+            fprintf(log_file_fp, "I [%s] %s 阻止安装\n", now_time, argv[2]);
         }
         else
         {
-            fprintf(log_file_fp, "E [%s] %s 阻止安装失败\n", now_time, COM[2]);
+            fprintf(log_file_fp, "E [%s] %s 阻止安装失败\n", now_time, argv[2]);
         }
     }
-    else if (strcasecmp(COM[1], "StopStorage") == 0)
+    else if (strcasecmp(argv[1], "StopStorage") == 0)
     {
-        if (stopStorage(home_dir, work_dir, bin_dir, COM[2]) == 0)
+        if (stopStorage(home_dir, work_dir, bin_dir, argv[2]) == 0)
         {
-            fprintf(log_file_fp, "I [%s] %s 内部储存固定\n", now_time, COM[2]);
+            fprintf(log_file_fp, "I [%s] %s 内部储存固定\n", now_time, argv[2]);
         }
         else
         {
-            fprintf(log_file_fp, "E [%s] %s 内部储存固定失败\n", now_time, COM[2]);
+            fprintf(log_file_fp, "E [%s] %s 内部储存固定失败\n", now_time, argv[2]);
         }
     }
-    else if (strcasecmp(COM[1], "F2fs_GC") == 0)
+    else if (strcasecmp(argv[1], "F2fs_GC") == 0)
     {
         if (f2fsGC(home_dir) == 0)
         {
@@ -249,7 +249,7 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] F2FS GC 失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "Dexoat_1") == 0)
+    else if (strcasecmp(argv[1], "Dexoat_1") == 0)
     {
         if (DexoatSYSTEM_DEXOAT(home_dir) == 0)
         {
@@ -260,9 +260,9 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 触发系统Dexoat失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "Dexoat_2") == 0)
+    else if (strcasecmp(argv[1], "Dexoat_2") == 0)
     {
-        if (DexoatCUST_DEXOAT(home_dir, COM[2]) == 0)
+        if (DexoatCUST_DEXOAT(home_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "I [%s] 自定义模式Dexoat\n", now_time);
         }
@@ -271,7 +271,7 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] 自定义模式Dexoat失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "Dexoat_3") == 0)
+    else if (strcasecmp(argv[1], "Dexoat_3") == 0)
     {
         if (DexoatCUST_DEXOAT(home_dir, "space") == 0)
         {
@@ -282,13 +282,13 @@ int main(int COMI, char * COM[])
             fprintf(log_file_fp, "E [%s] Dexoat RESET 失败\n", now_time);
         }
     }
-    else if (strcasecmp(COM[1], "Freezer") == 0)
+    else if (strcasecmp(argv[1], "Freezer") == 0)
     {
         FreeZer(home_dir);
     }
-    else if (strcasecmp(COM[1], "configManager") == 0)
+    else if (strcasecmp(argv[1], "configManager") == 0)
     {
-        configFunction(home_dir, COM[2], COM[3]);
+        configFunction(home_dir, argv[2], argv[3]);
     }
     else
     {

@@ -5,39 +5,44 @@
 
 static int remove_all(char * path);
 
-int main(int COMI, char * COM[])
+int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
         printf(L_NOT_USE_ROOT);
         return 1;
     }
-    if (COMI < 2)
+    
+    argc--;
+    argv++;
+    if (argc < 1)
     {
         printf(L_ARGS_FAILED);
         return 1;
     }
     
-    char work_dir[128] = "";
-    for (int i = 0; i < COMI - 1; i++)
+    char * work_dir = NULL;
+    
+    while (argc > 1)
     {
-        if (strcmp(COM[i], "-w") == 0)
+        if (strcmp(argv[0], "-w") == 0)
         {
-            if (strlen(COM[i + 1]) > 128)
+            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
                 printf(L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
-            if (access(COM[i + 1], F_OK) != 0)
+            if (access(argv[1], F_OK) != 0)
             {
                 printf(L_CONFIG_PATH_NOTFIND);
                 return 1;
             }
-            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
-            work_dir[strcspn(work_dir, "\n")] = 0;
+            work_dir = argv[1];
+            argc -= 2;
+            argv += 2;
         }
     }
-    if (strcmp(work_dir, "") == 0)
+    if (work_dir == NULL)
     {
         printf(L_ARG_CONFIGPATH_ERR);
         return 1;

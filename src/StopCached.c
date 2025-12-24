@@ -12,59 +12,66 @@
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
 
-int main(int COMI, char * COM[])
+int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
         printf(" » Please use root privileges!\n");
         return 1;
     }
-    if (COMI < 4)
+    
+    argc--;
+    argv++;
+    if (argc < 3)
     {
         printf(" » Cmd args Failed! \n");
         return 1;
     }
     
-    char work_dir[128] = "", bin_dir[128] = "";
-    for (int i = 0; i < COMI - 1; i++)
+    char * work_dir = NULL;
+    char * bin_dir = NULL;
+    
+    while (argc > 1)
     {
-        if (strcmp(COM[i], "-w") == 0) //work_dir定义
+        if (strcmp(argv[0], "-w") == 0) //work_dir
         {
-            if (strlen(COM[i + 1]) > 128)
+            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
                 printf(" » Config dir is Long! \n");
                 return 1;
             }
-            else if (access(COM[i + 1], F_OK) != 0)
+            else if (access(argv[1], F_OK) != 0)
             {
                 printf(" » Config dir Not Find! \n");
                 return 1;
             }
-            snprintf(work_dir, sizeof(work_dir), "%s", COM[i + 1]);
-            work_dir[strcspn(work_dir, "\n")] = 0;
+            work_dir = argv[1];
+            argc -= 2;
+            argv += 2;
         }
-        if (strcmp(COM[i], "-b") == 0) //bin_dir定义
+        else if (strcmp(argv[0], "-b") == 0) //bin_dir
         {
-            if (strlen(COM[i + 1]) > 128)
+            if (strlen(argv[1]) > MAX_BIN_DIR_LEN)
             {
                 printf(" » Bin dir is Long! \n");
                 return 1;
             }
-            else if (access(COM[i + 1], F_OK) != 0)
+            else if (access(argv[1], F_OK) != 0)
             {
                 printf(" » Bin dir Not Find! \n");
                 return 1;
             }
-            snprintf(bin_dir, sizeof(bin_dir), "%s", COM[i + 1]);
-            bin_dir[strcspn(bin_dir, "\n")] = 0;
+            bin_dir = argv[1];
+            argc -= 2;
+            argv += 2;
         }
     }
-    if (strcmp(work_dir, "") == 0)
+    if (work_dir == NULL)
     {
         printf(" » Config dir Not Find! \n");
         return 1;
     }
-    if (strcmp(bin_dir, "") == 0)
+    if (bin_dir == NULL)
     {
         printf(" » Bin dir Not Find! \n");
         return 1;
@@ -95,7 +102,6 @@ int main(int COMI, char * COM[])
     FILE * rom_file_fp = fopen(rom_file, "r");
     if (rom_file_fp)
     {
-        //循环遍历获取储存值
         while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp) != NULL)
         {
             rom_key_line[strcspn(rom_key_line, "\n")] = 0;

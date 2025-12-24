@@ -4,31 +4,31 @@
 static int SystemDexOat();
 static int CustDexOat(char * mode);
 
-int main(int COMI, char * COM[])
+int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
         printf(L_NOT_USE_ROOT);
         return 1;
     }
-    if (COMI < 2)
+    if (argc < 2)
     {
         printf(L_ARGS_FAILED);
         return 1;
     }
     
-    if (strcasecmp(COM[1], "SYSTEM_DEXOAT") == 0)
+    if (strcasecmp(argv[1], "SYSTEM_DEXOAT") == 0)
     {
         return SystemDexOat();
     }
-    else if (strcasecmp(COM[1], "FAST_DEXOAT") == 0)
+    else if (strcasecmp(argv[1], "FAST_DEXOAT") == 0)
     {
-        if (COMI < 3)
+        if (argc < 3)
         {
             printf(L_ARGS_FAILED);
             return 1;
         }
-        return CustDexOat(COM[2]);
+        return CustDexOat(argv[2]);
     }
     else
     {

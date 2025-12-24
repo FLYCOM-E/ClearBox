@@ -12,24 +12,24 @@ static int IDLE_MAINT();
 static int get_f2fs_dirty(char * dirty_file);
 static int get_f2fs_free(char * free_file);
 
-int main(int COMI, char * COM[])
+int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
         printf(L_NOT_USE_ROOT);
         return 1;
     }
-    if (COMI < 2)
+    if (argc < 2)
     {
         printf(L_ARGS_FAILED);
         return 1;
     }
     
-    if (strcasecmp(COM[1], "F2FS_GC") == 0)
+    if (strcasecmp(argv[1], "F2FS_GC") == 0)
     {
         return F2FS_GC();
     }
-    else if (strcasecmp(COM[1], "FAST_GC") == 0)
+    else if (strcasecmp(argv[1], "FAST_GC") == 0)
     {
         return IDLE_MAINT();
     }
