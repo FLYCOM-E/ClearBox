@@ -398,7 +398,7 @@ static int fileAll(char * home_dir, char * work_dir)
 {
     char bash[128] = "";
     snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-m", "fileall", NULL};
+    char * args[] = {bash, "-w", work_dir, "-m", "fileall", "-n", "null", NULL};
     return Run(args);
 }
 
@@ -433,7 +433,7 @@ static int fileAll2(char * home_dir, char * work_dir)
     {
         char bash[128] = "";
         snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
-        char * args[] = {bash, "-w", work_dir, "-m", "fileall", NULL};
+        char * args[] = {bash, "-w", work_dir, "-m", "fileall", "-n", "null", NULL};
         Run(args);
     }
     return 0;
