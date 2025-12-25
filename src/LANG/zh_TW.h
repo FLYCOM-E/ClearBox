@@ -113,7 +113,7 @@
 #define L_SC_CLEAR_ERR " » 清理 %s 儲存快取失敗！\n"
 #define L_SC_CLEAR_CACHE_DONE " » 共清理 %d 個軟體快取！\n"
 #define L_SC_CLEAR_DIRTY " » 清理成功！共清理 %d 個空檔案/資料夾及Log檔案\n"
-#define L_SC_CLEAR_DIRTY_ERR" » 空檔案/資料夾及Log檔案清理失敗！\n"
+#define L_SC_CLEAR_DIRTY_ERR " » 空檔案/資料夾及Log檔案清理失敗！\n"
 
 // For StorageRuleClean.c
 #define L_SR_OPEN_CONFIG_ERR " » %s 配置開啟失敗！自動跳過\n"
