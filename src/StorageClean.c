@@ -264,6 +264,15 @@ static int StorageClean(char * dir)
         }
         if (S_ISDIR(file_stat.st_mode))
         {
+            if (strcmp(entry -> d_name, ".thumbnails") == 0)
+            {
+                if (s_remove(path) == 0)
+                {
+                    count++;
+                    count_all--;
+                    continue;
+                }
+            }
             count += StorageClean(path);
             if (access(path, F_OK) != 0) count_all--;
         }
