@@ -5,12 +5,10 @@
 #define WHITELIST "%s/ClearWhitelist.prop"
 #define STORAGES_DIR "/storage/%s" //Max Size 100
 #define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
-#define DELETE_LOGFILE "\"%s/busybox\" find %s -type f -name \"*.log\" -delete" //Max Size 62
-#define DELETE_DIR "\"%s/busybox\" find %s -type d -empty -delete" //Max Size 62
 
 static int DeleteAppCache(char * data_path, char * work_dir);
 static int CheckWhiteList(char * package, char * whitelist_file);
-static int DelateMediaCache(char * bin_dir, char * storage_dir);
+static int StorageClean(char * storage_dir);
 static int s_remove(char * path);
 
 int main(int argc, char * argv[])
@@ -23,14 +21,13 @@ int main(int argc, char * argv[])
     
     argc--;
     argv++;
-    if (argc < 3)
+    if (argc < 1)
     {
         printf(L_ARGS_FAILED);
         return 1;
     }
     
     char * work_dir = NULL;
-    char * bin_dir = NULL;
     
     while (argc > 1)
     {
@@ -50,31 +47,15 @@ int main(int argc, char * argv[])
             argc -= 2;
             argv += 2;
         }
-        if (strcmp(argv[0], "-b") == 0)
+        else
         {
-            if (strlen(argv[1]) > MAX_BIN_DIR_LEN)
-            {
-                printf(L_BIN_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(argv[1], F_OK) != 0)
-            {
-                printf(L_BIN_PATH_NOTFIND);
-                return 1;
-            }
-            bin_dir = argv[1];
-            argc -= 2;
-            argv += 2;
+            printf(L_ARGS_FAILED_2);
+            return 1;
         }
     }
     if (work_dir == NULL)
     {
         printf(L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    if (bin_dir == NULL)
-    {
-        printf(L_ARG_BINPATH_ERR);
         return 1;
     }
     
@@ -119,21 +100,47 @@ int main(int argc, char * argv[])
     }
     
     // 处理内部储存
-    if (DeleteAppCache(data_dir, work_dir) == 0 && DelateMediaCache(bin_dir, data_dir) == 0)
+    if (DeleteAppCache(data_dir, work_dir) == 0)
     {
         printf(L_SC_SUCCESSFUL_STORAGE);
+        fflush(stdout);
     }
+    int clean_count = StorageClean(data_dir);
+    if (clean_count == -1)
+    {
+        printf(L_SC_CLEAR_DIRTY_ERR);
+        fflush(stdout);
+    }
+    else
+    {
+        printf(L_SC_CLEAR_DIRTY, clean_count);
+        fflush(stdout);
+    }
+    
     if (cleardisk == 1) // 允许清理外部储存
     {
         if (access(sdcard_dir, F_OK) == 0) // 外部储存存在则处理
         {
-            if (DeleteAppCache(sdcard_dir, work_dir) == 0 && DelateMediaCache(bin_dir, sdcard_dir) == 0)
+            if (DeleteAppCache(sdcard_dir, work_dir) == 0)
             {
                 printf(L_SC_SUCCESSFUL_SD, sdcard_id);
+                fflush(stdout);
             }
+        }
+        clean_count = StorageClean(sdcard_dir);
+        if (clean_count == -1)
+        {
+            printf(L_SC_CLEAR_DIRTY_ERR);
+            fflush(stdout);
+        }
+        else
+        {
+            printf(L_SC_CLEAR_DIRTY, clean_count);
+            fflush(stdout);
         }
     }
     
+    return 0;
 }
 
 /* 
@@ -164,7 +171,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
     DIR * app_data_dir_dp = opendir(app_data_path);
     if (app_data_dir_dp == NULL)
     {
-        printf(L_OPEN_PATH_FAILED, data_path);
+        printf(L_OPEN_PATH_FAILED, app_data_path);
         return 1;
     }
     
@@ -208,6 +215,98 @@ static int DeleteAppCache(char * data_path, char * work_dir)
 }
 
 /*
+递归清理函数
+接收：
+    char * storage_dir 储存根目录
+返回：
+    int 成功返回清理空文件夹/文件数量，失败返回-1
+*/
+static int StorageClean(char * dir)
+{
+    if (access(dir, F_OK) != 0)
+    {
+        return -1;
+    }
+    
+    // 打开目录
+    int count = 0;
+    int count_all = 0;
+    struct stat file_stat;
+    struct dirent * entry;
+    
+    DIR * dir_dp = opendir(dir);
+    if (dir_dp == NULL)
+    {
+        return -1;
+    }
+    
+    // 遍历目录
+    while ((entry = readdir(dir_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+           strcmp(entry -> d_name, "..") == 0)
+        {
+            continue;
+        }
+        
+        count_all++;
+        char path[strlen(dir) + strlen(entry -> d_name) + 32];
+        snprintf(path, sizeof(path), "%s/%s", dir, entry -> d_name);
+        
+        if (lstat(path, &file_stat) == -1)
+        {
+            continue;
+        }
+        
+        if (S_ISLNK(file_stat.st_mode))
+        {
+            continue;
+        }
+        if (S_ISDIR(file_stat.st_mode))
+        {
+            count += StorageClean(path);
+            if (access(path, F_OK) != 0) count_all--;
+        }
+        else
+        {
+            if (file_stat.st_size < 1)
+            {
+                if (remove(path) == 0)
+                {
+                    count++;
+                    count_all--;
+                }
+                continue;
+            }
+            char * str = strrchr(entry -> d_name, '.');
+            if (str)
+            {
+                if (strcmp(str + 1, "log") == 0)
+                {
+                    if (remove(path) == 0)
+                    {
+                        count++;
+                        count_all--;
+                    }
+                }
+            }
+        }
+        
+    }
+    closedir(dir_dp);
+    
+    if (count_all == 0)
+    {
+        if (remove(dir) == 0)
+        {
+            count++;
+        }
+    }
+    
+    return count;
+}
+
+/*
 白名单检查函数
 接收：
     char * package 软件包名
@@ -236,75 +335,6 @@ static int CheckWhiteList(char * package, char * whitelist_file)
         }
         fclose(whilelist_file_fp);
     }
-    return 0;
-}
-
-/*
-内部储存清理函数
-接收：
-    char * bin_dir Bin目录
-    char * storage_dir 储存根目录
-返回：
-    int 成功返回0，失败返回1
-*/
-static int DelateMediaCache(char * bin_dir, char * storage_dir)
-{
-    if (access(bin_dir, F_OK) != 0)
-    {
-        return 1;
-    }
-    if (access(storage_dir, F_OK) != 0)
-    {
-        return 1;
-    }
-    
-    // 打开目录
-    struct dirent * entry;
-    DIR * dir_dp = opendir(storage_dir);
-    if (dir_dp == NULL)
-    {
-        return 1;
-    }
-    
-    // 遍历目录
-    while ((entry = readdir(dir_dp)))
-    {
-        if (strcmp(entry -> d_name, ".") == 0 ||
-           strcmp(entry -> d_name, "..") == 0)
-        {
-            continue;
-        }
-        
-        // 不想硬编码DCIM、Music......了，直接尝试查找删除所有路径下的吧
-        char path[strlen(storage_dir) + strlen(entry -> d_name) + 32];
-        snprintf(path, sizeof(path), "%s/%s/.thumbnails", storage_dir, entry -> d_name);
-        
-        if (access(path, F_OK) == 0)
-        {
-            if (s_remove(path) != 0)
-            {
-                printf(L_DELETE_ERR, path);
-            }
-        }
-    }
-    closedir(dir_dp);
-    
-    char d_log_command[strlen(bin_dir) + strlen(storage_dir) + 64],
-         d_dir_command[strlen(bin_dir) + strlen(storage_dir) + 64];
-    snprintf(d_log_command, sizeof(d_log_command), DELETE_LOGFILE, bin_dir, storage_dir);
-    snprintf(d_dir_command, sizeof(d_dir_command), DELETE_DIR, bin_dir, storage_dir);
-    
-    if (system(d_log_command) == 0 && system(d_dir_command) == 0)
-    {
-        printf(L_SC_CLEAR_DIRTY);
-    }
-    else
-    {
-        printf(L_SC_CLEAR_DIRTY_ERR);
-        /* 如果有人看到这里可能好奇为什么不返回 1
-        因为觉得这个是否清理成功没必要影响函数返回值 */
-    }
-    
     return 0;
 }
 

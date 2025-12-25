@@ -70,6 +70,11 @@ int main(int argc, char * argv[])
             argc -= 2;
             argv += 2;
         }
+        else
+        {
+            printf(L_ARGS_FAILED_2);
+            return 1;
+        }
     }
     if (work_dir == NULL)
     {
@@ -371,11 +376,15 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
         snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
         
         if (strcmp(path, file_dir) == 0 ||
-           stat(path, &file_stat) == -1)
+           lstat(path, &file_stat) == -1)
         {
             continue;
         }
         
+        if (S_ISLNK(file_stat.st_mode))
+        {
+            continue;
+        }
         if (S_ISDIR(file_stat.st_mode))
         {
             file_count += FindFile(path, file_dir, args, count);

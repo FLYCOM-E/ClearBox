@@ -41,6 +41,11 @@ int main(int argc, char * argv[])
             argc -= 2;
             argv += 2;
         }
+        else
+        {
+            printf(L_ARGS_FAILED_2);
+            return 1;
+        }
     }
     if (work_dir == NULL)
     {

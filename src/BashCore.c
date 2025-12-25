@@ -11,7 +11,7 @@ static int configFunction(char * home_dir, char * mode, char * config_file);
 static int clearCache(char * home_dir, char * work_dir);
 static int clearSystemCache(char * home_dir, char * work_dir);
 static int listDir(char * home_dir, char * work_dir);
-static int allDir(char * home_dir, char * work_dir, char * bin_dir);
+static int allDir(char * home_dir, char * work_dir);
 static int fileClear(char * home_dir, char * work_dir, char * str);
 static int clearApp(char * home_dir, char * work_dir, char * str);
 static int fileAll(char * home_dir, char * work_dir);
@@ -133,7 +133,7 @@ int main(int argc, char * argv[])
     {
         clearCache(home_dir, work_dir);
         listDir(home_dir, work_dir);
-        allDir(home_dir, work_dir, bin_dir);
+        allDir(home_dir, work_dir);
         fileAll2(home_dir, work_dir);
         fastGC(home_dir);
         FreeZer(home_dir);
@@ -174,7 +174,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "All_Dir") == 0)
     {
-        if (allDir(home_dir, work_dir, bin_dir) == 0)
+        if (allDir(home_dir, work_dir) == 0)
         {
             fprintf(log_file_fp, "I [%s] 清理储存目录\n", now_time);
         }
@@ -367,11 +367,11 @@ static int listDir(char * home_dir, char * work_dir)
 }
 
 // 清理储存目录
-static int allDir(char * home_dir, char * work_dir, char * bin_dir)
+static int allDir(char * home_dir, char * work_dir)
 {
     char bash[128] = "";
     snprintf(bash, sizeof(bash), "%s/%s/StorageClean", home_dir, BASH_DIR);
-    char * args[] = {bash, "-b", bin_dir, "-w", work_dir, NULL};
+    char * args[] = {bash, "-w", work_dir, NULL};
     return Run(args);
 }
 

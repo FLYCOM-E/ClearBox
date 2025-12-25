@@ -112,8 +112,8 @@
 #define L_SC_CLEAR " » Cleaning %s storage cache\n"
 #define L_SC_CLEAR_ERR " » Failed to clean %s storage cache!\n"
 #define L_SC_CLEAR_CACHE_DONE " » Cleared cache of %d applications in total!\n"
-#define L_SC_CLEAR_DIRTY " » Empty folders and log files cleaned successfully!\n"
-#define L_SC_CLEAR_DIRTY_ERR " » Failed to clean empty folders and log files!\n"
+#define L_SC_CLEAR_DIRTY " » Cleanup successful! A total of %d empty files/folders and Log files cleaned\n"
+#define L_SC_CLEAR_DIRTY_ERR" » Failed to clean empty files/folders and Log files!\n"
 
 // For StorageRuleClean.c
 #define L_SR_OPEN_CONFIG_ERR " » Failed to open %s configuration! Automatically skipped\n"

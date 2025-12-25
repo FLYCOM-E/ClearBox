@@ -65,6 +65,11 @@ int main(int argc, char * argv[])
             argc -= 2;
             argv += 2;
         }
+        else
+        {
+            printf(" » Incorrect arguments provided!\n");
+            return 1;
+        }
     }
     if (work_dir == NULL)
     {

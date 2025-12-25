@@ -112,8 +112,8 @@
 #define L_SC_CLEAR " » 清理 %s 储存缓存\n"
 #define L_SC_CLEAR_ERR " » 清理 %s 储存缓存失败！\n"
 #define L_SC_CLEAR_CACHE_DONE " » 共清理 %d 个软件缓存！\n"
-#define L_SC_CLEAR_DIRTY " » 空文件夹、log文件清理成功！\n"
-#define L_SC_CLEAR_DIRTY_ERR " » 空文件夹、log文件清理失败！\n"
+#define L_SC_CLEAR_DIRTY " » 清理成功！共清理 %d 个空文件/文件夹及Log文件\n"
+#define L_SC_CLEAR_DIRTY_ERR " » 空文件/夹及Log文件清理失败！\n"
 
 // For StorageRuleClean.c
 #define L_SR_OPEN_CONFIG_ERR " » %s 配置打开失败！自动跳过\n"

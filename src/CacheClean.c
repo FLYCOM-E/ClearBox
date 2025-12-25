@@ -56,6 +56,11 @@ int main(int argc, char * argv[])
             argc -= 2;
             argv += 2;
         }
+        else
+        {
+            printf(L_ARGS_FAILED_2);
+            return 1;
+        }
     }
     if (work_dir == NULL)
     {
@@ -321,7 +326,11 @@ static long GetPathSize(char * path)
         char dir[strlen(path) + strlen(entry -> d_name) + 2];
         snprintf(dir, sizeof(dir), "%s/%s", path, entry -> d_name);
         
-        if (stat(dir, &file_stat) == -1)
+        if (lstat(dir, &file_stat) == -1)
+        {
+            continue;
+        }
+        if (S_ISLNK(file_stat.st_mode))
         {
             continue;
         }
