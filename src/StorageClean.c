@@ -100,43 +100,36 @@ int main(int argc, char * argv[])
     }
     
     // 处理内部储存
-    if (DeleteAppCache(data_dir, work_dir) == 0)
-    {
-        printf(L_SC_SUCCESSFUL_STORAGE);
-        fflush(stdout);
-    }
+    DeleteAppCache(data_dir, work_dir);
     int clean_count = StorageClean(data_dir);
     if (clean_count == -1)
     {
         printf(L_SC_CLEAR_DIRTY_ERR);
-        fflush(stdout);
     }
     else
     {
         printf(L_SC_CLEAR_DIRTY, clean_count);
-        fflush(stdout);
     }
+    printf(L_SC_SUCCESSFUL_STORAGE);
+    fflush(stdout);
     
     if (cleardisk == 1) // 允许清理外部储存
     {
         if (access(sdcard_dir, F_OK) == 0) // 外部储存存在则处理
         {
-            if (DeleteAppCache(sdcard_dir, work_dir) == 0)
-            {
-                printf(L_SC_SUCCESSFUL_SD, sdcard_id);
-                fflush(stdout);
-            }
+            DeleteAppCache(sdcard_dir, work_dir);
             clean_count = StorageClean(sdcard_dir);
             if (clean_count == -1)
             {
                 printf(L_SC_CLEAR_DIRTY_ERR);
-                fflush(stdout);
             }
             else
             {
                 printf(L_SC_CLEAR_DIRTY, clean_count);
-                fflush(stdout);
+                
             }
+            printf(L_SC_SUCCESSFUL_SD, sdcard_id);
+            fflush(stdout);
         }
     }
     
