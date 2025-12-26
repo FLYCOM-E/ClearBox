@@ -126,17 +126,17 @@ int main(int argc, char * argv[])
                 printf(L_SC_SUCCESSFUL_SD, sdcard_id);
                 fflush(stdout);
             }
-        }
-        clean_count = StorageClean(sdcard_dir);
-        if (clean_count == -1)
-        {
-            printf(L_SC_CLEAR_DIRTY_ERR);
-            fflush(stdout);
-        }
-        else
-        {
-            printf(L_SC_CLEAR_DIRTY, clean_count);
-            fflush(stdout);
+            clean_count = StorageClean(sdcard_dir);
+            if (clean_count == -1)
+            {
+                printf(L_SC_CLEAR_DIRTY_ERR);
+                fflush(stdout);
+            }
+            else
+            {
+                printf(L_SC_CLEAR_DIRTY, clean_count);
+                fflush(stdout);
+            }
         }
     }
     
