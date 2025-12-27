@@ -109,6 +109,7 @@ int main(int argc, char * argv[])
             printf(L_SS_OPEN_STOP_STORAGE_FAILED);
             return 1;
         }
+        fflush(stdout);
     }
     else if (strcasecmp(mode, "RESET") == 0)
     {
@@ -122,6 +123,7 @@ int main(int argc, char * argv[])
             printf(L_SS_OFF_STOP_STORAGE_FAILED);
             return 1;
         }
+        fflush(stdout);
     }
     else
     {

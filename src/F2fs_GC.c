@@ -102,7 +102,6 @@ static int F2FS_GC()
     if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
     {
         printf(L_FG_START);
-        fflush(stdout);
         fclose(f2fs_sysfs_file_fp);
     }
     else
@@ -111,6 +110,7 @@ static int F2FS_GC()
         fclose(f2fs_sysfs_file_fp);
         return 1;
     }
+    fflush(stdout);
     
     // 等待循环
     char cache[16] = "";

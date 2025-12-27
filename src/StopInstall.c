@@ -134,6 +134,7 @@ int main(int argc, char * argv[])
                 printf(L_SI_OPEN_FAILED_SD);
             }
         }
+        fflush(stdout);
     }
     else if (strcasecmp(mode, "RESET") == 0)
     {
@@ -158,6 +159,7 @@ int main(int argc, char * argv[])
                 printf(L_SI_OFF_FAILED_SD);
             }
         }
+        fflush(stdout);
     }
     else
     {

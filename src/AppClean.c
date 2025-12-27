@@ -173,6 +173,7 @@ int main(int argc, char * argv[])
                         }
                         break;
                     }
+                    fflush(stdout);
                 }
                 else
                 {
@@ -241,6 +242,7 @@ int main(int argc, char * argv[])
                 printf(L_AC_CONFIG_ERR, config_name -> d_name);
                 break;
             }
+            fflush(stdout);
         }
         fclose(config_fp);
     }
@@ -253,7 +255,10 @@ int main(int argc, char * argv[])
     else
     {
         printf(L_AC_CLEAN_FAILED);
+        return -1;
     }
+    
+    return 0;
 }
 
 /*

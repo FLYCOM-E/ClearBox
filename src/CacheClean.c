@@ -236,7 +236,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                     count++;
                     clean_size += cache_size; // 记录清理大小
                     printf(L_CC_CLEAR, package_list_line + 8);
-                    fflush(stdout);
                 }
                 else
                 {
@@ -247,8 +246,8 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             {
                 no_count++;
                 printf(L_CC_CLEAR_SKIP, package_list_line + 8);
-                fflush(stdout);
             }
+            fflush(stdout);
         }
         if (package_list_fp) pclose(package_list_fp);
     }

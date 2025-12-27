@@ -200,6 +200,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
         {
             printf(L_SC_CLEAR_ERR, entry -> d_name);
         }
+        fflush(stdout);
     }
     closedir(app_data_dir_dp);
     

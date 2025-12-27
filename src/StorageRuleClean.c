@@ -83,6 +83,7 @@ int main(int argc, char * argv[])
         }
         
         printf(L_SR_START, config_file_name -> d_name);
+        fflush(stdout);
         
         int count = 0;
         char config_file_line[256] = "", dir[256] = "";
@@ -154,6 +155,7 @@ int main(int argc, char * argv[])
                     printf(L_SR_CLEAR_FAILED, path);
                 }
             }
+            fflush(stdout);
         }
         fclose(config_file_fp);
     }

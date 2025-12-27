@@ -166,6 +166,7 @@ int main(int argc, char * argv[])
             printf(L_FM_ALL_FAILED_STORAGE);
         }
     }
+    fflush(stdout);
     
     // 根据模式判断是否处理外置储存
     if (file_clear == 1)
@@ -209,6 +210,7 @@ int main(int argc, char * argv[])
             }
         }
     }
+    fflush(stdout);
     
     return 0;
 }
