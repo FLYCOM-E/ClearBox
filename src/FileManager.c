@@ -7,8 +7,9 @@
 #define F_DIR_NAME "Documents"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置"
-#define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
-#define STORAGES_DIR "/storage/%s" //Max Size 100
+#define GET_SDCARD_ID "ls /mnt/media_rw | grep .*- 2>/dev/null"
+#define STORAGES_DIR "/data/media/0" //Max Size 100
+#define SDCARD_DIR "/mnt/media_rw/%s" //Max Size 100
 
 static int ClearService(char * work_dir, char * storage_dir, char * config_name);
 static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
@@ -121,8 +122,8 @@ int main(int argc, char * argv[])
     }
     
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
-    snprintf(data_dir, sizeof(data_dir), STORAGES_DIR, "emulated/0");
-    snprintf(sdcard_dir, sizeof(sdcard_dir), STORAGES_DIR, sdcard_id);
+    snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
+    snprintf(sdcard_dir, sizeof(sdcard_dir), SDCARD_DIR, sdcard_id);
     
     // 打开设置信息文件并查找对应值
     FILE * settings_file_fp = fopen(settings_file, "r");
