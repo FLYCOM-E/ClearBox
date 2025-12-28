@@ -19,7 +19,7 @@ home_dir = Module_Files
 bin_dir = Module_Files/wipe_cache
 TMP_DIR = tmp
 
-FUNCTION_FILE = src/INCLUDE/functions.c
+FUNCTIONS_C = src/INCLUDE/functions.c
 ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/StopCached \
 			$(bin_dir)/AppClean \
@@ -44,10 +44,10 @@ $(home_dir)/BashCore: src/BashCore.c
 	$(CC) $(CFLAGS) src/BashCore.c -o $(home_dir)/BashCore
 
 $(bin_dir)/AppClean: src/AppClean.c
-	$(CC) $(CFLAGS) src/AppClean.c $(FUNCTION_FILE) -o $(bin_dir)/AppClean
+	$(CC) $(CFLAGS) src/AppClean.c $(FUNCTIONS_C) -o $(bin_dir)/AppClean
 
 $(bin_dir)/CacheClean: src/CacheClean.c
-	$(CC) $(CFLAGS) src/CacheClean.c $(FUNCTION_FILE) -o $(bin_dir)/CacheClean
+	$(CC) $(CFLAGS) src/CacheClean.c $(FUNCTIONS_C) -o $(bin_dir)/CacheClean
 
 $(bin_dir)/Dexoat: src/Dexoat.c
 	$(CC) $(CFLAGS) src/Dexoat.c -o $(bin_dir)/Dexoat
@@ -56,10 +56,10 @@ $(bin_dir)/FreeZer: src/FreeZer.c
 	$(CC) $(CFLAGS) src/FreeZer.c -o $(bin_dir)/FreeZer
 
 $(bin_dir)/StorageRuleClean: src/StorageRuleClean.c
-	$(CC) $(CFLAGS) src/StorageRuleClean.c $(FUNCTION_FILE) -o $(bin_dir)/StorageRuleClean
+	$(CC) $(CFLAGS) src/StorageRuleClean.c $(FUNCTIONS_C) -o $(bin_dir)/StorageRuleClean
 
 $(bin_dir)/StorageClean: src/StorageClean.c
-	$(CC) $(CFLAGS) src/StorageClean.c $(FUNCTION_FILE) -o $(bin_dir)/StorageClean
+	$(CC) $(CFLAGS) src/StorageClean.c $(FUNCTIONS_C) -o $(bin_dir)/StorageClean
 
 $(bin_dir)/F2fs_GC: src/F2fs_GC.c
 	$(CC) $(CFLAGS) src/F2fs_GC.c -o $(bin_dir)/F2fs_GC

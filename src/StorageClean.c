@@ -8,7 +8,6 @@
 #define SDCARD_DIR "/mnt/media_rw/%s" //Max Size 100
 
 static int DeleteAppCache(char * data_path, char * work_dir);
-static int CheckWhiteList(char * package, char * whitelist_file);
 static int StorageClean(char * storage_dir);
 
 int main(int argc, char * argv[])
@@ -185,7 +184,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
             continue;
         }
         // 白名单检查
-        if (CheckWhiteList(entry -> d_name, whitelist_file) == 1)
+        if (whiteListCheck(whitelist_file, entry -> d_name) == 1)
         {
             continue;
         }
@@ -307,36 +306,4 @@ static int StorageClean(char * dir)
     }
     
     return count;
-}
-
-/*
-白名单检查函数
-接收：
-    char * package 软件包名
-    char * whitelist_file 白名单文件
-返回：
-    int 找到返回1，未找到返回0，失败返回-1
-*/
-static int CheckWhiteList(char * package, char * whitelist_file)
-{
-    if (access(whitelist_file, F_OK) != 0)
-    {
-        return -1;
-    }
-    char line[MAX_PACKAGE] = "";
-    FILE * whilelist_file_fp = fopen(whitelist_file, "r");
-    if (whilelist_file_fp)
-    {
-        while (fgets(line, sizeof(line), whilelist_file_fp))
-        {
-            line[strcspn(line, "\n")] = 0;
-            if (strcmp(line, package) == 0)
-            {
-                fclose(whilelist_file_fp);
-                return 1;
-            }
-        }
-        fclose(whilelist_file_fp);
-    }
-    return 0;
 }
