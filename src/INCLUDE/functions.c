@@ -6,20 +6,19 @@
     char * path
     int all 是否删除目录本身，1删除，0跳过
 返回：
-    long 成功返回清理大小（字节），失败/为空返回0
+    long 成功返回清理大小（字节），失败返回-1
 */
 long s_remove(char * path, int all)
 {
     if (access(path, F_OK) != 0)
     {
-        return 0;
+        return -1;
     }
-    
     long size_byte = 0;
     struct stat file_stat;
     if (lstat(path, &file_stat) == -1)
     {
-        return 0;
+        return -1;
     }
     
     if (S_ISDIR(file_stat.st_mode))
@@ -35,7 +34,6 @@ long s_remove(char * path, int all)
                 {
                     continue;
                 }
-                
                 char paths[MAX_PATH] = "";
                 snprintf(paths, sizeof(paths), "%s/%s", path, entry -> d_name);
                 size_byte += s_remove(paths, 1);
@@ -54,6 +52,5 @@ long s_remove(char * path, int all)
             size_byte += file_stat.st_size;
         }
     }
-    
     return size_byte;
 }

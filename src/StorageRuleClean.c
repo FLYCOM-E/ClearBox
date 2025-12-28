@@ -119,7 +119,7 @@ int main(int argc, char * argv[])
             {
                 if (access(config_file_line, F_OK))
                 {
-                    if (s_remove(config_file_line, 1) == 0)
+                    if (s_remove(config_file_line, 1) != -1)
                     {
                         printf(L_SR_CLEAR_SUCCESSFUL, config_file_line);
                     }
@@ -144,7 +144,7 @@ int main(int argc, char * argv[])
                     printf(L_SR_LINE_FAILED_PATH_ERR, count);
                     continue;
                 }
-                if (s_remove(path, 1) != 0)
+                if (s_remove(path, 1) != -1)
                 {
                     printf(L_SR_CLEAR_SUCCESSFUL, path);
                 }

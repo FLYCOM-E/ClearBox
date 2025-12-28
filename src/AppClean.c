@@ -212,7 +212,7 @@ int main(int argc, char * argv[])
                 }
                 
                 int clear_size = s_remove(app_cf_dir, 0);
-                if (clear_size == 0)
+                if (clear_size == -1)
                 {
                     printf(L_AC_CLEAR_PATH_ERR, len_str);
                 }

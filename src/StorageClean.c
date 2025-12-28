@@ -190,7 +190,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
         }
         
         // Clear
-        if (s_remove(app_path, 0) != 0)
+        if (s_remove(app_path, 0) != -1)
         {
             printf(L_SC_CLEAR, entry -> d_name);
             clean_count++;
@@ -259,7 +259,7 @@ static int StorageClean(char * dir)
         {
             if (strcmp(entry -> d_name, ".thumbnails") == 0)
             {
-                if (s_remove(path, 1) != 0)
+                if (s_remove(path, 1) != -1)
                 {
                     count++;
                     count_all--;

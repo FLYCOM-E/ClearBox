@@ -230,7 +230,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                     continue;
                 }
                 
-                if (s_remove(app_cache_dir, 0) != 0)
+                if (s_remove(app_cache_dir, 0) != -1)
                 {
                     count++;
                     clean_size += cache_size; 
@@ -388,7 +388,7 @@ static int ClearSystemCache()
             }
             else
             {
-                if (s_remove(app_cache_path, 0) != 0)
+                if (s_remove(app_cache_path, 0) != -1)
                 {
                     printf(L_CC_CLEAR, package_list_line + 8);
                     fflush(stdout);
