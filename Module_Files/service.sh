@@ -30,16 +30,16 @@ StartSettings()
 {
     PropSetting()
     {
-        [ -z "$stopcache" ] && echo "stopcache=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$stopstorage" ] && echo "stopstorage=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$cleardisk" ] && echo "cleardisk=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$FileClear_Disk" ] && echo "FileClear_Disk=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop" && ReSource=1
-        [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=5" >> "$work_dir/settings.prop" && ReSource=1
+        [ -z "$stopcache" ] && echo "stopcache=0" >> "$work_dir/settings.prop"
+        [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop"
+        [ -z "$stopstorage" ] && echo "stopstorage=0" >> "$work_dir/settings.prop"
+        [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop"
+        [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop"
+        [ -z "$cleardisk" ] && echo "cleardisk=0" >> "$work_dir/settings.prop"
+        [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=0" >> "$work_dir/settings.prop"
+        [ -z "$FileClear_Disk" ] && echo "FileClear_Disk=0" >> "$work_dir/settings.prop"
+        [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop"
+        [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=5" >> "$work_dir/settings.prop"
     }
     ######
     prosetting()
@@ -67,29 +67,21 @@ StartSettings()
             [ ! "$name2" = "conf" ] && mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
         done
     }
-######
-if [ -d "$work_dir" ]; then
+    ######
+    touch "$work_dir/settings.prop" 2>/dev/null
     source "$work_dir/settings.prop"
     PropSetting &
     prosetting &
     wait
-    [ "$ReSource" = 1 ] && source "$work_dir/settings.prop"
-else
-    mkdir -p "$work_dir"
-    touch "$work_dir/settings.prop"
+    source "$work_dir/settings.prop"
     touch "$work_dir/ClearBox模块配置目录"
-    PropSetting &
-    prosetting &
-    wait
-    source "$work_dir/settings.prop"
-fi
 }
 ######
 StartSettings
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
 if [ "$stopcache" = 1 ]; then
-    if ! pgrep "StopCache" >/dev/null 2>&1; then
+    if ! pgrep "StopCached" >/dev/null 2>&1; then
         "$home_dir/wipe_cache/StopCached" -b "$bin_dir" -w "$work_dir"
     fi
 fi
