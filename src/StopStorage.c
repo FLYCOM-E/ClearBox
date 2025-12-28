@@ -1,5 +1,5 @@
 // 此Code来自ClearBox模块，用于内部储存固定功能
-#include "BashCore.h"
+#include "INCLUDE/BashCore.h"
 
 #define DATA_DIR "/data/media/0"
 #define STOP_COMMAND "%s/busybox chattr +i %s 2>/dev/null" //Max Size 62

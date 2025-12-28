@@ -1,5 +1,5 @@
 // 此Code来自ClearBox模块，用于根据传入参数调用清理脚本
-#include "BashCore.h"
+#include "INCLUDE/BashCore.h"
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14

@@ -1,5 +1,5 @@
 // 此Code来自ClearBox模块，用于运行DexOat
-#include "BashCore.h"
+#include "INCLUDE/BashCore.h"
 
 static int SystemDexOat();
 static int CustDexOat(char * mode);

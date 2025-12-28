@@ -1,5 +1,5 @@
 // 此Code来自ClearBox模块，用于清空内部储存软件缓存
-#include "BashCore.h"
+#include "INCLUDE/BashCore.h"
 
 #define DATA_DIR "/data/user" //Max Size 10
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30

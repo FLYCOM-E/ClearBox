@@ -1,5 +1,5 @@
 // 此Code来自ClearBox模块，用于运行紧急GC优化，原理来自Coolapk@Amktiao，感谢大佬
-#include "BashCore.h"
+#include "INCLUDE/BashCore.h"
 
 #define TIMEOUT 9
 #define SYSFS_PATH "/sys/fs/f2fs"

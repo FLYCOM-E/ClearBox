@@ -1,5 +1,5 @@
 // 此Code来自ClearBox模块，用于自定义规则软件内部清理
-#include "BashCore.h"
+#include "INCLUDE/BashCore.h"
 
 #define MAX_APP_NAME 128
 #define DATA_DIR "/data/data" //Max Size 62
