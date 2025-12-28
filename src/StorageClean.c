@@ -3,8 +3,9 @@
 
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define WHITELIST "%s/ClearWhitelist.prop"
-#define STORAGES_DIR "/storage/%s" //Max Size 100
-#define GET_SDCARD_ID "ls /storage | grep .*- 2>/dev/null"
+#define GET_SDCARD_ID "ls /mnt/media_rw | grep .*- 2>/dev/null"
+#define STORAGES_DIR "/data/media/0" //Max Size 100
+#define SDCARD_DIR "/mnt/media_rw/%s" //Max Size 100
 
 static int DeleteAppCache(char * data_path, char * work_dir);
 static int CheckWhiteList(char * package, char * whitelist_file);
@@ -80,8 +81,8 @@ int main(int argc, char * argv[])
     
     // 拼接路径
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
-    snprintf(data_dir, sizeof(data_dir), STORAGES_DIR, "emulated/0");
-    snprintf(sdcard_dir, sizeof(sdcard_dir), STORAGES_DIR, sdcard_id);
+    snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
+    snprintf(sdcard_dir, sizeof(sdcard_dir), SDCARD_DIR, sdcard_id);
     
     // 打开设置信息文件并查找对应值
     FILE * settings_file_fp = fopen(settings_file, "r");
