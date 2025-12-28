@@ -9,7 +9,6 @@
 static int DeleteAppCache(char * data_path, char * work_dir);
 static int CheckWhiteList(char * package, char * whitelist_file);
 static int StorageClean(char * storage_dir);
-static int s_remove(char * path);
 
 int main(int argc, char * argv[])
 {
@@ -191,7 +190,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
         }
         
         // Clear
-        if (s_remove(app_path) == 0)
+        if (s_remove(app_path, 0) != 0)
         {
             printf(L_SC_CLEAR, entry -> d_name);
             clean_count++;
@@ -260,7 +259,7 @@ static int StorageClean(char * dir)
         {
             if (strcmp(entry -> d_name, ".thumbnails") == 0)
             {
-                if (s_remove(path) == 0)
+                if (s_remove(path, 1) != 0)
                 {
                     count++;
                     count_all--;
@@ -337,49 +336,6 @@ static int CheckWhiteList(char * package, char * whitelist_file)
             }
         }
         fclose(whilelist_file_fp);
-    }
-    return 0;
-}
-
-/*
-删除函数
-传入：
-    char * path
-返回：
-    int 成功返回0，失败返回1
-*/
-static int s_remove(char * path)
-{
-    if (access(path, F_OK) != 0)
-    {
-        return 1;
-    }
-    
-    pid_t newPid = fork();
-    if (newPid == -1)
-    {
-        return 1;
-    }
-    if (newPid == 0)
-    {
-        execlp("rm", "rm", "-r", path, NULL);
-        _exit(1);
-    }
-    else
-    {
-        int end = 0;
-        if (waitpid(newPid, &end, 0) == -1)
-        {
-            return 1;
-        }
-        if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return 1;
-        }
     }
     return 0;
 }

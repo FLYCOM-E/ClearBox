@@ -31,9 +31,8 @@
 #define L_AC_CONFIG_ERR " » Error in %s configuration! Please correctly fill the declaration on the first line\n"
 #define L_AC_CONFIG_ERR_1 " » %s configuration line %d contains a dangerous error: starts with '／'!\n"
 #define L_AC_CONFIG_ERR_2 " » %s configuration line %d contains an error: path traversal!\n"
-#define L_AC_CLEAR_PATH_ERR_1 " » Failed to clean %s! (Fork)\n"
-#define L_AC_CLEAR_PATH_ERR_2 " » Failed to clean %s! (Wait)\n"
-#define L_AC_CLEAR_PATH_ERR_3 " » Failed to clean %s!\n"
+#define L_AC_CLEAR_PATH_ERR " » Failed to clean %s!\n"
+#define L_AC_CLEAR_PATH_SUCCESS " » %s processed successfully! %d MB\n"
 #define L_AC_CLEAN_SUCCESSFUL " » Application rule processing successful!\n"
 #define L_AC_CLEAN_FAILED " » Specified application configuration not found or an error occurred!\n"
 

@@ -17,6 +17,8 @@
 #define MAX_WORK_DIR_LEN 512
 #define MAX_BIN_DIR_LEN 512
 
+long s_remove(char * path, int all);
+
 #ifdef zh_CN
     #include "LANG/zh_CN.h"
 #elif defined(en_US)

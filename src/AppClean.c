@@ -205,36 +205,20 @@ int main(int argc, char * argv[])
                     printf(L_AC_CONFIG_ERR_2, config_name -> d_name, count);
                     continue;
                 }
-                // 这可以避免很多 rm 报错
+                // 这可以避免很多报错
                 if (access(app_cf_dir, F_OK) != 0)
                 {
                     continue;
                 }
                 
-                pid_t newPid = fork();
-                if (newPid == -1)
+                int clear_size = s_remove(app_cf_dir, 0);
+                if (clear_size == 0)
                 {
-                    printf(L_AC_CLEAR_PATH_ERR_1, len_str);
-                    continue;
-                }
-                if (newPid == 0)
-                {
-                    execlp("rm", "rm", "-r", app_cf_dir, NULL);
-                    _exit(1);
+                    printf(L_AC_CLEAR_PATH_ERR, len_str);
                 }
                 else
                 {
-                    int end = 0;
-                    if (waitpid(newPid, &end, 0) == -1)
-                    {
-                        printf(L_AC_CLEAR_PATH_ERR_2, len_str);
-                        continue;
-                    }
-                    if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
-                    {
-                        printf(L_AC_CLEAR_PATH_ERR_3, len_str);
-                        continue;
-                    }
+                    printf(L_AC_CLEAR_PATH_SUCCESS, len_str, (clear_size / 1024 / 1024));
                 }
             }
             else

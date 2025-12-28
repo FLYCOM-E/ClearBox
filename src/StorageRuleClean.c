@@ -3,8 +3,6 @@
 
 #define CONFIG_DIR_NAME "清理配置"
 
-static int remove_all(char * path);
-
 int main(int argc, char * argv[])
 {
     if (getuid() != 0)
@@ -121,7 +119,7 @@ int main(int argc, char * argv[])
             {
                 if (access(config_file_line, F_OK))
                 {
-                    if (remove_all(config_file_line) == 0)
+                    if (s_remove(config_file_line, 1) == 0)
                     {
                         printf(L_SR_CLEAR_SUCCESSFUL, config_file_line);
                     }
@@ -146,7 +144,7 @@ int main(int argc, char * argv[])
                     printf(L_SR_LINE_FAILED_PATH_ERR, count);
                     continue;
                 }
-                if (remove_all(path) == 0)
+                if (s_remove(path, 1) != 0)
                 {
                     printf(L_SR_CLEAR_SUCCESSFUL, path);
                 }
@@ -162,44 +160,5 @@ int main(int argc, char * argv[])
     closedir(config_dir_dp);
     
     printf(L_SR_END);
-    return 0;
-}
-
-/*
-文件/目录删除函数
-接收：
-    char * path 文件/目录
-返回：
-    int 成功返回0，失败返回1
-*/
-static int remove_all(char * path)
-{
-    if (access(path, F_OK) != 0)
-    {
-        return 1;
-    }
-    
-    pid_t newPid = fork();
-    if (newPid == -1)
-    {
-        return 1;
-    }
-    if (newPid == 0)
-    {
-        execlp("rm", "rm", "-rf", path, NULL);
-        _exit(127);
-    }
-    else
-    {
-        int end = 0;
-        if (waitpid(newPid, &end, 0) == -1)
-        {
-            return 1;
-        }
-        if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
-        {
-            return 1;
-        }
-    }
     return 0;
 }

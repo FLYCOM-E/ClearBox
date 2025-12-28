@@ -31,9 +31,8 @@
 #define L_AC_CONFIG_ERR " » %s 配置错误！请在第一行正确填写声明\n"
 #define L_AC_CONFIG_ERR_1 " » %s 配置第 %d 行存在危险错误：从“／”开始！\n"
 #define L_AC_CONFIG_ERR_2 " » %s 配置第 %d 行存在错误：路径逃逸！\n"
-#define L_AC_CLEAR_PATH_ERR_1 " » 清理 %s 失败！(Fork)\n"
-#define L_AC_CLEAR_PATH_ERR_2 " » 清理 %s 失败！(Wait)\n"
-#define L_AC_CLEAR_PATH_ERR_3 " » 清理 %s 失败！\n"
+#define L_AC_CLEAR_PATH_ERR " » 清理 %s 失败！\n"
+#define L_AC_CLEAR_PATH_SUCCESS " » %s 处理成功！%d 兆\n"
 #define L_AC_CLEAN_SUCCESSFUL " » 软件规则处理成功！\n"
 #define L_AC_CLEAN_FAILED " » 未找到指定软件配置或发生错误！\n"
 

@@ -11,7 +11,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 static int whiteListCheck(char * whitelist_file, char * App);
 static long GetPathSize(char * path);
 static int ClearSystemCache();
-static int s_remove(char * path);
 
 int main(int argc, char * argv[])
 {
@@ -231,10 +230,12 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                     continue;
                 }
                 
-                if (s_remove(app_cache_dir) == 0)
+                if (s_remove(app_cache_dir, 0) != 0)
                 {
                     count++;
-                    clean_size += cache_size; // 记录清理大小
+                    clean_size += cache_size; 
+                    /* 记录清理大小，本来s_remove实现也会返回大小
+                    但上面的大小判断注定这个会浪费 */
                     printf(L_CC_CLEAR, package_list_line + 8);
                 }
                 else
@@ -387,7 +388,7 @@ static int ClearSystemCache()
             }
             else
             {
-                if (s_remove(app_cache_path) == 0)
+                if (s_remove(app_cache_path, 0) != 0)
                 {
                     printf(L_CC_CLEAR, package_list_line + 8);
                     fflush(stdout);
@@ -401,54 +402,11 @@ static int ClearSystemCache()
     // 清除“MTP主机”组件数据可解决MTP连接文件显示不全的问题
     system("pm clear com.android.mtp >/dev/null 2>&1");
     // 清空系统缓存
-    system("rm -r /cache/* 2>/dev/null");
-    system("rm -r /data/resource-cache/* 2>/dev/null");
-    system("rm -r /data/system/package_cache/* 2>/dev/null");
-    system("rm -r /data/dalvik-cache/* 2>/dev/null");
+    s_remove("/cache", 0);
+    s_remove("/data/resource-cache", 0);
+    s_remove("/data/system/package_cache", 0);
+    s_remove("/data/dalvik-cache", 0);
     
     printf(L_CC_CLEAR_SYSTEMCACHE);
-    return 0;
-}
-
-/*
-删除函数
-传入：
-    char * path
-返回：
-    int 成功返回0，失败返回1
-*/
-static int s_remove(char * path)
-{
-    if (access(path, F_OK) != 0)
-    {
-        return 1;
-    }
-    
-    pid_t newPid = fork();
-    if (newPid == -1)
-    {
-        return 1;
-    }
-    if (newPid == 0)
-    {
-        execlp("rm", "rm", "-r", path, NULL);
-        _exit(1);
-    }
-    else
-    {
-        int end = 0;
-        if (waitpid(newPid, &end, 0) == -1)
-        {
-            return 1;
-        }
-        if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return 1;
-        }
-    }
     return 0;
 }
