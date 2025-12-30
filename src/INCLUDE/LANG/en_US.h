@@ -32,7 +32,7 @@
 #define L_AC_CONFIG_ERR_1 " » %s configuration line %d contains a dangerous error: starts with '／'!\n"
 #define L_AC_CONFIG_ERR_2 " » %s configuration line %d contains an error: path traversal!\n"
 #define L_AC_CLEAR_PATH_ERR " » Failed to clean %s!\n"
-#define L_AC_CLEAR_PATH_SUCCESS " » %s processed successfully! %d MB\n"
+#define L_AC_CLEAR_PATH_SUCCESS " » %s processed successfully! %ld MB\n"
 #define L_AC_CLEAN_SUCCESSFUL " » Application rule processing successful!\n"
 #define L_AC_CLEAN_FAILED " » Specified application configuration not found or an error occurred!\n"
 
@@ -118,7 +118,7 @@
 #define L_SR_OPEN_CONFIG_ERR " » Failed to open %s configuration! Automatically skipped\n"
 #define L_SR_START " » Processing %s configuration📍\n"
 #define L_SR_W_CONFIG_STATTPATH_ERR " » Warning: Starting path specified in %s configuration does not exist!\n"
-#define L_SR_CLEAR_SUCCESSFUL " » Successfully cleaned %s\n"
+#define L_SR_CLEAR_SUCCESSFUL " » Cleaned %s successfully! %ld MB\n"
 #define L_SR_CLEAR_FAILED " » Failed to clean %s\n"
 #define L_SR_LINE_FAILED_PATH_ERR " » Line %d error: Path error/inaccessible\n"
 #define L_SR_END " » Custom directory processing completed!\n"

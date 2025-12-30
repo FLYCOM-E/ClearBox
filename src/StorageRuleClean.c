@@ -119,9 +119,10 @@ int main(int argc, char * argv[])
             {
                 if (access(config_file_line, F_OK))
                 {
-                    if (s_remove(config_file_line, 1) != -1)
+                    long clear_size = s_remove(config_file_line, 1);
+                    if (clear_size != -1)
                     {
-                        printf(L_SR_CLEAR_SUCCESSFUL, config_file_line);
+                        printf(L_SR_CLEAR_SUCCESSFUL, config_file_line, (clear_size / 1024 / 1024));
                     }
                     else
                     {
@@ -144,9 +145,10 @@ int main(int argc, char * argv[])
                     printf(L_SR_LINE_FAILED_PATH_ERR, count);
                     continue;
                 }
-                if (s_remove(path, 1) != -1)
+                long clear_size = s_remove(path, 1);
+                if (clear_size != -1)
                 {
-                    printf(L_SR_CLEAR_SUCCESSFUL, path);
+                    printf(L_SR_CLEAR_SUCCESSFUL, path, (clear_size / 1024 / 1024));
                 }
                 else
                 {

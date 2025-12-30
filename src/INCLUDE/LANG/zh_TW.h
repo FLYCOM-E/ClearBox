@@ -32,7 +32,7 @@
 #define L_AC_CONFIG_ERR_1 " » %s 配置第 %d 行存在危險錯誤：從「／」開始！\n"
 #define L_AC_CONFIG_ERR_2 " » %s 配置第 %d 行存在錯誤：路徑逃逸！\n"
 #define L_AC_CLEAR_PATH_ERR " » 清理 %s 失敗！\n"
-#define L_AC_CLEAR_PATH_SUCCESS " » %s 處理成功！%d 兆\n"
+#define L_AC_CLEAR_PATH_SUCCESS " » %s 處理成功！%ld 兆\n"
 #define L_AC_CLEAN_SUCCESSFUL " » 軟體規則處理成功！\n"
 #define L_AC_CLEAN_FAILED " » 未找到指定軟體配置或發生錯誤！\n"
 
@@ -118,7 +118,7 @@
 #define L_SR_OPEN_CONFIG_ERR " » %s 配置開啟失敗！自動跳過\n"
 #define L_SR_START " » 處理 %s 配置📍\n"
 #define L_SR_W_CONFIG_STATTPATH_ERR " » 警告：%s 配置指定初始路徑不存在！\n"
-#define L_SR_CLEAR_SUCCESSFUL " » 清理 %s 成功\n"
+#define L_SR_CLEAR_SUCCESSFUL " » 清理 %s 成功！%ld 兆\n"
 #define L_SR_CLEAR_FAILED " » 清理 %s 失敗\n"
 #define L_SR_LINE_FAILED_PATH_ERR " » %d 行錯誤：路徑錯誤/無法存取\n"
 #define L_SR_END " » 自訂目錄處理完成！\n"
