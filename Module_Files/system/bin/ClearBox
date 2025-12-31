@@ -501,6 +501,7 @@ case "$in_put" in
       echo -e "\033[93m \t00：关于\033[0m\n"
       echo -e "\033[93m \t01：配置备份\033[0m\n"
       echo -e "\033[93m \t02：卸载模块（！\033[0m\n"
+      echo -e "\033[93m \t03：查看日志\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
       read put3
@@ -819,6 +820,15 @@ case "$in_put" in
                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
                   ;;
             esac
+            ;;
+          03)
+            clear
+            echo -e "\033[104m [日志]\033[0m"
+            if [ -f "$work_dir/运行日志.log" ]; then
+                more "$work_dir/运行日志.log"
+            fi
+            echo -en " » 回车返回"
+            read null
             ;;
           *)
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
