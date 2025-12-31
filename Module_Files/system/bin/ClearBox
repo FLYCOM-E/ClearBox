@@ -27,10 +27,10 @@ echo -e "\033[104m [欢迎使用 ClearBox]\033[0m"
 echo -e "\033[96m ==============================================\033[0m\n"
 echo -e "\033[93m  1：一键优化清理 \t 2：自定义规则清理\033[0m\n"
 echo -e "\033[93m  3：清除垃圾/空文件夹 \t 4：清空所有软件缓存\033[0m\n"
-echo -e "\033[93m  5：深度文件清理 \t 6：软件规则清理\033[0m\n"
-echo -e "\033[93m  7：清空系统缓存 \t 8：自动清理\033[0m\n"
-echo -e "\033[93m  9：阻止软件更新安装 \t 10：内部储存固定功能\033[0m\n"
-echo -e "\033[93m  11：阻止缓存生成功能 \t 12：磁铁（文件归类\033[0m\n"
+echo -e "\033[93m  5：磁铁（文件归类 \t 6：深度文件清理\033[0m\n"
+echo -e "\033[93m  7：软件规则清理 \t 8：清空系统缓存\033[0m\n"
+echo -e "\033[93m  9：自动清理 \t\t 10：阻止软件更新安装\033[0m\n"
+echo -e "\033[93m  11：内部储存固定功能 \t 12：阻止缓存生成功能\033[0m\n"
 echo -e "\033[93m  13：磁盘 & 软件优化 \t 00：模块管理\033[0m\n"
 echo -e "\033[96m ==============================================\033[0m"
 echo -e "\t\t\t   --- 键入 E 退出 ---"
@@ -54,6 +54,19 @@ case "$in_put" in
       "$home_dir/BashCore" ClearCache
       ;;
     5)
+      echo -en " » 确认？(y): "
+      read put_4
+      case "$put_4" in
+          y | Y)
+            clear
+            "$home_dir/BashCore" File_All
+            ;;
+          *)
+            echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
+            ;;
+      esac
+      ;;
+    6)
       clear
       count=0
       echo -e "\n\033[104m [深度清理，请备份重要文档！！]\033[0m"
@@ -89,7 +102,7 @@ case "$in_put" in
          [ "$C_num" = "$count" ] && echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m" && break
       done
       ;;
-    6)
+    7)
       clear
       [ -z "$(ls "$work_dir/清理规则/")" ] && echo " » 无App清理配置！" && return 1
       count=0
@@ -116,7 +129,7 @@ case "$in_put" in
          [ "$C_num" = "$count" ] && echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m" && break
       done
       ;;
-    7)
+    8)
       echo -en " » 确认？(y): "
       read put_2
       case "$put_2" in
@@ -129,7 +142,7 @@ case "$in_put" in
             ;;
       esac
       ;;
-    8)
+    9)
       clear
       echo -e "\033[104m [自动清理]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
@@ -253,7 +266,7 @@ case "$in_put" in
             ;;
       esac
       ;;
-    9)
+    10)
       clear
       if [ "$stopinstall" = 1 ]; then
           i1="关闭"
@@ -290,7 +303,7 @@ case "$in_put" in
             ;;
       esac
       ;;
-    10)
+    11)
       clear
       if [ "$stopstorage" = 1 ]; then
           i1="关闭"
@@ -327,7 +340,7 @@ case "$in_put" in
             ;;
       esac
       ;;
-    11)
+    12)
       clear
       if [ "$stopcache" = 0 ]; then
           i2="开启"
@@ -407,19 +420,6 @@ case "$in_put" in
             ;;
         esac
         ;;
-    12)
-      echo -en " » 确认？(y): "
-      read put_4
-      case "$put_4" in
-          y | Y)
-            clear
-            "$home_dir/BashCore" File_All
-            ;;
-          *)
-            echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
-            ;;
-      esac
-      ;;
     13)
       clear
       echo -e "\033[104m [磁盘 & 软件优化]\033[0m"
