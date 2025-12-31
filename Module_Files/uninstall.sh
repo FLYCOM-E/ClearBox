@@ -27,10 +27,15 @@ uninstall_md()
     touch "$home_dir/remove"
     rm -r "/sdcard/Android/ClearBox"
     
-    dirList="/data/app /data/user /data/media/0 /mnt/expand /mnt/media_rw"
+    dirList="/data/app /data/media/0 /mnt/expand /mnt/media_rw"
+    
     # 解锁
+    
     for dir in $dirList; do
         "$bin_dir/busybox" chattr -R -i "$dir"
+    done
+    for path in "/data/user"/*; do
+        "$bin_dir/busybox" chattr -R -i "$path"/* 2>/dev/null
     done
 }
 ######
