@@ -4,7 +4,7 @@
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define LOG_FILE_NAME "运行日志.log" //Max Size 30
-#define BASH_DIR "wipe_cache"
+#define BASH_DIR "bin"
 
 static int Run(char * args[]);
 static int configFunction(char * home_dir, char * mode, char * config_file);

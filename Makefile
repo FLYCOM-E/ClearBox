@@ -16,8 +16,7 @@ else
 endif
 
 home_dir = Module_Files
-bin_dir = Module_Files/wipe_cache
-TMP_DIR = tmp
+bin_dir = Module_Files/bin
 
 FUNCTIONS_C = src/INCLUDE/functions.c
 ALL_FILE = $(home_dir)/BashCore \
@@ -77,7 +76,7 @@ clean:
 	@rm $(ALL_FILE)
 	@rm $(home_dir)/ClearBox.apk
 	@rm -r $(home_dir)/语言包
-	@rm -r $(home_dir)/wipe_cache
+	@rm -r $(bin_dir)
 
 module_tar: 
 	@cp APKS/ClearBox_$(M_LANG).apk $(home_dir)/ClearBox.apk
