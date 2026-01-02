@@ -4,8 +4,8 @@
 #define DATA_DIR "/data/user" //Max Size 10
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
 #define SETTINGS_FILE "settings.prop" //Max Size 30
-#define GET_APPLIST "pm list package -3 2>/dev/null"
-#define GET_S_APPLIST "pm list package -s 2>/dev/null"
+#define GET_APPLIST "cmd package list package -3 2>/dev/null"
+#define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
 static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
 static int ClearSystemCache();

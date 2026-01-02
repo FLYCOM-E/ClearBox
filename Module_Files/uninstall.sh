@@ -43,5 +43,5 @@ uninstall_md
 echo -e " » $UNINSTALL_TITLE😋"
 sleep 3
 rm -r "$work_dir"
-pm uninstall "wipe.cache.module"
+cmd package uninstall "wipe.cache.module"
 exit 0

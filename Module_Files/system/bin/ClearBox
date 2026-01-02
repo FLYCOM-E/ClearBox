@@ -391,7 +391,7 @@ case "$in_put" in
                 if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
                     echo " » $package 已存在白名单"
                     continue
-                elif ! pm list package | grep "package:$package\$" >> /dev/null; then
+                elif ! cmd package list package | grep "package:$package\$" >> /dev/null; then
                     echo " » $package 不在软件包列表"
                     continue
                 else
@@ -652,11 +652,11 @@ case "$in_put" in
                       if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
                           echo " » $package 已存在白名单"
                           continue
-                      elif ! pm list package | grep "package:$package\$" >> /dev/null; then
+                      elif ! cmd package list package | grep "package:$package\$" >> /dev/null; then
                           echo " » $package 不在软件包列表"
                           continue
                       else
-                          if pm list package -s | grep "package:$package\$" >> /dev/null; then
+                          if cmd package list package -s | grep "package:$package\$" >> /dev/null; then
                               echo " » $package 请不要添加系统软件"
                               continue
                           fi
