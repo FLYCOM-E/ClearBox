@@ -8,7 +8,7 @@
 #define MICRO_DATA_PATH "/mnt/expand/%s/user/0" //Max Size 100
 #define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"
 #define LOGPRINT __android_log_print
-#define SERVER_NAME "StopCache"
+#define SERVER_NAME "StopCached"
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
 
@@ -138,16 +138,6 @@ int main(int argc, char * argv[])
             }
         }
         fclose(rom_file_fp);
-    }
-    else
-    {
-        //Else说明文件可能未初始化，因此初始化文件
-        FILE * rom_file_fp = fopen(rom_file, "w");
-        if (rom_file_fp)
-        {
-            fprintf(rom_file_fp, "1=\n2=\n3=\n4=\n5=\nreset=");
-            fclose(rom_file_fp);
-        }
     }
     
     // 如果包名含“ / ”则丢弃
