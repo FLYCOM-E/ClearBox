@@ -115,36 +115,27 @@ int main(int argc, char * argv[])
                 continue;
             }
             
+            // Check PATH
+            char path[strlen(config_file_line) + strlen(dir) + 16];
             if (* config_file_line_ptr == '/')
             {
-                if (access(config_file_line, F_OK))
-                {
-                    long clear_size = s_remove(config_file_line, 1);
-                    if (clear_size != -1)
-                    {
-                        printf(L_SR_CLEAR_SUCCESSFUL, config_file_line, (clear_size / 1024 / 1024));
-                    }
-                    else
-                    {
-                        printf(L_SR_CLEAR_FAILED, config_file_line);
-                    }
-                }
-                else
-                {
-                    printf(L_SR_LINE_FAILED_PATH_ERR, count);
-                    continue;
-                }
+                snprintf(path, sizeof(path), "%s", config_file_line);
             }
             else
             {
-                char path[strlen(config_file_line) + strlen(dir) + 16];
                 snprintf(path, sizeof(path), "%s/%s", dir, config_file_line);
-                
-                if (access(path, F_OK) != 0)
-                {
-                    printf(L_SR_LINE_FAILED_PATH_ERR, count);
-                    continue;
-                }
+            }
+            
+            if (access(path, F_OK) != 0)
+            {
+                printf(L_SR_LINE_FAILED_PATH_ERR, count);
+            }
+            if (strstr(path, "../"))
+            {
+                printf(L_SR_LINE_FAILED_PATH_ERR, count);
+            }
+            else
+            {
                 long clear_size = s_remove(path, 1);
                 if (clear_size != -1)
                 {
