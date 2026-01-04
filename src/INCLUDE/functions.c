@@ -159,6 +159,11 @@ int post(char * title, char * message)
         return 1;
     }
     
+    //生成一个随机ID
+    srand(time(NULL));
+    char rand_str[24] = {0};
+    snprintf(rand_str, sizeof(rand_str), "%s-%d", title, rand());
+    
     pid_t newPid = fork();
     if (newPid == -1)
     {
@@ -167,7 +172,7 @@ int post(char * title, char * message)
     }
     if (newPid == 0)
     {
-        execlp("cmd", "cmd", "notification", "post", "-t", title, "ClearBox", message, NULL);
+        execlp("cmd", "cmd", "notification", "post", "-t", title, rand_str, message, NULL);
         _exit(127);
     }
     else
