@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
-#define SERVER "ClearBox"
+#include <time.h>
 
 int main(int argc, char * argv[])
 {
@@ -19,6 +18,11 @@ int main(int argc, char * argv[])
         return 1;
     }
     
+    //生成一个随机ID
+    srand(time(NULL));
+    char rand_str[24] = {0};
+    snprintf(rand_str, sizeof(rand_str), "%s-%d", argv[1], rand());
+    
     pid_t newPid = fork();
     if (newPid == -1)
     {
@@ -28,7 +32,7 @@ int main(int argc, char * argv[])
     
     if (newPid == 0)
     {
-        execlp("cmd", "cmd", "notification", "post", "-t", argv[1], SERVER, argv[2], NULL);
+        execlp("cmd", "cmd", "notification", "post", "-t", argv[1], rand_str, argv[2], NULL);
         _exit(127);
     }
     else
