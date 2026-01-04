@@ -78,12 +78,11 @@ StartSettings()
 }
 ######
 StartSettings
-"$home_dir/Post" "ClearBox" "ClearBox Start is $(date)"
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
 if [ "$stopcache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
-        "$home_dir/wipe_cache/StopCached" -b "$bin_dir" -w "$work_dir"
+        "$home_dir/bin/StopCached" -b "$bin_dir" -w "$work_dir"
     fi
 fi
 ######
@@ -97,5 +96,5 @@ fi
 ######
 chmod -R 700 "$work_dir/"
 ######
+sleep 30 && "$home_dir/Post" "ClearBox" "ClearBox Start is $(date)"
 exit 0
-
