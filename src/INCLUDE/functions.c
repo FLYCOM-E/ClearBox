@@ -142,3 +142,47 @@ long GetPathSize(char * path)
     closedir(path_dp);
     return size;
 }
+
+/*
+通知发送函数，通过切换用户至shell并使用Shell发送通知
+接收：
+    char * title 通知标题
+    char * message 消息内容
+返回：
+    int 成功返回 0，失败返回 1
+*/
+int post(char * title, char * message)
+{
+    if (setuid(2000) == -1)
+    {
+        printf("Post: Setuid Error\n");
+        return 1;
+    }
+    
+    pid_t newPid = fork();
+    if (newPid == -1)
+    {
+        printf("Post: Fork Error\n");
+        return 1;
+    }
+    if (newPid == 0)
+    {
+        execlp("cmd", "cmd", "notification", "post", "-t", title, "ClearBox", message, NULL);
+        _exit(127);
+    }
+    else
+    {
+        int end = 0;
+        if (waitpid(newPid, &end, 0) == -1)
+        {
+            printf("Post: Wait Error\n");
+            return 1;
+        }
+        if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
+        {
+            printf("Post: exit code error\n");
+            return 1;
+        }
+    }
+    return 0;
+}

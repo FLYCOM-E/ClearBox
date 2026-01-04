@@ -20,6 +20,7 @@
 long s_remove(char * path, int all);
 int whiteListCheck(char * whitelist_file, char * package);
 long GetPathSize(char * path);
+int post(char * title, char * message);
 
 #ifdef zh_CN
     #include "LANG/zh_CN.h"

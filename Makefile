@@ -30,14 +30,15 @@ ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/F2fs_GC \
 			$(bin_dir)/StopInstall \
 			$(bin_dir)/StopStorage \
-			$(bin_dir)/FileManager
+			$(bin_dir)/FileManager \
+			$(home_dir)/Post
 
 all: $(ALL_FILE)
 .PHONY: all
 
 $(bin_dir)/StopCached: src/StopCached.c
 	@mkdir -p $(bin_dir)
-	$(CC) $(CFLAGS) src/StopCached.c -o $(bin_dir)/StopCached
+	$(CC) $(CFLAGS) src/StopCached.c $(FUNCTIONS_C) -o $(bin_dir)/StopCached
 
 $(home_dir)/BashCore: src/BashCore.c
 	$(CC) $(CFLAGS) src/BashCore.c -o $(home_dir)/BashCore
@@ -71,6 +72,9 @@ $(bin_dir)/StopStorage: src/StopStorage.c
 
 $(bin_dir)/FileManager: src/FileManager.c
 	$(CC) $(CFLAGS) src/FileManager.c -o $(bin_dir)/FileManager
+
+$(home_dir)/Post: src/Post.c
+	$(CC) $(CFLAGS) src/Post.c -o $(home_dir)/Post
 
 clean: 
 	@rm $(ALL_FILE)

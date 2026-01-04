@@ -153,7 +153,7 @@ int main(int argc, char * argv[])
     pid_t PID = fork();
     if (PID == -1)
     {
-        printf(" » Start Server Failed! \n");
+        post(SERVER_NAME, "Start Server Failed!");
         return 1;
     }
     else if (PID != 0)
@@ -166,6 +166,7 @@ int main(int argc, char * argv[])
     dup2(std, STDOUT_FILENO);
     dup2(std, STDERR_FILENO);
     close(std);
+    post(SERVER_NAME, "Start Server Successful");
     
     /* 
     初始化变量
@@ -189,12 +190,12 @@ int main(int argc, char * argv[])
             get_error++;
             if (get_error == max_get_error)
             {
-                LOGPRINT(ANDROID_LOG_ERROR, SERVER_NAME, "Get Top App Timeout... exit\n");
+                post(SERVER_NAME, "Get Top App Timeout... exit\n");
                 end = 1;
                 break;
             }
             sleep(5);
-            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Get Top App Failed. Continue");
+            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Get Top App Failed. Continue\n");
             continue;
         }
         fgets(top_app, sizeof(top_app), top_app_fp);

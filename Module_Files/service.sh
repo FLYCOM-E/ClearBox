@@ -78,6 +78,7 @@ StartSettings()
 }
 ######
 StartSettings
+"$home_dir/Post" "ClearBox" "ClearBox Start is $(date)"
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
 ######
 if [ "$stopcache" = 1 ]; then
