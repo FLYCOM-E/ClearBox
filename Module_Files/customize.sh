@@ -26,8 +26,6 @@ if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
     if ! which cmd >/dev/null 2>&1; then
         use_cmd
     fi
-    chmod 700 "$MODPATH/system/bin"/*
-    chown root:root "$MODPATH/system/bin"/*
 else
     uninstall
     echo -e " » 模块解压发生错误！An error occurred while extracting the module!\n"
@@ -155,6 +153,9 @@ if [ "$update" = 1 ]; then
           ;;
     esac
 fi
+######
+chmod 700 "$MODPATH"/*
+######
 sleep "$SHOUT_S"
 echo -e "=====================================================\n"
 sleep "$SHOUT_S"
