@@ -31,7 +31,7 @@ ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/StopInstall \
 			$(bin_dir)/StopStorage \
 			$(bin_dir)/FileManager \
-			$(home_dir)/Post
+			$(bin_dir)/Post
 
 all: $(ALL_FILE)
 .PHONY: all
@@ -73,8 +73,8 @@ $(bin_dir)/StopStorage: src/StopStorage.c
 $(bin_dir)/FileManager: src/FileManager.c
 	$(CC) $(CFLAGS) src/FileManager.c -o $(bin_dir)/FileManager
 
-$(home_dir)/Post: src/Post.c
-	$(CC) $(CFLAGS) src/Post.c -o $(home_dir)/Post
+$(bin_dir)/Post: src/Post.c
+	$(CC) $(CFLAGS) src/Post.c -o $(bin_dir)/Post
 
 clean: 
 	@rm $(ALL_FILE)

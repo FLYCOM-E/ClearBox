@@ -96,5 +96,4 @@ fi
 ######
 chmod -R 700 "$work_dir/"
 ######
-sleep 30 && "$home_dir/Post" "ClearBox" "ClearBox Start is $(date)"
 exit 0
