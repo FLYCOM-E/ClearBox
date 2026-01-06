@@ -20,6 +20,7 @@ bin_dir = Module_Files/bin
 
 FUNCTIONS_C = src/INCLUDE/functions.c
 ALL_FILE = $(home_dir)/BashCore \
+			$(home_dir)/Timed \
 			$(bin_dir)/StopCached \
 			$(bin_dir)/AppClean \
 			$(bin_dir)/CacheClean \
@@ -42,6 +43,9 @@ $(bin_dir)/StopCached: src/StopCached.c
 
 $(home_dir)/BashCore: src/BashCore.c
 	$(CC) $(CFLAGS) src/BashCore.c -o $(home_dir)/BashCore
+
+$(home_dir)/Timed: src/Timed.c
+	$(CC) $(CFLAGS) src/Timed.c $(FUNCTIONS_C) -o $(home_dir)/Timed
 
 $(bin_dir)/AppClean: src/AppClean.c
 	$(CC) $(CFLAGS) src/AppClean.c $(FUNCTIONS_C) -o $(bin_dir)/AppClean
