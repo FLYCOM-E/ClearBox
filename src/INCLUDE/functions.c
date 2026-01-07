@@ -153,12 +153,6 @@ long GetPathSize(char * path)
 */
 int post(char * title, char * message)
 {
-    if (setuid(2000) == -1)
-    {
-        printf("Post: Setuid Error\n");
-        return 1;
-    }
-    
     //生成一个随机ID
     srand(time(NULL));
     char rand_str[24] = {0};
@@ -172,6 +166,7 @@ int post(char * title, char * message)
     }
     if (newPid == 0)
     {
+        setuid(2000);
         execlp("cmd", "cmd", "notification", "post", "-t", title, rand_str, message, NULL);
         _exit(127);
     }

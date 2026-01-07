@@ -1,8 +1,10 @@
 // 此 Code 来自ClearBox模块，是crond代替品哦～
 #include "INCLUDE/BashCore.h"
 
+#define WAIT_TIME 60
 #define MAX_CONFIG 64
-#define SERVER_NAME "Timed"
+#define MAX_COMMAND_LEN 512
+#define SERVER_NAME "ClearBox Timed"
 
 static int Running(char * command);
 
@@ -18,12 +20,17 @@ struct config_file
     int date_hour;
     int date_minute;
     // other
-    char run[512];
-    char config_name[512];
+    char run[MAX_COMMAND_LEN];
+    char config_name[128];
 };
 
 int main(int argc, char * argv[])
 {
+    if (getuid() != 0)
+    {
+        printf(" » Please use root privileges!\n");
+        return 1;
+    }
     if (argc != 2)
     {
         printf("E Args error\n");
@@ -234,15 +241,54 @@ int main(int argc, char * argv[])
             }
             i++;
         }
-        sleep(60);
+        sleep(WAIT_TIME);
     }
 }
 
 static int Running(char * command)
 {
-    if (system(command) != 0)
+    char command_cope[MAX_COMMAND_LEN] = {0};
+    snprintf(command_cope, sizeof(command_cope), "%s", command);
+    
+    int count = 0;
+    char * arg = NULL;
+    char * args[17] = {NULL};
+    
+    arg = strtok(command_cope, " ");
+    while (arg != NULL && count < 16)
+    {
+        args[count] = arg;
+        count++;
+        arg = strtok(NULL, " ");
+    }
+    if (count == 0)
     {
         return 1;
     }
+    args[16] = NULL;
+    
+    pid_t newPid = fork();
+    if (newPid == -1)
+    {
+        return 1;
+    }
+    if (newPid == 0)
+    {
+        execvp(args[0], args);
+        _exit(errno);
+    }
+    else
+    {
+        int end = 0;
+        if (waitpid(newPid, &end, 0) == -1)
+        {
+            return end;
+        }
+        if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
+        {
+            return end;
+        }
+    }
+    
     return 0;
 }

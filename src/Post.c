@@ -12,12 +12,6 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    if (setuid(2000) == -1)
-    {
-        printf("Setuid Error\n");
-        return 1;
-    }
-    
     //生成一个随机ID
     srand(time(NULL));
     char rand_str[24] = {0};
@@ -32,6 +26,7 @@ int main(int argc, char * argv[])
     
     if (newPid == 0)
     {
+        setuid(2000);
         execlp("cmd", "cmd", "notification", "post", "-t", argv[1], rand_str, argv[2], NULL);
         _exit(127);
     }
