@@ -47,9 +47,7 @@ StartSettings()
         mkdir -p "$work_dir/清理规则"
         mkdir -p "$work_dir/清理配置"
         mkdir -p "$work_dir/文件格式配置"
-        mkdir -p "$work_dir/CRON/ClearCache"
-        mkdir -p "$work_dir/CRON/FileAll"
-        mkdir -p "$work_dir/CRON/ClearDir"
+        mkdir -p "$work_dir/TimedConfig"
         ######
         [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
         [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
@@ -85,13 +83,11 @@ if [ "$stopcache" = 1 ]; then
         "$home_dir/bin/StopCached" -b "$bin_dir" -w "$work_dir"
     fi
 fi
-######
-if ! pgrep -f "crond -c $work_dir/CRON/" >/dev/null; then
-    pkill -f "crond -c $work_dir/CRON/"
-    "$bin_dir/busybox" crond -c "$work_dir/CRON/ClearCache" &
-    "$bin_dir/busybox" crond -c "$work_dir/CRON/FileAll" &
-    "$bin_dir/busybox" crond -c "$work_dir/CRON/ClearDir" &
-    echo "[ $(date) ]：CRON运行" >> "$work_dir/运行日志.log"
+if pgrep Timed; then
+    killall Timed
+fi
+if "$home_dir/Timed" "$work_dir/TimedConfig"; then
+    echo "[ $(date) ]：Timed运行" >> "$work_dir/运行日志.log"
 fi
 ######
 chmod -R 700 "$work_dir/"

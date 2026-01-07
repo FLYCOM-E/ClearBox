@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bin/bash
 #此脚本来自ClearBox模块，用于提供终端菜单UI
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！"
@@ -156,8 +156,8 @@ case "$in_put" in
       case "$put4" in
           1)
             clear
-            NowClearTime=$(cat "$work_dir/CRON/ClearCache/root" | cut -f3 -d ' ' | cut -f2 -d '/')
-            echo -e " \033[104m[设定时间    当前设置时间：$NowClearTime)]\033[0m"
+            NowTime=$(grep "time=" "$work_dir/TimedConfig/ClearAll.conf" | cut -f2 -d "=")
+            echo -e " \033[104m[设定时间    当前设置时间：$NowTime)]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：自定义输入间隔时间（单位：天）\033[0m\n"
             echo -e "\033[93m \t0：关闭定期优化\033[0m\n"
@@ -173,16 +173,16 @@ case "$in_put" in
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
                   elif [ "$day_num" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1天！设置失败！！\033[0m"
-                  elif [ "$day_num" -ge 30 ]; then
+                  elif [ "$day_num" -gt 30 ]; then
                       echo -en "\033[1;92m » 设置天数超过30天！设置失败！！\033[0m"
                   else
-                      echo "0 0 */$day_num * * $home_dir/BashCore ClearAll" > "$work_dir/CRON/ClearCache/root"
+                      echo -e "time=${day_num}/D\ndate=0000/00/00/00/00\nrun=$home_dir/BashCore ClearAll" > "$work_dir/TimedConfig/ClearAll.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
                 0)
                   clear
-                  echo -n "" > "$work_dir/CRON/ClearCache/root"
+                  rm "$work_dir/TimedConfig/ClearAll.conf"
                   echo " » 已关闭定期优化！"
                   ;;
                 *)
@@ -192,8 +192,8 @@ case "$in_put" in
             ;;
           2)
             clear
-            NowFileAllTime=$(cat "$work_dir/CRON/FileAll/root" | cut -f2 -d ' ' | cut -f2 -d '/')
-            echo -e "\033[104m [设定时间    当前设置时间：$NowFileAllTime)]\033[0m"
+            NowTime=$(grep "time=" "$work_dir/TimedConfig/FileAll.conf" | cut -f2 -d "=")
+            echo -e "\033[104m [设定时间    当前设置时间：$NowTime)]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：自定义输入间隔时间（单位：小时）\033[0m\n"
             echo -e "\033[93m \t0：关闭定期整理\033[0m\n"
@@ -204,21 +204,21 @@ case "$in_put" in
                 1)
                   clear
                   echo -en " » 请输入纯数字，范围 1～24 小时："
-                  read N_num
-                  if ! echo "$N_num" | grep [0-9] >>/dev/null; then
+                  read hour_num
+                  if ! echo "$hour_num" | grep [0-9] >>/dev/null; then
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                  elif [ "$N_num" -lt 1 ]; then
+                  elif [ "$hour_num" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1小时！设置失败！！\033[0m"
-                  elif [ "$N_num" -ge 24 ]; then
+                  elif [ "$hour_num" -ge 24 ]; then
                       echo -en "\033[1;92m » 设置时间超过24小时！设置失败！！\033[0m"
                   else
-                      echo "0 */$N_num * * * $home_dir/BashCore File_All" > "$work_dir/CRON/FileAll/root"
+                      echo -e "time=${hour_num}/H\ndate=0000/00/00/00/00\nrun=$home_dir/BashCore File_All" > "$work_dir/TimedConfig/FileAll.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
                 0)
                   clear
-                  echo -n "" > "$work_dir/CRON/FileAll/root"
+                  rm "$work_dir/TimedConfig/FileAll.conf"
                   echo " » 已关闭定期整理！"
                   ;;
                 *)
@@ -228,8 +228,8 @@ case "$in_put" in
             ;;
           3)
             clear
-            NowFileAllTime=$(cat "$work_dir/CRON/ClearDir/root" | cut -f1 -d ' ' | cut -f2 -d '/')
-            echo -e "\033[104m [设定时间    当前设置时间：$NowFileAllTime)]\033[0m"
+            NowTime=$(grep "time=" "$work_dir/TimedConfig/ClearDir.conf" | cut -f2 -d "=")
+            echo -e "\033[104m [设定时间    当前设置时间：$NowTime)]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：自定义输入间隔时间（单位：分钟）\033[0m\n"
             echo -e "\033[93m \t0：关闭定期清理空文件夹\033[0m\n"
@@ -240,21 +240,21 @@ case "$in_put" in
                 1)
                   clear
                   echo -en " » 请输入纯数字，范围 60 分钟："
-                  read S_num
-                  if ! echo "$S_num" | grep [0-9] >>/dev/null; then
+                  read minute_num
+                  if ! echo "$minute_num" | grep [0-9] >>/dev/null; then
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                  elif [ "$S_num" -lt 1 ]; then
+                  elif [ "$minute_num" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1分钟！设置失败！！\033[0m"
-                  elif [ "$S_num" -ge 60 ]; then
+                  elif [ "$minute_num" -ge 60 ]; then
                       echo -en "\033[1;92m » 设置时间超过1小时！设置失败！！\033[0m"
                   else
-                      echo "*/$S_num * * * * $home_dir/BashCore All_Dir" > "$work_dir/CRON/ClearDir/root"
+                      echo -e "time=${minute_num}/M\ndate=0000/00/00/00/00\nrun=$home_dir/BashCore All_Dir" > "$work_dir/TimedConfig/ClearDir.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
                 0)
                   clear
-                  echo -n "" > "$work_dir/CRON/ClearDir/root"
+                  rm "$work_dir/TimedConfig/ClearDir.conf"
                   echo " » 已关闭定期清理空文件夹！"
                   ;;
                 *)
