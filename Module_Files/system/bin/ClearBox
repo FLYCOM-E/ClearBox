@@ -176,7 +176,7 @@ case "$in_put" in
                   elif [ "$day_num" -gt 30 ]; then
                       echo -en "\033[1;92m » 设置天数超过30天！设置失败！！\033[0m"
                   else
-                      echo -e "time=${day_num}/D\ndate=0000/00/00/00/00\nrun=$home_dir/BashCore ClearAll" > "$work_dir/TimedConfig/ClearAll.conf"
+                      echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/BashCore ClearAll" > "$work_dir/TimedConfig/ClearAll.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
@@ -212,7 +212,7 @@ case "$in_put" in
                   elif [ "$hour_num" -ge 24 ]; then
                       echo -en "\033[1;92m » 设置时间超过24小时！设置失败！！\033[0m"
                   else
-                      echo -e "time=${hour_num}/H\ndate=0000/00/00/00/00\nrun=$home_dir/BashCore File_All" > "$work_dir/TimedConfig/FileAll.conf"
+                      echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/BashCore File_All" > "$work_dir/TimedConfig/FileAll.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
@@ -248,7 +248,7 @@ case "$in_put" in
                   elif [ "$minute_num" -ge 60 ]; then
                       echo -en "\033[1;92m » 设置时间超过1小时！设置失败！！\033[0m"
                   else
-                      echo -e "time=${minute_num}/M\ndate=0000/00/00/00/00\nrun=$home_dir/BashCore All_Dir" > "$work_dir/TimedConfig/ClearDir.conf"
+                      echo -e "time=${minute_num}/M\ndate=0\nrun=$home_dir/BashCore All_Dir" > "$work_dir/TimedConfig/ClearDir.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
