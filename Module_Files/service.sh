@@ -84,6 +84,7 @@ while [ ! -d "/storage/emulated/0/" ]; do
     set=$((set + 1))
     sleep 5
 done
+sleep 30
 ######
 if [ "$stopcache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
