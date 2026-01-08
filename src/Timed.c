@@ -14,11 +14,7 @@ struct config_file
     char time_unit;
     int time_num;
     // for date
-    int date_year;
-    int date_month;
-    int date_day;
-    int date_hour;
-    int date_minute;
+    time_t old_time;
     // other
     char run[MAX_COMMAND_LEN];
     char config_name[128];
@@ -101,9 +97,9 @@ int main(int argc, char * argv[])
                     if (value == NULL)
                     {
                         printf("E %s: line %d %s= error. Skip\n", entry -> d_name, line_count, key);
+                        fclose(config_fp);
                         break;
                     }
-                
                     if (strcmp(key, "time") == 0)
                     {
                         config[read_config].time_num = atoi(strtok(value, "/"));
@@ -112,11 +108,7 @@ int main(int argc, char * argv[])
                     }
                     else if (strcmp(key, "date") == 0)
                     {
-                        config[read_config].date_year = atoi(strtok(value, "/"));
-                        config[read_config].date_month = atoi(strtok(NULL, "/"));
-                        config[read_config].date_day = atoi(strtok(NULL, "/"));
-                        config[read_config].date_hour = atoi(strtok(NULL, "/"));
-                        config[read_config].date_minute = atoi(strtok(NULL, "/"));
+                        config[read_config].old_time = (time_t)atol(value);
                     }
                     else if (strcmp(key, "run") == 0)
                     {
@@ -130,11 +122,15 @@ int main(int argc, char * argv[])
                 fclose(config_fp);
                 snprintf(config[read_config].config_name, sizeof(config[read_config].config_name), "%s", entry -> d_name);
                 read_config += 1;
+                if (read_config == MAX_CONFIG)
+                {
+                    printf("I MAX Config is %d. Skip more\n", MAX_CONFIG);
+                    break;
+                }
                 printf("I %s config is %d Success\n", entry -> d_name, read_config);
             }
         }
         closedir(config_dir_dp);
-        
         if (read_config == 0)
         {
             printf("E Not any config files! \n");
@@ -167,76 +163,64 @@ int main(int argc, char * argv[])
     
     for ( ; ; )
     {
-        time_t now_time;
-        struct tm * timeinfo;
-        time(&now_time);
-        timeinfo = localtime(&now_time);
-        
-        int current_year = timeinfo->tm_year + 1900;
-        int current_month = timeinfo->tm_mon + 1;
-        int current_day = timeinfo->tm_mday;
-        int current_hour = timeinfo->tm_hour;
-        int current_minute = timeinfo->tm_min;
+        time_t now_time = time(NULL);
         
         int i = 0;
         while (i < read_config)
         {
-            int total_time = 0;
+            int run = 0;
             switch (config[i].time_unit)
             {
                 case 'D':
-                    // total_time = day
-                    total_time = (current_year - config[i].date_year) * 365 +
-                                (current_month - config[i].date_month) * 30 +
-                                (current_day - config[i].date_day);
+                    // day
+                    if (difftime(now_time, config[i].old_time) >= config[i].time_num * 86400)
+                    {
+                        run = 1;
+                    }
                     break;
                 case 'H':
-                    // total_time = hour
-                    total_time = (current_year - config[i].date_year) * 365 * 24 +
-                                (current_month - config[i].date_month) * 30 * 24 +
-                                (current_day - config[i].date_day) * 24 +
-                                (current_hour - config[i].date_hour);
+                    // hour
+                    if (difftime(now_time, config[i].old_time) >= config[i].time_num * 3600)
+                    {
+                        run = 1;
+                    }
                     break;
                 case 'M':
-                    // total_time = minute
-                    total_time = (current_year - config[i].date_year) * 365 * 24 * 60 +
-                                (current_month - config[i].date_month) * 30 * 24 * 60 +
-                                (current_day - config[i].date_day) * 24 * 60 +
-                                (current_hour - config[i].date_hour) * 60 +
-                                (current_minute - config[i].date_minute);
+                    // minute
+                    if (difftime(now_time, config[i].old_time) >= config[i].time_num * 60)
+                    {
+                        run = 1;
+                    }
                     break;
                 default:
                     printf("W %s time unit is error\n", config[i].config_name);
                     break;
             }
-            
-            if (total_time >= config[i].time_num)
+            if (run == 1)
             {
                 Running(config[i].run);
                 
-                config[i].date_year = current_year;
-                config[i].date_month = current_month;
-                config[i].date_day = current_day;
-                config[i].date_hour = current_hour;
-                config[i].date_minute = current_minute;
-                
+                config[i].old_time = now_time;
                 char config_file[strlen(argv[1]) + strlen(config[i].config_name) + 2];
                 snprintf(config_file, sizeof(config_file), "%s/%s", argv[1], config[i].config_name);
                 
-                FILE * config_file_fp = fopen(config_file, "w");
-                if (config_file_fp)
+                /* 如果配置存在则更新，否则不重新创建，这是为了配合前端
+                删掉配置即停用的设置。重启进程前配置仍然生效*/
+                if (access(config_file, F_OK) == 0)
                 {
-                    fprintf(config_file_fp, "time=%d/%c\ndate=%d/%d/%d/%d/%d\nrun=%s",
-                            // time
-                            config[i].time_num, config[i].time_unit,
-                            // date
-                            config[i].date_year, config[i].date_month,
-                            config[i].date_day, config[i].date_hour, 
-                            config[i].date_minute,
-                            // run
-                            config[i].run
-                          );
-                    fclose(config_file_fp);
+                    FILE * config_file_fp = fopen(config_file, "w");
+                    if (config_file_fp)
+                    {
+                        fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s",
+                                // time
+                                config[i].time_num, config[i].time_unit,
+                                // date
+                                config[i].old_time,
+                                // run
+                                config[i].run
+                              );
+                        fclose(config_file_fp);
+                    }
                 }
             }
             i++;
