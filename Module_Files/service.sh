@@ -16,9 +16,9 @@ mkdir -p "$work_dir"
 echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir/PATH"
 ######
 exec 2>/dev/null
-######
+###### The first stage. wait for boot = 1, timeout auto disable module
 set=0
-while [ "$(getprop sys.boot_completed)" != "1" ]; do
+while [ "$(getprop sys.boot_completed)" != 1 ]; do
     [ "$set" = 120 ] && touch "$home_dir/disable" && exit 1
     set=$((set + 1))
     sleep 5
@@ -77,6 +77,13 @@ StartSettings()
 ######
 StartSettings
 echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
+###### The second stage. wait for storaged up
+set=0
+while [ ! -d "/storage/emulated/0/" ]; do
+    [ "$set" = 60 ] && break
+    set=$((set + 1))
+    sleep 5
+done
 ######
 if [ "$stopcache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
