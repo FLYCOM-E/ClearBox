@@ -173,7 +173,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 {
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
-    char app_cache_dir[256] = "", package_list_line[MAX_PACKAGE] = "";
+    char app_cache_dir[512] = "", package_list_line[MAX_PACKAGE] = "";
     
     // 打开user目录
     struct dirent * uid_dir;
@@ -199,6 +199,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
         if (package_list_fp == NULL)
         {
             printf(L_GET_APPLIST_ERROR);
+            closedir(uid_dir_dp);
             return -1;
         }
         
@@ -206,10 +207,13 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
         while (fgets(package_list_line, sizeof(package_list_line), package_list_fp))
         {
             package_list_line[strcspn(package_list_line, "\n")] = 0;
+            if (strlen(package_list_line) < 9)
+            {
+                continue;
+            }
             
             // 拼接软件缓存目录，避免完整遍历user下所有目录
             snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", work_dir, uid_dir -> d_name, package_list_line + 8);
-            
             // Check
             if (access(app_cache_dir, F_OK) != 0)
             {
@@ -218,7 +222,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             
             // 获取缓存大小（兆M）
             cache_size = (int)(GetPathSize(app_cache_dir) / 1024 / 1024);
-            
             // 比较大小，如果值小于缓存清理限制大小则跳过
             if (cache_size > ClearCacheSize)
             {
@@ -227,7 +230,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                 {
                     continue;
                 }
-                
                 if (s_remove(app_cache_dir, 0) != -1)
                 {
                     count++;
@@ -248,10 +250,9 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             }
             fflush(stdout);
         }
-        if (package_list_fp) pclose(package_list_fp);
+        pclose(package_list_fp);
     }
-    
-    if (uid_dir_dp) closedir(uid_dir_dp);
+    closedir(uid_dir_dp);
     // 返回总清理大小
     printf(L_CC_CLEAR_APPCACHE_DONE, count, no_count);
     return clean_size;
@@ -289,6 +290,10 @@ static int ClearSystemCache()
         
         while (fgets(package_list_line, sizeof(package_list_line), package_list))
         {
+            if (strlen(package_list_line) < 9)
+            {
+                continue;
+            }
             package_list_line[strcspn(package_list_line, "\n")] = 0;
             snprintf(app_cache_path, sizeof(app_cache_path), "%s/%s/%s/cache", DATA_DIR, uid_dir -> d_name, package_list_line + 8);
             
