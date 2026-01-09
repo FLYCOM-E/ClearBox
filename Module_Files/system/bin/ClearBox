@@ -33,7 +33,7 @@ echo -e "\033[93m  9：自动清理 \t\t 10：阻止软件更新安装\033[0m\n"
 echo -e "\033[93m  11：内部储存固定功能 \t 12：阻止缓存生成功能\033[0m\n"
 echo -e "\033[93m  13：磁盘 & 软件优化 \t 00：模块管理\033[0m\n"
 echo -e "\033[96m ==============================================\033[0m"
-echo -e "\t\t\t   --- 键入 E 退出 ---"
+echo -e "\t\t\t   --- 键入 E、Q 退出 ---"
 echo -n " 请输入相应序号: "
 read in_put
 case "$in_put" in
@@ -147,9 +147,10 @@ case "$in_put" in
       clear
       echo -e "\033[104m [自动清理]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：定期运行优化整理\033[0m\n"
-      echo -e "\033[93m \t2：定期运行文件归类\033[0m\n"
-      echo -e "\033[93m \t3：定期清理空文件夹\033[0m\n"
+      echo -e "\033[93m \t1：定期运行 一键优化清理\033[0m\n"
+      echo -e "\033[93m \t2：定期运行 清理/干掉自定义目录\033[0m\n"
+      echo -e "\033[93m \t3：定期运行 清除垃圾文件及空文件夹\033[0m\n"
+      echo -e "\033[93m \t4：定期运行 磁铁（一键归类文件\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
       read put4
@@ -160,7 +161,7 @@ case "$in_put" in
             echo -e " \033[104m[设定时间    当前设置时间：$NowTime)]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：自定义输入间隔时间（单位：天）\033[0m\n"
-            echo -e "\033[93m \t0：关闭定期优化\033[0m\n"
+            echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
             read put4
@@ -183,7 +184,7 @@ case "$in_put" in
                 0)
                   clear
                   rm "$work_dir/TimedConfig/ClearAll.conf"
-                  echo " » 已关闭定期优化！"
+                  echo " » 已关闭！"
                   ;;
                 *)
                   echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
@@ -192,11 +193,11 @@ case "$in_put" in
             ;;
           2)
             clear
-            NowTime=$(grep "time=" "$work_dir/TimedConfig/FileAll.conf" | cut -f2 -d "=")
+            NowTime=$(grep "time=" "$work_dir/TimedConfig/ListDir.conf" | cut -f2 -d "=")
             echo -e "\033[104m [设定时间    当前设置时间：$NowTime)]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：自定义输入间隔时间（单位：小时）\033[0m\n"
-            echo -e "\033[93m \t0：关闭定期整理\033[0m\n"
+            echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
             read put4
@@ -212,14 +213,14 @@ case "$in_put" in
                   elif [ "$hour_num" -ge 24 ]; then
                       echo -en "\033[1;92m » 设置时间超过24小时！设置失败！！\033[0m"
                   else
-                      echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/BashCore File_All" > "$work_dir/TimedConfig/FileAll.conf"
+                      echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/BashCore List_Dir" > "$work_dir/TimedConfig/ListDir.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
                 0)
                   clear
-                  rm "$work_dir/TimedConfig/FileAll.conf"
-                  echo " » 已关闭定期整理！"
+                  rm "$work_dir/TimedConfig/ListDir.conf"
+                  echo " » 已关闭！"
                   ;;
                 *)
                   echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
@@ -232,7 +233,7 @@ case "$in_put" in
             echo -e "\033[104m [设定时间    当前设置时间：$NowTime)]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：自定义输入间隔时间（单位：分钟）\033[0m\n"
-            echo -e "\033[93m \t0：关闭定期清理空文件夹\033[0m\n"
+            echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
             read put4
@@ -255,7 +256,43 @@ case "$in_put" in
                 0)
                   clear
                   rm "$work_dir/TimedConfig/ClearDir.conf"
-                  echo " » 已关闭定期清理空文件夹！"
+                  echo " » 已关闭！"
+                  ;;
+                *)
+                  echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
+                  ;;
+            esac
+            ;;
+          4)
+            clear
+            NowTime=$(grep "time=" "$work_dir/TimedConfig/FileAll.conf" | cut -f2 -d "=")
+            echo -e "\033[104m [设定时间    当前设置时间：$NowTime)]\033[0m"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -e "\033[93m \t1：自定义输入间隔时间（单位：小时）\033[0m\n"
+            echo -e "\033[93m \t0：关闭此功能\033[0m\n"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -n " 请输入相应序号:"
+            read put4
+            case "$put4" in
+                1)
+                  clear
+                  echo -en " » 请输入纯数字，范围 1～24 小时："
+                  read hour_num
+                  if ! echo "$hour_num" | grep [0-9] >>/dev/null; then
+                      echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
+                  elif [ "$hour_num" -lt 1 ]; then
+                      echo -en "\033[1;92m » 间隔天数少于1小时！设置失败！！\033[0m"
+                  elif [ "$hour_num" -ge 24 ]; then
+                      echo -en "\033[1;92m » 设置时间超过24小时！设置失败！！\033[0m"
+                  else
+                      echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/BashCore File_All" > "$work_dir/TimedConfig/FileAll.conf"
+                      echo " » 设定成功！"
+                  fi
+                  ;;
+                0)
+                  clear
+                  rm "$work_dir/TimedConfig/FileAll.conf"
+                  echo " » 已关闭！"
                   ;;
                 *)
                   echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
@@ -836,13 +873,13 @@ case "$in_put" in
             ;;
         esac
         ;;
-    e | E)
+    e | E | q | Q)
       clear
       echo " » Bye！欢迎再来❤️❤️"
       exit 0
       ;;
     *)
-      echo -en "\033[92m » 已经是最后一层了呦，键入 E 退出！\033[0m"
+      echo -en "\033[92m » 已经是最后一层了呦，键入E或Q退出！\033[0m"
       ;;
 esac
 }
