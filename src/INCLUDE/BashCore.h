@@ -10,8 +10,10 @@
 #include <stdbool.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <android/log.h>
 #include <errno.h>
+
+#include <android/log.h>
+#include <sys/system_properties.h>
 
 #define MAX_PACKAGE 256
 #define MAX_PATH 4096

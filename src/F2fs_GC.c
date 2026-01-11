@@ -1,6 +1,9 @@
 // 此Code来自ClearBox模块，用于运行紧急GC优化，原理来自Coolapk@Amktiao，感谢大佬
 #include "INCLUDE/BashCore.h"
 
+#define getprop __system_property_get
+#define PROP "dev.mnt.dev.data"
+
 #define TIMEOUT 9
 #define SYSFS_PATH "/sys/fs/f2fs"
 #define SYSFS_FILE_NAME "gc_urgent" //Max Size 14
@@ -50,13 +53,10 @@ int main(int argc, char * argv[])
 static int F2FS_GC()
 {
     // GetProp
-    char sysfs_name[64] = "";
-    FILE * sysfs_name_fp = popen("getprop dev.mnt.dev.data", "r");
-    if (sysfs_name_fp)
+    char sysfs_name[PROP_VALUE_MAX] = {0};
+    if (getprop(PROP, sysfs_name) <= 0)
     {
-        fgets(sysfs_name, sizeof(sysfs_name), sysfs_name_fp);
-        pclose(sysfs_name_fp);
-        sysfs_name[strcspn(sysfs_name, "\n")] = 0;
+        return 1;
     }
     
     // F2FS_SYSFS_PATH
