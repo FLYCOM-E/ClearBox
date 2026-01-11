@@ -17,9 +17,11 @@ echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir
 ######
 exec 2>/dev/null
 ###### The first stage. wait for boot = 1, timeout auto disable module
+first_stage=0
 set=0
 while [ "$(getprop sys.boot_completed)" != 1 ]; do
     [ "$set" = 120 ] && touch "$home_dir/disable" && exit 1
+    first_stage=1
     set=$((set + 1))
     sleep 5
 done
@@ -84,14 +86,16 @@ while [ ! -d "/storage/emulated/0/" ]; do
     set=$((set + 1))
     sleep 5
 done
-sleep 30
+if [ "$first_stage" = 1 ]; then
+    sleep 30
+fi
 ######
 if [ "$stopcache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
         "$home_dir/bin/StopCached" -b "$bin_dir" -w "$work_dir"
     fi
 fi
-if pgrep Timed; then
+if pgrep Timed >/dev/null 2>&1; then
     killall Timed
 fi
 if "$home_dir/Timed" "$work_dir/TimedConfig"; then
