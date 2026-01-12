@@ -1,6 +1,7 @@
 // 此Code来自ClearBox模块，用于清空内部储存软件缓存
 #include "INCLUDE/BashCore.h"
 
+#define MAX_APPLIST 3000
 #define DATA_DIR "/data/user" //Max Size 10
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
 #define SETTINGS_FILE "settings.prop" //Max Size 30
@@ -173,7 +174,26 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 {
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
-    char app_cache_dir[512] = "", package_list_line[MAX_PACKAGE] = "";
+    char app_cache_dir[512] = {0};
+    
+    // 获取第三方软件包名列表
+    int app_count = 0;
+    char package_list[MAX_APPLIST][MAX_PACKAGE];
+    FILE * package_list_fp = popen(GET_APPLIST, "r");
+    if (package_list_fp == NULL)
+    {
+        printf(L_GET_APPLIST_ERROR);
+        return -1;
+    }
+    else
+    {
+        while (fgets(package_list[app_count], sizeof(package_list[app_count]), package_list_fp))
+        {
+            package_list[app_count][strcspn(package_list[app_count], "\n")] = 0;
+            app_count++;
+        }
+        pclose(package_list_fp);
+    }
     
     // 打开user目录
     struct dirent * uid_dir;
@@ -194,26 +214,16 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             continue;
         }
         
-        // 获取第三方软件包名列表
-        FILE * package_list_fp = popen(GET_APPLIST, "r");
-        if (package_list_fp == NULL)
-        {
-            printf(L_GET_APPLIST_ERROR);
-            closedir(uid_dir_dp);
-            return -1;
-        }
-        
         // 遍历第三方用户软件包名列表
-        while (fgets(package_list_line, sizeof(package_list_line), package_list_fp))
+        for (int i = 0; i < app_count; i++)
         {
-            package_list_line[strcspn(package_list_line, "\n")] = 0;
-            if (strlen(package_list_line) < 9)
+            if (strlen(package_list[i]) < 9)
             {
                 continue;
             }
             
             // 拼接软件缓存目录，避免完整遍历user下所有目录
-            snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", work_dir, uid_dir -> d_name, package_list_line + 8);
+            snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", work_dir, uid_dir -> d_name, package_list[i] + 8);
             // Check
             if (access(app_cache_dir, F_OK) != 0)
             {
@@ -226,7 +236,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             if (cache_size > ClearCacheSize)
             {
                 // 调用白名单检查函数，在清理白名单则跳过
-                if (whiteListCheck(whitelist_file, package_list_line + 8) == 1)
+                if (whiteListCheck(whitelist_file, package_list[i] + 8) == 1)
                 {
                     continue;
                 }
@@ -236,7 +246,8 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                     clean_size += cache_size; 
                     /* 记录清理大小，本来s_remove实现也会返回大小
                     但上面的大小判断注定这个会浪费 */
-                    printf(L_CC_CLEAR, package_list_line + 8);
+                    printf(L_CC_CLEAR, package_list[i] + 8);
+                    fflush(stdout);
                 }
                 else
                 {
@@ -246,11 +257,10 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             else
             {
                 no_count++;
-                printf(L_CC_CLEAR_SKIP, package_list_line + 8);
+                printf(L_CC_CLEAR_SKIP, package_list[i] + 8);
+                // 这里不再 fflush 了，攒一攒
             }
-            fflush(stdout);
         }
-        pclose(package_list_fp);
     }
     closedir(uid_dir_dp);
     // 返回总清理大小
