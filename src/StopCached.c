@@ -104,10 +104,10 @@ int main(int argc, char * argv[])
     char tmp[16] = "";
     char rom_key_line[MAX_PACKAGE] = "";
     char * rom_key_line_p = NULL;
-    FILE * rom_file_fp = fopen(rom_file, "r");
-    if (rom_file_fp)
+    FILE * rom_file_fp_r = fopen(rom_file, "r");
+    if (rom_file_fp_r)
     {
-        while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp) != NULL)
+        while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp_r) != NULL)
         {
             rom_key_line[strcspn(rom_key_line, "\n")] = 0;
             
@@ -137,7 +137,7 @@ int main(int argc, char * argv[])
                 }
             }
         }
-        fclose(rom_file_fp);
+        fclose(rom_file_fp_r);
     }
     
     // 如果包名含“ / ”则丢弃
@@ -237,11 +237,11 @@ int main(int argc, char * argv[])
         snprintf(top_app_list[1], sizeof(top_app_list[1]), "%s", top_app_list[0]);
         snprintf(top_app_list[0], sizeof(top_app_list[0]), "%s", top_app);
         
-        FILE * rom_file_fp = fopen(rom_file, "w");
-        if (rom_file_fp)
+        FILE * rom_file_fp_w = fopen(rom_file, "w");
+        if (rom_file_fp_w)
         {
-            fprintf(rom_file_fp, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", top_app_list[0], top_app_list[1], top_app_list[2], top_app_list[3], top_app_list[4], reset_app);
-            fclose(rom_file_fp);
+            fprintf(rom_file_fp_w, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", top_app_list[0], top_app_list[1], top_app_list[2], top_app_list[3], top_app_list[4], reset_app);
+            fclose(rom_file_fp_w);
         }
         
         // 这个逻辑目标为跳过不必要的缓存加解锁
