@@ -152,6 +152,6 @@ int main(int argc, char * argv[])
     }
     closedir(config_dir_dp);
     
-    fprintf(stderr, L_SR_END);
+    printf(L_SR_END);
     return 0;
 }
