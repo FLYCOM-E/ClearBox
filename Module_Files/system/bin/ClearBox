@@ -150,7 +150,8 @@ case "$in_put" in
       echo -e "\033[93m \t1：定期运行 一键优化清理\033[0m\n"
       echo -e "\033[93m \t2：定期运行 清理/干掉自定义目录\033[0m\n"
       echo -e "\033[93m \t3：定期运行 清除垃圾文件及空文件夹\033[0m\n"
-      echo -e "\033[93m \t4：定期运行 磁铁（一键归类文件\033[0m\n"
+      echo -e "\033[93m \t4：定期运行 清空所有软件缓存\033[0m\n"
+      echo -e "\033[93m \t5：定期运行 磁铁（一键归类文件\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
       read put4
@@ -264,6 +265,42 @@ case "$in_put" in
             esac
             ;;
           4)
+            clear
+            NowTime=$(grep "time=" "$work_dir/TimedConfig/ClearCache.conf" | cut -f2 -d "=")
+            echo -e " \033[104m[设定时间    当前设置时间：$NowTime)]\033[0m"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -e "\033[93m \t1：自定义输入间隔时间（单位：天）\033[0m\n"
+            echo -e "\033[93m \t0：关闭此功能\033[0m\n"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -n " 请输入相应序号:"
+            read put4
+            case "$put4" in
+                1)
+                  clear
+                  echo -en " » 请输入纯数字，范围 1～30 天："
+                  read day_num
+                  if ! echo "$day_num" | grep [0-9] >>/dev/null; then
+                      echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
+                  elif [ "$day_num" -lt 1 ]; then
+                      echo -en "\033[1;92m » 间隔天数少于1天！设置失败！！\033[0m"
+                  elif [ "$day_num" -gt 30 ]; then
+                      echo -en "\033[1;92m » 设置天数超过30天！设置失败！！\033[0m"
+                  else
+                      echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/BashCore ClearCache" > "$work_dir/TimedConfig/ClearCache.conf"
+                      echo " » 设定成功！"
+                  fi
+                  ;;
+                0)
+                  clear
+                  rm "$work_dir/TimedConfig/ClearCache.conf"
+                  echo " » 已关闭！"
+                  ;;
+                *)
+                  echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
+                  ;;
+            esac
+            ;;
+          5)
             clear
             NowTime=$(grep "time=" "$work_dir/TimedConfig/FileAll.conf" | cut -f2 -d "=")
             echo -e "\033[104m [设定时间    当前设置时间：$NowTime)]\033[0m"
