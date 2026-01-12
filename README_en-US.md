@@ -130,7 +130,7 @@ Clear system software cache, system cache, and also clear **MTP** host data (can
 
 
 ### **8**：Automatic Cleaning
-Feature automation, driven by the Timed component for execution.
+Feature automation, driven by the **Timed** component for execution (ultra-low overhead).
 
 
 

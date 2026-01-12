@@ -131,7 +131,7 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 ### **8**：自動清理
-功能自動化，由Timed組件驅動執行。
+功能自動化，由 **Timed** 組件驅動執行（超低開銷）。
 
 
 
