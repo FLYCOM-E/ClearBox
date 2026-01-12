@@ -13,7 +13,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -21,7 +21,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 5)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -35,12 +35,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                printf(L_CONFIG_PATH_TOOLONG);
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(argv[1], F_OK) != 0)
             {
-                printf(L_CONFIG_PATH_NOTFIND);
+                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
                 return 1;
             }
             work_dir = argv[1];
@@ -51,12 +51,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_BIN_DIR_LEN)
             {
-                printf(L_BIN_PATH_TOOLONG);
+                fprintf(stderr, L_BIN_PATH_TOOLONG);
                 return 1;
             }
             if (access(argv[1], F_OK) != 0)
             {
-                printf(L_BIN_PATH_NOTFIND);
+                fprintf(stderr, L_BIN_PATH_NOTFOUND);
                 return 1;
             }
             bin_dir = argv[1];
@@ -67,7 +67,7 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > 5) // is 5
             {
-                printf(L_MODE_TOOLONG);
+                fprintf(stderr, L_MODE_TOOLONG);
                 return 1;
             }
             mode = argv[1];
@@ -76,23 +76,23 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED_2);
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        printf(L_ARG_CONFIGPATH_ERR);
+        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (bin_dir == NULL)
     {
-        printf(L_ARG_BINPATH_ERR);
+        fprintf(stderr, L_ARG_BINPATH_ERR);
         return 1;
     }
     if (mode == NULL)
     {
-        printf(L_ARG_MODE_ERR);
+        fprintf(stderr, L_ARG_MODE_ERR);
         return 1;
     }
     
@@ -120,7 +120,7 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_SI_OPEN_FAILED_STORAGE);
+            fprintf(stderr, L_SI_OPEN_FAILED_STORAGE);
         }
         if (access(micro_dir, F_OK) == 0)
         {
@@ -131,7 +131,7 @@ int main(int argc, char * argv[])
             }
             else
             {
-                printf(L_SI_OPEN_FAILED_SD);
+                fprintf(stderr, L_SI_OPEN_FAILED_SD);
             }
         }
         fflush(stdout);
@@ -145,7 +145,7 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_SI_OFF_FAILED_STORAGE);
+            fprintf(stderr, L_SI_OFF_FAILED_STORAGE);
         }
         if (access(micro_dir, F_OK) == 0)
         {
@@ -156,14 +156,14 @@ int main(int argc, char * argv[])
             }
             else
             {
-                printf(L_SI_OFF_FAILED_SD);
+                fprintf(stderr, L_SI_OFF_FAILED_SD);
             }
         }
         fflush(stdout);
     }
     else
     {
-        printf(L_MODE_ERR, mode);
+        fprintf(stderr, L_MODE_ERR, mode);
         return 1;
     }
     
@@ -178,7 +178,7 @@ int main(int argc, char * argv[])
     }
     if (system(set_prop) != 0)
     {
-        printf(L_W_SETPROP_ERR);
+        fprintf(stderr, L_W_SETPROP_ERR);
     }
     
     return 0;

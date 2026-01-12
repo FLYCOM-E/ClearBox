@@ -8,7 +8,7 @@ int main(int argc, char * argv[])
 {
     if (argc != 3)
     {
-        printf("Use: ./Post <title> <message>\n");
+        fprintf(stderr, "Use: ./Post <title> <message>\n");
         return 1;
     }
     
@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
     pid_t newPid = fork();
     if (newPid == -1)
     {
-        printf("Fork Error\n");
+        fprintf(stderr, "Fork Error\n");
         return 1;
     }
     
@@ -35,12 +35,12 @@ int main(int argc, char * argv[])
         int end = 0;
         if (waitpid(newPid, &end, 0) == -1)
         {
-            printf("Wait Error\n");
+            fprintf(stderr, "Wait Error\n");
             return 1;
         }
         if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
         {
-            printf("exit code error\n");
+            fprintf(stderr, "exit code error\n");
         }
     }
 }

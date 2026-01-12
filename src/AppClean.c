@@ -11,7 +11,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 4)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -33,12 +33,12 @@ int main(int argc, char * argv[])
         {
             if (access(argv[1], F_OK) != 0)
             {
-                printf(L_CONFIG_PATH_NOTFIND);
+                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
                 return 1;
             }
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                printf(L_CONFIG_PATH_TOOLONG);
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             work_dir = argv[1];
@@ -49,7 +49,7 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_PACKAGE - 2) // -2 for '\0'
             {
-                printf(L_PACKAGE_TOOLONG, MAX_PACKAGE);
+                fprintf(stderr, L_PACKAGE_TOOLONG, MAX_PACKAGE);
                 return 1;
             }
             app_package = argv[1];
@@ -58,18 +58,18 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED_2);
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        printf(L_ARG_CONFIGPATH_ERR);
+        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (app_package == NULL)
     {
-        printf(L_ARG_PACKAGE_ERR);
+        fprintf(stderr, L_ARG_PACKAGE_ERR);
         return 1;
     }
     
@@ -78,7 +78,7 @@ int main(int argc, char * argv[])
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     if (access(config_dir, F_OK) != 0)
     {
-        printf(L_AC_CONFIG_NOTFINF);
+        fprintf(stderr, L_AC_CONFIG_NOTFOUND);
         return 1;
     }
     
@@ -88,7 +88,7 @@ int main(int argc, char * argv[])
     DIR * config_dir_fp = opendir(config_dir);
     if (config_dir_fp == NULL)
     {
-        printf(L_OPEN_PATH_FAILED, config_dir);
+        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir);
         return 1;
     }
     
@@ -157,7 +157,7 @@ int main(int argc, char * argv[])
                         }
                         else
                         {
-                            printf(L_AC_CONFIG_APP_NOTFIND, config_name -> d_name);
+                            fprintf(stderr, L_AC_CONFIG_APP_NOTFOUND, config_name -> d_name);
                             break;
                         }
                     }
@@ -165,11 +165,11 @@ int main(int argc, char * argv[])
                     {
                         if (app_package_fp == NULL)
                         {
-                            printf(L_AC_CONFIG_PACKAGE_ERR, config_name -> d_name);
+                            fprintf(stderr, L_AC_CONFIG_PACKAGE_ERR, config_name -> d_name);
                         }
                         else if (app_name_fp == NULL)
                         {
-                            printf(L_AC_CONFIG_APPNAME_ERR, config_name -> d_name);
+                            fprintf(stderr, L_AC_CONFIG_APPNAME_ERR, config_name -> d_name);
                         }
                         break;
                     }
@@ -177,7 +177,7 @@ int main(int argc, char * argv[])
                 }
                 else
                 {
-                    printf(L_AC_CONFIG_ERR, config_name -> d_name);
+                    fprintf(stderr, L_AC_CONFIG_ERR, config_name -> d_name);
                     break;
                 }
             }
@@ -196,13 +196,13 @@ int main(int argc, char * argv[])
                 // 配置不应以／开头！
                 if (* len_str_ptr == '/')
                 {
-                    printf(L_AC_CONFIG_ERR_1, config_name -> d_name, count);
+                    fprintf(stderr, L_AC_CONFIG_ERR_1, config_name -> d_name, count);
                     continue;
                 }
                 // 防止路径逃逸
                 if (strstr(len_str, "../"))
                 {
-                    printf(L_AC_CONFIG_ERR_2, config_name -> d_name, count);
+                    fprintf(stderr, L_AC_CONFIG_ERR_2, config_name -> d_name, count);
                     continue;
                 }
                 // 这可以避免很多报错
@@ -214,7 +214,7 @@ int main(int argc, char * argv[])
                 long clear_size = s_remove(app_cf_dir, 0);
                 if (clear_size == -1)
                 {
-                    printf(L_AC_CLEAR_PATH_ERR, len_str);
+                    fprintf(stderr, L_AC_CLEAR_PATH_ERR, len_str);
                 }
                 else
                 {
@@ -223,7 +223,7 @@ int main(int argc, char * argv[])
             }
             else
             {
-                printf(L_AC_CONFIG_ERR, config_name -> d_name);
+                fprintf(stderr, L_AC_CONFIG_ERR, config_name -> d_name);
                 break;
             }
             fflush(stdout);
@@ -238,7 +238,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        printf(L_AC_CLEAN_FAILED);
+        fprintf(stderr, L_AC_CLEAN_FAILED);
         return -1;
     }
     

@@ -8,12 +8,12 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     if (argc < 2)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -25,14 +25,14 @@ int main(int argc, char * argv[])
     {
         if (argc < 3)
         {
-            printf(L_ARGS_FAILED);
+            fprintf(stderr, L_ARGS_FAILED);
             return 1;
         }
         return CustDexOat(argv[2]);
     }
     else
     {
-        printf(L_ARGS_FAILED_2);
+        fprintf(stderr, L_ARGS_FAILED_2);
         return 1;
     }
     

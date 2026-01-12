@@ -9,7 +9,7 @@ int main()
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -18,7 +18,7 @@ int main()
     
     if (getprop(PROP, sdk_str) <= 0)
     {
-        printf(L_GET_SYSTEM_VERSION_ERR);
+        fprintf(stderr, L_GET_SYSTEM_VERSION_ERR);
         return 1;
     }
     else

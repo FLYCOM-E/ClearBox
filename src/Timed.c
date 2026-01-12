@@ -24,17 +24,17 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(" » Please use root privileges!\n");
+        fprintf(stderr, " » Please use root privileges!\n");
         return 1;
     }
     if (argc != 2)
     {
-        printf("E Args error\n");
+        fprintf(stderr, "E Args error\n");
         return 1;
     }
     if (access(argv[1], F_OK) != 0)
     {
-        printf("E %s no such file or dir\n", argv[1]);
+        fprintf(stderr, "E %s no such file or dir\n", argv[1]);
         return 1;
     }
     
@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
     struct stat path_stat;
     if (lstat(argv[1], &path_stat) == -1)
     {
-        printf("E stat %s error\n", argv[1]);
+        fprintf(stderr, "E stat %s error\n", argv[1]);
         return 1;
     }
     
@@ -55,7 +55,7 @@ int main(int argc, char * argv[])
         DIR * config_dir_dp = opendir(argv[1]);
         if (config_dir_dp == NULL)
         {
-            printf("E Open dir %s error\n", argv[1]);
+            fprintf(stderr, "E Open dir %s error\n", argv[1]);
             return 1;
         }
         while ((entry = readdir(config_dir_dp)))
@@ -85,7 +85,7 @@ int main(int argc, char * argv[])
                 FILE * config_fp = fopen(path, "r");
                 if (config_fp == NULL)
                 {
-                    printf("W %s open error\n", entry -> d_name);
+                    fprintf(stderr, "W %s open error\n", entry -> d_name);
                     continue;
                 }
                 while (fgets(line, sizeof(line), config_fp))
@@ -96,7 +96,7 @@ int main(int argc, char * argv[])
                     char * value = strtok(NULL, "=");
                     if (value == NULL)
                     {
-                        printf("E %s: line %d %s= error. Skip\n", entry -> d_name, line_count, key);
+                        fprintf(stderr, "E %s: line %d %s= error. Skip\n", entry -> d_name, line_count, key);
                         fclose(config_fp);
                         break;
                     }
@@ -116,7 +116,7 @@ int main(int argc, char * argv[])
                     }
                     else
                     {
-                        printf("E %s: line %d error key: %s\n", entry -> d_name, line_count, key);
+                        fprintf(stderr, "E %s: line %d error key: %s\n", entry -> d_name, line_count, key);
                     }
                 }
                 fclose(config_fp);
@@ -133,20 +133,20 @@ int main(int argc, char * argv[])
         closedir(config_dir_dp);
         if (read_config == 0)
         {
-            printf("E Not any config files! \n");
+            fprintf(stderr, "E Not any config files! \n");
             return 1;
         }
     }
     else
     {
-        printf("E %s not is dir.\n", argv[1]);
+        fprintf(stderr, "E %s not is dir.\n", argv[1]);
         return 1;
     }
     
     pid_t pid = fork();
     if (pid == -1)
     {
-        printf("Server start error\n");
+        fprintf(stderr, "Server start error\n");
         return 1;
     }
     if (pid != 0)
@@ -193,7 +193,7 @@ int main(int argc, char * argv[])
                     }
                     break;
                 default:
-                    printf("W %s time unit is error\n", config[i].config_name);
+                    fprintf(stderr, "W %s time unit is error\n", config[i].config_name);
                     break;
             }
             if (run == 1)

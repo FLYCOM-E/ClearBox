@@ -28,19 +28,19 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     if (argc < 2)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
     // Get PATH
     if (access(PATH_ROM_FILE, F_OK) != 0)
     {
-        printf(" » Error：Read PATH\n");
+        fprintf(stderr, " » Error：Read PATH\n");
         return 1;
     }
     char * key_p = NULL;
@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
     FILE * path_rom_file_fp = fopen(PATH_ROM_FILE, "r");
     if (path_rom_file_fp == NULL)
     {
-        printf(" » Error：Read PATH\n");
+        fprintf(stderr, " » Error：Read PATH\n");
         return 1;
     }
     while (fgets(path_rom_file_line, sizeof(path_rom_file_line), path_rom_file_fp))
@@ -78,17 +78,17 @@ int main(int argc, char * argv[])
     fclose(path_rom_file_fp);
     if (access(home_dir, F_OK) != 0)
     {
-        printf(" » Error：HOME_PATH\n");
+        fprintf(stderr, " » Error：HOME_PATH\n");
         return 1;
     }
     if (access(work_dir, F_OK) != 0)
     {
-        printf(" » Error：WORK_PATH\n");
+        fprintf(stderr, " » Error：WORK_PATH\n");
         return 1;
     }
     if (access(bin_dir, F_OK) != 0)
     {
-        printf(" » Error：BIN_PATH\n");
+        fprintf(stderr, " » Error：BIN_PATH\n");
         return 1;
     }
     
@@ -185,7 +185,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "File_Clear") == 0)
     {
-        if (fileClear(home_dir, work_dir, argv[2]) == 0)
+        if (argc < 2)
+        {
+            fprintf(stderr, L_ARGS_FAILED_2);
+        }
+        else if (fileClear(home_dir, work_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "[%s] I 自定义文件清理\n", now_time);
         }
@@ -196,7 +200,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "Clear_App") == 0)
     {
-        if (clearApp(home_dir, work_dir, argv[2]) == 0)
+        if (argc < 2)
+        {
+            fprintf(stderr, L_ARGS_FAILED_2);
+        }
+        else if (clearApp(home_dir, work_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "[%s] I 自定义软件清理\n", now_time);
         }
@@ -218,7 +226,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "StopInstall") == 0)
     {
-        if (stopInstall(home_dir, work_dir, bin_dir, argv[2]) == 0)
+        if (argc < 2)
+        {
+            fprintf(stderr, L_ARGS_FAILED_2);
+        }
+        else if (stopInstall(home_dir, work_dir, bin_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "[%s] I %s 阻止安装\n", now_time, argv[2]);
         }
@@ -229,7 +241,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "StopStorage") == 0)
     {
-        if (stopStorage(home_dir, work_dir, bin_dir, argv[2]) == 0)
+        if (argc < 2)
+        {
+            fprintf(stderr, L_ARGS_FAILED_2);
+        }
+        else if (stopStorage(home_dir, work_dir, bin_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "[%s] I %s 内部储存固定\n", now_time, argv[2]);
         }
@@ -262,7 +278,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "Dexoat_2") == 0)
     {
-        if (DexoatCUST_DEXOAT(home_dir, argv[2]) == 0)
+        if (argc < 2)
+        {
+            fprintf(stderr, L_ARGS_FAILED_2);
+        }
+        else if (DexoatCUST_DEXOAT(home_dir, argv[2]) == 0)
         {
             fprintf(log_file_fp, "[%s] I 自定义模式Dexoat\n", now_time);
         }
@@ -288,17 +308,23 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "configManager") == 0)
     {
-        configFunction(home_dir, argv[2], argv[3]);
+        if (argc < 3)
+        {
+            fprintf(stderr, L_ARGS_FAILED_2);
+        }
+        else
+        {
+            configFunction(home_dir, argv[2], argv[3]);
+        }
     }
     else
     {
-        printf(L_ARGS_FAILED_2);
+        fprintf(stderr, L_ARGS_FAILED_2);
     }
     
     //ON the Selinux
     if (off_selinux == 1) system("setenforce 1");
     if (in_log_file) fclose(log_file_fp);
-    
     return 0;
 }
 

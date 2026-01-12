@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(" » Please use root privileges!\n");
+        fprintf(stderr, " » Please use root privileges!\n");
         return 1;
     }
     
@@ -24,7 +24,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 3)
     {
-        printf(" » Cmd args Failed! \n");
+        fprintf(stderr, " » Cmd args Failed! \n");
         return 1;
     }
     
@@ -37,12 +37,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                printf(" » Config dir is Long! \n");
+                fprintf(stderr, " » Config dir is Long! \n");
                 return 1;
             }
             else if (access(argv[1], F_OK) != 0)
             {
-                printf(" » Config dir Not Find! \n");
+                fprintf(stderr, " » Config dir Not Find! \n");
                 return 1;
             }
             work_dir = argv[1];
@@ -53,12 +53,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_BIN_DIR_LEN)
             {
-                printf(" » Bin dir is Long! \n");
+                fprintf(stderr, " » Bin dir is Long! \n");
                 return 1;
             }
             else if (access(argv[1], F_OK) != 0)
             {
-                printf(" » Bin dir Not Find! \n");
+                fprintf(stderr, " » Bin dir Not Find! \n");
                 return 1;
             }
             bin_dir = argv[1];
@@ -67,18 +67,18 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(" » Incorrect arguments provided!\n");
+            fprintf(stderr, " » Incorrect arguments provided!\n");
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        printf(" » Config dir Not Find! \n");
+        fprintf(stderr, " » Config dir Not Find! \n");
         return 1;
     }
     if (bin_dir == NULL)
     {
-        printf(" » Bin dir Not Find! \n");
+        fprintf(stderr, " » Bin dir Not Find! \n");
         return 1;
     }
     

@@ -14,7 +14,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -22,7 +22,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 1)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -34,12 +34,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                printf(L_CONFIG_PATH_TOOLONG);
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(argv[1], F_OK) != 0)
             {
-                printf(L_CONFIG_PATH_NOTFIND);
+                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
                 return 1;
             }
             work_dir = argv[1];
@@ -48,13 +48,13 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED_2);
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        printf(L_ARG_CONFIGPATH_ERR);
+        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     
@@ -103,7 +103,7 @@ int main(int argc, char * argv[])
     int clean_count = StorageClean(data_dir);
     if (clean_count == -1)
     {
-        printf(L_SC_CLEAR_DIRTY_ERR);
+        fprintf(stderr, L_SC_CLEAR_DIRTY_ERR);
     }
     else
     {
@@ -120,7 +120,7 @@ int main(int argc, char * argv[])
             clean_count = StorageClean(sdcard_dir);
             if (clean_count == -1)
             {
-                printf(L_SC_CLEAR_DIRTY_ERR);
+                fprintf(stderr, L_SC_CLEAR_DIRTY_ERR);
             }
             else
             {
@@ -147,7 +147,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
 {
     if (access(data_path, F_OK) != 0)
     {
-        printf(L_OPEN_PATH_FAILED, data_path);
+        fprintf(stderr, L_OPEN_PATH_FAILED, data_path);
         return 1;
     }
     
@@ -163,7 +163,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
     DIR * app_data_dir_dp = opendir(app_data_path);
     if (app_data_dir_dp == NULL)
     {
-        printf(L_OPEN_PATH_FAILED, app_data_path);
+        fprintf(stderr, L_OPEN_PATH_FAILED, app_data_path);
         return 1;
     }
     
@@ -197,7 +197,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
         }
         else
         {
-            printf(L_SC_CLEAR_ERR, entry -> d_name);
+            fprintf(stderr, L_SC_CLEAR_ERR, entry -> d_name);
         }
         fflush(stdout);
     }

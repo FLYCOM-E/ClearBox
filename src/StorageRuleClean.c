@@ -7,7 +7,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -15,7 +15,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 1)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -27,12 +27,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                printf(L_CONFIG_PATH_TOOLONG);
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(argv[1], F_OK) != 0)
             {
-                printf(L_CONFIG_PATH_NOTFIND);
+                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
                 return 1;
             }
             work_dir = argv[1];
@@ -41,13 +41,13 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED_2);
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        printf(L_ARG_CONFIGPATH_ERR);
+        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     
@@ -58,7 +58,7 @@ int main(int argc, char * argv[])
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        printf(L_OPEN_PATH_FAILED, config_dir);
+        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir);
         return 1;
     }
     
@@ -76,7 +76,7 @@ int main(int argc, char * argv[])
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
-            printf(L_SR_OPEN_CONFIG_ERR, config_file_name -> d_name);
+            fprintf(stderr, L_SR_OPEN_CONFIG_ERR, config_file_name -> d_name);
             continue;
         }
         
@@ -109,7 +109,7 @@ int main(int argc, char * argv[])
                     snprintf(dir, sizeof(dir), "%s", key_str);
                     if (access(dir, F_OK) != 0)
                     {
-                        printf(L_SR_W_CONFIG_STATTPATH_ERR, config_file_name -> d_name);
+                        fprintf(stderr, L_SR_W_CONFIG_STATTPATH_ERR, config_file_name -> d_name);
                     }
                 }
                 continue;
@@ -128,11 +128,11 @@ int main(int argc, char * argv[])
             
             if (access(path, F_OK) != 0)
             {
-                printf(L_SR_LINE_FAILED_PATH_ERR, count);
+                fprintf(stderr, L_SR_LINE_FAILED_PATH_ERR, count);
             }
             if (strstr(path, "../"))
             {
-                printf(L_SR_LINE_FAILED_PATH_ERR, count);
+                fprintf(stderr, L_SR_LINE_FAILED_PATH_ERR, count);
             }
             else
             {
@@ -143,7 +143,7 @@ int main(int argc, char * argv[])
                 }
                 else
                 {
-                    printf(L_SR_CLEAR_FAILED, path);
+                    fprintf(stderr, L_SR_CLEAR_FAILED, path);
                 }
             }
             fflush(stdout);
@@ -152,6 +152,6 @@ int main(int argc, char * argv[])
     }
     closedir(config_dir_dp);
     
-    printf(L_SR_END);
+    fprintf(stderr, L_SR_END);
     return 0;
 }

@@ -19,12 +19,12 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     if (argc < 2)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        printf(L_ARGS_FAILED_2);
+        fprintf(stderr, L_ARGS_FAILED_2);
         return 1;
     }
     
@@ -75,13 +75,13 @@ static int F2FS_GC()
     // 检测是否为f2fs文件系统
     if (access(f2fs_sysfs_path, F_OK) != 0)
     {
-        printf(L_FG_ERR_NOF2FS);
+        fprintf(stderr, L_FG_ERR_NOF2FS);
         return 1;
     }
     // 检测是否支持当前gc方案
     if (access(f2fs_sysfs_file, F_OK) != 0)
     {
-        printf(L_FG_ERR_CHECK);
+        fprintf(stderr, L_FG_ERR_CHECK);
         return 1;
     }
     
@@ -96,7 +96,7 @@ static int F2FS_GC()
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
     if (f2fs_sysfs_file_fp == NULL)
     {
-        printf(L_FG_ERR_OPENSYSFS);
+        fprintf(stderr, L_FG_ERR_OPENSYSFS);
         return 1;
     }
     if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
@@ -106,7 +106,7 @@ static int F2FS_GC()
     }
     else
     {
-        printf(L_FG_ERR_WRITESYSFS);
+        fprintf(stderr, L_FG_ERR_WRITESYSFS);
         fclose(f2fs_sysfs_file_fp);
         return 1;
     }
@@ -128,7 +128,7 @@ static int F2FS_GC()
         }
         if (time_m == TIMEOUT)
         {
-            printf(L_FG_ERR_TIMEOUT);
+            fprintf(stderr, L_FG_ERR_TIMEOUT);
             fflush(stdout);
             break;
         }

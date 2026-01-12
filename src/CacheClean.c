@@ -5,6 +5,7 @@
 #define DATA_DIR "/data/user" //Max Size 10
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
 #define SETTINGS_FILE "settings.prop" //Max Size 30
+#define GET_CARD_ID "ls /mnt/expand/ | cut -f1 -d ' ' 2>/dev/null"
 #define GET_APPLIST "cmd package list package -3 2>/dev/null"
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
@@ -15,7 +16,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -23,7 +24,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 3)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -36,12 +37,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                printf(L_CONFIG_PATH_TOOLONG);
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(argv[1], F_OK) != 0)
             {
-                printf(L_CONFIG_PATH_NOTFIND);
+                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
                 return 1;
             }
             work_dir = argv[1];
@@ -56,18 +57,18 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED_2);
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        printf(L_ARG_CONFIGPATH_ERR);
+        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (mode == NULL)
     {
-        printf(L_ARG_MODE_ERR);
+        fprintf(stderr, L_ARG_MODE_ERR);
         return 1;
     }
     
@@ -76,7 +77,7 @@ int main(int argc, char * argv[])
     {
         // micro_dir定义
         char card_id[64] = "", micro_dir[128] = "";
-        FILE * card_id_fp = popen("ls /mnt/expand/ | cut -f1 -d ' ' 2>/dev/null", "r");
+        FILE * card_id_fp = popen(GET_CARD_ID, "r");
         if (card_id_fp)
         {
             fgets(card_id, sizeof(card_id), card_id_fp);
@@ -124,7 +125,7 @@ int main(int argc, char * argv[])
         int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
         if (clear_size == -1)
         {
-            printf(L_CC_CLEAR_FAILED);
+            fprintf(stderr, L_CC_CLEAR_FAILED);
         }
         else
         {
@@ -138,7 +139,7 @@ int main(int argc, char * argv[])
                 clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
                 if (clear_size == -1)
                 {
-                    printf(L_CC_CLEAR_FAILED_SD);
+                    fprintf(stderr, L_CC_CLEAR_FAILED_SD);
                 }
                 else
                 {
@@ -153,7 +154,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        printf(L_ARGS_FAILED_2);
+        fprintf(stderr, L_ARGS_FAILED_2);
         return 1;
     }
     
@@ -182,7 +183,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     FILE * package_list_fp = popen(GET_APPLIST, "r");
     if (package_list_fp == NULL)
     {
-        printf(L_GET_APPLIST_ERROR);
+        fprintf(stderr, L_GET_APPLIST_ERROR);
         return -1;
     }
     else
@@ -200,7 +201,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     DIR * uid_dir_dp = opendir(work_dir);
     if (uid_dir_dp == NULL)
     {
-        printf(L_OPEN_PATH_FAILED, work_dir);
+        fprintf(stderr, L_OPEN_PATH_FAILED, work_dir);
         return -1;
     }
     
@@ -277,7 +278,7 @@ static int ClearSystemCache()
     DIR * uid_dir_dp = opendir(DATA_DIR);
     if (uid_dir_dp == NULL)
     {
-        printf(L_OPEN_PATH_FAILED, DATA_DIR);
+        fprintf(stderr, L_OPEN_PATH_FAILED, DATA_DIR);
         return -1;
     }
     
@@ -293,7 +294,7 @@ static int ClearSystemCache()
         FILE * package_list = popen(GET_S_APPLIST, "r");
         if (package_list == NULL)
         {
-            printf(L_GET_APPLIST_ERROR);
+            fprintf(stderr, L_GET_APPLIST_ERROR);
             closedir(uid_dir_dp);
             return -1;
         }

@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        printf(L_NOT_USE_ROOT);
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -28,7 +28,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 5)
     {
-        printf(L_ARGS_FAILED);
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -42,12 +42,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                printf(L_CONFIG_PATH_TOOLONG);
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             if (access(argv[1], F_OK) != 0)
             {
-                printf(L_CONFIG_PATH_NOTFIND);
+                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
                 return 1;
             }
             work_dir = argv[1];
@@ -64,7 +64,7 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_CONFIG_NAME)
             {
-                printf(L_MODE_TOOLONG);
+                fprintf(stderr, L_MODE_TOOLONG);
                 return 1;
             }
             config_name = argv[1];
@@ -73,13 +73,13 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED_2);
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        printf(L_ARG_CONFIGPATH_ERR);
+        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (strcmp(mode, "fileclean") == 0)
@@ -87,7 +87,7 @@ int main(int argc, char * argv[])
         // 文件清理模式需要传入配置名称
         if (config_name == NULL)
         {
-            printf(L_ARGS_FAILED);
+            fprintf(stderr, L_ARGS_FAILED);
             return 1;
         }
         file_clear = 1;
@@ -98,7 +98,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        printf(L_MODE_ERR, mode);
+        fprintf(stderr, L_MODE_ERR, mode);
         return 1;
     }
     
@@ -160,11 +160,11 @@ int main(int argc, char * argv[])
     {
         if (file_clear == 1)
         {
-            printf(L_FM_CR_FAILED_STORAGE);
+            fprintf(stderr, L_FM_CR_FAILED_STORAGE);
         }
         else
         {
-            printf(L_FM_ALL_FAILED_STORAGE);
+            fprintf(stderr, L_FM_ALL_FAILED_STORAGE);
         }
     }
     fflush(stdout);
@@ -203,11 +203,11 @@ int main(int argc, char * argv[])
         {
             if (file_clear == 1)
             {
-                printf(L_FM_CR_FAILED_SD);
+                fprintf(stderr, L_FM_CR_FAILED_SD);
             }
             else
             {
-                printf(L_FM_ALL_FAILED_SD);
+                fprintf(stderr, L_FM_ALL_FAILED_SD);
             }
         }
     }
@@ -242,7 +242,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        printf(L_OPEN_PATH_FAILED, config_dir);
+        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir);
         return 1;
     }
     
@@ -327,7 +327,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
     {
         if (clean_done != 1)
         {
-            printf(L_CONFIG_NOTFIND, config_name);
+            fprintf(stderr, L_CONFIG_NOTFOUND, config_name);
         }
     }
     
@@ -420,7 +420,7 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                         }
                         else
                         {
-                            printf(L_MOVE_ERROR, path);
+                            fprintf(stderr, L_MOVE_ERROR, path);
                         }
                         break;
                     }
