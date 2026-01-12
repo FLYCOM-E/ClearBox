@@ -129,22 +129,22 @@ Clear system software cache, system cache, and also clear **MTP** host data (can
 
 
 
-### **8**：Auto cleanup
-CRON automatic function setting.
+### **8**：Automatic Cleaning
+Feature automation, driven by the Timed component for execution.
 
 
 
 
 
-### **9**：Block all software update & installation
-As the name suggests, block most software installation behaviors
+### **9**：Block All Software Update Installations
+As the name implies, file system-level forced blocking of software installations
 
 
 
 
 
-### **10**：Internal storage lock function
-As the name suggests, lock the internal storage root directory layout to prevent software from messing up* (creating files/folders)
+### **10**：Internal Storage Fix Function
+As the name implies, locks the internal storage root directory layout to prevent various applications from randomly creating files/folders
 
 
 
@@ -161,7 +161,7 @@ Whitelist location： **`/data/adb/wipe_cache/whitelist.prop`** or add it in the
 
 Blocking cache will not clear the software cache, so the software cache will not be **0**, but will grow slowly. This avoids continuous small file erasure and only limits large cache generation
 
-Automatically delayed run when screen is off
+Extremely low overhead, automatically delays execution when the screen is off
 
 If some software is abnormal, please add it to the whitelist yourself!
 
