@@ -92,13 +92,13 @@ fi
 ######
 if [ "$stopcache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
-        "$home_dir/bin/StopCached" -b "$bin_dir" -w "$work_dir"
+        "$home_dir/Daemon/StopCached" -b "$bin_dir" -w "$work_dir"
     fi
 fi
 if pgrep Timed >/dev/null 2>&1; then
     killall Timed
 fi
-if "$home_dir/Timed" "$work_dir/TimedConfig"; then
+if "$home_dir/Daemon/Timed" "$work_dir/TimedConfig"; then
     echo "[ $(date) ]：Timed运行" >> "$work_dir/运行日志.log"
 fi
 ######

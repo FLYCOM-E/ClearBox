@@ -1,5 +1,5 @@
 // By ClearBox StopCache
-#include "INCLUDE/BashCore.h"
+#include "../INCLUDE/BashCore.h"
 
 #define DATA_DIR "/data/data"
 #define ROM_NAME "RunStart" //Max Size 30

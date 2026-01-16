@@ -1,5 +1,5 @@
 // 此 Code 来自ClearBox模块，是crond代替品哦～
-#include "INCLUDE/BashCore.h"
+#include "../INCLUDE/BashCore.h"
 
 #define WAIT_TIME 60
 #define MAX_CONFIG 64

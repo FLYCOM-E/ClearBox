@@ -17,11 +17,10 @@ endif
 
 home_dir = Module_Files
 bin_dir = Module_Files/bin
+daemon_bin_dir = Module_Files/Daemon
 
 FUNCTIONS_C = src/INCLUDE/functions.c
 ALL_FILE = $(home_dir)/BashCore \
-			$(home_dir)/Timed \
-			$(bin_dir)/StopCached \
 			$(bin_dir)/AppClean \
 			$(bin_dir)/CacheClean \
 			$(bin_dir)/Dexoat \
@@ -32,20 +31,22 @@ ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/StopInstall \
 			$(bin_dir)/StopStorage \
 			$(bin_dir)/FileManager \
-			$(bin_dir)/Post
+			$(bin_dir)/Post \
+			$(daemon_bin_dir)/StopCached \
+			$(daemon_bin_dir)/Timed
 
 all: $(ALL_FILE)
 .PHONY: all
 
-$(bin_dir)/StopCached: src/StopCached.c
-	@mkdir -p $(bin_dir)
-	$(CC) $(CFLAGS) src/StopCached.c $(FUNCTIONS_C) -o $(bin_dir)/StopCached
-
 $(home_dir)/BashCore: src/BashCore.c
+	@mkdir -p $(bin_dir) $(daemon_bin_dir)
 	$(CC) $(CFLAGS) src/BashCore.c -o $(home_dir)/BashCore
 
-$(home_dir)/Timed: src/Timed.c
-	$(CC) $(CFLAGS) src/Timed.c $(FUNCTIONS_C) -o $(home_dir)/Timed
+$(daemon_bin_dir)/StopCached: src/Daemon/StopCached.c
+	$(CC) $(CFLAGS) src/Daemon/StopCached.c $(FUNCTIONS_C) -o $(daemon_bin_dir)/StopCached
+
+$(daemon_bin_dir)/Timed: src/Daemon/Timed.c
+	$(CC) $(CFLAGS) src/Daemon/Timed.c $(FUNCTIONS_C) -o $(daemon_bin_dir)/Timed
 
 $(bin_dir)/AppClean: src/AppClean.c
 	$(CC) $(CFLAGS) src/AppClean.c $(FUNCTIONS_C) -o $(bin_dir)/AppClean
