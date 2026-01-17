@@ -107,15 +107,13 @@ int main(int argc, char * argv[])
                 key_len[strcspn(key_len, "\n")] = 0;
                 if (strstr(key_len, "ClearCacheSize="))
                 {
-                    key_len_fp = strtok(key_len, "=");
-                    key_len_fp = strtok(NULL, "=");
-                    ClearCacheSize = atoi(key_len_fp);
+                    key_len_fp = strrchr(key_len, '=');
+                    ClearCacheSize = atoi(key_len_fp + 1);
                 }
                 if (strstr(key_len, "cleardisk="))
                 {
-                    key_len_fp = strtok(key_len, "=");
-                    key_len_fp = strtok(NULL, "=");
-                    cleardisk = atoi(key_len_fp);
+                    key_len_fp = strrchr(key_len, '=');
+                    cleardisk = atoi(key_len_fp + 1);
                 }
             }
             fclose(settings_file_fp);

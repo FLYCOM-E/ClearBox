@@ -3,7 +3,10 @@
 
 #define WAIT_TIME 60
 #define MAX_CONFIG 64
-#define MAX_COMMAND_LEN 512
+#define MAX_CONFIG_NAME 256
+#define CONFIG_LINE_MAX_LEN 512
+#define MAX_COMMAND_LEN 1024
+#define MAX_COMMAND_ARGS 32
 #define SERVER_NAME "ClearBox Timed"
 
 static int Running(char * command);
@@ -17,7 +20,7 @@ struct config_file
     time_t old_time;
     // other
     char run[MAX_COMMAND_LEN];
-    char config_name[128];
+    char config_name[MAX_CONFIG_NAME];
 };
 
 int main(int argc, char * argv[])
@@ -73,7 +76,6 @@ int main(int argc, char * argv[])
             {
                 continue;
             }
-            
             if (S_ISDIR(file_stat.st_mode) || S_ISLNK(file_stat.st_mode))
             {
                 continue;
@@ -81,7 +83,8 @@ int main(int argc, char * argv[])
             else
             {
                 int line_count = 0;
-                char line[128] = {0};
+                char line[CONFIG_LINE_MAX_LEN] = {0};
+                
                 FILE * config_fp = fopen(path, "r");
                 if (config_fp == NULL)
                 {
@@ -236,10 +239,10 @@ static int Running(char * command)
     
     int count = 0;
     char * arg = NULL;
-    char * args[17] = {NULL};
+    char * args[MAX_COMMAND_ARGS] = {NULL};
     
     arg = strtok(command_cope, " ");
-    while (arg != NULL && count < 16)
+    while (arg != NULL && count < (MAX_COMMAND_ARGS - 1))
     {
         args[count] = arg;
         count++;
@@ -249,7 +252,7 @@ static int Running(char * command)
     {
         return 1;
     }
-    args[16] = NULL;
+    args[MAX_COMMAND_ARGS - 1] = NULL;
     
     pid_t newPid = fork();
     if (newPid == -1)

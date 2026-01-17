@@ -444,9 +444,8 @@ static int fileAll2(char * home_dir, char * work_dir)
             
             if (strstr(temp, "fileall="))
             {
-                key = strtok(temp, "=");
-                key = strtok(NULL, "=");
-                if (strcmp(key, "1") == 0)
+                key = strrchr(temp, '=');
+                if (strcmp(key + 1, "1") == 0)
                 {
                     fileall = 1;
                 }

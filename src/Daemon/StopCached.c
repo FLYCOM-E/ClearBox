@@ -100,7 +100,7 @@ int main(int argc, char * argv[])
     //定义待处理app临时储存变量
     char top_app_list[5][MAX_PACKAGE] = {0}, reset_app[MAX_PACKAGE] = "";
     
-    //提取RunStart储存值
+    //提取RunStart储存值（如有）
     char tmp[16] = "";
     char rom_key_line[MAX_PACKAGE] = "";
     char * rom_key_line_p = NULL;
@@ -110,7 +110,6 @@ int main(int argc, char * argv[])
         while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp_r) != NULL)
         {
             rom_key_line[strcspn(rom_key_line, "\n")] = 0;
-            
             //if匹配，如没找到对应值或值为空则跳过（保持原空值）
             int i = 0;
             while (i <= 4)
@@ -118,22 +117,20 @@ int main(int argc, char * argv[])
                 snprintf(tmp, sizeof(tmp), "%d=", i + 1);
                 if (strstr(rom_key_line, tmp))
                 {
-                    rom_key_line_p = strtok(rom_key_line, "=");
-                    rom_key_line_p = strtok(NULL, "=");
+                    rom_key_line_p = strchr(rom_key_line, '=');
                     if (rom_key_line_p)
                     {
-                        snprintf(top_app_list[i], sizeof(top_app_list[i]), "%s", rom_key_line_p);
+                        snprintf(top_app_list[i], sizeof(top_app_list[i]), "%s", rom_key_line_p + 1);
                     }
                 }
                 i++;
             }
             if (strstr(rom_key_line, "reset="))
             {
-                rom_key_line_p = strtok(rom_key_line, "=");
-                rom_key_line_p = strtok(NULL, "=");
+                rom_key_line_p = strchr(rom_key_line, '=');
                 if (rom_key_line_p)
                 {
-                    snprintf(reset_app, sizeof(reset_app), "%s", rom_key_line_p);
+                    snprintf(reset_app, sizeof(reset_app), "%s", rom_key_line_p + 1);
                 }
             }
         }

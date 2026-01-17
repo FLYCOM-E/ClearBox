@@ -102,11 +102,10 @@ int main(int argc, char * argv[])
             if (* config_file_line_ptr == '@')
             {
                 //初始目录
-                char * key_str = strtok(config_file_line, "@");
-                key_str = strtok(config_file_line, "@");
+                char * key_str = strchr(config_file_line, '@');
                 if (key_str)
                 {
-                    snprintf(dir, sizeof(dir), "%s", key_str);
+                    snprintf(dir, sizeof(dir), "%s", key_str + 1);
                     if (access(dir, F_OK) != 0)
                     {
                         fprintf(stderr, L_SR_W_CONFIG_STATTPATH_ERR, config_file_name -> d_name);
