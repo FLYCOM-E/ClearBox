@@ -42,8 +42,9 @@ int main(int argc, char * argv[])
     }
     
     int read_config = 0;
-    struct config_file config[MAX_CONFIG];
+    struct config_file config[MAX_CONFIG]; // 创建结构体
     
+    // 获取传入PATH类型
     struct stat path_stat;
     if (lstat(argv[1], &path_stat) == -1)
     {
@@ -51,6 +52,7 @@ int main(int argc, char * argv[])
         return 1;
     }
     
+    // 目录类型继续解析，否则报错退出
     if (S_ISDIR(path_stat.st_mode))
     {
         struct stat file_stat;
@@ -61,6 +63,8 @@ int main(int argc, char * argv[])
             fprintf(stderr, "E Open dir %s error\n", argv[1]);
             return 1;
         }
+        
+        // 遍历配置目录
         while ((entry = readdir(config_dir_dp)))
         {
             if (strcmp(entry -> d_name, ".") == 0 ||
@@ -69,9 +73,9 @@ int main(int argc, char * argv[])
                 continue;
             }
             
+            // 拼接完整路径并跳过目录/链接
             char path[strlen(argv[1]) + strlen(entry -> d_name) + 2];
             snprintf(path, sizeof(path), "%s/%s", argv[1], entry -> d_name);
-            
             if (lstat(path, &file_stat) == -1)
             {
                 continue;
@@ -82,7 +86,7 @@ int main(int argc, char * argv[])
             }
             else
             {
-                int line_count = 0;
+                int line_count = 0; // 行计数
                 char line[CONFIG_LINE_MAX_LEN] = {0};
                 
                 FILE * config_fp = fopen(path, "r");
@@ -95,11 +99,13 @@ int main(int argc, char * argv[])
                 {
                     line_count++;
                     line[strcspn(line, "\n")] = 0;
+                    
+                    // 提取名称/值并匹配读入结构体
                     char * key = strtok(line, "=");
                     char * value = strtok(NULL, "=");
                     if (value == NULL)
                     {
-                        fprintf(stderr, "E %s: line %d %s= error. Skip\n", entry -> d_name, line_count, key);
+                        fprintf(stderr, "E %s: line %d %s=Error. Skip\n", entry -> d_name, line_count, key);
                         fclose(config_fp);
                         break;
                     }
@@ -123,9 +129,11 @@ int main(int argc, char * argv[])
                     }
                 }
                 fclose(config_fp);
+                
+                // 保留配置名称
                 snprintf(config[read_config].config_name, sizeof(config[read_config].config_name), "%s", entry -> d_name);
                 read_config += 1;
-                if (read_config == MAX_CONFIG)
+                if (read_config == MAX_CONFIG) // 限制配置数量
                 {
                     printf("I MAX Config is %d. Skip more\n", MAX_CONFIG);
                     break;
@@ -146,6 +154,7 @@ int main(int argc, char * argv[])
         return 1;
     }
     
+    // Daemon
     pid_t pid = fork();
     if (pid == -1)
     {
@@ -164,15 +173,14 @@ int main(int argc, char * argv[])
     close(fd);
     post(SERVER_NAME, "Start Server Successful");
     
-    for ( ; ; )
+    for ( ; ; ) // 主循环
     {
         time_t now_time = time(NULL);
-        
         int i = 0;
         while (i < read_config)
         {
             int run = 0;
-            switch (config[i].time_unit)
+            switch (config[i].time_unit) // 匹配配置对应时间单位判断是否需要执行
             {
                 case 'D':
                     // day
@@ -199,7 +207,7 @@ int main(int argc, char * argv[])
                     fprintf(stderr, "W %s time unit is error\n", config[i].config_name);
                     break;
             }
-            if (run == 1)
+            if (run == 1) // 执行并更新
             {
                 Running(config[i].run);
                 
@@ -234,13 +242,13 @@ int main(int argc, char * argv[])
 
 static int Running(char * command)
 {
+    // 解析命令参数
     char command_cope[MAX_COMMAND_LEN] = {0};
     snprintf(command_cope, sizeof(command_cope), "%s", command);
     
     int count = 0;
     char * arg = NULL;
     char * args[MAX_COMMAND_ARGS] = {NULL};
-    
     arg = strtok(command_cope, " ");
     while (arg != NULL && count < (MAX_COMMAND_ARGS - 1))
     {
@@ -254,6 +262,7 @@ static int Running(char * command)
     }
     args[MAX_COMMAND_ARGS - 1] = NULL;
     
+    // 执行命令
     pid_t newPid = fork();
     if (newPid == -1)
     {
@@ -276,6 +285,5 @@ static int Running(char * command)
             return end;
         }
     }
-    
     return 0;
 }

@@ -257,6 +257,7 @@ static int StorageClean(char * dir)
         }
         if (S_ISDIR(file_stat.st_mode))
         {
+            // 检查是否为媒体缓存目录，是则直接删除
             if (strcmp(entry -> d_name, ".thumbnails") == 0)
             {
                 if (s_remove(path, 1) != -1)
@@ -271,6 +272,7 @@ static int StorageClean(char * dir)
         }
         else
         {
+            // 文件大小小于1，空文件
             if (file_stat.st_size < 1)
             {
                 if (remove(path) == 0)
@@ -283,6 +285,7 @@ static int StorageClean(char * dir)
             char * str = strrchr(entry -> d_name, '.');
             if (str)
             {
+                // Log文件
                 if (strcmp(str + 1, "log") == 0)
                 {
                     if (remove(path) == 0)
@@ -296,7 +299,6 @@ static int StorageClean(char * dir)
         
     }
     closedir(dir_dp);
-    
     if (count_all == 0)
     {
         if (remove(dir) == 0)

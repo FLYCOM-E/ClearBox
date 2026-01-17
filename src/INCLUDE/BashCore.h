@@ -1,3 +1,4 @@
+// By ClearBox
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -25,6 +26,7 @@ int whiteListCheck(char * whitelist_file, char * package);
 long GetPathSize(char * path);
 int post(char * title, char * message);
 
+// Lang
 #ifdef zh_CN
     #include "LANG/zh_CN.h"
 #elif defined(en_US)

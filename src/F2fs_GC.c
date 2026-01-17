@@ -1,4 +1,4 @@
-// 此Code来自ClearBox模块，用于运行紧急GC优化，原理来自Coolapk@Amktiao，感谢大佬
+// 此Code来自ClearBox模块，用于运行紧急GC优化，原理来自 Coolapk@Amktiao，感谢大佬
 #include "INCLUDE/BashCore.h"
 
 #define getprop __system_property_get

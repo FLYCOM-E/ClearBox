@@ -6,6 +6,7 @@
 #define LOG_FILE_NAME "运行日志.log" //Max Size 30
 #define BASH_DIR "bin"
 
+// 这里每个声明均是一个子功能函数
 static int Run(char * args[]);
 static int configFunction(char * home_dir, char * mode, char * config_file);
 static int clearCache(char * home_dir, char * work_dir);
@@ -43,11 +44,15 @@ int main(int argc, char * argv[])
         fprintf(stderr, " » Error：Read PATH\n");
         return 1;
     }
-    char * key_p = NULL;
+    
     char home_dir[128] = "",
          work_dir[128] = "",
          bin_dir[128] = "",
          path_rom_file_line[256] = "";
+    char * path_rom_file_key = NULL;
+    char * path_rom_file_value = NULL;
+    
+    // 读取模块 PATH
     FILE * path_rom_file_fp = fopen(PATH_ROM_FILE, "r");
     if (path_rom_file_fp == NULL)
     {
@@ -56,22 +61,22 @@ int main(int argc, char * argv[])
     }
     while (fgets(path_rom_file_line, sizeof(path_rom_file_line), path_rom_file_fp))
     {
-        if (strstr(path_rom_file_line, "home_dir="))
+        path_rom_file_key = strtok(path_rom_file_line, "=");
+        path_rom_file_value = strtok(NULL, "=");
+        
+        if (strcmp(path_rom_file_key, "home_dir"))
         {
-            key_p = strrchr(path_rom_file_line, '=');
-            snprintf(home_dir, sizeof(home_dir), "%s", key_p + 1);
+            snprintf(home_dir, sizeof(home_dir), "%s", path_rom_file_value);
             home_dir[strcspn(home_dir, "\n")] = 0;
         }
-        if (strstr(path_rom_file_line, "work_dir="))
+        if (strcmp(path_rom_file_key, "work_dir"))
         {
-            key_p = strrchr(path_rom_file_line, '=');
-            snprintf(work_dir, sizeof(work_dir), "%s", key_p + 1);
+            snprintf(work_dir, sizeof(work_dir), "%s", path_rom_file_value);
             work_dir[strcspn(work_dir, "\n")] = 0;
         }
-        if (strstr(path_rom_file_line, "bin_dir="))
+        if (strcmp(path_rom_file_key, "bin_dir"))
         {
-            key_p = strrchr(path_rom_file_line, '=');
-            snprintf(bin_dir, sizeof(bin_dir), "%s", key_p + 1);
+            snprintf(bin_dir, sizeof(bin_dir), "%s", path_rom_file_value);
             bin_dir[strcspn(bin_dir, "\n")] = 0;
         }
     }
@@ -92,8 +97,11 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    //Check and Off the Selinux
-    int off_selinux = 0;
+    /* 临时关闭一下Selinux
+    属实是没办法，后期可能写一下规则
+    否则测试莫名其妙的Selinux拦截还是太多
+    */
+    int off_selinux = 0; // 状态记录
     char check_selinux[16] = "";
     FILE * check_selinux_fp = popen("getenforce", "r");
     if (check_selinux_fp)
@@ -115,9 +123,9 @@ int main(int argc, char * argv[])
     char now_time[64] = "";
     time_t now_time_tmp = time(NULL);
     struct tm * t_tmp = localtime(&now_time_tmp);
-    strftime(now_time, sizeof(now_time), "%m-%d %H:%M:%S", t_tmp);
+    strftime(now_time, sizeof(now_time), " %m-%d %H:%M:%S ", t_tmp);
     
-    //定义并预打开Log文件
+    //定义及打开Log文件
     bool in_log_file = true;
     char log_file[strlen(work_dir) + 32];
     snprintf(log_file, sizeof(log_file), "%s/%s", work_dir, LOG_FILE_NAME);
@@ -328,7 +336,7 @@ int main(int argc, char * argv[])
     return 0;
 }
 
-// 一个通用函数，用途：执行脚本
+// 一个通用函数，用途：执行二进制/脚本
 static int Run(char * args[])
 {
     pid_t newPid = fork();
@@ -355,6 +363,11 @@ static int Run(char * args[])
     }
     return 0;
 }
+
+/*
+接下来每个函数都是一个子功能
+传给 Run 函数的相关参数由函数内部拼接
+*/
 
 // 配置备份 & 恢复
 static int configFunction(char * home_dir, char * mode, char * config_file)
@@ -433,19 +446,20 @@ static int fileAll2(char * home_dir, char * work_dir)
 {
     int fileall = 0;
     char * key = NULL;
-    char temp[64] = "", settingsFile[strlen(work_dir) + 16];
+    char * value = NULL;
+    char line[256] = "", settingsFile[strlen(work_dir) + 16];
     snprintf(settingsFile, sizeof(settingsFile), "%s/%s", work_dir, SETTINGS_FILE_NAME);
     FILE * settingsFile_fp = fopen(settingsFile, "r");
     if (settingsFile_fp)
     {
-        while (fgets(temp, sizeof(temp), settingsFile_fp))
+        while (fgets(line, sizeof(line), settingsFile_fp))
         {
-            temp[strcspn(temp, "\n")] = 0;
+            key = strtok(line, "=");
+            value = strtok(NULL, "=");
             
-            if (strstr(temp, "fileall="))
+            if (strcmp(key, "fileall"))
             {
-                key = strrchr(temp, '=');
-                if (strcmp(key + 1, "1") == 0)
+                if (strcmp(value, "1") == 0)
                 {
                     fileall = 1;
                 }
@@ -453,7 +467,6 @@ static int fileAll2(char * home_dir, char * work_dir)
         }
         fclose(settingsFile_fp);
     }
-    
     if (fileall == 1)
     {
         char bash[128] = "";

@@ -2,8 +2,8 @@
 #include "INCLUDE/BashCore.h"
 
 #define MAX_CONFIG_NAME 64
-#define MAX_ARGS_SIZE 32
-#define CONFIG_MAX_ARGS 512
+#define MAX_ARGS_SIZE 32 // 后缀名称长度限制
+#define CONFIG_MAX_ARGS 512 // 单个文件格式配置最多允许的后缀数量
 #define F_DIR_NAME "Documents"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置"
@@ -236,7 +236,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
     
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, F_DIR_NAME);
-    mkdir(f_dir, 0775);
+    mkdir(f_dir, 0775); // 创建文件归类总目录
     
     struct dirent * entry;
     DIR * config_dir_dp = opendir(config_dir);
@@ -246,6 +246,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
         return 1;
     }
     
+    // 读取配置
     while ((entry = readdir(config_dir_dp)))
     {
         if (strcmp(entry -> d_name, ".") == 0 ||
@@ -253,7 +254,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
         {
             continue;
         }
-        if (file_clear == 1)
+        if (file_clear == 1) // 如果是清理模式则会查找传入名称对应配置
         {
             char tmp[strlen(entry -> d_name) + 16];
             snprintf(tmp, sizeof(tmp), "%s.conf", config_name);
@@ -270,13 +271,14 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
         char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2],
              config_file_name[strlen(entry -> d_name) + 2];
         
+        // 一个是完整配置文件+路径，一个则是文件名称
         snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
         
         char * config_file_name_p = strtok(config_file_name, ".");
         char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_file_name_p) + 8];
         snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_file_name_p);
-        if (file_clear != 1)
+        if (file_clear != 1) // 不是清理模式则创建最终归类目录
         {
             mkdir(file_dir, 0775);
             if (access(file_dir, F_OK) != 0)
@@ -292,6 +294,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
             continue;
         }
         
+        // 开始信息打印
         if (file_clear == 1)
         {
             printf(L_FM_CR_START, config_file_name_p);
@@ -302,6 +305,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
         }
         fflush(stdout);
         
+        // 循环读取文件格式配置每个后缀并放进数组
         int count = 0;
         char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
         while (fscanf(config_file_fp, "%s", file_args[count]) == 1)
@@ -323,9 +327,9 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
     }
     closedir(config_dir_dp);
     
-    if (file_clear == 1)
+    if (file_clear == 1) // 处于清理模式
     {
-        if (clean_done != 1)
+        if (clean_done != 1) // 这等于没找到对应配置
         {
             fprintf(stderr, L_CONFIG_NOTFOUND, config_name);
         }
@@ -335,7 +339,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
 }
 
 /*
-文件递归查找处理函数
+文件递归查找处理函数（深度优先）
 接收：
     char * storage 储存根目录
     char * file_dir 归类目录
@@ -353,6 +357,7 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
         return 0;
     }
     
+    // 打开传入目录开始遍历
     int file_count = 0;
     struct dirent * entry;
     struct stat file_stat;
@@ -370,10 +375,9 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
             continue;
         }
         
-        char file_name[strlen(entry -> d_name) + 2];
-        char path[strlen(storage) + strlen(entry -> d_name) + 64];
-        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 128];
-        
+        char file_name[strlen(entry -> d_name) + 2]; // 读取到的文件/目录名称
+        char path[strlen(storage) + strlen(entry -> d_name) + 64]; // 读取到的文件/目录完整路径
+        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 128]; // 最终归类目录（仅处于归类模式会用
         snprintf(file_name, sizeof(file_name), "%s", entry -> d_name);
         snprintf(path, sizeof(path), "%s/%s", storage, entry -> d_name);
         snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
@@ -384,33 +388,37 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
             continue;
         }
         
+        // 链接？跳过
         if (S_ISLNK(file_stat.st_mode))
         {
             continue;
         }
-        if (S_ISDIR(file_stat.st_mode))
+        if (S_ISDIR(file_stat.st_mode)) // 目录继续自调用递归
         {
             file_count += FindFile(path, file_dir, args, count);
         }
-        else
+        else // File
         {
+            // 提取文件后缀进行匹配，这个会比较慢，视后缀数量
             char * str_p = strrchr(file_name, '.');
             if (str_p != NULL)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    if (strcasecmp(args[i], str_p + 1) == 0)
+                    if (strcasecmp(args[i], str_p + 1) == 0) // 这里匹配
                     {
-                        if (file_clear == 1)
+                        if (file_clear == 1) // 清理模式直接清理并返回
                         {
                             remove(path);
                             file_count++;
                             break;
                         }
                         
+                        // 提取文件名称
                         char f_name[strlen(entry -> d_name) + 2];
                         snprintf(f_name, strlen(entry -> d_name) - strlen(str_p) + 1, "%s", entry -> d_name);
                         
+                        // 如果文件名有重复则循环直到找到一个可用名称
                         int name_i = 1;
                         while (access(end_path, F_OK) == 0)
                         {
@@ -418,6 +426,7 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                             name_i++;
                         }
                         
+                        // 移动文件
                         if (rename(path, end_path) == 0)
                         {
                             file_count++;

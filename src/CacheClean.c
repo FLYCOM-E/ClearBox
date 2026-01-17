@@ -95,25 +95,28 @@ int main(int argc, char * argv[])
         ClearCacheSize（缓存清理限制大小）
         cleardisk（是否清理SD软件缓存）设置值
         */
-        char * key_len_fp = NULL;
+        char * key = NULL;
+        char * value = NULL;
         int ClearCacheSize = 0, cleardisk = 0;
-        char settings_file[strlen(work_dir) + 32], key_len[32] = "";
+        char settings_file[strlen(work_dir) + 32], line[256] = "";
+        
         snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
         FILE * settings_file_fp = fopen(settings_file, "r");
         if (settings_file_fp)
         {
-            while (fgets(key_len, sizeof(key_len), settings_file_fp))
+            // 目标读取清理限制大小/是否清理外部储存
+            while (fgets(line, sizeof(line), settings_file_fp))
             {
-                key_len[strcspn(key_len, "\n")] = 0;
-                if (strstr(key_len, "ClearCacheSize="))
+                key = strtok(line, "=");
+                value = strtok(NULL, "=");
+                
+                if (strcmp(key, "ClearCacheSize") == 0)
                 {
-                    key_len_fp = strrchr(key_len, '=');
-                    ClearCacheSize = atoi(key_len_fp + 1);
+                    ClearCacheSize = atoi(value);
                 }
-                if (strstr(key_len, "cleardisk="))
+                else if (strcmp(key, "cleardisk") == 0)
                 {
-                    key_len_fp = strrchr(key_len, '=');
-                    cleardisk = atoi(key_len_fp + 1);
+                    cleardisk = atoi(value);
                 }
             }
             fclose(settings_file_fp);
@@ -175,7 +178,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
     char app_cache_dir[512] = {0};
     
-    // 获取第三方软件包名列表
+    // 获取第三方软件包名列表并储存
     int app_count = 0;
     char package_list[MAX_APPLIST][MAX_PACKAGE];
     FILE * package_list_fp = popen(GET_APPLIST, "r");
@@ -257,7 +260,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             {
                 no_count++;
                 printf(L_CC_CLEAR_SKIP, package_list[i] + 8);
-                // 这里不再 fflush 了，攒一攒
+                // 这里暂时不再 fflush 了，攒一攒
             }
         }
     }
@@ -267,6 +270,11 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     return clean_size;
 }
 
+/* 
+此函数用于清理系统缓存
+返回：
+    int 成功返回0，失败返回-1
+*/
 static int ClearSystemCache()
 {
     char app_cache_path[MAX_PACKAGE + 16],

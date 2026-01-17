@@ -19,8 +19,8 @@ int main(int argc, char * argv[])
         return 1;
     }
     
+    // 参数解析
     char * work_dir = NULL;
-    
     while (argc > 1)
     {
         if (strcmp(argv[0], "-w") == 0)
@@ -51,9 +51,11 @@ int main(int argc, char * argv[])
         return 1;
     }
     
+    /// 配置目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
+    // 遍历配置目录
     struct dirent * config_file_name;
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
@@ -70,6 +72,7 @@ int main(int argc, char * argv[])
             continue;
         }
         
+        // 配置文件
         char config_file[strlen(config_file_name -> d_name) + strlen(config_dir) + 2];
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_file_name -> d_name);
         
@@ -114,7 +117,7 @@ int main(int argc, char * argv[])
                 continue;
             }
             
-            // Check PATH
+            // 判断line是否为绝对路径，否则根据初始目录拼接
             char path[strlen(config_file_line) + strlen(dir) + 16];
             if (* config_file_line_ptr == '/')
             {
@@ -125,17 +128,14 @@ int main(int argc, char * argv[])
                 snprintf(path, sizeof(path), "%s/%s", dir, config_file_line);
             }
             
-            if (access(path, F_OK) != 0)
-            {
-                fprintf(stderr, L_SR_LINE_FAILED_PATH_ERR, count);
-            }
-            if (strstr(path, "../"))
+            // 判断存在 & 路径逃逸
+            if (access(path, F_OK) == 0 && strstr(path, "../"))
             {
                 fprintf(stderr, L_SR_LINE_FAILED_PATH_ERR, count);
             }
             else
             {
-                long clear_size = s_remove(path, 1);
+                long clear_size = s_remove(path, 1); // 返回清理字节数
                 if (clear_size != -1)
                 {
                     printf(L_SR_CLEAR_SUCCESSFUL, path, (clear_size / 1024 / 1024));

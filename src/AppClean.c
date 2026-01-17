@@ -73,7 +73,7 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    // config dir
+    // 拼接工作目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     if (access(config_dir, F_OK) != 0)
@@ -120,7 +120,7 @@ int main(int argc, char * argv[])
         }
         
         // 遍历配置文件
-        get_config = 0; // 配置读取标志清零，新配置新的开始
+        get_config = 0; // 清空配置读取标志
         int count = 0;
         char app_dir[64 + MAX_PACKAGE];
         char len_str[MAX_PATH] = "", app_name[MAX_APP_NAME] = "";
@@ -136,7 +136,7 @@ int main(int argc, char * argv[])
             格式：
             @<软件包名>/<软件名称>
             */
-            if (get_config == 0)
+            if (get_config == 0) // = 0 意味着当前配置未读取到初始行
             {
                 char * len_str_p = len_str;
                 while (isspace(* len_str_p)) len_str_p++;
@@ -144,7 +144,7 @@ int main(int argc, char * argv[])
                 {
                     app_package_fp = strtok(len_str, "/");
                     app_name_fp = strtok(NULL, "/");
-                    if (app_package_fp && app_name_fp)
+                    if (app_package_fp && app_name_fp) // 如果软件名称 & 软件包名为空或者填写有误则跳过
                     {
                         snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                  //软件名称
                         snprintf(app_dir, sizeof(app_dir), "%s/%s", DATA_DIR, app_package_fp + 1);   //软件目录
@@ -181,7 +181,7 @@ int main(int argc, char * argv[])
                     break;
                 }
             }
-            else if (get_config == 1) // 1: 已读取文件声明信息
+            else if (get_config == 1) // 1: 已读取文件声明信息，这里如果仍然不匹配则会报错跳过，保证配置第一行正确
             {
                 char app_cf_dir[strlen(app_dir) + strlen(len_str) + 2];
                 snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, len_str);
@@ -193,7 +193,7 @@ int main(int argc, char * argv[])
                 {
                     continue;
                 }
-                // 配置不应以／开头！
+                // 不允许绝对路径
                 if (* len_str_ptr == '/')
                 {
                     fprintf(stderr, L_AC_CONFIG_ERR_1, config_name -> d_name, count);
@@ -232,6 +232,7 @@ int main(int argc, char * argv[])
     }
     closedir(config_dir_fp);
     
+    // 多个匹配配置有一个错误都会失败
     if (get_config == 1)
     {
         printf(L_AC_CLEAN_SUCCESSFUL);

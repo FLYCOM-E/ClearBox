@@ -167,9 +167,16 @@ int main(int argc, char * argv[])
     
     /* 
     初始化变量
-    全局错误值／空等待次数／渐进等待时间（变化）／最大渐进等待时间（秒）／获取前台App失败次数／最大获取前台App失败次数
+    ```
+    全局错误值／空等待次数
+    渐进等待时间（变化）／最大渐进等待时间（秒）
+    获取前台App失败次数／最大获取前台App失败次数
+    ```
     */
-    int end = 0, cycle_count = 0, cycle_time = 10, max_cycle_time = 30, get_error = 0, max_get_error = 10;
+    int end = 0, cycle_count = 0,
+        cycle_time = 10, max_cycle_time = 30,
+        get_error = 0, max_get_error = 10;
+    
     //Start the cycle
     for ( ; ; )
     {
@@ -211,7 +218,7 @@ int main(int argc, char * argv[])
            strstr(top_app, "ActionsDialog") ||
            strcmp(top_app, top_app_list[0]) == 0)
         {
-            //渐进式等待
+            //渐进等待
             cycle_count++;
             if (cycle_count == 5)
             {
