@@ -3,6 +3,18 @@
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
 export home_dir=${0%/*}
+######
+exec 2>/dev/null
+###### The first stage. wait for boot = 1, timeout auto disable module
+first_stage=0
+set=0
+while [ "$(getprop sys.boot_completed)" != 1 ]; do
+    [ "$set" = 120 ] && touch "$home_dir/disable"; exit 1
+    first_stage=1
+    set=$((set + 1))
+    sleep 5
+done
+######
 export work_dir="/data/adb/wipe_cache"
 if [ -d "/data/adb/magisk" ]; then
     export bin_dir="/data/adb/magisk"
@@ -11,20 +23,8 @@ elif [ -d "/data/adb/ap/bin" ]; then
 elif [ -d "/data/adb/ksu/bin" ]; then
     export bin_dir="/data/adb/ksu/bin"
 fi
-######
 mkdir -p "$work_dir"
 echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir/PATH"
-######
-exec 2>/dev/null
-###### The first stage. wait for boot = 1, timeout auto disable module
-first_stage=0
-set=0
-while [ "$(getprop sys.boot_completed)" != 1 ]; do
-    [ "$set" = 120 ] && touch "$home_dir/disable" && exit 1
-    first_stage=1
-    set=$((set + 1))
-    sleep 5
-done
 ######
 sh "$home_dir/DirtyClear.sh" &
 ######
