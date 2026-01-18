@@ -29,5 +29,6 @@ rm -f "$work_dir/root_backup"
 rm -f "$work_dir/root_backup1"
 rm -f "$work_dir/root_backup2"
 rm -f "$work_dir/root_backup3"
+rm -f "$work_dir/运行日志.log"
 
 true
