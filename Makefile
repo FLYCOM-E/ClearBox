@@ -40,7 +40,7 @@ all: $(ALL_FILE)
 
 $(home_dir)/BashCore: src/BashCore.c
 	@mkdir -p $(bin_dir) $(daemon_bin_dir)
-	$(CC) $(CFLAGS) src/BashCore.c -o $(home_dir)/BashCore
+	$(CC) $(CFLAGS) src/BashCore.c $(FUNCTIONS_C) -o $(home_dir)/BashCore
 
 $(daemon_bin_dir)/StopCached: src/Daemon/StopCached.c
 	$(CC) $(CFLAGS) src/Daemon/StopCached.c $(FUNCTIONS_C) -o $(daemon_bin_dir)/StopCached

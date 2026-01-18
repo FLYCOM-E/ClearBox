@@ -20,11 +20,13 @@
 #define MAX_PATH 4096
 #define MAX_WORK_DIR_LEN 512
 #define MAX_BIN_DIR_LEN 512
+#define LOG_FILE_NAME "LOG.log" //Max Size 30
 
 long s_remove(char * path, int all);
 int whiteListCheck(char * whitelist_file, char * package);
 long GetPathSize(char * path);
 int post(char * title, char * message);
+int write_log(char * config_dir, char * name_id, char * text);
 
 // Lang
 #ifdef zh_CN

@@ -186,3 +186,27 @@ int post(char * title, char * message)
     }
     return 0;
 }
+
+int write_log(char * config_dir, char * name_id, char * text)
+{
+    //获取当前时间（用于log）
+    char now_time[64] = "";
+    time_t now_time_tmp = time(NULL);
+    struct tm * t_tmp = localtime(&now_time_tmp);
+    strftime(now_time, sizeof(now_time), "%m-%d %H:%M:%S", t_tmp);
+    
+    //定义及打开Log文件
+    char log_file[strlen(config_dir) + 32];
+    snprintf(log_file, sizeof(log_file), "%s/%s", config_dir, LOG_FILE_NAME);
+    FILE * log_file_fp = fopen(log_file, "a+");
+    if (log_file_fp)
+    {
+        fprintf(log_file_fp, "[%s] <%s> %s\n", now_time, name_id, text);
+        fclose(log_file_fp);
+    }
+    else
+    {
+        fprintf(stderr, "WARN: LogFile Open error\n\n");
+    }
+    return 0;
+}
