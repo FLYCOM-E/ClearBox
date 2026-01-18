@@ -48,39 +48,44 @@ int main(int argc, char * argv[])
     char home_dir[128] = "",
          work_dir[128] = "",
          bin_dir[128] = "",
-         path_rom_file_line[256] = "";
-    char * path_rom_file_key = NULL;
-    char * path_rom_file_value = NULL;
+         path_file_line[256] = "";
+    char * path_file_key = NULL;
+    char * path_file_value = NULL;
     
     // 读取模块 PATH
-    FILE * path_rom_file_fp = fopen(PATH_ROM_FILE, "r");
-    if (path_rom_file_fp == NULL)
+    int path_file_err = 0;
+    FILE * path_file_fp = fopen(PATH_ROM_FILE, "r");
+    if (path_file_fp == NULL)
     {
         fprintf(stderr, " » Error：Read PATH\n");
         return 1;
     }
-    while (fgets(path_rom_file_line, sizeof(path_rom_file_line), path_rom_file_fp))
+    while (fgets(path_file_line, sizeof(path_file_line), path_file_fp))
     {
-        path_rom_file_key = strtok(path_rom_file_line, "=");
-        path_rom_file_value = strtok(NULL, "=");
+        path_file_key = strtok(path_file_line, "=");
+        path_file_value = strtok(NULL, "=");
         
-        if (strcmp(path_rom_file_key, "home_dir"))
+        if (strcmp(path_file_key, "home_dir") == 0)
         {
-            snprintf(home_dir, sizeof(home_dir), "%s", path_rom_file_value);
+            snprintf(home_dir, sizeof(home_dir), "%s", path_file_value);
             home_dir[strcspn(home_dir, "\n")] = 0;
         }
-        if (strcmp(path_rom_file_key, "work_dir"))
+        else if (strcmp(path_file_key, "work_dir") == 0)
         {
-            snprintf(work_dir, sizeof(work_dir), "%s", path_rom_file_value);
+            snprintf(work_dir, sizeof(work_dir), "%s", path_file_value);
             work_dir[strcspn(work_dir, "\n")] = 0;
         }
-        if (strcmp(path_rom_file_key, "bin_dir"))
+        else if (strcmp(path_file_key, "bin_dir") == 0)
         {
-            snprintf(bin_dir, sizeof(bin_dir), "%s", path_rom_file_value);
+            snprintf(bin_dir, sizeof(bin_dir), "%s", path_file_value);
             bin_dir[strcspn(bin_dir, "\n")] = 0;
         }
+        else
+        {
+            path_file_err = 1; //如果有错误行则设置标识自动重写纠正
+        }
     }
-    fclose(path_rom_file_fp);
+    fclose(path_file_fp);
     if (access(home_dir, F_OK) != 0)
     {
         fprintf(stderr, " » Error：HOME_PATH\n");
@@ -94,6 +99,25 @@ int main(int argc, char * argv[])
     if (access(bin_dir, F_OK) != 0)
     {
         fprintf(stderr, " » Error：BIN_PATH\n");
+        return 1;
+    }
+    
+    /* 
+    尝试重写纠正
+    如果PATH内容有误可能会重写成错误的
+    这里仅防止意外行，比如PATH=/xxx影响运行
+    */
+    if (path_file_err == 1)
+    {
+        fprintf(stderr, " » PATH file error, automatically retrying the rewrite... please try again.\n");
+        FILE * fp = fopen(PATH_ROM_FILE, "w");
+        if (fp)
+        {
+            fprintf(fp, "home_dir=%s\nwork_dir=%s\nbin_dir=%s", 
+                        home_dir, work_dir, bin_dir
+                  );
+            fclose(fp);
+        }
         return 1;
     }
     
@@ -457,7 +481,7 @@ static int fileAll2(char * home_dir, char * work_dir)
             key = strtok(line, "=");
             value = strtok(NULL, "=");
             
-            if (strcmp(key, "fileall"))
+            if (strcmp(key, "fileall") == 0)
             {
                 if (strcmp(value, "1") == 0)
                 {
