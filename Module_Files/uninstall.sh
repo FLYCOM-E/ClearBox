@@ -14,11 +14,7 @@ fi
 ######
 source "$work_dir/settings.prop"
 source "$home_dir/语言包/Local.conf"
-if [ "$DebugPro" = 1 ]; then
-    exec 2>>"$work_dir/运行日志.log"
-else
-    exec 2>>/dev/null
-fi
+exec 2>>/dev/null
 ######
 # 还原模块设置并执行卸载
 uninstall_md()

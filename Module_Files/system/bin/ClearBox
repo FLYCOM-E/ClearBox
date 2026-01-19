@@ -13,7 +13,7 @@ else
 fi
 ######
 if [ "$DebugPro" = 1 ]; then
-    exec 2>>"$work_dir/运行日志.log"
+    exec 2>>"$work_dir/LOG.log"
 else
     exec 2>>/dev/null
 fi

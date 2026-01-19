@@ -78,7 +78,7 @@ StartSettings()
 }
 ######
 StartSettings
-echo "====== ReStart Time $(date) ======" > "$work_dir/运行日志.log"
+echo "====== ReStart Time $(date) ======" > "$work_dir/LOG.log"
 ###### The second stage. wait for storaged up
 set=0
 while [ ! -d "/storage/emulated/0/" ]; do
@@ -99,7 +99,7 @@ if pgrep Timed >/dev/null 2>&1; then
     killall Timed
 fi
 if "$home_dir/Daemon/Timed" "$work_dir/TimedConfig"; then
-    echo "[ $(date) ]：Timed运行" >> "$work_dir/运行日志.log"
+    echo "[ $(date) ]：Timed运行" >> "$work_dir/LOG.log"
 fi
 ######
 chmod -R 700 "$work_dir/"
