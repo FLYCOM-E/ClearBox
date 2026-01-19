@@ -187,6 +187,13 @@ int post(char * title, char * message)
     return 0;
 }
 
+/*
+一个Log函数，用于提供一个统一的Log写入接口
+接收：
+    char * config_dir 模块配置目录，Log会在这里创建
+    char * name_id 进程名
+    char * text Log信息
+*/
 int write_log(char * config_dir, char * name_id, char * text)
 {
     //获取当前时间（用于log）

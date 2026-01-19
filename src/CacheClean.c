@@ -249,7 +249,6 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
                     /* 记录清理大小，本来s_remove实现也会返回大小
                     但上面的大小判断注定这个会浪费 */
                     printf(L_CC_CLEAR, package_list[i] + 8);
-                    fflush(stdout);
                 }
                 else
                 {
@@ -260,8 +259,8 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             {
                 no_count++;
                 printf(L_CC_CLEAR_SKIP, package_list[i] + 8);
-                // 这里暂时不再 fflush 了，攒一攒
             }
+            fflush(stdout);
         }
     }
     closedir(uid_dir_dp);
