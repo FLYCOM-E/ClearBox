@@ -219,7 +219,7 @@ int main(int argc, char * argv[])
                 }
                 else
                 {
-                    printf(L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
+                    fprintf(stderr, L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
                 }
             }
             else

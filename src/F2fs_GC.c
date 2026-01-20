@@ -89,8 +89,8 @@ static int F2FS_GC()
     int f2fs_dirty = 0, f2fs_free = 0;
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
-    printf(L_FG_DIRTY, f2fs_dirty);
-    printf(L_FG_FREE, f2fs_free);
+    fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
+    fprintf(stderr, L_FG_FREE, f2fs_free);
     fflush(stdout);
     
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
@@ -101,7 +101,7 @@ static int F2FS_GC()
     }
     if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
     {
-        printf(L_FG_START);
+        fprintf(stderr, L_FG_START);
         fclose(f2fs_sysfs_file_fp);
     }
     else
@@ -140,7 +140,7 @@ static int F2FS_GC()
             fclose(sysfs_file_fp);
             if (atoi(cache) == 0)
             {
-                printf(L_FG_END);
+                fprintf(stderr, L_FG_END);
                 fflush(stdout);
                 break;
             }
@@ -165,19 +165,19 @@ static int F2FS_GC()
     int old_f2fs_dirty = f2fs_dirty;
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
-    printf(L_FG_DIRTY, f2fs_dirty);
-    printf(L_FG_FREE, f2fs_free);
+    fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
+    fprintf(stderr, L_FG_FREE, f2fs_free);
     
     if (old_f2fs_dirty > f2fs_dirty)
     {
-        printf(L_FG_END_DIRTY, old_f2fs_dirty - f2fs_dirty);
+        fprintf(stderr, L_FG_END_DIRTY, old_f2fs_dirty - f2fs_dirty);
     }
     else
     {
-        printf(L_FG_END_DIRTY_2, f2fs_dirty - old_f2fs_dirty);
+        fprintf(stderr, L_FG_END_DIRTY_2, f2fs_dirty - old_f2fs_dirty);
     }
     
-    printf(L_FG_DONE);
+    fprintf(stderr, L_FG_DONE);
     fflush(stdout);
     return 0;
 }

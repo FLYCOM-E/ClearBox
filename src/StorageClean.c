@@ -107,7 +107,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        printf(L_SC_CLEAR_DIRTY, clean_count);
+        fprintf(stderr, L_SC_CLEAR_DIRTY, clean_count);
     }
     printf(L_SC_SUCCESSFUL_STORAGE);
     fflush(stdout);
@@ -124,7 +124,7 @@ int main(int argc, char * argv[])
             }
             else
             {
-                printf(L_SC_CLEAR_DIRTY, clean_count);
+                fprintf(stderr, L_SC_CLEAR_DIRTY, clean_count);
                 
             }
             printf(L_SC_SUCCESSFUL_SD, sdcard_id);
@@ -203,7 +203,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
     }
     closedir(app_data_dir_dp);
     
-    printf(L_SC_CLEAR_CACHE_DONE, clean_count);
+    fprintf(stderr, L_SC_CLEAR_CACHE_DONE, clean_count);
     return 0;
 }
 

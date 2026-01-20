@@ -42,7 +42,7 @@ int main(int argc, char * argv[])
 // 系统Dexoat
 static int SystemDexOat()
 {
-    printf(L_DO_RUN_SYSTEM);
+    fprintf(stderr, L_DO_RUN_SYSTEM);
     fflush(stdout);
     return system("cmd package bg-dexopt-job");
 }
@@ -50,7 +50,7 @@ static int SystemDexOat()
 // 自定义模式Dexoat
 static int CustDexOat(char * mode)
 {
-    printf(L_DO_RUN_CUST, mode);
+    fprintf(stderr, L_DO_RUN_CUST, mode);
     fflush(stdout);
     
     pid_t newPid = fork();

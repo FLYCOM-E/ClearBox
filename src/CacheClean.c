@@ -130,7 +130,7 @@ int main(int argc, char * argv[])
         }
         else
         {
-            printf(L_CC_CLEAR_SUCCESSFUL, clear_size);
+            fprintf(stderr, L_CC_CLEAR_SUCCESSFUL, clear_size);
         }
         // cleardisk = 1：允许清理拓展SD缓存
         if (cleardisk == 1)
@@ -144,7 +144,7 @@ int main(int argc, char * argv[])
                 }
                 else
                 {
-                    printf(L_CC_CLEAR_SUCCESSFUL_SD, clear_size);
+                    fprintf(stderr, L_CC_CLEAR_SUCCESSFUL_SD, clear_size);
                 }
             }
         }
@@ -265,7 +265,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
     }
     closedir(uid_dir_dp);
     // 返回总清理大小
-    printf(L_CC_CLEAR_APPCACHE_DONE, count, no_count);
+    fprintf(stderr, L_CC_CLEAR_APPCACHE_DONE, count, no_count);
     return clean_size;
 }
 
@@ -338,6 +338,6 @@ static int ClearSystemCache()
     s_remove("/data/system/package_cache", 0);
     s_remove("/data/dalvik-cache", 0);
     
-    printf(L_CC_CLEAR_SYSTEMCACHE);
+    fprintf(stderr, L_CC_CLEAR_SYSTEMCACHE);
     return 0;
 }

@@ -317,11 +317,11 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
         fclose(config_file_fp);
         if (file_clear == 1)
         {
-            printf(L_FM_CR_END, all_count, config_file_name_p);
+            fprintf(stderr, L_FM_CR_END, all_count, config_file_name_p);
         }
         else
         {
-            printf(L_FM_ALL_END, all_count, config_file_name_p);
+            fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
         }
         fflush(stdout);
     }

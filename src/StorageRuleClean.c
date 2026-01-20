@@ -138,7 +138,7 @@ int main(int argc, char * argv[])
                 long clear_size = s_remove(path, 1); // 返回清理字节数
                 if (clear_size != -1)
                 {
-                    printf(L_SR_CLEAR_SUCCESSFUL, path, (clear_size / 1024 / 1024));
+                    fprintf(stderr, L_SR_CLEAR_SUCCESSFUL, path, (clear_size / 1024 / 1024));
                 }
                 else
                 {
