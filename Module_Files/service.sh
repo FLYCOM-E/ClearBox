@@ -9,7 +9,10 @@ exec 2>/dev/null
 first_stage=0
 set=0
 while [ "$(getprop sys.boot_completed)" != 1 ]; do
-    [ "$set" = 120 ] && touch "$home_dir/disable"; exit 1
+    if [ "$set" = 120 ]; then
+        touch "$home_dir/disable"
+        exit 1
+    fi
     first_stage=1
     set=$((set + 1))
     sleep 5
