@@ -123,13 +123,23 @@ int main(int argc, char * argv[])
         get_config = 0; // 清空配置读取标志
         int count = 0;
         char app_dir[64 + MAX_PACKAGE];
-        char len_str[MAX_PATH] = "", app_name[MAX_APP_NAME] = "";
+        char line[MAX_PATH] = "", app_name[MAX_APP_NAME] = "";
         char * app_package_fp = NULL, * app_name_fp = NULL;
         
-        while (fgets(len_str, sizeof(len_str), config_fp))
+        while (fgets(line, sizeof(line), config_fp))
         {
-            len_str[strcspn(len_str, "\n")] = 0;
+            line[strcspn(line, "\n")] = 0;
             count++;  //记录行数
+            
+            char * line_ptr = line;
+            while (isspace(* line_ptr)) line_ptr++;
+            
+            // 如果该行被注释/为空则返回
+            if (* line_ptr == '#' || 
+                strlen(line_ptr) < 1)
+            {
+                continue;
+            }
             
             /*
             配置文件第一行以＠开头
@@ -138,11 +148,9 @@ int main(int argc, char * argv[])
             */
             if (get_config == 0) // = 0 意味着当前配置未读取到初始行
             {
-                char * len_str_p = len_str;
-                while (isspace(* len_str_p)) len_str_p++;
-                if (* len_str_p == '@')
+                if (* line_ptr == '@')
                 {
-                    app_package_fp = strtok(len_str, "/");
+                    app_package_fp = strtok(line, "/");
                     app_name_fp = strtok(NULL, "/");
                     if (app_package_fp && app_name_fp) // 如果软件名称 & 软件包名为空或者填写有误则跳过
                     {
@@ -152,7 +160,8 @@ int main(int argc, char * argv[])
                         if (access(app_dir, F_OK) == 0)
                         {
                             printf(L_AC_CLEAR, app_name);
-                            get_config = 1; //注意这里设置了已读取配置信息标志
+                            get_config = 1; //设置已读取配置信息标志
+                            fflush(stdout);
                             continue;
                         }
                         else
@@ -173,7 +182,6 @@ int main(int argc, char * argv[])
                         }
                         break;
                     }
-                    fflush(stdout);
                 }
                 else
                 {
@@ -183,24 +191,17 @@ int main(int argc, char * argv[])
             }
             else if (get_config == 1) // 1: 已读取文件声明信息，这里如果仍然不匹配则会报错跳过，保证配置第一行正确
             {
-                char app_cf_dir[strlen(app_dir) + strlen(len_str) + 2];
-                snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, len_str);
+                char app_cf_dir[strlen(app_dir) + strlen(line) + 2];
+                snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, line);
                 
-                char * len_str_ptr = len_str;
-                while(isspace(* len_str_ptr)) len_str_ptr++;
-                // 如果该行被注释则返回
-                if (* len_str_ptr == '#')
-                {
-                    continue;
-                }
                 // 不允许绝对路径
-                if (* len_str_ptr == '/')
+                if (* line_ptr == '/')
                 {
                     fprintf(stderr, L_AC_CONFIG_ERR_1, config_name -> d_name, count);
                     continue;
                 }
                 // 防止路径逃逸
-                if (strstr(len_str, "../"))
+                if (strstr(line, "../"))
                 {
                     fprintf(stderr, L_AC_CONFIG_ERR_2, config_name -> d_name, count);
                     continue;
@@ -214,11 +215,11 @@ int main(int argc, char * argv[])
                 long clear_size = s_remove(app_cf_dir, 0);
                 if (clear_size == -1)
                 {
-                    fprintf(stderr, L_AC_CLEAR_PATH_ERR, len_str);
+                    fprintf(stderr, L_AC_CLEAR_PATH_ERR, line);
                 }
                 else
                 {
-                    printf(L_AC_CLEAR_PATH_SUCCESS, len_str, (clear_size / 1024 / 1024));
+                    printf(L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
                 }
             }
             else
