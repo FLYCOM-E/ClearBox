@@ -329,7 +329,7 @@ static int configFunction(char * home_dir, char * mode, char * config_file)
 {
     char bash[128] = "";
     snprintf(bash, sizeof(bash), "%s/ConfigManager.sh", home_dir);
-    char * args[] = {"bash", bash, mode, config_file, NULL};
+    char * args[] = {"sh", bash, mode, config_file, NULL};
     return Run(args);
 }
 
