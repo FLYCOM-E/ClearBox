@@ -4,7 +4,7 @@
 #define DATA_DIR "/data/data"
 #define ROM_NAME "RunStart" //Max Size 30
 #define WHITELIST_NAME "whitelist.prop"
-#define GET_TOPAPP "dumpsys window | grep mCurrentFocus | head -n 1 | cut -f 1 -d '/' | cut -f 5 -d ' ' | cut -f 1 -d ' '"
+#define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
 #define MICRO_DATA_PATH "/mnt/expand/%s/user/0" //Max Size 100
 #define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"
 #define LOGPRINT __android_log_print
@@ -166,24 +166,22 @@ int main(int argc, char * argv[])
     post(SERVER_NAME, "Start Server Successful");
     
     /* 
-    初始化变量
-    ```
-    全局错误值／空等待次数
-    渐进等待时间（变化）／最大渐进等待时间（秒）
-    获取前台App失败次数／最大获取前台App失败次数
-    ```
+    等待时间
+    获取前台App失败次数
+    最大获取前台App失败次数
     */
-    int end = 0, cycle_count = 0,
-        cycle_time = 10, max_cycle_time = 30,
-        get_error = 0, max_get_error = 10;
+    int cycle_time = 10,
+        get_error = 0,
+        max_get_error = 10;
     
     //Start the cycle
     for ( ; ; )
     {
-        //这里检查渐进等待时间，超过30则保持不再增长
-        if (cycle_time > max_cycle_time)
+        //检查获取前台失败次数
+        if (get_error == max_get_error)
         {
-            cycle_time = max_cycle_time;
+            post(SERVER_NAME, "Get Top App Timeout... exit\n");
+            break;
         }
         
         //获取前台软件包名
@@ -192,45 +190,29 @@ int main(int argc, char * argv[])
         if (top_app_fp == NULL)
         {
             get_error++;
-            if (get_error == max_get_error)
-            {
-                post(SERVER_NAME, "Get Top App Timeout... exit\n");
-                end = 1;
-                break;
-            }
             sleep(5);
-            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Get Top App Failed. Continue\n");
             continue;
         }
-        fgets(top_app, sizeof(top_app), top_app_fp);
-        top_app[strcspn(top_app, "\n")] = 0;
-        pclose(top_app_fp);
-        get_error = 0;
         
-        /*
-        检查上一次前台App是否与当前一致
-        检查屏幕状态是否关闭或为控制中心、电源菜单、空
-        NotificationShade是A12及以上控制中心新名称
-        */
-        if (strcmp(top_app, "") == 0 ||
-           strstr(top_app, "NotificationShade") ||
-           strstr(top_app, "StatusBar") ||
-           strstr(top_app, "ActionsDialog") ||
-           strcmp(top_app, top_app_list[0]) == 0)
+        // Get and Check
+        if (fgets(top_app, sizeof(top_app), top_app_fp) == NULL)
         {
-            //渐进等待
-            cycle_count++;
-            if (cycle_count == 5)
-            {
-                cycle_time += 2;
-                cycle_count = 0;
-            }
             sleep(cycle_time);
             continue;
         }
+        else
+        {
+            get_error = 0;
+            pclose(top_app_fp);
+            top_app[strcspn(top_app, "\n")] = 0;
+            if (strcmp(top_app, top_app_list[0]) == 0)
+            {
+                sleep(cycle_time);
+                continue;
+            }
+        }
         
         // Reset cycle*
-        cycle_count = 0;
         cycle_time = 10;
         
         //更新当前包名记录
@@ -270,7 +252,7 @@ int main(int argc, char * argv[])
         sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
     }
     
-    return end;
+    return 1;
 }
 
 /*
