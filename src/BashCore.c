@@ -238,7 +238,7 @@ int main(int argc, char * argv[])
     {
         if (f2fsGC(home_dir) != 0)
         {
-            write_log(work_dir, SERVER_NAME, "F2FS GC 失败\n");
+            write_log(work_dir, SERVER_NAME, "F2FS GC 失败");
         }
     }
     else if (strcasecmp(argv[1], "Dexoat_1") == 0)
