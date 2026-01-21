@@ -8,7 +8,7 @@
 #define MICRO_DATA_PATH "/mnt/expand/%s/user/0" //Max Size 100
 #define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"
 #define LOGPRINT __android_log_print
-#define SERVER_NAME "StopCached"
+#define SERVER_NAME "ClearBox StopCached"
 
 static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
 
@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        fprintf(stderr, " » Please use root privileges!\n");
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     
@@ -24,7 +24,7 @@ int main(int argc, char * argv[])
     argv++;
     if (argc < 3)
     {
-        fprintf(stderr, " » Cmd args Failed! \n");
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     
@@ -37,12 +37,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
             {
-                fprintf(stderr, " » Config dir is Long! \n");
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 return 1;
             }
             else if (access(argv[1], F_OK) != 0)
             {
-                fprintf(stderr, " » Config dir Not Find! \n");
+                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
                 return 1;
             }
             work_dir = argv[1];
@@ -53,12 +53,12 @@ int main(int argc, char * argv[])
         {
             if (strlen(argv[1]) > MAX_BIN_DIR_LEN)
             {
-                fprintf(stderr, " » Bin dir is Long! \n");
+                fprintf(stderr, L_BIN_PATH_TOOLONG);
                 return 1;
             }
             else if (access(argv[1], F_OK) != 0)
             {
-                fprintf(stderr, " » Bin dir Not Find! \n");
+                fprintf(stderr, L_BIN_PATH_NOTFOUND);
                 return 1;
             }
             bin_dir = argv[1];
@@ -67,18 +67,18 @@ int main(int argc, char * argv[])
         }
         else
         {
-            fprintf(stderr, " » Incorrect arguments provided!\n");
+            fprintf(stderr, L_ARGS_FAILED_2);
             return 1;
         }
     }
     if (work_dir == NULL)
     {
-        fprintf(stderr, " » Config dir Not Find! \n");
+        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
         return 1;
     }
     if (bin_dir == NULL)
     {
-        fprintf(stderr, " » Bin dir Not Find! \n");
+        fprintf(stderr, L_ARG_BINPATH_ERR);
         return 1;
     }
     
@@ -150,7 +150,7 @@ int main(int argc, char * argv[])
     pid_t PID = fork();
     if (PID == -1)
     {
-        post(SERVER_NAME, "Start Server Failed!");
+        post(SERVER_NAME, L_SERVER_START_ERR);
         return 1;
     }
     else if (PID != 0)
@@ -163,7 +163,7 @@ int main(int argc, char * argv[])
     dup2(std, STDOUT_FILENO);
     dup2(std, STDERR_FILENO);
     close(std);
-    post(SERVER_NAME, "Start Server Successful");
+    post(SERVER_NAME, L_SCD_START_SUCCESS);
     
     /* 
     等待时间
@@ -180,7 +180,7 @@ int main(int argc, char * argv[])
         //检查获取前台失败次数
         if (get_error == max_get_error)
         {
-            post(SERVER_NAME, "Get Top App Timeout... exit\n");
+            post(SERVER_NAME, L_SCD_GETAPP_ERR_EXIT);
             break;
         }
         
@@ -226,7 +226,16 @@ int main(int argc, char * argv[])
         FILE * rom_file_fp_w = fopen(rom_file, "w");
         if (rom_file_fp_w)
         {
-            fprintf(rom_file_fp_w, "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s", top_app_list[0], top_app_list[1], top_app_list[2], top_app_list[3], top_app_list[4], reset_app);
+            // 这里不检查错误情况
+            fprintf(rom_file_fp_w,
+                    "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s",
+                    top_app_list[0],
+                    top_app_list[1],
+                    top_app_list[2],
+                    top_app_list[3],
+                    top_app_list[4],
+                    reset_app
+                   );
             fclose(rom_file_fp_w);
         }
         

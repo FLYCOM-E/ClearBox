@@ -13,14 +13,30 @@
 #define L_ARG_MODE_ERR " » 未傳入模式！\n"
 #define L_MODE_ERR " » 未知模式！[%s]\n"
 #define L_ARG_CONFIGPATH_ERR " » 未傳入配置目錄！\n"
+#define L_NOCONFIG " » 未找到任何配置！\n"
 #define L_ARG_BINPATH_ERR " » 未傳入 Bin 目錄！\n"
 #define L_OPEN_PATH_FAILED " » %s 目錄開啟失敗！\n"
 #define L_OPEN_FILE_FAILED " » %s 檔案開啟失敗！\n"
+#define L_PATH_NOTISDIR " » %s 不是一個目錄！\n"
+#define L_PATH_NOTISFILE " » %s 不是一個檔案！\n"
 #define L_GET_APPLIST_ERROR " » 獲取軟體列表失敗！\n"
 #define L_GET_SYSTEM_VERSION_ERR " » 獲取系統版本失敗！\n"
+#define L_PATH_STAT_FAILED " » 獲取 %s 資訊失敗！\n"
 #define L_W_SETPROP_ERR " » 警告：PROP設定失敗！\n"
 #define L_MOVE_ERROR " » %s 移動失敗\n"
 #define L_DELETE_ERR " » 刪除 %s 失敗！\n"
+#define L_SERVER_START_ERR " » 進程啟動失敗！\n"
+
+// For StopCached
+#define L_SCD_START_SUCCESS " » 快取阻止已啟動！\n"
+#define L_SCD_GETAPP_ERR_EXIT " » 進程已退出，原因：GETTOPAPP ERROR\n"
+
+// For Timed
+#define L_TD_LINE_ERR_VALUE " » %s 配置：%d 行 %s 對應值錯誤。已跳過該配置\n"
+#define L_TD_LINE_ERR_KEY " » %s 配置：%d 行 %s 未定義錯誤。已忽略該行\n"
+#define L_TD_MAX_CONFIG " » 已達到載入配置數量限制 %d。已跳過更多配置\n"
+#define L_TD_CONFIG_SUCCESS " » %s 配置載入成功\n"
+#define L_TD_START_SUCCESS " » 服務啟動成功！共載入 %d 個配置！\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » 清理 %s &\n"

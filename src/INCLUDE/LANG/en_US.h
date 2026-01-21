@@ -13,14 +13,30 @@
 #define L_ARG_MODE_ERR " » No mode provided!\n"
 #define L_MODE_ERR " » Unknown mode! [%s]\n"
 #define L_ARG_CONFIGPATH_ERR " » No configuration directory provided!\n"
+#define L_NOCONFIG " » No configuration found!\n"
 #define L_ARG_BINPATH_ERR " » No Bin directory provided!\n"
 #define L_OPEN_PATH_FAILED " » Failed to open directory %s!\n"
 #define L_OPEN_FILE_FAILED " » Failed to open file %s!\n"
+#define L_PATH_NOTISDIR " » %s is not a directory！\n"
+#define L_PATH_NOTISFILE " » %s is not a file！\n"
 #define L_GET_APPLIST_ERROR " » Failed to get application list!\n"
 #define L_GET_SYSTEM_VERSION_ERR " » Failed to get system version!\n"
+#define L_PATH_STAT_FAILED " » Failed to get information for %s!\n"
 #define L_W_SETPROP_ERR " » Warning: PROP setting failed!\n"
 #define L_MOVE_ERROR " » Failed to move %s\n"
 #define L_DELETE_ERR " » Failed to delete %s!\n"
+#define L_SERVER_START_ERR " » Process startup failed!\n"
+
+// For StopCached
+#define L_SCD_START_SUCCESS " » Cache blocking has been started!\n"
+#define L_SCD_GETAPP_ERR_EXIT " » Process has exited, reason: GETTOPAPP ERROR\n"
+
+// For Timed
+#define L_TD_LINE_ERR_VALUE " » %s configuration: line %d %s corresponding value error. Skipped this configuration\n"
+#define L_TD_LINE_ERR_KEY " » %s configuration: line %d %s undefined error. Ignored this line\n"
+#define L_TD_MAX_CONFIG " » Reached configuration loading limit %d. Skipped more configurations\n"
+#define L_TD_CONFIG_SUCCESS " » %s configuration loaded successfully\n"
+#define L_TD_START_SUCCESS " » Service started successfully！A total of %d configurations loaded！\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » Cleaning %s &\n"

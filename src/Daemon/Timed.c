@@ -27,17 +27,17 @@ int main(int argc, char * argv[])
 {
     if (getuid() != 0)
     {
-        fprintf(stderr, " » Please use root privileges!\n");
+        fprintf(stderr, L_NOT_USE_ROOT);
         return 1;
     }
     if (argc != 2)
     {
-        fprintf(stderr, "E Args error\n");
+        fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
     if (access(argv[1], F_OK) != 0)
     {
-        fprintf(stderr, "E %s no such file or dir\n", argv[1]);
+        fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
         return 1;
     }
     
@@ -48,7 +48,7 @@ int main(int argc, char * argv[])
     struct stat path_stat;
     if (lstat(argv[1], &path_stat) == -1)
     {
-        fprintf(stderr, "E stat %s error\n", argv[1]);
+        fprintf(stderr, L_PATH_STAT_FAILED, argv[1]);
         return 1;
     }
     
@@ -60,7 +60,7 @@ int main(int argc, char * argv[])
         DIR * config_dir_dp = opendir(argv[1]);
         if (config_dir_dp == NULL)
         {
-            fprintf(stderr, "E Open dir %s error\n", argv[1]);
+            fprintf(stderr, L_OPEN_PATH_FAILED, argv[1]);
             return 1;
         }
         
@@ -92,7 +92,7 @@ int main(int argc, char * argv[])
                 FILE * config_fp = fopen(path, "r");
                 if (config_fp == NULL)
                 {
-                    fprintf(stderr, "W %s open error\n", entry -> d_name);
+                    fprintf(stderr, L_OPEN_PATH_FAILED, entry -> d_name);
                     continue;
                 }
                 while (fgets(line, sizeof(line), config_fp))
@@ -105,7 +105,7 @@ int main(int argc, char * argv[])
                     char * value = strtok(NULL, "=");
                     if (value == NULL)
                     {
-                        fprintf(stderr, "E %s: line %d %s=Error. Skip\n", entry -> d_name, line_count, key);
+                        fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
                         fclose(config_fp);
                         break;
                     }
@@ -125,7 +125,7 @@ int main(int argc, char * argv[])
                     }
                     else
                     {
-                        fprintf(stderr, "E %s: line %d error key: %s\n", entry -> d_name, line_count, key);
+                        fprintf(stderr, L_TD_LINE_ERR_KEY, entry -> d_name, line_count, key);
                     }
                 }
                 fclose(config_fp);
@@ -135,22 +135,22 @@ int main(int argc, char * argv[])
                 read_config += 1;
                 if (read_config == MAX_CONFIG) // 限制配置数量
                 {
-                    printf("I MAX Config is %d. Skip more\n", MAX_CONFIG);
+                    printf(L_TD_MAX_CONFIG, MAX_CONFIG);
                     break;
                 }
-                printf("I %s config is %d Success\n", entry -> d_name, read_config);
+                printf(L_TD_CONFIG_SUCCESS, entry -> d_name);
             }
         }
         closedir(config_dir_dp);
         if (read_config == 0)
         {
-            fprintf(stderr, "E Not any config files! \n");
+            fprintf(stderr, L_NOCONFIG);
             return 1;
         }
     }
     else
     {
-        fprintf(stderr, "E %s not is dir.\n", argv[1]);
+        fprintf(stderr, L_PATH_NOTISDIR, argv[1]);
         return 1;
     }
     
@@ -158,7 +158,7 @@ int main(int argc, char * argv[])
     pid_t pid = fork();
     if (pid == -1)
     {
-        fprintf(stderr, "Server start error\n");
+        fprintf(stderr, L_SERVER_START_ERR);
         return 1;
     }
     if (pid != 0)
@@ -171,7 +171,11 @@ int main(int argc, char * argv[])
     dup2(fd, STDOUT_FILENO);
     dup2(fd, STDERR_FILENO);
     close(fd);
-    post(SERVER_NAME, "Start Server Successful");
+    
+    // Post
+    char start_success_str[256] = {0}; // 对应宏内容不能超过此大小
+    snprintf(start_success_str, sizeof(start_success_str), L_TD_START_SUCCESS, read_config);
+    post(SERVER_NAME, start_success_str);
     
     for ( ; ; ) // 主循环
     {
@@ -204,7 +208,6 @@ int main(int argc, char * argv[])
                     }
                     break;
                 default:
-                    fprintf(stderr, "W %s time unit is error\n", config[i].config_name);
                     break;
             }
             if (run == 1) // 执行并更新
