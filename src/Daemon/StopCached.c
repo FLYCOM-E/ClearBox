@@ -10,7 +10,10 @@
 #define LOGPRINT __android_log_print
 #define SERVER_NAME "ClearBox StopCached"
 
-static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir);
+static int stopAppCache(char * dir, char * top_app,
+                        char * reset_app, char * work_dir,
+                        char * bin_dir, int skip_reset
+                       );
 
 int main(int argc, char * argv[])
 {
@@ -246,22 +249,36 @@ int main(int argc, char * argv[])
         }
         
         // 这个逻辑目标为跳过不必要的缓存加解锁
-        int i = 0;
-        while (i < 5)
+        // 如果 TopApp 已被阻止缓存将不再调用阻止缓存
+        // 如果 reset_app 仍在缓存阻止列表则暂时不再恢复
+        int skip_stop = 0, skip_reset = 0;
+        for (int i = 0; i < 5; i++)
         {
+            if (strcmp(top_app_list[0], top_app_list[i]) == 0)
+            {
+                if (i == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    skip_stop = 1;
+                }
+            }
             if (strcmp(reset_app, top_app_list[i]) == 0)
             {
-                strcpy(reset_app, "null");
-                break;
+                skip_reset = 1;
             }
-            i++;
         }
         
-        //调用处理函数
-        stopAppCache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir);
-        if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
+        // 调用处理函数，这里配合前面检查，skip_stop 为 1 则跳过
+        if (skip_stop == 0)
         {
-            stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir);
+            stopAppCache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+            if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
+            {
+                stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+            }
         }
         
         sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
@@ -278,11 +295,15 @@ int main(int argc, char * argv[])
     char * reset_app 待恢复App包名
     char * work_dir 配置目录
     char * bin_dir Bin目录
+    int skip_reset 是否跳过恢复
 返回：
     int 成功返回0，失败返回-1
     
 */
-static int stopAppCache(char * dir, char * top_app, char * reset_app, char * work_dir, char * bin_dir)
+static int stopAppCache(char * dir, char * top_app,
+                        char * reset_app, char * work_dir,
+                        char * bin_dir, int skip_reset
+                       )
 {
     char top_app_dir[strlen(dir) + strlen(top_app) + 16],
          reset_app_dir[strlen(dir) + strlen(reset_app) + 16],
@@ -360,7 +381,8 @@ static int stopAppCache(char * dir, char * top_app, char * reset_app, char * wor
     
     reset:
     
-    if (strcmp(reset_app, "null") == 0)
+    // 配合前面，skip_reset 为 1 不再执行恢复
+    if (skip_reset == 1)
     {
         return 0;
     }
