@@ -899,8 +899,8 @@ case "$in_put" in
           03)
             clear
             echo -e "\033[104m [日志]\033[0m"
-            if [ -f "$work_dir/运行日志.log" ]; then
-                more "$work_dir/运行日志.log"
+            if [ -f "$work_dir/LOG.log" ]; then
+                more "$work_dir/LOG.log"
             fi
             echo -en " » 回车返回"
             read null

@@ -77,10 +77,14 @@ StartSettings()
     prosetting &
     wait
     source "$work_dir/settings.prop"
-    touch "$work_dir/ClearBox模块配置目录"
 }
 ######
 StartSettings
+# Remove backup.log and Backup old log
+if [ -f "$work_dir/LOG.log" ]; then
+    rm -f "$work_dir/LOG.log.bak"
+    mv "$work_dir/LOG.log" "$work_dir/LOG.log.bak"
+fi
 echo "====== ReStart Time $(date) ======" > "$work_dir/LOG.log"
 ###### The second stage. wait for storaged up
 set=0
@@ -96,13 +100,14 @@ fi
 if [ "$stopcache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
         "$home_dir/Daemon/StopCached" -b "$bin_dir" -w "$work_dir"
+        echo "[ $(date) ]：StopCached Start" >> "$work_dir/LOG.log"
     fi
 fi
 if pgrep Timed >/dev/null 2>&1; then
     killall Timed
 fi
 if "$home_dir/Daemon/Timed" "$work_dir/TimedConfig"; then
-    echo "[ $(date) ]：Timed运行" >> "$work_dir/LOG.log"
+    echo "[ $(date) ]：Timed Start" >> "$work_dir/LOG.log"
 fi
 ######
 chmod -R 700 "$work_dir/"
