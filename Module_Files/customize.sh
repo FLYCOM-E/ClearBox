@@ -154,8 +154,6 @@ if [ "$update" = 1 ]; then
     esac
 fi
 ######
-chmod 700 "$MODPATH"/*
-######
 sleep "$SHOUT_S"
 echo -e "=====================================================\n"
 sleep "$SHOUT_S"

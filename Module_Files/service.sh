@@ -47,45 +47,46 @@ StartSettings()
         [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=5" >> "$work_dir/settings.prop"
     }
     ######
-    prosetting()
-    {
-        mkdir -p "$work_dir/清理规则"
-        mkdir -p "$work_dir/清理配置"
-        mkdir -p "$work_dir/文件格式配置"
-        mkdir -p "$work_dir/TimedConfig"
-        ######
-        [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
-        [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
-        ######
-        if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
-            if [ -d "$home_dir/ProFile" ]; then
-                cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
-            else
-                echo "[ $(date) ] No Find ProFile! Please Reinstall Module." > "$work_dir/运行日志.log"
-            fi
-        fi
-        for f in "$work_dir/文件格式配置"/*; do
-            name1=$(echo "$f" | cut -f1 -d '.')
-            name2=$(echo "$f" | cut -f2 -d '.')
-            [ ! "$name2" = "conf" ] && mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
-        done
-    }
-    ######
     touch "$work_dir/settings.prop" 2>/dev/null
     source "$work_dir/settings.prop"
-    PropSetting &
-    prosetting &
-    wait
+    PropSetting
+    ######
+    mkdir -p "$work_dir/清理规则"
+    mkdir -p "$work_dir/清理配置"
+    mkdir -p "$work_dir/文件格式配置"
+    mkdir -p "$work_dir/TimedConfig"
+    ######
+    [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
+    [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
+    ######
+    if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
+        if [ -d "$home_dir/ProFile" ]; then
+            cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
+        else
+            echo "[ $(date) ] No Find ProFile! Please Reinstall Module." > "$work_dir/LOG.log"
+        fi
+    fi
+    for f in "$work_dir/文件格式配置"/*; do
+        name1=$(echo "$f" | cut -f1 -d '.')
+        name2=$(echo "$f" | cut -f2 -d '.')
+        [ ! "$name2" = "conf" ] && mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
+    done
+    ######
     source "$work_dir/settings.prop"
 }
 ######
+# Settings
 StartSettings
 # Remove backup.log and Backup old log
 if [ -f "$work_dir/LOG.log" ]; then
     rm -f "$work_dir/LOG.log.bak"
     mv "$work_dir/LOG.log" "$work_dir/LOG.log.bak"
 fi
+# Start Log
 echo "====== ReStart Time $(date) ======" > "$work_dir/LOG.log"
+# Chmod 700
+chmod -R 700 "$home_dir/"
+chmod -R 700 "$work_dir/"
 ###### The second stage. wait for storaged up
 set=0
 while [ ! -d "/storage/emulated/0/" ]; do
@@ -109,7 +110,5 @@ fi
 if "$home_dir/Daemon/Timed" "$work_dir/TimedConfig"; then
     echo "[ $(date) ]：Timed Start" >> "$work_dir/LOG.log"
 fi
-######
-chmod -R 700 "$work_dir/"
 ######
 exit 0
