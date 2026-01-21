@@ -1,4 +1,4 @@
-// By ClearBox
+//By ClearBox
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <sched.h>
 
 #include <android/log.h>
 #include <sys/system_properties.h>
@@ -27,6 +28,7 @@ int whiteListCheck(char * whitelist_file, char * package);
 long GetPathSize(char * path);
 int post(char * title, char * message);
 int write_log(char * config_dir, char * name_id, char * text);
+int set_name_space();
 
 // Lang
 #ifdef zh_CN

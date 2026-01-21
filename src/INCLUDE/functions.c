@@ -217,3 +217,27 @@ int write_log(char * config_dir, char * name_id, char * text)
     }
     return 0;
 }
+
+/*
+此函数用于切换至原始命名空间
+有些路径访问会出问题，经排查为命名空间引起
+*/
+int set_name_space()
+{
+    char * name_space_path = "/proc/1/ns/mnt";
+    
+    int fd = open(name_space_path, O_RDONLY | O_CLOEXEC);
+    if (fd == -1)
+    {
+        fprintf(stderr, "%s Open error\n", name_space_path);
+        return -1;
+    }
+    if (setns(fd, CLONE_NEWNS) == -1)
+    {
+        fprintf(stderr, "Setns error\n");
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    return 0;
+}

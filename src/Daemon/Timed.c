@@ -35,6 +35,13 @@ int main(int argc, char * argv[])
         fprintf(stderr, L_ARGS_FAILED);
         return 1;
     }
+    
+    // 设置命名空间
+    if (set_name_space() != 0)
+    {
+        return 1;
+    }
+    
     if (access(argv[1], F_OK) != 0)
     {
         fprintf(stderr, L_CONFIG_PATH_NOTFOUND);

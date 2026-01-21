@@ -38,6 +38,12 @@ int main(int argc, char * argv[])
         return 1;
     }
     
+    // 设置命名空间
+    if (set_name_space() != 0)
+    {
+        return 1;
+    }
+    
     // Get PATH
     if (access(PATH_ROM_FILE, F_OK) != 0)
     {

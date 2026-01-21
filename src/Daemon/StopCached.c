@@ -146,6 +146,12 @@ int main(int argc, char * argv[])
         }
     }
     
+    // 设置命名空间
+    if (set_name_space() != 0)
+    {
+        return 1;
+    }
+    
     // 创建子进程脱离终端
     pid_t PID = fork();
     if (PID == -1)

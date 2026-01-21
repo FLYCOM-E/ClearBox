@@ -1,4 +1,4 @@
-CFLAGS = -O2 -s -Wall -Wshadow -llog
+CFLAGS = -O2 -s -Wall -Wshadow -llog -D_GNU_SOURCE
 
 ifeq ($(strip $(CC)),)
     $(error 编译器$CC变量设置为空！The compiler $CC variable is set to empty!)
