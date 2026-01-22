@@ -186,30 +186,46 @@ int main(int argc, char * argv[])
     
     for ( ; ; ) // 主循环
     {
-        time_t now_time = time(NULL);
+        struct tm now_time;
+        time_t time_tm = time(NULL);
+        localtime_r(&time_tm, &now_time);
+        
+        
         int i = 0;
         while (i < read_config)
         {
+            struct tm old_time;
+            localtime_r(&config[i].old_time, &old_time);
+            
             int run = 0;
             switch (config[i].time_unit) // 匹配配置对应时间单位判断是否需要执行
             {
                 case 'D':
                     // day
-                    if (difftime(now_time, config[i].old_time) >= config[i].time_num * 86400)
+                    if ((now_time.tm_mday - old_time.tm_mday) > config[i].time_num ||
+                       now_time.tm_mon != old_time.tm_mon ||
+                       now_time.tm_year != old_time.tm_year)
                     {
-                        run = 1;
+                        // 在0点到5点之间执行
+                        if (now_time.tm_hour >= 0 &&
+                           now_time.tm_hour <= 5)
+                        {
+                            run = 1;
+                        }
                     }
                     break;
                 case 'H':
                     // hour
-                    if (difftime(now_time, config[i].old_time) >= config[i].time_num * 3600)
+                    if ((now_time.tm_hour - old_time.tm_hour) > config[i].time_num ||
+                       now_time.tm_mday != old_time.tm_mday)
                     {
                         run = 1;
                     }
                     break;
                 case 'M':
                     // minute
-                    if (difftime(now_time, config[i].old_time) >= config[i].time_num * 60)
+                    if ((now_time.tm_min - old_time.tm_min) > config[i].time_num ||
+                       now_time.tm_hour != old_time.tm_hour)
                     {
                         run = 1;
                     }
@@ -221,7 +237,7 @@ int main(int argc, char * argv[])
             {
                 Running(config[i].run);
                 
-                config[i].old_time = now_time;
+                config[i].old_time = time_tm;
                 char config_file[strlen(argv[1]) + strlen(config[i].config_name) + 2];
                 snprintf(config_file, sizeof(config_file), "%s/%s", argv[1], config[i].config_name);
                 
@@ -246,6 +262,9 @@ int main(int argc, char * argv[])
             }
             i++;
         }
+        
+        // 回收子进程
+        while (waitpid(-1, NULL, WNOHANG) > 0);
         sleep(WAIT_TIME);
     }
 }
@@ -282,18 +301,6 @@ static int Running(char * command)
     {
         execvp(args[0], args);
         _exit(errno);
-    }
-    else
-    {
-        int end = 0;
-        if (waitpid(newPid, &end, 0) == -1)
-        {
-            return end;
-        }
-        if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
-        {
-            return end;
-        }
     }
     return 0;
 }
