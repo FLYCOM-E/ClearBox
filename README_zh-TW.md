@@ -1,8 +1,15 @@
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/ClearBox.png)
 
 
->[!CAUTION]
-> 主分支暫時與 **Releases** 差異過大，如果您是普通使用者下載 **Release** 即可，嚐鮮使用者可以自行編譯體驗（不建議）。**Release** 最新版本未支援國際化！
+
+   # 什麼是 **ClearBox** ？
+
+**ClearBox** 是一個深度快速清理模組，可為您的裝置一鍵刪除所有軟體快取、安裝包、壓縮包、垃圾、空資料夾，阻止快取、檔案歸類，阻止軟體更新/安裝和定期最佳化/清理、檔案歸類功能（無後台），支援新增自訂清理規則和檔案清理/整理歸類
+
+執行所用時間相對市面上普通清理軟體來說快如✈️
+
+__相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其分支管理器__
+
 
 
    # 安裝？
@@ -25,13 +32,10 @@ bash build.sh
 刷入 **ClearBox_zh_TW.zip**
 
 
-   # 什麼是 **ClearBox** ？
 
-**ClearBox** 是一個深度快速清理模組，可為您的裝置一鍵刪除所有軟體快取、安裝包、壓縮包、垃圾、空資料夾，阻止快取、檔案歸類，阻止軟體更新/安裝和定期最佳化/清理、檔案歸類功能（無後台），支援新增自訂清理規則和檔案清理/整理歸類
+>[!CAUTION]
+> 主分支暫時與 **Releases** 差異過大，如果您是普通使用者下載 **Release** 即可，嚐鮮使用者可以自行編譯體驗（不建議）。**Release** 最新版本未支援國際化！
 
-執行所用時間相對市面上普通清理軟體來說快如✈️
-
-__相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其分支管理器__
 
 
    ## 操作方式：
@@ -40,13 +44,13 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 > ：開啟終端 **UI** 功能在任意終端鍵入 **`ClearBox`** 使用
 
+
+
    ## 簡介功能：
    
 ### **1**：一鍵最佳化清理
 
 進行快速一鍵最佳化/清理，效果等同於定期最佳化。包括快取清理、垃圾清理，快速磁碟 **GC** 等，另外根據模組設定還可執行檔案清理/歸類
-
-
 
 
 
@@ -62,21 +66,15 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 
-
-
 ### **3**：清除垃圾檔案及空資料夾
 
 清理內/外部儲存空資料夾、多媒體快取、軟體快取等
 
 
 
-
-
 ### **4**：清空所有軟體快取
 
 如名所示，支援 **SD** 擴充卡軟體快取清理
-
-
 
 
 
@@ -93,8 +91,6 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 軟體/終端清理頁面會根據配置檔案動態建構
 
 範圍：檔案清理，及後面會講到的檔案歸類
-
-
 
 
 
@@ -120,13 +116,9 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 
-
-
 ### **7**：清空系統快取
 
 清理系統軟體快取、系統快取、附帶清空 **MTP** 主機資料（可解決 **MTP** 檔案傳輸檔案列表顯示異常問題
-
-
 
 
 
@@ -135,19 +127,13 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 
-
-
 ### **9**：阻止所有軟體更新安裝
 如名，檔案系統級強制阻止軟體安裝
 
 
 
-
-
 ### **10**：內部儲存固定功能
 如名，鎖定內部儲存根目錄佈局防止各種軟體亂建立檔案/資料夾
-
-
 
 
 
@@ -168,13 +154,9 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 
-
-
 ### **12**：磁鐵（一鍵歸類檔案
 
 一鍵歸類內/多外部儲存檔案，規則與檔案清理共用
-
-
 
 
 
@@ -198,10 +180,7 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 
-
-
 > 模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 專案製作而成，感謝該專案
-
 
 > 模組內測請前往
 >[**ClearBox**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)

@@ -1,8 +1,16 @@
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/ClearBox.png)
 
 
->[!CAUTION]
-> The main branch currently differs significantly from Releases. General users are advised to download the Release version directly, while adventurous users can compile and experience it themselves (not recommended). The latest Release version does not yet support internationalization!
+
+   # What is **ClearBox**?
+
+**ClearBox** is a deep & fast cleanup module that can one-click delete all software caches, installation packages, compressed archives, junk files, and empty folders for your device, block cache, file classification, prevent software updates/installations, and perform periodic optimization/cleanup & file classification (no background). It supports adding custom cleanup rules and file cleanup/organization.
+
+Execution time is as fast as ✈️ compared with ordinary cleanup software on the market.
+
+__Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) and their branch managers__
+
+
 
    # Installation?
 
@@ -24,13 +32,10 @@ bash build.sh
 Flash **ClearBox_en_US.zip**
 
 
-   # What is **ClearBox**?
 
-**ClearBox** is a deep & fast cleanup module that can one-click delete all software caches, installation packages, compressed archives, junk files, and empty folders for your device, block cache, file classification, prevent software updates/installations, and perform periodic optimization/cleanup & file classification (no background). It supports adding custom cleanup rules and file cleanup/organization.
+>[!CAUTION]
+> The main branch currently differs significantly from Releases. General users are advised to download the Release version directly, while adventurous users can compile and experience it themselves (not recommended). The latest Release version does not yet support internationalization!
 
-Execution time is as fast as ✈️ compared with ordinary cleanup software on the market.
-
-__Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) and their branch managers__
 
 
    ## How to use:
@@ -39,13 +44,13 @@ __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch*
 
 > ：Enable the terminal **UI** feature by typing **`ClearBox`** in any terminal
 
+
+
    ## Brief functions:
    
 ### **1**：One-click optimization & cleanup
 
 Perform fast one-click optimization/cleanup, the effect is equivalent to periodic optimization. Including cache cleanup, junk cleanup, fast disk **GC**, etc. According to module settings, file cleanup/organization can also be run
-
-
 
 
 
@@ -61,21 +66,15 @@ One file/directory path per line. If you have specified the initial path, you ca
 
 
 
-
-
 ### **3**：Clear junk files & empty folders
 
 Clean internal/external storage empty folders, multimedia cache, software cache, etc.
 
 
 
-
-
 ### **4**：Clear all software cache
 
 As the name suggests, supports **SD** expansion card software cache cleanup
-
-
 
 
 
@@ -92,8 +91,6 @@ Configuration way：Create a **conf** document file in the configuration directo
 The software/terminal cleanup page will be dynamically built according to the configuration file
 
 Scope：file cleanup, and the file classification mentioned later
-
-
 
 
 
@@ -119,13 +116,9 @@ The module will automatically check some configuration errors
 
 
 
-
-
 ### **7**：Clear system cache
 
 Clear system software cache, system cache, and also clear **MTP** host data (can solve **MTP** file transfer file list display abnormality)
-
-
 
 
 
@@ -134,19 +127,13 @@ Feature automation, driven by the **Timed** component for execution (ultra-low o
 
 
 
-
-
 ### **9**：Block All Software Update Installations
 As the name implies, file system-level forced blocking of software installations
 
 
 
-
-
 ### **10**：Internal Storage Fix Function
 As the name implies, locks the internal storage root directory layout to prevent various applications from randomly creating files/folders
-
-
 
 
 
@@ -167,13 +154,9 @@ If some software is abnormal, please add it to the whitelist yourself!
 
 
 
-
-
 ### **12**：Magnet (one-click file classification
 
 One-click classify internal/multi-external storage files, rules shared with file cleanup
-
-
 
 
 
@@ -197,10 +180,7 @@ Custom compilation mode：This mode supports manually specifying the compilation
 
 
 
-
-
 > The module **ClearBox App** is made using the [**Kr-Script**](https://github.com/helloklf/kr-scripts) project, thanks to the project
-
 
 > For module beta, please go to
 >[**ClearBox**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
