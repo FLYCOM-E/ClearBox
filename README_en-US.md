@@ -38,7 +38,7 @@ Flash **ClearBox_en_US.zip**
 
 
 
-   ## How to use:
+   # How to use:
 
 > ：Install and use the module **ClearBox** app (asked during module installation
 
@@ -46,15 +46,15 @@ Flash **ClearBox_en_US.zip**
 
 
 
-   ## Brief functions:
+   # Brief functions:
    
-### **1**：One-click optimization & cleanup
+## **1**：One-click optimization & cleanup
 
 Perform fast one-click optimization/cleanup, the effect is equivalent to periodic optimization. Including cache cleanup, junk cleanup, fast disk **GC**, etc. According to module settings, file cleanup/organization can also be run
 
 
 
-### **2**：Clean/Kill custom directories
+## **2**：Clean/Kill custom directories
 
 This function is rule-based cleanup. You can add cleanup rules yourself in the **`/data/adb/wipe_cache/清理配置/`** directory.
 
@@ -66,19 +66,19 @@ One file/directory path per line. If you have specified the initial path, you ca
 
 
 
-### **3**：Clear junk files & empty folders
+## **3**：Clear junk files & empty folders
 
 Clean internal/external storage empty folders, multimedia cache, software cache, etc.
 
 
 
-### **4**：Clear all software cache
+## **4**：Clear all software cache
 
 As the name suggests, supports **SD** expansion card software cache cleanup
 
 
 
-### **5**：Deep file cleanup
+## **5**：Deep file cleanup
 
 File cleanup function, comes with some cleanup configurations, supports custom file format configuration.
 
@@ -94,7 +94,7 @@ Scope：file cleanup, and the file classification mentioned later
 
 
 
-### **6**：Software rule cleanup
+## **6**：Software rule cleanup
 
 One of the rule cleanup functions, used to clean the internal private directory of software according to rules
 
@@ -116,28 +116,28 @@ The module will automatically check some configuration errors
 
 
 
-### **7**：Clear system cache
+## **7**：Clear system cache
 
 Clear system software cache, system cache, and also clear **MTP** host data (can solve **MTP** file transfer file list display abnormality)
 
 
 
-### **8**：Automatic Cleaning
+## **8**：Automatic Cleaning
 Feature automation, driven by the **Timed** component for execution (ultra-low overhead).
 
 
 
-### **9**：Block All Software Update Installations
+## **9**：Block All Software Update Installations
 As the name implies, file system-level forced blocking of software installations
 
 
 
-### **10**：Internal Storage Fix Function
+## **10**：Internal Storage Fix Function
 As the name implies, locks the internal storage root directory layout to prevent various applications from randomly creating files/folders
 
 
 
-### **11**：Block cache function
+## **11**：Block cache function
 This is an important function of the module, used to dynamically block foreground software from generating cache.
 
 After turning on this function and restarting to activate, it will automatically cache the latest 5 foreground software and block cache. You can customize and add a whitelist.
@@ -154,13 +154,13 @@ If some software is abnormal, please add it to the whitelist yourself!
 
 
 
-### **12**：Magnet (one-click file classification
+## **12**：Magnet (one-click file classification
 
 One-click classify internal/multi-external storage files, rules shared with file cleanup
 
 
 
-### **13**：Disk & software optimization
+## **13**：Disk & software optimization
 
 This is an optimization function set, including disk optimization ( **f2fs-GC** ) and **Dexoat** (software pre-compilation) functions
 
