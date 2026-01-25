@@ -32,6 +32,7 @@
 #define L_SCD_GETAPP_ERR_EXIT " » Process has exited, reason: GETTOPAPP ERROR\n"
 
 // For Timed
+#define L_TD_CONFIG_ERROR " » %s configuration error, Skip.\n"
 #define L_TD_LINE_ERR_VALUE " » %s configuration: line %d %s corresponding value error. Skipped this configuration\n"
 #define L_TD_LINE_ERR_KEY " » %s configuration: line %d %s undefined error. Ignored this line\n"
 #define L_TD_MAX_CONFIG " » Reached configuration loading limit %d. Skipped more configurations\n"

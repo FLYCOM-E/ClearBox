@@ -94,6 +94,7 @@ int main(int argc, char * argv[])
             else
             {
                 int line_count = 0; // 行计数
+                int time_ = 0, date_ = 0, run_ = 0; // 记录是否解析标志位
                 char line[CONFIG_LINE_MAX_LEN] = {0};
                 
                 FILE * config_fp = fopen(path, "r");
@@ -110,25 +111,42 @@ int main(int argc, char * argv[])
                     // 提取名称/值并匹配读入结构体
                     char * key = strtok(line, "=");
                     char * value = strtok(NULL, "=");
+                    
+                    // 这里仅检查 VALUE，但其实有检查 KEY 的作用
                     if (value == NULL)
                     {
                         fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
-                        fclose(config_fp);
-                        break;
+                        continue;
                     }
+                    
+                    // Case
                     if (strcmp(key, "time") == 0)
                     {
-                        config[read_config].time_num = atoi(strtok(value, "/"));
+                        char * time_str = strtok(value, "/");
                         char * unit_str = strtok(NULL, "/");
-                        config[read_config].time_unit = unit_str[0];
+                        if (time_str && unit_str)
+                        {
+                            config[read_config].time_num = atoi(time_str);
+                            config[read_config].time_unit = unit_str[0];
+                        }
+                        else
+                        {
+                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                            continue;
+                        }
+                        time_ = 1;
                     }
                     else if (strcmp(key, "date") == 0)
                     {
+                        // 这里不做检查，如果为错值 atol 会返回 0
                         config[read_config].old_time = (time_t)atol(value);
+                        date_ = 1;
                     }
                     else if (strcmp(key, "run") == 0)
                     {
+                        // 不检查，其实也不好检查
                         snprintf(config[read_config].run, sizeof(config[read_config].run), "%s", value);
+                        run_ = 1;
                     }
                     else
                     {
@@ -137,8 +155,17 @@ int main(int argc, char * argv[])
                 }
                 fclose(config_fp);
                 
+                if (time_ != 1 ||
+                    date_ != 1 ||
+                    run_ != 1)
+                {
+                    fprintf(stderr, L_TD_CONFIG_ERROR, entry -> d_name);
+                    continue; // 跳过，read_config不自增，后面解析配置覆盖
+                }
+                
                 // 保留配置名称
                 snprintf(config[read_config].config_name, sizeof(config[read_config].config_name), "%s", entry -> d_name);
+                
                 read_config += 1;
                 if (read_config == MAX_CONFIG) // 限制配置数量
                 {
