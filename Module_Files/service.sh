@@ -3,8 +3,6 @@
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
 export home_dir=${0%/*}
-######
-exec 2>/dev/null
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
 set=0
@@ -84,6 +82,11 @@ if [ -f "$work_dir/LOG.log" ]; then
 fi
 # Start Log
 echo "====== ReStart Time $(date) ======" > "$work_dir/LOG.log"
+if [ "$first_stage" = 1 ]; then
+    exec 2>/dev/null
+else
+    exec 2>"$work_dir/LOG.log"
+fi
 # Chmod 700
 chmod -R 700 "$home_dir/"
 chmod -R 700 "$work_dir/"

@@ -32,6 +32,7 @@
 #define L_SCD_GETAPP_ERR_EXIT " » 进程已退出，原因：GETTOPAPP ERROR\n"
 
 // For Timed
+#define L_TD_CONFIG_ERROR " » %s 配置错误，Skip.\n"
 #define L_TD_LINE_ERR_VALUE " » %s 配置：%d 行 %s 对应值错误。已跳过该配置\n"
 #define L_TD_LINE_ERR_KEY " » %s 配置：%d 行 %s 未定义错误。已忽略该行\n"
 #define L_TD_MAX_CONFIG " » 已达到加载配置数量限制 %d。已跳过更多配置\n"
