@@ -1,0 +1,70 @@
+name: Building modules
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_level:
+        description: 'Android API Level'
+        required: false
+        default: '21'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'README_en-US.md'
+      - 'README_zh-TW.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [aarch64, armv7a, x86_64, i686]
+        language: [en_US, zh_TW]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26b
+          add-to-path: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip make
+
+      - name: Build ${{ matrix.language }} - ${{ matrix.target }}
+        run: |
+          chmod +x *
+          export NDK=${{ steps.setup-ndk.outputs.ndk-path }}
+          export M_API=${{ github.event.inputs.api_level || '21' }}
+          export M_LANG=${{ matrix.language }}
+          export M_TARGET=${{ matrix.target }}
+          echo "Building: Language=$M_LANG, Target=$M_TARGET, API=$M_API"
+          bash build.sh
+
+      - name: Extract module contents
+        run: |
+          mkdir -p output
+          for file in *.zip; do
+            if [ -f "$file" ]; then
+              unzip -o "$file" -d output/
+              echo "Extracted: $file"
+            fi
+          done
+          ls -la output/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClearBox-${{ matrix.language }}-${{ matrix.target }}
+          path: output/*
+          if-no-files-found: error
