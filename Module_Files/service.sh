@@ -83,9 +83,7 @@ fi
 # Start Log
 echo "====== ReStart Time $(date) ======" > "$work_dir/LOG.log"
 if [ "$first_stage" = 1 ]; then
-    exec 2>/dev/null
-else
-    exec 2>"$work_dir/LOG.log"
+    exec 2>>"$work_dir/LOG.log"
 fi
 # Chmod 700
 chmod -R 700 "$home_dir/"

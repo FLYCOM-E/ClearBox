@@ -33,11 +33,13 @@
 
 // For Timed
 #define L_TD_CONFIG_ERROR " » %s configuration error, Skip.\n"
-#define L_TD_LINE_ERR_VALUE " » %s configuration: line %d %s corresponding value error. Skipped this configuration\n"
+#define L_TD_LINE_ERR_VALUE " » %s configuration: line %d %s corresponding value error. Ignored this line\n"
 #define L_TD_LINE_ERR_KEY " » %s configuration: line %d %s undefined error. Ignored this line\n"
 #define L_TD_MAX_CONFIG " » Reached configuration loading limit %d. Skipped more configurations\n"
 #define L_TD_CONFIG_SUCCESS " » %s configuration loaded successfully\n"
 #define L_TD_START_SUCCESS " » Service started successfully！A total of %d configurations loaded！\n"
+#define L_TD_W_POST_TITLE_TOOLONG " » Warning: %s configuration notification title length exceeds limit！Truncated\n"
+#define L_TD_W_POST_MESSAGE_TOOLONG " » Warning: %s configuration notification message length exceeds limit！Truncated\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » Cleaning %s &\n"

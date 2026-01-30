@@ -7,6 +7,8 @@
 #define CONFIG_LINE_MAX_LEN 512
 #define MAX_COMMAND_LEN 1024
 #define MAX_COMMAND_ARGS 32
+#define MAX_TITLE_LEN 128
+#define MAX_MESSAGE_LEN 512
 #define SERVER_NAME "ClearBox Timed"
 
 static int Running(char * command);
@@ -18,6 +20,10 @@ struct config_file
     int time_num;
     // for date
     time_t old_time;
+    // For post
+    int post;
+    char title[MAX_TITLE_LEN];
+    char message[MAX_MESSAGE_LEN];
     // other
     char run[MAX_COMMAND_LEN];
     char config_name[MAX_CONFIG_NAME];
@@ -148,6 +154,30 @@ int main(int argc, char * argv[])
                         snprintf(config[read_config].run, sizeof(config[read_config].run), "%s", value);
                         run_ = 1;
                     }
+                    else if (strcmp(key, "post") == 0)
+                    {
+                        char * title = strtok(value, "/");
+                        char * message = strtok(NULL, "/");
+                        if (title && message)
+                        {
+                            if (strlen(title) > MAX_TITLE_LEN)
+                            {
+                                fprintf(stderr, L_TD_W_POST_TITLE_TOOLONG, entry -> d_name);
+                            }
+                            if (strlen(message) > MAX_MESSAGE_LEN)
+                            {
+                                fprintf(stderr, L_TD_W_POST_MESSAGE_TOOLONG, entry -> d_name);
+                            }
+                            snprintf(config[read_config].title, sizeof(config[read_config].title), "%s", title);
+                            snprintf(config[read_config].message, sizeof(config[read_config].message), "%s", message);
+                            config[read_config].post = 1;
+                        }
+                        else
+                        {
+                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                            continue;
+                        }
+                    }
                     else
                     {
                         fprintf(stderr, L_TD_LINE_ERR_KEY, entry -> d_name, line_count, key);
@@ -229,7 +259,7 @@ int main(int argc, char * argv[])
             {
                 case 'D':
                     // day
-                    if ((now_time.tm_mday - old_time.tm_mday) > config[i].time_num ||
+                    if ((now_time.tm_mday - old_time.tm_mday) >= config[i].time_num ||
                        now_time.tm_mon != old_time.tm_mon ||
                        now_time.tm_year != old_time.tm_year)
                     {
@@ -243,7 +273,7 @@ int main(int argc, char * argv[])
                     break;
                 case 'H':
                     // hour
-                    if ((now_time.tm_hour - old_time.tm_hour) > config[i].time_num ||
+                    if ((now_time.tm_hour - old_time.tm_hour) >= config[i].time_num ||
                        now_time.tm_mday != old_time.tm_mday)
                     {
                         run = 1;
@@ -251,7 +281,7 @@ int main(int argc, char * argv[])
                     break;
                 case 'M':
                     // minute
-                    if ((now_time.tm_min - old_time.tm_min) > config[i].time_num ||
+                    if ((now_time.tm_min - old_time.tm_min) >= config[i].time_num ||
                        now_time.tm_hour != old_time.tm_hour)
                     {
                         run = 1;
@@ -263,6 +293,11 @@ int main(int argc, char * argv[])
             if (run == 1) // 执行并更新
             {
                 Running(config[i].run);
+                // 如果有设置通知则发送
+                if (config[i].post == 1)
+                {
+                    post(config[i].title, config[i].message);
+                }
                 
                 config[i].old_time = time_tm;
                 char config_file[strlen(argv[1]) + strlen(config[i].config_name) + 2];
@@ -275,14 +310,30 @@ int main(int argc, char * argv[])
                     FILE * config_file_fp = fopen(config_file, "w");
                     if (config_file_fp)
                     {
-                        fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s",
-                                // time
-                                config[i].time_num, config[i].time_unit,
-                                // date
-                                config[i].old_time,
-                                // run
-                                config[i].run
-                              );
+                        if (config[i].post == 1)
+                        {
+                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s\npost=%s/%s",
+                                    // time
+                                    config[i].time_num, config[i].time_unit,
+                                    // date
+                                    config[i].old_time,
+                                    // run
+                                    config[i].run,
+                                    // post
+                                    config[i].title, config[i].message
+                                  );
+                        }
+                        else
+                        {
+                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s",
+                                    // time
+                                    config[i].time_num, config[i].time_unit,
+                                    // date
+                                    config[i].old_time,
+                                    // run
+                                    config[i].run
+                                  );
+                        }
                         fclose(config_file_fp);
                     }
                 }

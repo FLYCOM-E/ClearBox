@@ -33,11 +33,13 @@
 
 // For Timed
 #define L_TD_CONFIG_ERROR " » %s 配置错误，Skip.\n"
-#define L_TD_LINE_ERR_VALUE " » %s 配置：%d 行 %s 对应值错误。已跳过该配置\n"
+#define L_TD_LINE_ERR_VALUE " » %s 配置：%d 行 %s 对应值错误。已忽略该行\n"
 #define L_TD_LINE_ERR_KEY " » %s 配置：%d 行 %s 未定义错误。已忽略该行\n"
 #define L_TD_MAX_CONFIG " » 已达到加载配置数量限制 %d。已跳过更多配置\n"
 #define L_TD_CONFIG_SUCCESS " » %s 配置加载成功\n"
 #define L_TD_START_SUCCESS " » 服务启动成功！共加载 %d 个配置！\n"
+#define L_TD_W_POST_TITLE_TOOLONG " » 警告：%s 配置通知标题长度超过限制！已截断\n"
+#define L_TD_W_POST_MESSAGE_TOOLONG " » 警告：%s 配置通知内容长度超过限制！已截断\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » 清理 %s &\n"
