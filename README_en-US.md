@@ -123,7 +123,36 @@ Clear system software cache, system cache, and also clear **MTP** host data (can
 
 
 ## **8**：Automatic Cleaning
+
 Feature automation, driven by the **Timed** component for execution (ultra-low overhead).
+
+** Did You Know? **
+
+You can use this module's **Timed** feature to run custom tasks! Please configure as follows:
+
+Configuration directory：**`/data/adb/wipe_cache/TimedConfig`**
+
+Create a custom name **.conf** file in this directory, fill in and modify the following three lines：
+
+```conf
+time=time/unit (currently supports M/minutes, H/hours, D/days)
+date=0
+run=program to run and parameters(note: parameters like 「"", ''」are currently not supported and will be incorrectly parsed)
+```
+
+Example：
+
+```conf
+time=1/H
+date=0
+run=/system/bin/true
+```
+
+The above configuration will run the **`/system/bin/true`** command once every hour.
+
+After filling and saving, you need to manually execute **Make Current Configuration Effective Immediately** or **Restart** for **the task to take effect!**
+
+Note：Not suitable for time-precise tasks. Daily tasks will only run between 0-6 AM！
 
 
 
