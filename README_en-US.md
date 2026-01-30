@@ -126,7 +126,7 @@ Clear system software cache, system cache, and also clear **MTP** host data (can
 
 Feature automation, driven by the **Timed** component for execution (ultra-low overhead).
 
-** Did You Know? **
+•** Did You Know? **
 
 You can use this module's **Timed** feature to run custom tasks! Please configure as follows:
 
