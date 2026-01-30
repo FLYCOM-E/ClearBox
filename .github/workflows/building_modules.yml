@@ -7,13 +7,20 @@ on:
         description: 'Android API Level'
         required: false
         default: '21'
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
-      - 'README_en-US.md'
-      - 'README_zh-TW.md'
+      
+      ndk_version:
+        description: 'NDK Version'
+        required: false
+        default: 'r27b'
+    
+    push:
+      branches:
+        - main
+      
+      paths-ignore:
+        - 'README.md'
+        - 'README_en-US.md'
+        - 'README_zh-TW.md'
 
 jobs:
   build:
@@ -28,19 +35,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Setup NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r27b
+          ndk-version: ${{ github.event.inputs.ndk_version || 'r27b' }}
           add-to-path: true
-
+      
+      - name: Cache NDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.setup-ndk.outputs.ndk-path }}
+          key: ndk-${{ github.event.inputs.ndk_version || 'r27b' }}-${{ runner.os }}
+          restore-keys: |
+            ndk-${{ github.event.inputs.ndk_version || 'r27b' }}-${{ runner.os }}
+            ndk-
+      
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y zip make
-
+      
       - name: Build ${{ matrix.language }} - ${{ matrix.target }}
         run: |
           chmod +x *
@@ -50,18 +66,18 @@ jobs:
           export M_TARGET=${{ matrix.target }}
           echo "Building: Language=$M_LANG, Target=$M_TARGET, API=$M_API"
           bash build.sh
-
+      
       - name: Extract module contents
         run: |
           mkdir -p output
           for file in *.zip; do
-            if [ -f "$file" ]; then
-              unzip -o "$file" -d output/
-              echo "Extracted: $file"
-            fi
+              if [ -f "$file" ]; then
+                  unzip -o "$file" -d output/
+                  echo "Extracted: $file"
+              fi
           done
           ls -la output/
-
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
