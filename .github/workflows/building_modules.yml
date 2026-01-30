@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         target: [aarch64, armv7a, x86_64, i686]
-        language: [en_US, zh_TW]
+        language: [zh_CN, en_US, zh_TW]
     
     steps:
       - name: Checkout repository
@@ -33,7 +33,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r26b
+          ndk-version: r27b
           add-to-path: true
 
       - name: Install dependencies
