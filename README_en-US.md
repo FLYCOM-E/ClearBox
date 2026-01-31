@@ -138,6 +138,7 @@ Create a custom name **.conf** file in this directory, fill in and modify the fo
 time=time/unit (currently supports M/minutes, H/hours, D/days)
 date=0
 run=program to run and parameters(note: parameters like 「"", ''」are currently not supported and will be incorrectly parsed)
+post=Notification Title/Notification Message (Send notification. This is an optional parameter, not recommended for minute-level tasks)
 ```
 
 Example：
@@ -146,9 +147,10 @@ Example：
 time=1/H
 date=0
 run=/system/bin/true
+post=Test Run/Has run "/system/bin/true"
 ```
 
-The above configuration will run the **`/system/bin/true`** command once every hour.
+The above configuration will run the **`/system/bin/true`** command once every hour and send a notification
 
 After filling and saving, you need to manually execute **Make Current Configuration Effective Immediately** or **Restart** for **the task to take effect!**
 
