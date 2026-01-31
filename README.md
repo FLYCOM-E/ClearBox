@@ -19,7 +19,7 @@ __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
    # 安装？
 
-   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) 或 构建安装：
+   ## [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手动构建：
 ``` shell
 #(请配置NDK并设置变量$NDK为NDK根目录路径)
 

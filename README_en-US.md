@@ -14,7 +14,7 @@ __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch*
 
    # Installation?
 
-   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) or Build from source:
+   ## [**Release Version**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI Build**](https://github.com/FLYCOM-E/ClearBox/actions) or Manual Build：
 ``` shell
 #(Please configure the NDK and set the variable $NDK to the NDK root directory path)
 

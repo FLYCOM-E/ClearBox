@@ -14,7 +14,7 @@ __相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
    # 安裝？
 
-   ## [**Releases**](https://github.com/FLYCOM-E/ClearBox/releases) 或 自行建置安裝：
+   ## [**發行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI建構**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手動建構：
 ``` shell
 #(請先安裝並設定 NDK，將變數 $NDK 指向 NDK 根目錄)
 
