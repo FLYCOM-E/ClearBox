@@ -127,10 +127,11 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    /* 临时关闭一下Selinux
-    属实是没办法，后期可能写一下规则
-    否则测试莫名其妙的Selinux拦截还是太多
-    */
+    /*
+    // 临时关闭一下Selinux
+    // 属实是没办法，后期可能写一下规则
+    // 否则测试莫名其妙的Selinux拦截还是太多
+    
     int off_selinux = 0; // 状态记录
     char check_selinux[16] = "";
     FILE * check_selinux_fp = popen("getenforce", "r");
@@ -148,6 +149,7 @@ int main(int argc, char * argv[])
         }
         pclose(check_selinux_fp);
     }
+    */
     
     // 根据输入参数执行对应操作
     if (strcasecmp(argv[1], "ClearAll") == 0)
@@ -292,8 +294,11 @@ int main(int argc, char * argv[])
         fprintf(stderr, L_ARGS_FAILED_2);
     }
     
+    /*
     //ON the Selinux
     if (off_selinux == 1) system("setenforce 1");
+    */
+    
     return 0;
 }
 
