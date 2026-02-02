@@ -74,13 +74,13 @@ Clean internal/external storage empty folders, multimedia cache, software cache,
 
 ## **4**：Clear all software cache
 
-As the name suggests, supports **SD** expansion card software cache cleanup
+Clears third-party application caches, excluding system application caches. If you have enabled external storage cache cleaning, it will also clean external storage.
 
 
 
 ## **5**：Deep file cleanup
 
-File cleanup function, comes with some cleanup configurations, supports custom file format configuration.
+File cleaning function, comes with some cleaning configurations, supports custom file format configurations, and supports external storage.
 
 Configuration method:
 
@@ -159,16 +159,19 @@ Note：Not suitable for time-precise tasks. Daily tasks will only run between 0-
 
 
 ## **9**：Block All Software Update Installations
-As the name implies, file system-level forced blocking of software installations
+
+As the name implies, file system-level forced blocking of software installations, does not handle expanded storage, therefore if the software is installed on external storage, this item is invalid
 
 
 
 ## **10**：Internal Storage Fix Function
-As the name implies, locks the internal storage root directory layout to prevent various applications from randomly creating files/folders
+
+As the name implies, locks the internal storage root directory layout to prevent various applications from randomly creating files/folders, does not handle expanded storage
 
 
 
 ## **11**：Block cache function
+
 This is an important function of the module, used to dynamically block foreground software from generating cache.
 
 After turning on this function and restarting to activate, it will automatically cache the latest 5 foreground software and block cache. You can customize and add a whitelist.
@@ -180,6 +183,8 @@ Whitelist location： **`/data/adb/wipe_cache/whitelist.prop`** or add it in the
 Blocking cache will not clear the software cache, so the software cache will not be **0**, but will grow slowly. This avoids continuous small file erasure and only limits large cache generation
 
 Extremely low overhead, automatically delays execution when the screen is off
+
+External storage expansion only supports single card. If you have expanded multiple cards, expanded storage will not be processed
 
 If some software is abnormal, please add it to the whitelist yourself!
 

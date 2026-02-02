@@ -2,8 +2,6 @@
 #include "INCLUDE/BashCore.h"
 
 #define DATA_DIR "/data/app"
-#define MICRO_DIR "/mnt/expand/%s/app" //Max Size 100
-#define GET_SD_ID "ls /mnt/expand 2>/dev/null"
 #define STOP_INSTALL "%s/busybox chattr +i %s 2>/dev/null" //Max Size 60
 #define RESET_INSTALL "%s/busybox chattr -i %s 2>/dev/null" //Max Size 60
 #define SETPROP_STOP "sed -i 's/stopinstall=0/stopinstall=1/g' %s/settings.prop" //Max Size 126
@@ -96,20 +94,8 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    // Get SD Card ID
-    char micro_dir[256] = "", card_id[128] = "";
-    FILE * card_id_fp = popen(GET_SD_ID, "r");
-    if (card_id_fp)
-    {
-        fgets(card_id, sizeof(card_id), card_id_fp);
-        card_id[strcspn(card_id, "\n")] = 0;
-        snprintf(micro_dir, sizeof(micro_dir), MICRO_DIR, card_id);
-        pclose(card_id_fp);
-    }
-    
     // Stop & Reset
     char command_data[strlen(bin_dir) + strlen(DATA_DIR) + 64];
-    char command_micro[strlen(bin_dir) + strlen(micro_dir) + 64];
     
     if (strcasecmp(mode, "STOP") == 0)
     {
@@ -121,18 +107,6 @@ int main(int argc, char * argv[])
         else
         {
             fprintf(stderr, L_SI_OPEN_FAILED_STORAGE);
-        }
-        if (access(micro_dir, F_OK) == 0)
-        {
-            snprintf(command_micro, sizeof(command_micro), STOP_INSTALL, bin_dir, micro_dir);
-            if (system(command_micro) == 0)
-            {
-                printf(L_SI_OPEN_SUCCESSFUL_SD);
-            }
-            else
-            {
-                fprintf(stderr, L_SI_OPEN_FAILED_SD);
-            }
         }
         fflush(stdout);
     }
@@ -146,18 +120,6 @@ int main(int argc, char * argv[])
         else
         {
             fprintf(stderr, L_SI_OFF_FAILED_STORAGE);
-        }
-        if (access(micro_dir, F_OK) == 0)
-        {
-            snprintf(command_micro, sizeof(command_micro), RESET_INSTALL, bin_dir, micro_dir);
-            if (system(command_micro) == 0)
-            {
-                printf(L_SI_OFF_SUCCESSFUL_SD);
-            }
-            else
-            {
-                fprintf(stderr, L_SI_OFF_FAILED_SD);
-            }
         }
         fflush(stdout);
     }

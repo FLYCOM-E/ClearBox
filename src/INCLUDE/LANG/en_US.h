@@ -111,12 +111,8 @@
 // For StopInstall.c
 #define L_SI_OPEN_FAILED_STORAGE " » Failed to block updates in internal storage!\n"
 #define L_SI_OPEN_SUCCESSFUL_STORAGE " » Updates have been blocked in internal storage!\n"
-#define L_SI_OPEN_FAILED_SD " » Failed to block updates in external storage!\n"
-#define L_SI_OPEN_SUCCESSFUL_SD " » Updates have been blocked in external storage!\n"
 #define L_SI_OFF_FAILED_STORAGE " » Failed to disable update blocking in internal storage!\n"
 #define L_SI_OFF_SUCCESSFUL_STORAGE " » Update blocking has been disabled in internal storage!\n"
-#define L_SI_OFF_FAILED_SD " » Failed to disable update blocking in external storage!\n"
-#define L_SI_OFF_SUCCESSFUL_SD " » Update blocking has been disabled in external storage!\n"
 
 // For StopStorage.c
 #define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL " » Internal storage pinning has been enabled!\n"

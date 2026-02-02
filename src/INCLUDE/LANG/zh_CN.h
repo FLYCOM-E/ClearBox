@@ -111,12 +111,8 @@
 // For StopInstall.c
 #define L_SI_OPEN_FAILED_STORAGE " » 内部储存阻止更新失败！\n"
 #define L_SI_OPEN_SUCCESSFUL_STORAGE " » 内部储存已阻止更新！\n"
-#define L_SI_OPEN_FAILED_SD " » 外部储存阻止更新失败！\n"
-#define L_SI_OPEN_SUCCESSFUL_SD " » 外部储存已阻止更新！\n"
 #define L_SI_OFF_FAILED_STORAGE " » 内部储存关闭阻止更新失败！\n"
 #define L_SI_OFF_SUCCESSFUL_STORAGE " » 内部储存已关闭已阻止更新！\n"
-#define L_SI_OFF_FAILED_SD " » 外部储存关闭阻止更新失败！\n"
-#define L_SI_OFF_SUCCESSFUL_SD " » 外部储存已关闭阻止更新！\n"
 
 // For StopStorage.c
 #define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL " » 已开启内部储存固定！\n"
