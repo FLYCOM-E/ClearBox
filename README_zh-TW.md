@@ -2,13 +2,13 @@
 
 
 
-   # 什麼是 **ClearBox** ？
+# 什麼是 **ClearBox** ？
 
-**ClearBox** 是一個深度快速清理模組，可為您的裝置一鍵刪除所有軟體快取、安裝包、壓縮包、垃圾、空資料夾，阻止快取、檔案歸類，阻止軟體更新/安裝和定期最佳化/清理、檔案歸類功能（無後台），支援新增自訂清理規則和檔案清理/整理歸類
+**ClearBox** 是一個多功能、深度、快速的清理盒子，可為您的設備一鍵騰空空間、儲存整理、鎖定，軟體快取、安裝包、壓縮包、垃圾、空資料夾，壓制快取、文件歸類、清空，阻止軟體更新/安裝一網打盡，自動優化/清理、文件歸類功能，支持添加自定義清理規則和文件清理/整理歸類、白名單等各種規則，支持利用模組自動化系統添加自定義任務
 
-執行所用時間相對市面上普通清理軟體來說快如✈️
+執行所用時間相對市面上普通清理軟體來說快如✈️，自動化功能僅由一個極低佔用 **Timed** 負責，開銷可直接無視，無軟體後台進程，不強制綁定 App，支持完整功能終端 **TUI**
 
-__相容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其分支管理器__
+__兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其各種分支__
 
 
 

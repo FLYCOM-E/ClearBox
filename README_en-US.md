@@ -2,13 +2,13 @@
 
 
 
-   # What is **ClearBox**?
+# What is **ClearBox**?
 
-**ClearBox** is a deep & fast cleanup module that can one-click delete all software caches, installation packages, compressed archives, junk files, and empty folders for your device, block cache, file classification, prevent software updates/installations, and perform periodic optimization/cleanup & file classification (no background). It supports adding custom cleanup rules and file cleanup/organization.
+**ClearBox** is a multi-functional, deep, and fast cleaning tool that can quickly free up space on your device, organize storage, lock, clear software caches, installation packages, compressed files, junk files, empty folders, suppress cache, classify files, clear data, and prevent software updates/installs all in one go. It also supports automatic optimization/cleaning, file categorization features, and allows you to add custom cleaning rules, file cleaning/organization categorization, whitelists, and other rules. Additionally, it supports adding custom tasks via an automation system using modules.
 
-Execution time is as fast as ✈️ compared with ordinary cleanup software on the market.
+The execution time is much faster than regular cleaning software on the market, comparable to ✈️ speed. The automation function is only handled by a very low-usage **Timed**, so the overhead is negligible. No software background process is required, no forced app binding, and it supports full functionality through a terminal **TUI**.
 
-__Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) and their branch managers__
+__Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**](https://github.com/bmax121/APatch), [**KernelSU**](https://github.com/tiann/KernelSU), and their various forks__
 
 
 
