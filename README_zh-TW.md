@@ -216,8 +216,8 @@ post=Test Run/已執行「/system/bin/true」
 
 
 
-> 模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 專案製作而成，感謝該專案
+## 歡迎以任何形式參與開發、貢獻！
 
-> 模組內測請前往
->[**ClearBox**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
->[更多玩機交流](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
+模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 項目製作而成，感謝該項目
+
+模組內測請前往：[**YHChat**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)、[**Telegram**](https://t.me/+5B24xWktmGk3Zjk9)

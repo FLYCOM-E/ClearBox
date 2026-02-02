@@ -216,8 +216,8 @@ Custom compilation mode：This mode supports manually specifying the compilation
 
 
 
-> The module **ClearBox App** is made using the [**Kr-Script**](https://github.com/helloklf/kr-scripts) project, thanks to the project
+## Welcome to contribute and participate in development in any form!
 
-> For module beta, please go to
->[**ClearBox**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
->[More play-machine communication](https://yhfx.jwznb.com/share?key=TihFLlAj6ZJ9&ts=1740281856)
+The module **ClearBox App** is made using the [**Kr-Script**](https://github.com/helloklf/kr-scripts) project. Thanks to the project.
+
+For module beta testing, please visit: [**YHChat**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950), [**Telegram**](https://t.me/+5B24xWktmGk3Zjk9)
