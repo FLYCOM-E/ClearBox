@@ -3,12 +3,11 @@
 
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define WHITELIST "%s/ClearWhitelist.prop"
-#define GET_SDCARD_ID "ls /mnt/media_rw | grep .*- 2>/dev/null"
+#define CARD_HOME "/mnt/media_rw"
 #define STORAGES_DIR "/data/media/0" //Max Size 100
-#define SDCARD_DIR "/mnt/media_rw/%s" //Max Size 100
 
 static int DeleteAppCache(char * data_path, char * work_dir);
-static int StorageClean(char * storage_dir);
+static int StorageClean(char * storage_dir, int home);
 
 int main(int argc, char * argv[])
 {
@@ -59,29 +58,14 @@ int main(int argc, char * argv[])
     }
     
     int cleardisk = 0; // 是否清理外部储存
-    char sdcard_id[16] = "", // 外置SD名称
-         sdcard_dir[128] = "", // 外置SD完整路径
+    char sdcard_dir[128] = "", // 外置SD完整路径
          data_dir[128] = "", // 内部储存完整路径
          settings_file[strlen(work_dir) + 16], // 设置信息储存文件
          settings_file_line[64] = "";
     
-    // 获取外部储存名称（多储存暂不支持，后续...吧
-    FILE * sdcard_id_fp = popen(GET_SDCARD_ID, "r");
-    if (sdcard_id_fp)
-    {
-        fgets(sdcard_id, sizeof(sdcard_id), sdcard_id_fp);
-        pclose(sdcard_id_fp);
-        sdcard_id[strcspn(sdcard_id, "\n")] = 0;
-        if (strcmp(sdcard_id, "") == 0)
-        {
-            strcpy(sdcard_id, "(null)");
-        }
-    }
-    
     // 拼接路径
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
     snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
-    snprintf(sdcard_dir, sizeof(sdcard_dir), SDCARD_DIR, sdcard_id);
     
     // 打开设置信息文件并查找对应值
     FILE * settings_file_fp = fopen(settings_file, "r");
@@ -100,7 +84,7 @@ int main(int argc, char * argv[])
     
     // 处理内部储存
     DeleteAppCache(data_dir, work_dir);
-    int clean_count = StorageClean(data_dir);
+    int clean_count = StorageClean(data_dir, 1);
     if (clean_count == -1)
     {
         fprintf(stderr, L_SC_CLEAR_DIRTY_ERR);
@@ -112,25 +96,47 @@ int main(int argc, char * argv[])
     printf(L_SC_SUCCESSFUL_STORAGE);
     fflush(stdout);
     
-    if (cleardisk == 1) // 允许清理外部储存
+    if (cleardisk != 1) // 1 允许清理外部储存
     {
-        if (access(sdcard_dir, F_OK) == 0) // 外部储存存在则处理
-        {
-            DeleteAppCache(sdcard_dir, work_dir);
-            clean_count = StorageClean(sdcard_dir);
-            if (clean_count == -1)
-            {
-                fprintf(stderr, L_SC_CLEAR_DIRTY_ERR);
-            }
-            else
-            {
-                fprintf(stderr, L_SC_CLEAR_DIRTY, clean_count);
-                
-            }
-            printf(L_SC_SUCCESSFUL_SD, sdcard_id);
-            fflush(stdout);
-        }
+        return 0;
     }
+    
+    struct dirent * entry;
+    DIR * sdcard_id_dp = opendir(CARD_HOME);
+    if (sdcard_id_dp == NULL)
+    {
+        return 0;
+    }
+    while ((entry = readdir(sdcard_id_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+           strcmp(entry -> d_name, "..") == 0)
+        {
+            continue;
+        }
+        
+        snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
+        if (access(sdcard_dir, F_OK) != 0)
+        {
+            continue;
+        }
+        
+        // 调用函数（外部储存
+        DeleteAppCache(sdcard_dir, work_dir);
+        clean_count = StorageClean(sdcard_dir, 1);
+        if (clean_count == -1)
+        {
+            fprintf(stderr, L_SC_CLEAR_DIRTY_ERR);
+        }
+        else
+        {
+            fprintf(stderr, L_SC_CLEAR_DIRTY, clean_count);
+            
+        }
+        printf(L_SC_SUCCESSFUL_SD, entry -> d_name);
+        fflush(stdout);
+    }
+    closedir(sdcard_id_dp);
     
     return 0;
 }
@@ -211,10 +217,11 @@ static int DeleteAppCache(char * data_path, char * work_dir)
 递归清理函数
 接收：
     char * storage_dir 储存根目录
+    int home 如果外置储存根目录为空是否删除该根目录，默认使用1（跳过删除）
 返回：
     int 成功返回清理空文件夹/文件数量，失败返回-1
 */
-static int StorageClean(char * dir)
+static int StorageClean(char * dir, int home)
 {
     if (access(dir, F_OK) != 0)
     {
@@ -267,7 +274,7 @@ static int StorageClean(char * dir)
                     continue;
                 }
             }
-            count += StorageClean(path);
+            count += StorageClean(path, 0);
             if (access(path, F_OK) != 0) count_all--;
         }
         else
@@ -299,11 +306,14 @@ static int StorageClean(char * dir)
         
     }
     closedir(dir_dp);
-    if (count_all == 0)
+    if (home == 0)
     {
-        if (remove(dir) == 0)
+        if (count_all == 0)
         {
-            count++;
+            if (remove(dir) == 0)
+            {
+                count++;
+            }
         }
     }
     

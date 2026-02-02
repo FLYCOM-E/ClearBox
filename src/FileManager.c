@@ -7,9 +7,8 @@
 #define F_DIR_NAME "Documents"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置"
-#define GET_SDCARD_ID "ls /mnt/media_rw | grep .*- 2>/dev/null"
+#define CARD_HOME "/mnt/media_rw"
 #define STORAGES_DIR "/data/media/0" //Max Size 100
-#define SDCARD_DIR "/mnt/media_rw/%s" //Max Size 100
 
 static int ClearService(char * work_dir, char * storage_dir, char * config_name);
 static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
@@ -105,25 +104,11 @@ int main(int argc, char * argv[])
     int FileClear_Disk = 0, Fileall_Disk = 0;
     char data_dir[128] = "",
          sdcard_dir[128] = "",
-         sdcard_id[16] = "",
          settings_file[strlen(work_dir) + 16],
          settings_file_line[64] = "";
     
-    FILE * sdcard_id_fp = popen(GET_SDCARD_ID, "r");
-    if (sdcard_id_fp)
-    {
-        fgets(sdcard_id, sizeof(sdcard_id), sdcard_id_fp);
-        pclose(sdcard_id_fp);
-        sdcard_id[strcspn(sdcard_id, "\n")] = 0;
-        if (strcmp(sdcard_id, "") == 0)
-        {
-            strcpy(sdcard_id, "(null)");
-        }
-    }
-    
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
     snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
-    snprintf(sdcard_dir, sizeof(sdcard_dir), SDCARD_DIR, sdcard_id);
     
     // 打开设置信息文件并查找对应值
     FILE * settings_file_fp = fopen(settings_file, "r");
@@ -185,9 +170,27 @@ int main(int argc, char * argv[])
         }
     }
     
-    // 调用函数（外部储存
-    if (access(sdcard_dir, F_OK) == 0)
+    struct dirent * entry;
+    DIR * sdcard_id_dp = opendir(CARD_HOME);
+    if (sdcard_id_dp == NULL)
     {
+        return 0;
+    }
+    while ((entry = readdir(sdcard_id_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+           strcmp(entry -> d_name, "..") == 0)
+        {
+            continue;
+        }
+        
+        snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
+        if (access(sdcard_dir, F_OK) != 0)
+        {
+            continue;
+        }
+        
+        // 调用函数（外部储存
         if (ClearService(work_dir, sdcard_dir, config_name) == 0)
         {
             if (file_clear == 1)
@@ -210,8 +213,9 @@ int main(int argc, char * argv[])
                 fprintf(stderr, L_FM_ALL_FAILED_SD);
             }
         }
+        fflush(stdout);
     }
-    fflush(stdout);
+    closedir(sdcard_id_dp);
     
     return 0;
 }

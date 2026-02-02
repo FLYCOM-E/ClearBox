@@ -5,7 +5,7 @@
 #define DATA_DIR "/data/user" //Max Size 10
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
 #define SETTINGS_FILE "settings.prop" //Max Size 30
-#define GET_CARD_ID "ls /mnt/expand/ | cut -f1 -d ' ' 2>/dev/null"
+#define CARD_HOME "/mnt/expand"
 #define GET_APPLIST "cmd package list package -3 2>/dev/null"
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
@@ -74,22 +74,11 @@ int main(int argc, char * argv[])
     
     // Case The Mode
     if (strcmp(mode, "AppCache_3") == 0)
-    {
-        // micro_dir定义
-        char card_id[64] = "", micro_dir[128] = "";
-        FILE * card_id_fp = popen(GET_CARD_ID, "r");
-        if (card_id_fp)
-        {
-            fgets(card_id, sizeof(card_id), card_id_fp);
-            pclose(card_id_fp);
-            card_id[strcspn(card_id, "\n")] = 0;
-            snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", card_id);
-        }
-        
+    {       
         // whiteList定义
         char whitelist_file[strlen(work_dir) + 32];
         snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
-        
+         
         /* 
         读取：
         ClearCacheSize（缓存清理限制大小）
@@ -99,7 +88,7 @@ int main(int argc, char * argv[])
         char * value = NULL;
         int ClearCacheSize = 0, cleardisk = 0;
         char settings_file[strlen(work_dir) + 32], line[256] = "";
-        
+         
         snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
         FILE * settings_file_fp = fopen(settings_file, "r");
         if (settings_file_fp)
@@ -121,7 +110,7 @@ int main(int argc, char * argv[])
             }
             fclose(settings_file_fp);
         }
-        
+         
         //调用处理函数
         int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
         if (clear_size == -1)
@@ -132,22 +121,44 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_CC_CLEAR_SUCCESSFUL, clear_size);
         }
+        
         // cleardisk = 1：允许清理拓展SD缓存
-        if (cleardisk == 1)
+        if (cleardisk != 1)
         {
-            if (access(micro_dir, F_OK) == 0)
+            return 0;
+        }
+        // micro card
+        struct dirent * entry;
+        char micro_dir[512] = "";
+        DIR * card_id_dp = opendir(CARD_HOME);
+        if (card_id_dp == NULL)
+        {
+            return 0;
+        }
+        while ((entry = readdir(card_id_dp)))
+        {
+            if (strcmp(entry -> d_name, ".") == 0 ||
+               strcmp(entry -> d_name, "..") == 0)
             {
-                clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
-                if (clear_size == -1)
-                {
-                    fprintf(stderr, L_CC_CLEAR_FAILED_SD);
-                }
-                else
-                {
-                    fprintf(stderr, L_CC_CLEAR_SUCCESSFUL_SD, clear_size);
-                }
+                continue;
+            }
+            
+            snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", entry -> d_name);
+            if (access(micro_dir, F_OK) != 0)
+            {
+                continue;
+            }
+            clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
+            if (clear_size == -1)
+            {
+                fprintf(stderr, L_CC_CLEAR_FAILED_SD);
+            }
+            else
+            {
+                fprintf(stderr, L_CC_CLEAR_SUCCESSFUL_SD, clear_size);
             }
         }
+        closedir(card_id_dp);
     }
     else if (strcmp(mode, "AppCache_S") == 0)
     {
