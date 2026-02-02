@@ -156,20 +156,20 @@ int main(int argc, char * argv[])
                     }
                     else if (strcmp(key, "post") == 0)
                     {
+                        char * message = strchr(value, '/');
                         char * title = strtok(value, "/");
-                        char * message = strtok(NULL, "/");
                         if (title && message)
                         {
                             if (strlen(title) > MAX_TITLE_LEN)
                             {
                                 fprintf(stderr, L_TD_W_POST_TITLE_TOOLONG, entry -> d_name);
                             }
-                            if (strlen(message) > MAX_MESSAGE_LEN)
+                            if (strlen(message + 1) > MAX_MESSAGE_LEN)
                             {
                                 fprintf(stderr, L_TD_W_POST_MESSAGE_TOOLONG, entry -> d_name);
                             }
                             snprintf(config[read_config].title, sizeof(config[read_config].title), "%s", title);
-                            snprintf(config[read_config].message, sizeof(config[read_config].message), "%s", message);
+                            snprintf(config[read_config].message, sizeof(config[read_config].message), "%s", message + 1);
                             config[read_config].post = 1;
                         }
                         else

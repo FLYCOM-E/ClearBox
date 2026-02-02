@@ -152,6 +152,8 @@ post=Test Run/Has run "/system/bin/true"
 
 The above configuration will run the **`/system/bin/true`** command once every hour and send a notification
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/ShutCut_1.png)
+
 After filling and saving, you need to manually execute **Make Current Configuration Effective Immediately** or **Restart** for **the task to take effect!**
 
 Note：Not suitable for time-precise tasks. Daily tasks will only run between 0-6 AM！

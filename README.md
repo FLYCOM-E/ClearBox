@@ -157,6 +157,8 @@ post=Test Run/已运行“/system/bin/true”
 
 以上配置会在每小时运行一次 **`/system/bin/true`** 命令，并发送一个通知
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/ShutCut_1.png)
+
 填写完后保存，您需要手动运行 **立即生效当前配置** 或 **重启** 后 **该任务才会生效！**
 
 注：不适用于时间精确任务，天级任务仅会在凌晨0~6点运行！
