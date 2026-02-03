@@ -227,4 +227,4 @@ post=Test Run/已运行“/system/bin/true”
 
 模块 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目
 
-模块内测请前往：[**YHChat**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)、[**Telegram**](https://t.me/+5B24xWktmGk3Zjk9)
+模块内测请前往：[**YHChat**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)、[**Telegram**](https://t.me/clearboxmodule)

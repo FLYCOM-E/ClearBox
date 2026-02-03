@@ -222,4 +222,4 @@ post=Test Run/已執行「/system/bin/true」
 
 模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 項目製作而成，感謝該項目
 
-模組內測請前往：[**YHChat**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)、[**Telegram**](https://t.me/+5B24xWktmGk3Zjk9)
+模組內測請前往：[**YHChat**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)、[**Telegram**](https://t.me/clearboxmodule)
