@@ -63,7 +63,7 @@ long s_remove(char * path, int all)
 返回：
     int 找到返回1，未找到返回0，失败返回-1
 */
-int whiteListCheck(char * whitelist_file, char * package)
+int whitelist_check(char * whitelist_file, char * package)
 {
     // 打开白名单文件并遍历查找包名
     int end = 0;
@@ -95,7 +95,7 @@ int whiteListCheck(char * whitelist_file, char * package)
 返回：
     long 大小，单位：字节（Byte）
 */
-long GetPathSize(char * path)
+long get_path_size(char * path)
 {
     if (access(path, F_OK) != 0)
     {
@@ -132,7 +132,7 @@ long GetPathSize(char * path)
         }
         if (S_ISDIR(file_stat.st_mode))
         {
-            size += GetPathSize(dir);
+            size += get_path_size(dir);
         }
         else
         {
@@ -158,13 +158,13 @@ int post(char * title, char * message)
     char rand_str[24] = {0};
     snprintf(rand_str, sizeof(rand_str), "%s-%d", title, rand());
     
-    pid_t newPid = fork();
-    if (newPid == -1)
+    pid_t new_pid = fork();
+    if (new_pid == -1)
     {
         printf("Post: Fork Error\n");
         return 1;
     }
-    if (newPid == 0)
+    if (new_pid == 0)
     {
         setuid(2000);
         execlp("cmd", "cmd", "notification", "post", "-t", title, rand_str, message, NULL);
@@ -173,7 +173,7 @@ int post(char * title, char * message)
     else
     {
         int end = 0;
-        if (waitpid(newPid, &end, 0) == -1)
+        if (waitpid(new_pid, &end, 0) == -1)
         {
             printf("Post: Wait Error\n");
             return 1;

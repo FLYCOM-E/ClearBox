@@ -190,7 +190,7 @@ static int DeleteAppCache(char * data_path, char * work_dir)
             continue;
         }
         // 白名单检查
-        if (whiteListCheck(whitelist_file, entry -> d_name) == 1)
+        if (whitelist_check(whitelist_file, entry -> d_name) == 1)
         {
             continue;
         }

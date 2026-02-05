@@ -10,7 +10,7 @@
 #define LOGPRINT __android_log_print
 #define SERVER_NAME "ClearBox StopCached"
 
-static int stopAppCache(char * dir, char * top_app,
+static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
                         char * bin_dir, int skip_reset
                        );
@@ -156,13 +156,13 @@ int main(int argc, char * argv[])
     }
     
     // 创建子进程脱离终端
-    pid_t PID = fork();
-    if (PID == -1)
+    pid_t new_pid = fork();
+    if (new_pid == -1)
     {
         post(SERVER_NAME, L_SERVER_START_ERR);
         return 1;
     }
-    else if (PID != 0)
+    else if (new_pid != 0)
     {
         exit(0);
     }
@@ -274,10 +274,10 @@ int main(int argc, char * argv[])
         // 调用处理函数，这里配合前面检查，skip_stop 为 1 则跳过
         if (skip_stop == 0)
         {
-            stopAppCache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+            set_app_cache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
             if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
             {
-                stopAppCache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+                set_app_cache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
             }
         }
         
@@ -300,7 +300,7 @@ int main(int argc, char * argv[])
     int 成功返回0，失败返回-1
     
 */
-static int stopAppCache(char * dir, char * top_app,
+static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
                         char * bin_dir, int skip_reset
                        )

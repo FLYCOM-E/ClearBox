@@ -244,12 +244,12 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
             }
             
             // 获取缓存大小（兆M）
-            cache_size = (int)(GetPathSize(app_cache_dir) / 1024 / 1024);
+            cache_size = (int)(get_path_size(app_cache_dir) / 1024 / 1024);
             // 比较大小，如果值小于缓存清理限制大小则跳过
             if (cache_size > ClearCacheSize)
             {
                 // 调用白名单检查函数，在清理白名单则跳过
-                if (whiteListCheck(whitelist_file, package_list[i] + 8) == 1)
+                if (whitelist_check(whitelist_file, package_list[i] + 8) == 1)
                 {
                     continue;
                 }

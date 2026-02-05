@@ -24,8 +24,8 @@
 #define LOG_FILE_NAME "LOG.log" //Max Size 30
 
 long s_remove(char * path, int all);
-int whiteListCheck(char * whitelist_file, char * package);
-long GetPathSize(char * path);
+int whitelist_check(char * whitelist_file, char * package);
+long get_path_size(char * path);
 int post(char * title, char * message);
 int write_log(char * config_dir, char * name_id, char * text);
 int set_name_space();

@@ -5,7 +5,7 @@
 #define DATA_DIR "/data/data" //Max Size 62
 #define CONFIG_DIR_NAME "清理规则"
 
-static int findPackageInProFile(char * package, char * config_file);
+static int find_package(char * package, char * config_file);
 
 int main(int argc, char * argv[])
 {
@@ -105,7 +105,7 @@ int main(int argc, char * argv[])
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_name -> d_name);
         
         // 这个函数目标是检查配置文件是否为目标配置文件
-        if (findPackageInProFile(app_package, config_file) != 1)
+        if (find_package(app_package, config_file) != 1)
         {
             continue;
         }
@@ -116,7 +116,7 @@ int main(int argc, char * argv[])
             closedir(config_dir_fp);
             continue;
             // 这里本来应直接退出，这是异常行为
-            // 因为 findPackageInProFile 函数不应返回 1
+            // 因为 find_package 函数不应返回 1
         }
         
         // 遍历配置文件
@@ -255,7 +255,7 @@ int main(int argc, char * argv[])
 返回：
     int 异常返回-1，找到返回1，未找到返回0
 */
-static int findPackageInProFile(char * package, char * config_file)
+static int find_package(char * package, char * config_file)
 {
     int end = 0;
     char config_len[MAX_PACKAGE + 64] = "";

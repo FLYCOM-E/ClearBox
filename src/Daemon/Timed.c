@@ -11,7 +11,7 @@
 #define MAX_MESSAGE_LEN 512
 #define SERVER_NAME "ClearBox Timed"
 
-static int Running(char * command);
+static int running(char * command);
 
 struct config_file
 {
@@ -219,13 +219,13 @@ int main(int argc, char * argv[])
     }
     
     // Daemon
-    pid_t pid = fork();
-    if (pid == -1)
+    pid_t new_pid = fork();
+    if (new_pid == -1)
     {
         fprintf(stderr, L_SERVER_START_ERR);
         return 1;
     }
-    if (pid != 0)
+    if (new_pid != 0)
     {
         exit(0);
     }
@@ -292,7 +292,7 @@ int main(int argc, char * argv[])
             }
             if (run == 1) // 执行并更新
             {
-                Running(config[i].run);
+                running(config[i].run);
                 // 如果有设置通知则发送
                 if (config[i].post == 1)
                 {
@@ -347,7 +347,7 @@ int main(int argc, char * argv[])
     }
 }
 
-static int Running(char * command)
+static int running(char * command)
 {
     // 解析命令参数
     char command_cope[MAX_COMMAND_LEN] = {0};
