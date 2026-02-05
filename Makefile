@@ -91,6 +91,6 @@ module_tar:
 	@cp APKS/ClearBox_$(M_LANG).apk $(home_dir)/ClearBox.apk
 	@mkdir -p $(home_dir)/语言包 && cp LANG_Configs/$(M_LANG).conf $(home_dir)/语言包/Local.conf
 	@cp $(home_dir)/module.prop ./module.prop.bak
-	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/update_$(M_TARGET).json" >> $(home_dir)/module.prop
+	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/$(M_LANG)/update_$(M_TARGET).json" >> $(home_dir)/module.prop
 	@cd $(home_dir) && zip -r ../ClearBox_$(M_TARGET)_$(M_API)_$(M_LANG).zip *
 	@mv ./module.prop.bak $(home_dir)/module.prop
