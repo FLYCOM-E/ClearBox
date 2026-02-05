@@ -135,10 +135,10 @@ Configuration directory：**`/data/adb/wipe_cache/TimedConfig`**
 Create a custom name **.conf** file in this directory, fill in and modify the following three lines：
 
 ```conf
-time=time/unit (currently supports M/minutes, H/hours, D/days)
+time=interval/time unit (currently supports M/minutes, H/hours, D/days)
 date=0
-run=program to run and parameters(note: parameters like 「"", ''」are currently not supported and will be incorrectly parsed)
-post=Notification Title/Notification Message (Send notification. This is an optional parameter, not recommended for minute-level tasks)
+run=program to run and parameters (note: parameters like 「"xxx xxx", 'xxx xxx'」are currently not supported, only space-separated parsing)
+post=notification title/notification message (send notification. This is an optional parameter, not recommended for minute-level tasks)
 ```
 
 Example：
@@ -146,11 +146,11 @@ Example：
 ```conf
 time=1/H
 date=0
-run=/system/bin/true
-post=Test Run/Has run "/system/bin/true"
+run=/system/bin/sync
+post=Test Run/Has run "/system/bin/sync"
 ```
 
-The above configuration will run the **`/system/bin/true`** command once every hour and send a notification
+The above configuration will run the **`/system/bin/sync`** command once every hour and send a notification
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/ShutCut_1.png)
 

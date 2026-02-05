@@ -140,9 +140,9 @@ bash build.sh
 在此目录下创建一个自定义名称 **.conf** 文件，填入并修改以下三行：
 
 ```conf
-time=时间/单位（目前支持M/分、H/时、D/天）
+time=间隔时间/时间单位（目前支持M/分、H/时、D/天）
 date=0
-run=要运行的程序及参数（注意暂不支持“"", ''”等参数形式，这会被错误解析）
+run=要运行的程序及参数（注意暂不支持“"xxx xxx", 'xxx xxx'”等，仅以空格分隔解析）
 post=通知标题/通知内容（发送通知。这是一个可选参数，不建议在分钟级任务加这个）
 ```
 
@@ -151,11 +151,11 @@ post=通知标题/通知内容（发送通知。这是一个可选参数，不�
 ```conf
 time=1/H
 date=0
-run=/system/bin/true
-post=Test Run/已运行“/system/bin/true”
+run=/system/bin/sync
+post=Test Run/已运行“/system/bin/sync”
 ```
 
-以上配置会在每小时运行一次 **`/system/bin/true`** 命令，并发送一个通知
+以上配置会在每小时运行一次 **`/system/bin/sync`** 命令，并发送一个通知
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/ShutCut_1.png)
 
