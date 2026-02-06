@@ -18,14 +18,14 @@ int main(int argc, char * argv[])
     char rand_str[24] = {0};
     snprintf(rand_str, sizeof(rand_str), "%s-%d", argv[1], rand());
     
-    pid_t newPid = fork();
-    if (newPid == -1)
+    pid_t new_pid = fork();
+    if (new_pid == -1)
     {
         fprintf(stderr, "Fork Error\n");
         return 1;
     }
     
-    if (newPid == 0)
+    if (new_pid == 0)
     {
         setuid(2000);
         execlp("cmd", "cmd", "notification", "post", "-t", argv[1], rand_str, argv[2], NULL);
@@ -34,7 +34,7 @@ int main(int argc, char * argv[])
     else
     {
         int end = 0;
-        if (waitpid(newPid, &end, 0) == -1)
+        if (waitpid(new_pid, &end, 0) == -1)
         {
             fprintf(stderr, "Wait Error\n");
             return 1;

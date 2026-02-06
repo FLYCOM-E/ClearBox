@@ -9,8 +9,8 @@
 #define GET_APPLIST "cmd package list package -3 2>/dev/null"
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
-static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize);
-static int ClearSystemCache();
+static int app_cache_clean(char * work_dir, char * whitelist_file, int ClearCacheSize);
+static int system_cache_clean();
 
 int main(int argc, char * argv[])
 {
@@ -103,16 +103,16 @@ int main(int argc, char * argv[])
                 {
                     ClearCacheSize = atoi(value);
                 }
-                else if (strcmp(key, "cleardisk") == 0)
+                else if (strcmp(key, "cleardisk=1") == 0)
                 {
-                    cleardisk = atoi(value);
+                    cleardisk = 1;
                 }
             }
             fclose(settings_file_fp);
         }
          
         //调用处理函数
-        int clear_size = wipeCache(DATA_DIR, whitelist_file, ClearCacheSize);
+        int clear_size = app_cache_clean(DATA_DIR, whitelist_file, ClearCacheSize);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
@@ -148,7 +148,7 @@ int main(int argc, char * argv[])
             {
                 continue;
             }
-            clear_size = wipeCache(micro_dir, whitelist_file, ClearCacheSize);
+            clear_size = app_cache_clean(micro_dir, whitelist_file, ClearCacheSize);
             if (clear_size == -1)
             {
                 fprintf(stderr, L_CC_CLEAR_FAILED_SD);
@@ -162,7 +162,7 @@ int main(int argc, char * argv[])
     }
     else if (strcmp(mode, "AppCache_S") == 0)
     {
-        return ClearSystemCache();
+        return system_cache_clean();
     }
     else
     {
@@ -183,7 +183,7 @@ int main(int argc, char * argv[])
 返回：
     int 清理垃圾大小（单位：兆M），失败返回-1
 */
-static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
+static int app_cache_clean(char * work_dir, char * whitelist_file, int ClearCacheSize)
 {
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
@@ -285,7 +285,7 @@ static int wipeCache(char * work_dir, char * whitelist_file, int ClearCacheSize)
 返回：
     int 成功返回0，失败返回-1
 */
-static int ClearSystemCache()
+static int system_cache_clean()
 {
     char app_cache_path[MAX_PACKAGE + 16],
          package_list_line[MAX_PACKAGE] = "";

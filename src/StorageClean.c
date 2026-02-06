@@ -6,7 +6,7 @@
 #define CARD_HOME "/mnt/media_rw"
 #define STORAGES_DIR "/data/media/0" //Max Size 100
 
-static int DeleteAppCache(char * data_path, char * work_dir);
+static int storage_cache_clean(char * data_path, char * work_dir);
 static int StorageClean(char * storage_dir, int home);
 
 int main(int argc, char * argv[])
@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
     }
     
     // 处理内部储存
-    DeleteAppCache(data_dir, work_dir);
+    storage_cache_clean(data_dir, work_dir);
     int clean_count = StorageClean(data_dir, 1);
     if (clean_count == -1)
     {
@@ -122,7 +122,7 @@ int main(int argc, char * argv[])
         }
         
         // 调用函数（外部储存
-        DeleteAppCache(sdcard_dir, work_dir);
+        storage_cache_clean(sdcard_dir, work_dir);
         clean_count = StorageClean(sdcard_dir, 1);
         if (clean_count == -1)
         {
@@ -149,7 +149,7 @@ int main(int argc, char * argv[])
 返回：
     int 成功返回0，失败返回1
 */
-static int DeleteAppCache(char * data_path, char * work_dir)
+static int storage_cache_clean(char * data_path, char * work_dir)
 {
     if (access(data_path, F_OK) != 0)
     {

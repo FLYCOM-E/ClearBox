@@ -10,8 +10,8 @@
 #define CARD_HOME "/mnt/media_rw"
 #define STORAGES_DIR "/data/media/0" //Max Size 100
 
-static int ClearService(char * work_dir, char * storage_dir, char * config_name);
-static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
+static int clear_service(char * work_dir, char * storage_dir, char * config_name);
+static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
 
 int file_clear = 0;
 
@@ -130,7 +130,7 @@ int main(int argc, char * argv[])
     }
     
     // 调用函数（内部储存
-    if (ClearService(work_dir, data_dir, config_name) == 0)
+    if (clear_service(work_dir, data_dir, config_name) == 0)
     {
         if (file_clear == 1)
         {
@@ -191,7 +191,7 @@ int main(int argc, char * argv[])
         }
         
         // 调用函数（外部储存
-        if (ClearService(work_dir, sdcard_dir, config_name) == 0)
+        if (clear_service(work_dir, sdcard_dir, config_name) == 0)
         {
             if (file_clear == 1)
             {
@@ -228,7 +228,7 @@ int main(int argc, char * argv[])
 返回：
     int 成功返回0，失败返回1
 */
-static int ClearService(char * work_dir, char * storage_dir, char * config_name)
+static int clear_service(char * work_dir, char * storage_dir, char * config_name)
 {   
     if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
     {
@@ -317,7 +317,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
             count++;
         }
         
-        all_count += FindFile(storage_dir, file_dir, file_args, count);
+        all_count += find_file(storage_dir, file_dir, file_args, count);
         fclose(config_file_fp);
         if (file_clear == 1)
         {
@@ -354,7 +354,7 @@ static int ClearService(char * work_dir, char * storage_dir, char * config_name)
 另：
     自动根据全局 file_clear 值 1 判断是否为文件清理模式
 */
-static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count)
+static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count)
 {
     if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)
     {
@@ -399,7 +399,7 @@ static int FindFile(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
         }
         if (S_ISDIR(file_stat.st_mode)) // 目录继续自调用递归
         {
-            file_count += FindFile(path, file_dir, args, count);
+            file_count += find_file(path, file_dir, args, count);
         }
         else // File
         {

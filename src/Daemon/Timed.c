@@ -370,12 +370,12 @@ static int running(char * command)
     args[MAX_COMMAND_ARGS - 1] = NULL;
     
     // 执行命令
-    pid_t newPid = fork();
-    if (newPid == -1)
+    pid_t new_pid = fork();
+    if (new_pid == -1)
     {
         return 1;
     }
-    if (newPid == 0)
+    if (new_pid == 0)
     {
         execvp(args[0], args);
         _exit(errno);

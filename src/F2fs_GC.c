@@ -1,17 +1,15 @@
 // 此Code来自ClearBox模块，用于运行紧急GC优化，原理来自 Coolapk@Amktiao，感谢大佬
 #include "INCLUDE/BashCore.h"
 
-#define getprop __system_property_get
 #define PROP "dev.mnt.dev.data"
-
 #define TIMEOUT 9
 #define SYSFS_PATH "/sys/fs/f2fs"
 #define SYSFS_FILE_NAME "gc_urgent" //Max Size 14
 #define SYSFS_DIRTY_FILE "dirty_segments" //Max Size 14
 #define SYSFS_FREE_FILE "free_segments" //Max Size 14
 
-static int F2FS_GC();
-static int IDLE_MAINT();
+static int f2fs_gc();
+static int fast_gc();
 static int get_f2fs_dirty(char * dirty_file);
 static int get_f2fs_free(char * free_file);
 
@@ -30,11 +28,11 @@ int main(int argc, char * argv[])
     
     if (strcasecmp(argv[1], "F2FS_GC") == 0)
     {
-        return F2FS_GC();
+        return f2fs_gc();
     }
     else if (strcasecmp(argv[1], "FAST_GC") == 0)
     {
-        return IDLE_MAINT();
+        return fast_gc();
     }
     else
     {
@@ -50,7 +48,7 @@ int main(int argc, char * argv[])
 返回：
     int 成功返回0，失败返回1
 */
-static int F2FS_GC()
+static int f2fs_gc()
 {
     // GetProp
     char sysfs_name[PROP_VALUE_MAX] = {0};
@@ -233,7 +231,7 @@ static int get_f2fs_free(char * free_file)
 }
 
 // 快速磁盘优化
-static int IDLE_MAINT()
+static int fast_gc()
 {
     if (system("sm idle-maint run >/dev/null") == 0)
     {

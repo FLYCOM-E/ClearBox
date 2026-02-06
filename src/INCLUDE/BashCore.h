@@ -22,6 +22,7 @@
 #define MAX_WORK_DIR_LEN 512
 #define MAX_BIN_DIR_LEN 512
 #define LOG_FILE_NAME "LOG.log" //Max Size 30
+#define getprop __system_property_get
 
 long s_remove(char * path, int all);
 int whitelist_check(char * whitelist_file, char * package);

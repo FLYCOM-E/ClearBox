@@ -1,8 +1,8 @@
 // 此Code来自ClearBox模块，用于运行DexOat
 #include "INCLUDE/BashCore.h"
 
-static int SystemDexOat();
-static int CustDexOat(char * mode);
+static int dexoat_system();
+static int dexoat_cust(char * mode);
 
 int main(int argc, char * argv[])
 {
@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
     
     if (strcasecmp(argv[1], "SYSTEM_DEXOAT") == 0)
     {
-        return SystemDexOat();
+        return dexoat_system();
     }
     else if (strcasecmp(argv[1], "FAST_DEXOAT") == 0)
     {
@@ -28,7 +28,7 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_ARGS_FAILED);
             return 1;
         }
-        return CustDexOat(argv[2]);
+        return dexoat_cust(argv[2]);
     }
     else
     {
@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
 }
 
 // 系统Dexoat
-static int SystemDexOat()
+static int dexoat_system()
 {
     fprintf(stderr, L_DO_RUN_SYSTEM);
     fflush(stdout);
@@ -48,7 +48,7 @@ static int SystemDexOat()
 }
 
 // 自定义模式Dexoat
-static int CustDexOat(char * mode)
+static int dexoat_cust(char * mode)
 {
     fprintf(stderr, L_DO_RUN_CUST, mode);
     fflush(stdout);
@@ -75,6 +75,5 @@ static int CustDexOat(char * mode)
             return 1;
         }
     }
-    
     return 0;
 }

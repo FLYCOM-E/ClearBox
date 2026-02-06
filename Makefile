@@ -28,8 +28,8 @@ ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/StorageRuleClean \
 			$(bin_dir)/StorageClean \
 			$(bin_dir)/F2fs_GC \
-			$(bin_dir)/StopInstall \
-			$(bin_dir)/StopStorage \
+			$(bin_dir)/SetInstall \
+			$(bin_dir)/SetStorage \
 			$(bin_dir)/FileManager \
 			$(bin_dir)/Post \
 			$(daemon_bin_dir)/StopCached \
@@ -69,11 +69,11 @@ $(bin_dir)/StorageClean: src/StorageClean.c
 $(bin_dir)/F2fs_GC: src/F2fs_GC.c
 	$(CC) $(CFLAGS) src/F2fs_GC.c -o $(bin_dir)/F2fs_GC
 
-$(bin_dir)/StopInstall: src/StopInstall.c
-	$(CC) $(CFLAGS) src/StopInstall.c -o $(bin_dir)/StopInstall
+$(bin_dir)/SetInstall: src/SetInstall.c
+	$(CC) $(CFLAGS) src/SetInstall.c -o $(bin_dir)/SetInstall
 
-$(bin_dir)/StopStorage: src/StopStorage.c
-	$(CC) $(CFLAGS) src/StopStorage.c -o $(bin_dir)/StopStorage
+$(bin_dir)/SetStorage: src/SetStorage.c
+	$(CC) $(CFLAGS) src/SetStorage.c -o $(bin_dir)/SetStorage
 
 $(bin_dir)/FileManager: src/FileManager.c
 	$(CC) $(CFLAGS) src/FileManager.c -o $(bin_dir)/FileManager
