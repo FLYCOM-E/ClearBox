@@ -268,11 +268,6 @@ int main(int argc, char * argv[])
         fprintf(stderr, L_ARGS_FAILED_2);
     }
     
-    /*
-    //ON the Selinux
-    if (off_selinux == 1) system("setenforce 1");
-    */
-    
     return 0;
 }
 
