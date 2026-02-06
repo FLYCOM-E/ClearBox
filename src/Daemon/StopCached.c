@@ -176,12 +176,18 @@ int main(int argc, char * argv[])
     
     /* 
     等待时间
+    深度休眠时间
     获取前台App失败次数
     最大获取前台App失败次数
+    空循环计数
+    深度休眠循环次数阀值
     */
     int cycle_time = 10,
+        deep_time = 60,
         get_error = 0,
-        max_get_error = 10;
+        max_get_error = 10,
+        empty_count = 0,
+        max_empty_count = 30;
     
     //Start the cycle
     for ( ; ; )
@@ -192,37 +198,50 @@ int main(int argc, char * argv[])
             post(SERVER_NAME, L_SCD_GETAPP_ERR_EXIT);
             break;
         }
+        if (empty_count >= max_empty_count)
+        {
+            // 减少唤醒
+            // App 不变则保持 deep_time
+            sleep(deep_time);
+        }
+        else
+        {
+            sleep(cycle_time);
+        }
         
-        //获取前台软件包名
+        // 获取前台软件包名
         char top_app[MAX_PACKAGE] = "";
         FILE * top_app_fp = popen(GET_TOPAPP, "r");
         if (top_app_fp == NULL)
         {
             get_error++;
-            sleep(5);
+            sleep(10); // 加上总循环共 >=20 秒额外等待
             continue;
         }
-        
-        // Get and Check
+        // 读取包名
         if (fgets(top_app, sizeof(top_app), top_app_fp) == NULL)
         {
-            sleep(cycle_time);
+            // 为 NULL 一般是屏幕关闭
+            empty_count++;
+            pclose(top_app_fp);
             continue;
         }
         else
         {
             get_error = 0;
             pclose(top_app_fp);
+            
             top_app[strcspn(top_app, "\n")] = 0;
             if (strcmp(top_app, top_app_list[0]) == 0)
             {
-                sleep(cycle_time);
+                empty_count++;
                 continue;
             }
+            else
+            {
+                empty_count = 0;
+            }
         }
-        
-        // Reset cycle*
-        cycle_time = 10;
         
         //更新当前包名记录
         snprintf(reset_app, sizeof(reset_app), "%s", top_app_list[4]);
@@ -280,10 +299,8 @@ int main(int argc, char * argv[])
                 set_app_cache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
             }
         }
-        
-        sleep(cycle_time); //能运行到这里渐进时间已经重置了，只是统一标准等待时间
+        // 循环返回 ===
     }
-    
     return 1;
 }
 

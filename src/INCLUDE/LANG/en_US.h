@@ -108,13 +108,13 @@
 // For FreeZer.c
 #define L_OPEN_FREEZER_SUCCESSFUL " » Android native tombstone has been opened (^^)\n"
 
-// For StopInstall.c
+// For SetInstall.c
 #define L_SI_OPEN_FAILED_STORAGE " » Failed to block updates in internal storage!\n"
 #define L_SI_OPEN_SUCCESSFUL_STORAGE " » Updates have been blocked in internal storage!\n"
 #define L_SI_OFF_FAILED_STORAGE " » Failed to disable update blocking in internal storage!\n"
 #define L_SI_OFF_SUCCESSFUL_STORAGE " » Update blocking has been disabled in internal storage!\n"
 
-// For StopStorage.c
+// For SetStorage.c
 #define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL " » Internal storage pinning has been enabled!\n"
 #define L_SS_OPEN_STOP_STORAGE_FAILED " » Failed to enable internal storage pinning!\n"
 #define L_SS_OFF_STOP_STORAGE_SUCCESSFUL " » Internal storage pinning has been disabled!\n"

@@ -108,13 +108,13 @@
 // For FreeZer.c
 #define L_OPEN_FREEZER_SUCCESSFUL " » 已開啟安卓原生墓碑 (^^)\n"
 
-// For StopInstall.c
+// For SetInstall.c
 #define L_SI_OPEN_FAILED_STORAGE " » 內部儲存阻止更新失敗！\n"
 #define L_SI_OPEN_SUCCESSFUL_STORAGE " » 內部儲存已阻止更新！\n"
 #define L_SI_OFF_FAILED_STORAGE " » 內部儲存關閉阻止更新失敗！\n"
 #define L_SI_OFF_SUCCESSFUL_STORAGE " » 內部儲存已關閉已阻止更新！\n"
 
-// For StopStorage.c
+// For SetStorage.c
 #define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL " » 已開啟內部儲存固定！\n"
 #define L_SS_OPEN_STOP_STORAGE_FAILED " » 開啟內部儲存固定失敗！\n"
 #define L_SS_OFF_STOP_STORAGE_SUCCESSFUL " » 已關閉內部儲存固定！\n"
