@@ -103,9 +103,9 @@ int main(int argc, char * argv[])
                 {
                     ClearCacheSize = atoi(value);
                 }
-                else if (strcmp(key, "cleardisk=1") == 0)
+                else if (strcmp(key, "cleardisk") == 0)
                 {
-                    cleardisk = 1;
+                    cleardisk = atoi(value);
                 }
             }
             fclose(settings_file_fp);

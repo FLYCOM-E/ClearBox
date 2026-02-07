@@ -128,12 +128,40 @@ int main(int argc, char * argv[])
     // 根据输入参数执行对应操作
     if (strcasecmp(argv[1], "ClearAll") == 0)
     {
-        app_cache_clean(home_dir, work_dir);
-        cust_rule_clean(home_dir, work_dir);
-        storage_clean(home_dir, work_dir);
+        pid_t pids[5];
+        for (int i = 0; i < 5; i++)
+        {
+            pids[i] = fork();
+            if (pids[i] == 0)
+            {
+                switch (i)
+                {
+                    case 0: 
+                        fast_gc(home_dir);
+                        break;
+                    case 1: 
+                        app_cache_clean(home_dir, work_dir);
+                        break;
+                    case 2: 
+                        storage_clean(home_dir, work_dir);
+                        break;
+                    case 3: 
+                        cust_rule_clean(home_dir, work_dir);
+                        break;
+                    case 4: 
+                        freezer_open(home_dir);
+                        break;
+                }
+                exit(0);
+            }
+        }
+        for (int i = 0; i < 5; i++)
+        {
+            waitpid(pids[i], NULL, 0);
+        }
+        
+        // 文件归类是高资源占用操作不并行
         file_all_auto(home_dir, work_dir);
-        fast_gc(home_dir);
-        freezer_open(home_dir);
         
         write_log(work_dir, SERVER_NAME, "优化清理");
     }
