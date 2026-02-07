@@ -18,6 +18,8 @@ else
     exec 2>>/dev/null
 fi
 Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
+Str_1=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d '=' | cut -f1 -d "|")
+Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 ######
 # 菜单函数
 md_menu()
@@ -828,8 +830,11 @@ case "$in_put" in
             echo -e "\033[92m   C      L     E_____    A A     R    R\033[0m"
             echo -e "\033[92m   C      L     E        A AAA    R  R\033[0m"
             echo -e "\033[92m     CCC  LLLL  EEEEEE  A     A   R    R\033[0m\n\n"
+            echo -e "\033[104m \t$Str_1\033[0m"
+            echo -e "\033[104m \t\t$Str_2\033[0m\n"
             echo -e "\033[93m \t1：GitHub\033[0m\n"
-            echo -e "\033[93m \t2：模块内测\033[0m\n"
+            echo -e "\033[93m \t2：内测-YHChat\033[0m\n"
+            echo -e "\033[93m \t3：内测-Telegram\033[0m\n"
             if [ "$DebugPro" = "1" ]; then
                 DebugTitle=$(echo -en "\033[91m 调试模式已打开 \033[0m")
                 echo -e "\t\t\t\t$DebugTitle"
@@ -847,6 +852,13 @@ case "$in_put" in
                   ;;
                 2)
                   if am start -a android.intent.action.VIEW -d "https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950" >>/dev/null; then
+                      echo " » 跳转成功！"
+                  else
+                      echo " » 跳转失败！"
+                  fi
+                  ;;
+                3)
+                  if am start -a android.intent.action.VIEW -d "https://t.me/clearboxmodule" >>/dev/null; then
                       echo " » 跳转成功！"
                   else
                       echo " » 跳转失败！"
