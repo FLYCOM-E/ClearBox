@@ -29,7 +29,7 @@ export M_TARGET=aarch64 #(可選 aarch64、armv7a、x86_64、i686)
 
 bash build.sh
 ```
-刷入 **ClearBox_zh_TW.zip**
+刷入 **ClearBox_*_zh_TW.zip**
 
 
 
@@ -152,7 +152,7 @@ post=Test Run/已執行 "/system/bin/sync"
 
 以上配置會在每小時執行一次 **`/system/bin/sync`** 指令，並發送一個通知
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/ShutCut_1.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/timed_notification.png)
 
 填寫完後儲存，您需要手動執行 **立即生效當前配置** 或 **重新啟動** 後 **該任務才會生效！**
 

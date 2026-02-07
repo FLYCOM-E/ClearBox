@@ -29,7 +29,7 @@ export M_TARGET=aarch64 #(Options: aarch64, armv7a, x86_64, i686)
 
 bash build.sh 
 ```
-Flash **ClearBox_en_US.zip**
+Flash **ClearBox_*_en_US.zip**
 
 
 
@@ -152,7 +152,7 @@ post=Test Run/Has run "/system/bin/sync"
 
 The above configuration will run the **`/system/bin/sync`** command once every hour and send a notification
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/ShutCut_1.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/timed_notification.png)
 
 After filling and saving, you need to manually execute **Make Current Configuration Effective Immediately** or **Restart** for **the task to take effect!**
 
