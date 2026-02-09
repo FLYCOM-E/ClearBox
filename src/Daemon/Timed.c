@@ -2,7 +2,7 @@
 #include "../INCLUDE/BashCore.h"
 
 #define WAIT_TIME 60
-#define MAX_CONFIG 64
+#define MAX_CONFIG 512
 #define MAX_CONFIG_NAME 256
 #define CONFIG_LINE_MAX_LEN 512
 #define MAX_COMMAND_LEN 1024
