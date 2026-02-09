@@ -23,6 +23,11 @@ elif [ -d "/data/adb/ap/bin" ]; then
     export bin_dir="/data/adb/ap/bin"
 elif [ -d "/data/adb/ksu/bin" ]; then
     export bin_dir="/data/adb/ksu/bin"
+else
+    # 这是一个回退方案，很明显一般系统不会带 busybox
+    # 以后可能会内置 chattr 指令集
+    ln -s /system/bin/toybox "$home_dir/bin/busybox"
+    export bin_dir="$home_dir/bin"
 fi
 mkdir -p "$work_dir"
 echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir/PATH"
@@ -81,7 +86,7 @@ if [ -f "$work_dir/LOG.log" ]; then
     mv "$work_dir/LOG.log" "$work_dir/LOG.log.bak"
 fi
 # Start Log
-echo "====== ReStart Time $(date) ======" > "$work_dir/LOG.log"
+echo "====== Boot Time $(date) ======" > "$work_dir/LOG.log"
 if [ "$first_stage" = 1 ]; then
     exec 2>>"$work_dir/LOG.log"
 fi

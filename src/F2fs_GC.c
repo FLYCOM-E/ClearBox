@@ -233,7 +233,7 @@ static int get_f2fs_free(char * free_file)
 // 快速磁盘优化
 static int fast_gc()
 {
-    if (system("sm idle-maint run >/dev/null") == 0)
+    if (system("sm idle-maint run >/dev/null 2>&1") == 0)
     {
         // 这玩意很多时候不支持也返回成功，懒得详细检查了（（
         printf(L_FG_FAST_GC_DONE);
