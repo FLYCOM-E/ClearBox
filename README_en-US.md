@@ -33,11 +33,6 @@ Flash **ClearBox_*_en_US.zip**
 
 
 
->[!CAUTION]
-> The main branch currently differs significantly from Releases. General users are advised to download the Release version directly, while adventurous users can compile and experience it themselves (not recommended). The latest Release version does not yet support internationalization!
-
-
-
    # How to use:
 
 > ：Install and use the module **ClearBox** app (asked during module installation
