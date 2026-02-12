@@ -1,9 +1,9 @@
 // 此Code来自ClearBox模块，用于自定义规则软件内部清理
 #include "INCLUDE/BashCore.h"
 
-#define MAX_APP_NAME 128
+#define MAX_APP_NAME 128 // 软件名称最大长度
 #define DATA_DIR "/data/data" //Max Size 62
-#define CONFIG_DIR_NAME "清理规则"
+#define CONFIG_DIR_NAME "清理规则" // 配置目录名称
 
 static int find_package(char * package, char * config_file);
 

@@ -1,7 +1,7 @@
 // 此Code来自ClearBox模块，用于清空内部储存软件缓存
 #include "INCLUDE/BashCore.h"
 
-#define MAX_APPLIST 3000
+#define MAX_APPLIST 3000 // 软件列表最大数量
 #define DATA_DIR "/data/user" //Max Size 10
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
 #define SETTINGS_FILE "settings.prop" //Max Size 30

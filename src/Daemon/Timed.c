@@ -1,14 +1,14 @@
 // 此 Code 来自ClearBox模块，是crond代替品哦～
 #include "../INCLUDE/BashCore.h"
 
-#define WAIT_TIME 60
-#define MAX_CONFIG 512
-#define MAX_CONFIG_NAME 256
-#define CONFIG_LINE_MAX_LEN 512
-#define MAX_COMMAND_LEN 1024
-#define MAX_COMMAND_ARGS 32
-#define MAX_TITLE_LEN 128
-#define MAX_MESSAGE_LEN 512
+#define WAIT_TIME 60 // 单次循环等待时间，单位秒
+#define MAX_CONFIG 512 // 最大配置数量
+#define MAX_CONFIG_NAME 256 // 配置文件名称最大长度
+#define CONFIG_LINE_MAX_LEN 512 // 配置文件行最大长度
+#define MAX_COMMAND_LEN 1024 // 命令最大长度
+#define MAX_COMMAND_ARGS 32 // 命令参数最大数量（包含命令本身）
+#define MAX_TITLE_LEN 128 // 通知标题最大长度
+#define MAX_MESSAGE_LEN 512 // 通知内容最大长度
 #define SERVER_NAME "ClearBox Timed"
 
 static int running(char * command);

@@ -3,7 +3,7 @@
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
-#define BASH_DIR "bin"
+#define BASH_DIR "bin" // 模块二进制目录名
 #define SERVER_NAME "BashCore"
 
 // 这里每个声明均是一个子功能函数

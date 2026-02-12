@@ -1,13 +1,13 @@
 // 此Code来自ClearBox模块，用于内部储存指定格式文件清理
 #include "INCLUDE/BashCore.h"
 
-#define MAX_CONFIG_NAME 64
+#define MAX_CONFIG_NAME 256 // 配置名称长度限制（不含.conf后缀)
 #define MAX_ARGS_SIZE 32 // 后缀名称长度限制
-#define CONFIG_MAX_ARGS 512 // 单个文件格式配置最多允许的后缀数量
-#define F_DIR_NAME "Documents"
+#define CONFIG_MAX_ARGS 5000 // 单个文件格式配置最多允许的后缀数量
+#define F_DIR_NAME "Documents" // 归类目录名称（仅文件归类模式会用）
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
-#define CONFIG_DIR_NAME "文件格式配置"
-#define CARD_HOME "/mnt/media_rw"
+#define CONFIG_DIR_NAME "文件格式配置" // 配置文件夹名称
+#define CARD_HOME "/mnt/media_rw" // 外置储存根目录
 #define STORAGES_DIR "/data/media/0" //Max Size 100
 
 static int clear_service(char * work_dir, char * storage_dir, char * config_name);
@@ -225,6 +225,7 @@ int main(int argc, char * argv[])
 接收：
     char * work_dir 配置目录路径
     char * storage_dir 储存根目录
+    char * config_name 配置名称（仅文件清理模式需要）
 返回：
     int 成功返回0，失败返回1
 */
@@ -260,7 +261,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         }
         if (file_clear == 1) // 如果是清理模式则会查找传入名称对应配置
         {
-            char tmp[strlen(entry -> d_name) + 16];
+            char tmp[strlen(entry -> d_name) + strlen(config_name) + 2];
             snprintf(tmp, sizeof(tmp), "%s.conf", config_name);
             if (strcmp(tmp, entry -> d_name) != 0)
             {

@@ -2,8 +2,8 @@
 #include "INCLUDE/BashCore.h"
 
 #define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
-#define WHITELIST "%s/ClearWhitelist.prop"
-#define CARD_HOME "/mnt/media_rw"
+#define WHITELIST "%s/ClearWhitelist.prop" // 白名单文件名
+#define CARD_HOME "/mnt/media_rw" // 外置SD卡根目录
 #define STORAGES_DIR "/data/media/0" //Max Size 100
 
 static int storage_cache_clean(char * data_path, char * work_dir);

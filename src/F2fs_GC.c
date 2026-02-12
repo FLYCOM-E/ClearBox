@@ -1,9 +1,9 @@
 // 此Code来自ClearBox模块，用于运行紧急GC优化，原理来自 Coolapk@Amktiao，感谢大佬
 #include "INCLUDE/BashCore.h"
 
-#define PROP "dev.mnt.dev.data"
-#define TIMEOUT 9
-#define SYSFS_PATH "/sys/fs/f2fs"
+#define PROP "dev.mnt.dev.data" // 存储设备属性
+#define TIMEOUT 9 // 超时时间，单位：分钟
+#define SYSFS_PATH "/sys/fs/f2fs" // F2FS sysfs路径
 #define SYSFS_FILE_NAME "gc_urgent" //Max Size 14
 #define SYSFS_DIRTY_FILE "dirty_segments" //Max Size 14
 #define SYSFS_FREE_FILE "free_segments" //Max Size 14

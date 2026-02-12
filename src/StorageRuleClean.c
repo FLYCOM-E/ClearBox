@@ -1,7 +1,7 @@
 // 此Code来自ClearBox模块，用于自定义规则清理/干掉文件目录
 #include "INCLUDE/BashCore.h"
 
-#define CONFIG_DIR_NAME "清理配置"
+#define CONFIG_DIR_NAME "清理配置" // 配置目录名称
 
 int main(int argc, char * argv[])
 {

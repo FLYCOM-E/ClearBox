@@ -1,9 +1,9 @@
 // By ClearBox StopCache
 #include "../INCLUDE/BashCore.h"
 
-#define DATA_DIR "/data/data"
+#define DATA_DIR "/data/data" // 软件数据根目录
 #define ROM_NAME "RunStart" //Max Size 30
-#define WHITELIST_NAME "whitelist.prop"
+#define WHITELIST_NAME "whitelist.prop" // 白名单文件
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
 #define MICRO_DATA_PATH "/mnt/expand/%s/user/0" //Max Size 100
 #define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"

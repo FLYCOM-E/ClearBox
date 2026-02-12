@@ -17,11 +17,11 @@
 #include <android/log.h>
 #include <sys/system_properties.h>
 
-#define MAX_PACKAGE 256
-#define MAX_PATH 4096
-#define MAX_WORK_DIR_LEN 512
-#define MAX_BIN_DIR_LEN 512
-#define LOG_FILE_NAME "LOG.log" //Max Size 30
+#define MAX_PACKAGE 256 // 软件包名最大长度
+#define MAX_PATH 4096 // 文件路径最大长度
+#define MAX_WORK_DIR_LEN 512 // 工作目录最大长度
+#define MAX_BIN_DIR_LEN 512 // 二进制目录最大长度
+#define LOG_FILE_NAME "LOG.log" // 日志文件名 Max Size 30
 #define getprop __system_property_get
 
 long s_remove(char * path, int all);
