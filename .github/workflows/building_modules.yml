@@ -18,9 +18,7 @@ on:
         - main
       
       paths-ignore:
-        - 'README.md'
-        - 'README_en-US.md'
-        - 'README_zh-TW.md'
+        - '**.md'
 
 jobs:
   build:
@@ -35,6 +33,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      
+      - name: Get version info from module.prop
+        id: get_version
+        run: |
+          VERSION=$(grep '^version=' Module_Files/module.prop | cut -d'=' -f2)
+          VERSION_CODE=$(grep '^versionCode=' Module_Files/module.prop | cut -d'=' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "versionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "Found version: $VERSION, versionCode: $VERSION_CODE"
       
       - name: Setup NDK
         uses: nttld/setup-ndk@v1
@@ -81,6 +88,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ClearBox-${{ matrix.language }}-${{ matrix.target }}
+          name: ClearBox-${{ steps.get_version.outputs.version }}-${{ steps.get_version.outputs.versionCode }}-${{ matrix.language }}-${{ matrix.target }}
           path: output/*
           if-no-files-found: error
