@@ -5,7 +5,6 @@
 #define MAX_ARGS_SIZE 32 // 后缀名称长度限制
 #define CONFIG_MAX_ARGS 5000 // 单个文件格式配置最多允许的后缀数量
 #define F_DIR_NAME "Documents" // 归类目录名称（仅文件归类模式会用）
-#define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define CONFIG_DIR_NAME "文件格式配置" // 配置文件夹名称
 #define CARD_HOME "/mnt/media_rw" // 外置储存根目录
 #define STORAGES_DIR "/data/media/0" //Max Size 100
@@ -104,30 +103,14 @@ int main(int argc, char * argv[])
     int FileClear_Disk = 0, Fileall_Disk = 0;
     char data_dir[128] = "",
          sdcard_dir[128] = "",
-         settings_file[strlen(work_dir) + 16],
-         settings_file_line[64] = "";
+         settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
     
-    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
     
-    // 打开设置信息文件并查找对应值
-    FILE * settings_file_fp = fopen(settings_file, "r");
-    if (settings_file_fp)
-    {
-        while (fgets(settings_file_line, sizeof(settings_file_line), settings_file_fp))
-        {
-            settings_file_line[strcspn(settings_file_line, "\n")] = 0;
-            if (strcmp(settings_file_line, "Fileall_Disk=1") == 0)
-            {
-                Fileall_Disk = 1;
-            }
-            if (strcmp(settings_file_line, "FileClear_Disk=1") == 0)
-            {
-                FileClear_Disk = 1;
-            }
-        }
-        fclose(settings_file_fp);
-    }
+    // 查找设置对应值
+    Fileall_Disk = get_settings_prop(settings_file, "Fileall_Disk");
+    FileClear_Disk = get_settings_prop(settings_file, "FileClear_Disk");
     
     // 调用函数（内部储存
     if (clear_service(work_dir, data_dir, config_name) == 0)

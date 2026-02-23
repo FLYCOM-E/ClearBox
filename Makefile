@@ -31,7 +31,6 @@ ALL_FILE = $(home_dir)/BashCore \
 			$(bin_dir)/SetInstall \
 			$(bin_dir)/SetStorage \
 			$(bin_dir)/FileManager \
-			$(bin_dir)/Post \
 			$(daemon_bin_dir)/StopCached \
 			$(daemon_bin_dir)/Timed
 
@@ -76,10 +75,7 @@ $(bin_dir)/SetStorage: src/SetStorage.c
 	$(CC) $(CFLAGS) src/SetStorage.c -o $(bin_dir)/SetStorage
 
 $(bin_dir)/FileManager: src/FileManager.c
-	$(CC) $(CFLAGS) src/FileManager.c -o $(bin_dir)/FileManager
-
-$(bin_dir)/Post: src/Post.c
-	$(CC) $(CFLAGS) src/Post.c -o $(bin_dir)/Post
+	$(CC) $(CFLAGS) src/FileManager.c $(FUNCTIONS_C) -o $(bin_dir)/FileManager
 
 clean: 
 	@rm $(ALL_FILE)

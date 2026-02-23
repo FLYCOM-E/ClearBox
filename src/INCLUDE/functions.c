@@ -241,3 +241,27 @@ int set_name_space()
     close(fd);
     return 0;
 }
+
+int get_settings_prop(char * settings_file, char * key)
+{
+    int value = 0;
+    char * line_key = NULL;
+    char line[SETTINGS_FILE_MAX_LINE] = {0};
+    FILE * settings_file_fp = fopen(settings_file, "r");
+    if (settings_file_fp == NULL)
+    {
+        return 1;
+    }
+    while (fgets(line, sizeof(line), settings_file_fp))
+    {
+        line[strcspn(line, "\n")] = 0;
+        line_key = strtok(line, "=");
+        if (strcmp(line_key, key) == 0)
+        {
+            value = (int)atol(strtok(NULL, "="));
+            break;
+        }
+    }
+    fclose(settings_file_fp);
+    return value;
+}

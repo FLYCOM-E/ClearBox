@@ -1,7 +1,6 @@
 // 此Code来自ClearBox模块，用于删除垃圾缓存及空文件夹
 #include "INCLUDE/BashCore.h"
 
-#define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define WHITELIST "%s/ClearWhitelist.prop" // 白名单文件名
 #define CARD_HOME "/mnt/media_rw" // 外置SD卡根目录
 #define STORAGES_DIR "/data/media/0" //Max Size 100
@@ -60,27 +59,14 @@ int main(int argc, char * argv[])
     int cleardisk = 0; // 是否清理外部储存
     char sdcard_dir[128] = "", // 外置SD完整路径
          data_dir[128] = "", // 内部储存完整路径
-         settings_file[strlen(work_dir) + 16], // 设置信息储存文件
-         settings_file_line[64] = "";
+         settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
     
     // 拼接路径
-    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE_NAME);
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
     
-    // 打开设置信息文件并查找对应值
-    FILE * settings_file_fp = fopen(settings_file, "r");
-    if (settings_file_fp)
-    {
-        while (fgets(settings_file_line, sizeof(settings_file_line), settings_file_fp))
-        {
-            settings_file_line[strcspn(settings_file_line, "\n")] = 0;
-            if (strcmp(settings_file_line, "cleardisk=1") == 0)
-            {
-                cleardisk = 1;
-            }
-        }
-        fclose(settings_file_fp);
-    }
+    // 设置查找对应值
+    cleardisk = get_settings_prop(settings_file, "cleardisk");
     
     // 处理内部储存
     storage_cache_clean(data_dir, work_dir);

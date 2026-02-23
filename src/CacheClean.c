@@ -4,7 +4,6 @@
 #define MAX_APPLIST 3000 // 软件列表最大数量
 #define DATA_DIR "/data/user" //Max Size 10
 #define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
-#define SETTINGS_FILE "settings.prop" //Max Size 30
 #define CARD_HOME "/mnt/expand"
 #define GET_APPLIST "cmd package list package -3 2>/dev/null"
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
@@ -84,32 +83,13 @@ int main(int argc, char * argv[])
         ClearCacheSize（缓存清理限制大小）
         cleardisk（是否清理SD软件缓存）设置值
         */
-        char * key = NULL;
-        char * value = NULL;
         int ClearCacheSize = 0, cleardisk = 0;
-        char settings_file[strlen(work_dir) + 32], line[256] = "";
-         
+        char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
         snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
-        FILE * settings_file_fp = fopen(settings_file, "r");
-        if (settings_file_fp)
-        {
-            // 目标读取清理限制大小/是否清理外部储存
-            while (fgets(line, sizeof(line), settings_file_fp))
-            {
-                key = strtok(line, "=");
-                value = strtok(NULL, "=");
-                
-                if (strcmp(key, "ClearCacheSize") == 0)
-                {
-                    ClearCacheSize = atoi(value);
-                }
-                else if (strcmp(key, "cleardisk") == 0)
-                {
-                    cleardisk = atoi(value);
-                }
-            }
-            fclose(settings_file_fp);
-        }
+        
+        // 获取设置值
+        ClearCacheSize = get_settings_prop(settings_file, "ClearCacheSize");
+        cleardisk = get_settings_prop(settings_file, "cleardisk");
          
         //调用处理函数
         int clear_size = app_cache_clean(DATA_DIR, whitelist_file, ClearCacheSize);
@@ -127,6 +107,7 @@ int main(int argc, char * argv[])
         {
             return 0;
         }
+        
         // micro card
         struct dirent * entry;
         char micro_dir[512] = "";

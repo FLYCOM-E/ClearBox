@@ -22,6 +22,8 @@
 #define MAX_WORK_DIR_LEN 512 // 工作目录最大长度
 #define MAX_BIN_DIR_LEN 512 // 二进制目录最大长度
 #define LOG_FILE_NAME "LOG.log" // 日志文件名 Max Size 30
+#define SETTINGS_FILE "settings.prop" // 设置信息文件名 Max Size 30
+#define SETTINGS_FILE_MAX_LINE 256 // 设置信息文件最大行长
 #define getprop __system_property_get
 
 long s_remove(char * path, int all);
@@ -30,6 +32,7 @@ long get_path_size(char * path);
 int post(char * title, char * message);
 int write_log(char * config_dir, char * name_id, char * text);
 int set_name_space();
+int get_settings_prop(char * settings_file, char * key);
 
 // Lang
 #ifdef zh_CN

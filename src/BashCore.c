@@ -2,7 +2,6 @@
 #include "INCLUDE/BashCore.h"
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
-#define SETTINGS_FILE_NAME "settings.prop" //Max Size 14
 #define BASH_DIR "bin" // 模块二进制目录名
 #define SERVER_NAME "BashCore"
 
@@ -407,29 +406,9 @@ static int file_all(char * home_dir, char * work_dir)
 // 根据prop决定是否运行文件归类（仅用于一键/自动清理 该选项打开状态
 static int file_all_auto(char * home_dir, char * work_dir)
 {
-    int fileall = 0;
-    char * key = NULL;
-    char * value = NULL;
-    char line[256] = "", settingsFile[strlen(work_dir) + 16];
-    snprintf(settingsFile, sizeof(settingsFile), "%s/%s", work_dir, SETTINGS_FILE_NAME);
-    FILE * settingsFile_fp = fopen(settingsFile, "r");
-    if (settingsFile_fp)
-    {
-        while (fgets(line, sizeof(line), settingsFile_fp))
-        {
-            key = strtok(line, "=");
-            value = strtok(NULL, "=");
-            
-            if (strcmp(key, "fileall") == 0)
-            {
-                if (strcmp(value, "1") == 0)
-                {
-                    fileall = 1;
-                }
-            }
-        }
-        fclose(settingsFile_fp);
-    }
+    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
+    int fileall = get_settings_prop(settings_file, "fileall");
     if (fileall == 1)
     {
         char bash[128] = "";
