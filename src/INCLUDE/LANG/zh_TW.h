@@ -62,7 +62,7 @@
 #define L_CC_CLEAR_SUCCESSFUL_SD " » 外部儲存軟體快取清理完成\n » 共清理：%d兆\n"
 #define L_CC_CLEAR " » %s 快取已清除\n"
 #define L_CC_CLEAR_SKIP " » 跳過 %s\n"
-#define L_CC_CLEAR_APPCACHE_DONE " » 共清理 %d 個軟體，%d 個軟體無需清理\n"
+#define L_CC_CLEAR_APPCACHE_DONE " » 共清理 %d 款軟體，%d 款軟體無需清理\n"
 #define L_CC_CLEAR_SYSTEMCACHE " » 系統快取已清空！建議重啟系統！\n"
 
 // For Dexoat.c

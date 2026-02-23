@@ -62,7 +62,7 @@
 #define L_CC_CLEAR_SUCCESSFUL_SD " » External storage application cache cleaning completed\n » Total cleaned: %d MB\n"
 #define L_CC_CLEAR " » %s cache cleared\n"
 #define L_CC_CLEAR_SKIP " » Skipping %s\n"
-#define L_CC_CLEAR_APPCACHE_DONE " » Cleaned %d applications, %d applications did not require cleaning\n"
+#define L_CC_CLEAR_APPCACHE_DONE " » A total of %d apps cleaned, %d apps did not require cleaning\n"
 #define L_CC_CLEAR_SYSTEMCACHE " » System cache cleared! Recommend restarting the system!\n"
 
 // For Dexoat.c

@@ -62,7 +62,7 @@
 #define L_CC_CLEAR_SUCCESSFUL_SD " » 外部储存软件缓存清理完成\n » 共清理：%d兆\n"
 #define L_CC_CLEAR " » %s 缓存已清除\n"
 #define L_CC_CLEAR_SKIP " » 跳过 %s\n"
-#define L_CC_CLEAR_APPCACHE_DONE " » 共清理 %d 个软件，%d 个软件无需清理\n"
+#define L_CC_CLEAR_APPCACHE_DONE " » 共清理 %d 款软件，%d 款软件无需清理\n"
 #define L_CC_CLEAR_SYSTEMCACHE " » 系统缓存已清空！建议重启系统！\n"
 
 // For Dexoat.c
