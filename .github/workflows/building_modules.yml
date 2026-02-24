@@ -11,14 +11,14 @@ on:
       ndk_version:
         description: 'NDK Version'
         required: false
-        default: 'r27b'
+        default: 'r28b'
     
     push:
       branches:
         - main
       
-      paths-ignore:
-        - '**.md'
+      paths:
+        - 'Module_Files/module.prop'
 
 jobs:
   build:
@@ -47,16 +47,16 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: ${{ github.event.inputs.ndk_version || 'r27b' }}
+          ndk-version: ${{ github.event.inputs.ndk_version || 'r28b' }}
           add-to-path: true
       
       - name: Cache NDK
         uses: actions/cache@v4
         with:
           path: ${{ steps.setup-ndk.outputs.ndk-path }}
-          key: ndk-${{ github.event.inputs.ndk_version || 'r27b' }}-${{ runner.os }}
+          key: ndk-${{ github.event.inputs.ndk_version || 'r28b' }}-${{ runner.os }}
           restore-keys: |
-            ndk-${{ github.event.inputs.ndk_version || 'r27b' }}-${{ runner.os }}
+            ndk-${{ github.event.inputs.ndk_version || 'r28b' }}-${{ runner.os }}
             ndk-
       
       - name: Install dependencies
