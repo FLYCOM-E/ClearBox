@@ -343,32 +343,19 @@ static int set_app_cache(char * dir, char * top_app,
        strstr(top_app_dir, "/../") == NULL)
     {
         //检查是否位于白名单
-        char whitelist_line[MAX_PACKAGE] = "";
-        FILE * whitelist_fp = fopen(whitelist_file, "r");
-        if (whitelist_fp)
+        if (whitelist_check(whitelist_file, top_app) == 1)
         {
-            while (fgets(whitelist_line, sizeof(whitelist_line), whitelist_fp))
-            {
-                whitelist_line[strcspn(whitelist_line, "\n")] = 0;
-                
-                if (strcmp(top_app, whitelist_line) == 0)
-                {
-                    //如果在白名单找到该包名则将 in_whitelist 置 1
-                    in_whitelist = 1;
-                    break;
-                }
-            }
-            fclose(whitelist_fp);
+            in_whitelist = 1;
         }
         
-        //检查 in_whitelist = 0 时执行缓存阻止
+        // in_whitelist = 0 时执行缓存阻止
         if (in_whitelist == 0)
         {
             pid_t newPid = fork();
             if (newPid == -1)
             {
                 LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s: Fork Error\n", top_app);
-                goto reset; // 失败后直接跳过Stop部分
+                goto reset; // 失败直接跳过 Stop
             }
             if (newPid == 0)
             {
@@ -398,7 +385,7 @@ static int set_app_cache(char * dir, char * top_app,
     
     reset:
     
-    // 配合前面，skip_reset 为 1 不再执行恢复
+    // 配合前面，skip_reset 为 1 不执行恢复
     if (skip_reset == 1)
     {
         return 0;

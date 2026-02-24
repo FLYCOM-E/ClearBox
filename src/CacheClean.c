@@ -8,7 +8,7 @@
 #define GET_APPLIST "cmd package list package -3 2>/dev/null"
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
-static int app_cache_clean(char * work_dir, char * whitelist_file, int ClearCacheSize);
+static int app_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
 static int system_cache_clean();
 
 int main(int argc, char * argv[])
@@ -80,19 +80,19 @@ int main(int argc, char * argv[])
          
         /* 
         读取：
-        ClearCacheSize（缓存清理限制大小）
-        cleardisk（是否清理SD软件缓存）设置值
+        clear_cache_size（缓存清理限制大小）
+        clear_disk（是否清理SD软件缓存）设置值
         */
-        int ClearCacheSize = 0, cleardisk = 0;
+        int clear_cache_size = 0, clear_disk = 0;
         char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
         snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
         
         // 获取设置值
-        ClearCacheSize = get_settings_prop(settings_file, "ClearCacheSize");
-        cleardisk = get_settings_prop(settings_file, "cleardisk");
+        clear_cache_size = get_settings_prop(settings_file, "clearbox_clear_cache_size");
+        clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk");
          
         //调用处理函数
-        int clear_size = app_cache_clean(DATA_DIR, whitelist_file, ClearCacheSize);
+        int clear_size = app_cache_clean(DATA_DIR, whitelist_file, clear_cache_size);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
@@ -102,8 +102,8 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_CC_CLEAR_SUCCESSFUL, clear_size);
         }
         
-        // cleardisk = 1：允许清理拓展SD缓存
-        if (cleardisk != 1)
+        // clear_disk = 1：允许清理拓展SD缓存
+        if (clear_disk != 1)
         {
             return 0;
         }
@@ -129,7 +129,7 @@ int main(int argc, char * argv[])
             {
                 continue;
             }
-            clear_size = app_cache_clean(micro_dir, whitelist_file, ClearCacheSize);
+            clear_size = app_cache_clean(micro_dir, whitelist_file, clear_cache_size);
             if (clear_size == -1)
             {
                 fprintf(stderr, L_CC_CLEAR_FAILED_SD);
@@ -159,12 +159,12 @@ int main(int argc, char * argv[])
 接收：
     char * work_dir
         软件数据目录，这里统一使用xxx/user，自动处理可能的多用户情况，兼容拓展SD
-    int * ClearCacheSize
+    int * clear_cache_size
         缓存清理限制大小
 返回：
     int 清理垃圾大小（单位：兆M），失败返回-1
 */
-static int app_cache_clean(char * work_dir, char * whitelist_file, int ClearCacheSize)
+static int app_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size)
 {
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
@@ -227,7 +227,7 @@ static int app_cache_clean(char * work_dir, char * whitelist_file, int ClearCach
             // 获取缓存大小（兆M）
             cache_size = (int)(get_path_size(app_cache_dir) / 1024 / 1024);
             // 比较大小，如果值小于缓存清理限制大小则跳过
-            if (cache_size > ClearCacheSize)
+            if (cache_size > clear_cache_size)
             {
                 // 调用白名单检查函数，在清理白名单则跳过
                 if (whitelist_check(whitelist_file, package_list[i] + 8) == 1)

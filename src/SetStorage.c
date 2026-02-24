@@ -4,8 +4,8 @@
 #define DATA_DIR "/data/media/0"
 #define STOP_COMMAND "%s/busybox chattr +i %s 2>/dev/null" //Max Size 62
 #define RESET_COMMAND "%s/busybox chattr -i %s 2>/dev/null" //Max Size 62
-#define SETPROP_STOP "sed -i 's/stopstorage=0/stopstorage=1/g' %s/settings.prop" //Max Size 126
-#define SETPROP_RESET "sed -i 's/stopstorage=1/stopstorage=0/g' %s/settings.prop" //Max Size 126
+#define SETPROP_STOP "sed -i 's/clearbox_stop_storage=0/clearbox_stop_storage=1/g' %s/settings.prop" //Max Size 126
+#define SETPROP_RESET "sed -i 's/clearbox_stop_storage=1/clearbox_stop_storage=0/g' %s/settings.prop" //Max Size 126
 
 int main(int argc, char * argv[])
 {

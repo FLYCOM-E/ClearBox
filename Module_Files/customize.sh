@@ -66,7 +66,7 @@ fi
 case "$(getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
       if [ "$update" = 1 ]; then
-          if [ "$stopinstall" = 1 ]; then
+          if [ "$clearbox_stop_install" = 1 ]; then
               "$home_dir/BashCore" StopInstall RESET >/dev/null
               RESET=1
           fi

@@ -4,8 +4,8 @@
 #define DATA_DIR "/data/app"
 #define STOP_INSTALL "%s/busybox chattr +i %s 2>/dev/null" //Max Size 60
 #define RESET_INSTALL "%s/busybox chattr -i %s 2>/dev/null" //Max Size 60
-#define SETPROP_STOP "sed -i 's/stopinstall=0/stopinstall=1/g' %s/settings.prop" //Max Size 126
-#define SETPROP_RESET "sed -i 's/stopinstall=1/stopinstall=0/g' %s/settings.prop" //Max Size 126
+#define SETPROP_STOP "sed -i 's/clearbox_stop_install=0/clearbox_stop_install=1/g' %s/settings.prop" //Max Size 126
+#define SETPROP_RESET "sed -i 's/clearbox_stop_install=1/clearbox_stop_install=0/g' %s/settings.prop" //Max Size 126
 
 int main(int argc, char * argv[])
 {

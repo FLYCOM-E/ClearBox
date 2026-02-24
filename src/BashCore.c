@@ -14,8 +14,7 @@ static int cust_rule_clean(char * home_dir, char * work_dir);
 static int storage_clean(char * home_dir, char * work_dir);
 static int file_clean(char * home_dir, char * work_dir, char * str);
 static int app_cust_rule_clean(char * home_dir, char * work_dir, char * str);
-static int file_all(char * home_dir, char * work_dir);
-static int file_all_auto(char * home_dir, char * work_dir);
+static int file_all(char * home_dir, char * work_dir, int auto_);
 static int set_install(char * home_dir, char * work_dir, char * bin_dir, char * str);
 static int set_storage(char * home_dir, char * work_dir, char * bin_dir, char * str);
 static int f2fs_gc(char * home_dir);
@@ -160,7 +159,7 @@ int main(int argc, char * argv[])
         }
         
         // 文件归类是高资源占用操作不并行
-        file_all_auto(home_dir, work_dir);
+        file_all(home_dir, work_dir, 1);
         
         write_log(work_dir, SERVER_NAME, "优化清理");
     }
@@ -216,7 +215,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "File_All") == 0)
     {
-        if (file_all(home_dir, work_dir) != 0)
+        if (file_all(home_dir, work_dir, 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义文件归类失败");
         }
@@ -395,28 +394,22 @@ static int app_cust_rule_clean(char * home_dir, char * work_dir, char * str)
 }
 
 // 文件归类
-static int file_all(char * home_dir, char * work_dir)
+static int file_all(char * home_dir, char * work_dir, int auto_)
 {
+    if (auto_ == 1) // 根据prop决定是否运行文件归类（仅用于一键/自动清理
+    {
+        char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
+        snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
+        int auto_file_all = get_settings_prop(settings_file, "clearbox_auto_file_all");
+        if (auto_file_all != 1)
+        {
+            return 0;
+        }
+    }
     char bash[128] = "";
     snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
     char * args[] = {bash, "-w", work_dir, "-m", "fileall", "-n", "null", NULL};
     return running(args);
-}
-
-// 根据prop决定是否运行文件归类（仅用于一键/自动清理 该选项打开状态
-static int file_all_auto(char * home_dir, char * work_dir)
-{
-    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
-    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
-    int fileall = get_settings_prop(settings_file, "fileall");
-    if (fileall == 1)
-    {
-        char bash[128] = "";
-        snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
-        char * args[] = {bash, "-w", work_dir, "-m", "fileall", "-n", "null", NULL};
-        running(args);
-    }
-    return 0;
 }
 
 // 阻止安装

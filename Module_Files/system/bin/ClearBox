@@ -12,7 +12,7 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
-if [ "$DebugPro" = 1 ]; then
+if [ "$clearbox_debug_mode" = 1 ]; then
     exec 2>>"$work_dir/LOG.log"
 else
     exec 2>>/dev/null
@@ -345,7 +345,7 @@ case "$in_put" in
       ;;
     10)
       clear
-      if [ "$stopinstall" = 1 ]; then
+      if [ "$clearbox_stop_install" = 1 ]; then
           i1="关闭"
       else
           i1="开启"
@@ -382,7 +382,7 @@ case "$in_put" in
       ;;
     11)
       clear
-      if [ "$stopstorage" = 1 ]; then
+      if [ "$clearbox_stop_storage" = 1 ]; then
           i1="关闭"
       else
           i1="开启"
@@ -419,7 +419,7 @@ case "$in_put" in
       ;;
     12)
       clear
-      if [ "$stopcache" = 0 ]; then
+      if [ "$clearbox_stop_cache" = 0 ]; then
           i2="开启"
       else
           i2="关闭"
@@ -440,8 +440,8 @@ case "$in_put" in
                 case "$put" in
                     y | Y)
                       clear
-                      if [ "$stopcache" = 0 ]; then
-                          sed -i 's/stopcache=0/stopcache=1/g' "$work_dir/settings.prop"
+                      if [ "$clearbox_stop_cache" = 0 ]; then
+                          sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
                       fi
                       echo " » 已开启，重启生效 ~"
                       ;;
@@ -452,7 +452,7 @@ case "$in_put" in
                 esac
             else
                 clear
-                sed -i 's/stopcache=1/stopcache=0/g' "$work_dir/settings.prop"
+                sed -i 's/clearbox_stop_cache=1/clearbox_stop_cache=0/g' "$work_dir/settings.prop"
                 echo " » 已关闭，重启生效 ~"
             fi
             ;;
@@ -594,7 +594,7 @@ case "$in_put" in
             else
                 i4="关闭"
             fi
-            if [ "$fileall" = 0 ]; then
+            if [ "$clearbox_auto_file_all" = 0 ]; then
                 i5="开启"
             else
                 i5="关闭"
@@ -612,17 +612,17 @@ case "$in_put" in
             case "$put5" in
                 1)
                   clear
-                  if [ "$cleardisk" = 0 ]; then
+                  if [ "$clearbox_clear_disk" = 0 ]; then
                       i6="开启"
                   else
                       i6="关闭"
                   fi
-                  if [ "$Fileall_Disk" = 0 ]; then
+                  if [ "$clearbox_file_all_disk" = 0 ]; then
                       i7="开启"
                   else
                       i7="关闭"
                   fi
-                  if [ "$FileClear_Disk" = 0 ]; then
+                  if [ "$clearbox_clear_disk" = 0 ]; then
                       i8="开启"
                   else
                       i8="关闭"
@@ -643,7 +643,7 @@ case "$in_put" in
                             case "$cleardisk_i" in
                                 y | Y)
                                   clear
-                                  [ "$cleardisk" = 0 ] && sed -i 's/cleardisk=0/cleardisk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                  [ "$cleardisk_i" = 0 ] && sed -i 's/clearbox_clear_disk=0/clearbox_clear_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                   ;;
                                 *)
                                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -651,18 +651,18 @@ case "$in_put" in
                             esac
                         else
                             clear
-                            sed -i 's/cleardisk=1/cleardisk=0/g' "$work_dir/settings.prop"
+                            sed -i 's/clearbox_clear_disk=1/clearbox_clear_disk=0/g' "$work_dir/settings.prop"
                             echo " » 已关闭！"
                         fi
                         ;;
                       2)
                         if [ "$i7" = "开启" ]; then
                             echo -en " » 确认？(y): "
-                            read Fileall_Disk_i
-                            case "$Fileall_Disk_i" in
+                            read file_all_disk_i
+                            case "$file_all_disk_i" in
                                 y | Y)
                                   clear
-                                  [ "$Fileall_Disk" = 0 ] && sed -i 's/Fileall_Disk=0/Fileall_Disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                  [ "$clearbox_file_all_disk" = 0 ] && sed -i 's/clearbox_file_all_disk=0/clearbox_file_all_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                   ;;
                                 *)
                                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -670,18 +670,18 @@ case "$in_put" in
                             esac
                         else
                             clear
-                            sed -i 's/Fileall_Disk=1/Fileall_Disk=0/g' "$work_dir/settings.prop"
+                            sed -i 's/clearbox_file_all_disk=1/clearbox_file_all_disk=0/g' "$work_dir/settings.prop"
                             echo " » 已关闭！"
                         fi
                         ;;
                       3)
                         if [ "$i8" = "开启" ]; then
                             echo -en " » 确认？(y): "
-                            read FileClear_Disk_i
-                            case "$FileClear_Disk_i" in
+                            read file_clear_disk_i
+                            case "$file_clear_disk_i" in
                                 y | Y)
                                   clear
-                                  [ "$FileClear_Disk" = 0 ] && sed -i 's/FileClear_Disk=0/FileClear_Disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                  [ "$clearbox_file_clear_disk" = 0 ] && sed -i 's/clearbox_file_clear_disk=0/clearbox_file_clear_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                                   ;;
                                 *)
                                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -689,7 +689,7 @@ case "$in_put" in
                             esac
                         else
                             clear
-                            sed -i 's/FileClear_Disk=1/FileClear_Disk=0/g' "$work_dir/settings.prop"
+                            sed -i 's/clearbox_file_clear_disk=1/clearbox_file_clear_disk=0/g' "$work_dir/settings.prop"
                             echo " » 已关闭！"
                         fi
                         ;;
@@ -705,7 +705,7 @@ case "$in_put" in
                       case "$put_6" in
                           y | Y)
                             clear
-                            [ "$fileall" = 0 ] && sed -i 's/fileall=0/fileall=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                            [ "$clearbox_auto_file_all" = 0 ] && sed -i 's/clearbox_auto_file_all=0/clearbox_auto_file_all=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
                             ;;
                           *)
                             echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -713,7 +713,7 @@ case "$in_put" in
                       esac
                   else
                       clear
-                      sed -i 's/fileall=1/fileall=0/g' "$work_dir/settings.prop"
+                      sed -i 's/clearbox_auto_file_all=1/clearbox_auto_file_all=0/g' "$work_dir/settings.prop"
                       echo " » 已关闭！"
                   fi
                   ;;
@@ -759,7 +759,7 @@ case "$in_put" in
                   ;;
                 5)
                   clear
-                  echo " » 当前最小大小为 $ClearCacheSize M"
+                  echo " » 当前最小大小为 $clearbox_clear_cache_size M"
                   echo -n " » 是否设置新值？(y/N):"
                   read put
                   case "$put" in
@@ -773,7 +773,7 @@ case "$in_put" in
                         elif [ "$put" -ge 100 ]; then
                             echo -en "\033[1;92m » 设置大小超过100兆！设置失败！！\033[0m"
                         else
-                            sed -i 's/ClearCacheSize=[0-9]*/ClearCacheSize='"$put"'/g' "$work_dir/settings.prop"
+                            sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
                             echo " » 设定成功！"
                         fi
                         ;;
@@ -835,7 +835,7 @@ case "$in_put" in
             echo -e "\033[93m \t1：GitHub\033[0m\n"
             echo -e "\033[93m \t2：内测-YHChat\033[0m\n"
             echo -e "\033[93m \t3：内测-Telegram\033[0m\n"
-            if [ "$DebugPro" = "1" ]; then
+            if [ "$clearbox_debug_mode" = "1" ]; then
                 DebugTitle=$(echo -en "\033[91m 调试模式已打开 \033[0m")
                 echo -e "\t\t\t\t$DebugTitle"
             fi

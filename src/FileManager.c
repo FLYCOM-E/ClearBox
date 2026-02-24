@@ -100,7 +100,7 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    int FileClear_Disk = 0, Fileall_Disk = 0;
+    int file_clear_disk = 0, file_all_disk = 0;
     char data_dir[128] = "",
          sdcard_dir[128] = "",
          settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
@@ -109,8 +109,8 @@ int main(int argc, char * argv[])
     snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
     
     // 查找设置对应值
-    Fileall_Disk = get_settings_prop(settings_file, "Fileall_Disk");
-    FileClear_Disk = get_settings_prop(settings_file, "FileClear_Disk");
+    file_all_disk = get_settings_prop(settings_file, "clearbox_file_all_disk");
+    file_clear_disk = get_settings_prop(settings_file, "clearbox_file_clear_disk");
     
     // 调用函数（内部储存
     if (clear_service(work_dir, data_dir, config_name) == 0)
@@ -140,14 +140,14 @@ int main(int argc, char * argv[])
     // 根据模式判断是否处理外置储存
     if (file_clear == 1)
     {
-        if (FileClear_Disk != 1)
+        if (file_clear_disk != 1)
         {
             return 0;
         }
     }
     else
     {
-        if (Fileall_Disk != 1)
+        if (file_all_disk != 1)
         {
             return 0;
         }

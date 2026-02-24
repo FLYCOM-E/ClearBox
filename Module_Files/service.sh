@@ -32,22 +32,21 @@ fi
 mkdir -p "$work_dir"
 echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir/PATH"
 ######
-sh "$home_dir/DirtyClear.sh" &
+sh "$home_dir/DirtyClear.sh"
 ######
 StartSettings()
 {
     PropSetting()
     {
-        [ -z "$stopcache" ] && echo "stopcache=0" >> "$work_dir/settings.prop"
-        [ -z "$stopinstall" ] && echo "stopinstall=0" >> "$work_dir/settings.prop"
-        [ -z "$stopstorage" ] && echo "stopstorage=0" >> "$work_dir/settings.prop"
-        [ -z "$clearall" ] && echo "clearall=0" >> "$work_dir/settings.prop"
-        [ -z "$fileall" ] && echo "fileall=0" >> "$work_dir/settings.prop"
-        [ -z "$cleardisk" ] && echo "cleardisk=0" >> "$work_dir/settings.prop"
-        [ -z "$Fileall_Disk" ] && echo "Fileall_Disk=0" >> "$work_dir/settings.prop"
-        [ -z "$FileClear_Disk" ] && echo "FileClear_Disk=0" >> "$work_dir/settings.prop"
-        [ -z "$DebugPro" ] && echo "DebugPro=0" >> "$work_dir/settings.prop"
-        [ -z "$ClearCacheSize" ] && echo "ClearCacheSize=5" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_stop_cache" ] && echo "clearbox_stop_cache=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_stop_install" ] && echo "clearbox_stop_install=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_stop_storage" ] && echo "clearbox_stop_storage=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_auto_file_all" ] && echo "clearbox_auto_file_all=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_clear_disk" ] && echo "clearbox_clear_disk=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_file_all_disk" ] && echo "clearbox_file_all_disk=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_file_clear_disk" ] && echo "clearbox_file_clear_disk=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_debug_mode" ] && echo "clearbox_debug_mode=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_clear_cache_size" ] && echo "clearbox_clear_cache_size=5" >> "$work_dir/settings.prop"
     }
     ######
     touch "$work_dir/settings.prop" 2>/dev/null
@@ -104,7 +103,7 @@ if [ "$first_stage" = 1 ]; then
     sleep 30
 fi
 ######
-if [ "$stopcache" = 1 ]; then
+if [ "$clearbox_stop_cache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
         "$home_dir/Daemon/StopCached" -b "$bin_dir" -w "$work_dir"
         echo "[ $(date) ]：StopCached Start" >> "$work_dir/LOG.log"

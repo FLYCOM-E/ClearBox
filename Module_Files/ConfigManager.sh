@@ -14,7 +14,7 @@ fi
 backupDir="/sdcard/Android/ClearBox"
 tempDir="/data/local/ClearBox_temp"
 source "$work_dir/settings.prop"
-if [ "$DebugPro" = 1 ]; then
+if [ "$clearbox_debug_mode" = 1 ]; then
     exec 2>>"$work_dir/LOG.log"
 else
     exec 2>>/dev/null

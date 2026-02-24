@@ -56,7 +56,7 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    int cleardisk = 0; // 是否清理外部储存
+    int clear_disk = 0; // 是否清理外部储存
     char sdcard_dir[128] = "", // 外置SD完整路径
          data_dir[128] = "", // 内部储存完整路径
          settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
@@ -66,7 +66,7 @@ int main(int argc, char * argv[])
     snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
     
     // 设置查找对应值
-    cleardisk = get_settings_prop(settings_file, "cleardisk");
+    clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk");
     
     // 处理内部储存
     storage_cache_clean(data_dir, work_dir);
@@ -82,7 +82,7 @@ int main(int argc, char * argv[])
     printf(L_SC_SUCCESSFUL_STORAGE);
     fflush(stdout);
     
-    if (cleardisk != 1) // 1 允许清理外部储存
+    if (clear_disk != 1) // 1 允许清理外部储存
     {
         return 0;
     }
