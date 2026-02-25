@@ -4,7 +4,7 @@
 #define PROP "ro.build.version.sdk"
 #define SET_FREEZER "device_config put activity_manager_native_boot use_freezer true"
 
-int main()
+int main(void)
 {
     if (getuid() != 0)
     {

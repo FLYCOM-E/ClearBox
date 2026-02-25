@@ -8,8 +8,8 @@
 #define SYSFS_DIRTY_FILE "dirty_segments" //Max Size 14
 #define SYSFS_FREE_FILE "free_segments" //Max Size 14
 
-static int f2fs_gc();
-static int fast_gc();
+static int f2fs_gc(void);
+static int fast_gc(void);
 static int get_f2fs_dirty(char * dirty_file);
 static int get_f2fs_free(char * free_file);
 
@@ -48,7 +48,7 @@ int main(int argc, char * argv[])
 返回：
     int 成功返回0，失败返回1
 */
-static int f2fs_gc()
+static int f2fs_gc(void)
 {
     // GetProp
     char sysfs_name[PROP_VALUE_MAX] = {0};
@@ -231,7 +231,7 @@ static int get_f2fs_free(char * free_file)
 }
 
 // 快速磁盘优化
-static int fast_gc()
+static int fast_gc(void)
 {
     // 这是一个说慢不慢说快不快的功能
     system("sm idle-maint run >/dev/null 2>&1");

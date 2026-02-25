@@ -9,7 +9,7 @@
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
 static int app_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
-static int system_cache_clean();
+static int system_cache_clean(void);
 
 int main(int argc, char * argv[])
 {
@@ -266,7 +266,7 @@ static int app_cache_clean(char * work_dir, char * whitelist_file, int clear_cac
 返回：
     int 成功返回0，失败返回-1
 */
-static int system_cache_clean()
+static int system_cache_clean(void)
 {
     char app_cache_path[MAX_PACKAGE + 16],
          package_list_line[MAX_PACKAGE] = "";

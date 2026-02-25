@@ -154,7 +154,7 @@ long get_path_size(char * path)
 int post(char * title, char * message)
 {
     //生成一个随机ID
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     char rand_str[24] = {0};
     snprintf(rand_str, sizeof(rand_str), "%s-%d", title, rand());
     
@@ -222,7 +222,7 @@ int write_log(char * config_dir, char * name_id, char * text)
 此函数用于切换至原始命名空间
 有些路径访问会出问题，经排查为命名空间引起
 */
-int set_name_space()
+int set_name_space(void)
 {
     char * name_space_path = "/proc/1/ns/mnt";
     

@@ -182,7 +182,7 @@ int main(int argc, char * argv[])
     空循环计数
     深度休眠循环次数阀值
     */
-    int cycle_time = 10,
+    unsigned int cycle_time = 10,
         deep_time = 60,
         get_error = 0,
         max_get_error = 10,

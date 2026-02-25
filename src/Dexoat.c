@@ -1,7 +1,7 @@
 // 此Code来自ClearBox模块，用于运行DexOat
 #include "INCLUDE/BashCore.h"
 
-static int dexoat_system();
+static int dexoat_system(void);
 static int dexoat_cust(char * mode);
 
 int main(int argc, char * argv[])
@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
 }
 
 // 系统Dexoat
-static int dexoat_system()
+static int dexoat_system(void)
 {
     fprintf(stderr, L_DO_RUN_SYSTEM);
     fflush(stdout);

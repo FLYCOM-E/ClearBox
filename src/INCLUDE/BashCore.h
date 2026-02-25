@@ -31,7 +31,7 @@ int whitelist_check(char * whitelist_file, char * package);
 long get_path_size(char * path);
 int post(char * title, char * message);
 int write_log(char * config_dir, char * name_id, char * text);
-int set_name_space();
+int set_name_space(void);
 int get_settings_prop(char * settings_file, char * key);
 
 // Lang
