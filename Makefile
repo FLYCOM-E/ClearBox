@@ -1,4 +1,5 @@
-CFLAGS = -O2 -s -Wall -Wshadow -llog -D_GNU_SOURCE
+CFLAGS = -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wformat=2 -Wunused -Wcast-qual -Wstrict-prototypes -Werror -D_GNU_SOURCE -D_FORTIFY_SOURCE=2
+LDFLAGS = -llog -s
 
 ifeq ($(strip $(CC)),)
     $(error 编译器$CC变量设置为空！The compiler $CC variable is set to empty!)
@@ -39,43 +40,43 @@ all: $(ALL_FILE)
 
 $(home_dir)/BashCore: src/BashCore.c
 	@mkdir -p $(bin_dir) $(daemon_bin_dir)
-	$(CC) $(CFLAGS) src/BashCore.c $(FUNCTIONS_C) -o $(home_dir)/BashCore
+	$(CC) $(CFLAGS) src/BashCore.c $(FUNCTIONS_C) $(LDFLAGS) -o $(home_dir)/BashCore
 
 $(daemon_bin_dir)/StopCached: src/Daemon/StopCached.c
-	$(CC) $(CFLAGS) src/Daemon/StopCached.c $(FUNCTIONS_C) -o $(daemon_bin_dir)/StopCached
+	$(CC) $(CFLAGS) src/Daemon/StopCached.c $(FUNCTIONS_C) $(LDFLAGS) -o $(daemon_bin_dir)/StopCached
 
 $(daemon_bin_dir)/Timed: src/Daemon/Timed.c
-	$(CC) $(CFLAGS) src/Daemon/Timed.c $(FUNCTIONS_C) -o $(daemon_bin_dir)/Timed
+	$(CC) $(CFLAGS) src/Daemon/Timed.c $(FUNCTIONS_C) $(LDFLAGS) -o $(daemon_bin_dir)/Timed
 
 $(bin_dir)/AppClean: src/AppClean.c
-	$(CC) $(CFLAGS) src/AppClean.c $(FUNCTIONS_C) -o $(bin_dir)/AppClean
+	$(CC) $(CFLAGS) src/AppClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/AppClean
 
 $(bin_dir)/CacheClean: src/CacheClean.c
-	$(CC) $(CFLAGS) src/CacheClean.c $(FUNCTIONS_C) -o $(bin_dir)/CacheClean
+	$(CC) $(CFLAGS) src/CacheClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/CacheClean
 
 $(bin_dir)/Dexoat: src/Dexoat.c
-	$(CC) $(CFLAGS) src/Dexoat.c -o $(bin_dir)/Dexoat
+	$(CC) $(CFLAGS) src/Dexoat.c $(LDFLAGS) -o $(bin_dir)/Dexoat
 
 $(bin_dir)/FreeZer: src/FreeZer.c
-	$(CC) $(CFLAGS) src/FreeZer.c -o $(bin_dir)/FreeZer
+	$(CC) $(CFLAGS) src/FreeZer.c $(LDFLAGS) -o $(bin_dir)/FreeZer
 
 $(bin_dir)/StorageRuleClean: src/StorageRuleClean.c
-	$(CC) $(CFLAGS) src/StorageRuleClean.c $(FUNCTIONS_C) -o $(bin_dir)/StorageRuleClean
+	$(CC) $(CFLAGS) src/StorageRuleClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/StorageRuleClean
 
 $(bin_dir)/StorageClean: src/StorageClean.c
-	$(CC) $(CFLAGS) src/StorageClean.c $(FUNCTIONS_C) -o $(bin_dir)/StorageClean
+	$(CC) $(CFLAGS) src/StorageClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/StorageClean
 
 $(bin_dir)/F2fs_GC: src/F2fs_GC.c
-	$(CC) $(CFLAGS) src/F2fs_GC.c -o $(bin_dir)/F2fs_GC
+	$(CC) $(CFLAGS) src/F2fs_GC.c $(LDFLAGS) -o $(bin_dir)/F2fs_GC
 
 $(bin_dir)/SetInstall: src/SetInstall.c
-	$(CC) $(CFLAGS) src/SetInstall.c -o $(bin_dir)/SetInstall
+	$(CC) $(CFLAGS) src/SetInstall.c $(LDFLAGS) -o $(bin_dir)/SetInstall
 
 $(bin_dir)/SetStorage: src/SetStorage.c
-	$(CC) $(CFLAGS) src/SetStorage.c -o $(bin_dir)/SetStorage
+	$(CC) $(CFLAGS) src/SetStorage.c $(LDFLAGS) -o $(bin_dir)/SetStorage
 
 $(bin_dir)/FileManager: src/FileManager.c
-	$(CC) $(CFLAGS) src/FileManager.c $(FUNCTIONS_C) -o $(bin_dir)/FileManager
+	$(CC) $(CFLAGS) src/FileManager.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/FileManager
 
 clean: 
 	@rm $(ALL_FILE)
