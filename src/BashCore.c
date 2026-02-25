@@ -14,11 +14,11 @@ static int cust_rule_clean(char * home_dir, char * work_dir);
 static int storage_clean(char * home_dir, char * work_dir);
 static int file_clean(char * home_dir, char * work_dir, char * str);
 static int app_cust_rule_clean(char * home_dir, char * work_dir, char * str);
-static int file_all(char * home_dir, char * work_dir, int auto_);
+static int file_all(char * home_dir, char * work_dir, char * settings_file, int auto_);
 static int set_install(char * home_dir, char * work_dir, char * bin_dir, char * str);
 static int set_storage(char * home_dir, char * work_dir, char * bin_dir, char * str);
 static int f2fs_gc(char * home_dir);
-static int fast_gc(char * home_dir);
+static int fast_gc(char * home_dir, char * settings_file, int auto_);
 static int dexoat_system(char * home_dir);
 static int dexoat_cust(char * home_dir, char * str);
 static int freezer_open(char * home_dir);
@@ -123,6 +123,10 @@ int main(int argc, char * argv[])
         return 1;
     }
     
+    // 定义设置配置文件
+    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
+    
     // 根据输入参数执行对应操作
     if (strcasecmp(argv[1], "ClearAll") == 0)
     {
@@ -135,7 +139,7 @@ int main(int argc, char * argv[])
                 switch (i)
                 {
                     case 0: 
-                        fast_gc(home_dir);
+                        fast_gc(home_dir, settings_file, 1);
                         break;
                     case 1: 
                         app_cache_clean(home_dir, work_dir);
@@ -159,7 +163,7 @@ int main(int argc, char * argv[])
         }
         
         // 文件归类是高资源占用操作不并行
-        file_all(home_dir, work_dir, 1);
+        file_all(home_dir, work_dir, settings_file, 1);
         
         write_log(work_dir, SERVER_NAME, "优化清理");
     }
@@ -215,7 +219,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "File_All") == 0)
     {
-        if (file_all(home_dir, work_dir, 0) != 0)
+        if (file_all(home_dir, work_dir, settings_file, 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义文件归类失败");
         }
@@ -394,12 +398,10 @@ static int app_cust_rule_clean(char * home_dir, char * work_dir, char * str)
 }
 
 // 文件归类
-static int file_all(char * home_dir, char * work_dir, int auto_)
+static int file_all(char * home_dir, char * work_dir, char * settings_file, int auto_)
 {
     if (auto_ == 1) // 根据prop决定是否运行文件归类（仅用于一键/自动清理
     {
-        char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
-        snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
         int auto_file_all = get_settings_prop(settings_file, "clearbox_auto_file_all");
         if (auto_file_all != 1)
         {
@@ -440,8 +442,16 @@ static int f2fs_gc(char * home_dir)
 }
 
 // 快速GC
-static int fast_gc(char * home_dir)
+static int fast_gc(char * home_dir, char * settings_file, int auto_)
 {
+    if (auto_ == 1)
+    {
+        int auto_fast_gc = get_settings_prop(settings_file, "clearbox_auto_fast_gc");
+        if (auto_fast_gc != 1)
+        {
+            return 0;
+        }
+    }
     char bash[128] = "";
     snprintf(bash, sizeof(bash), "%s/%s/F2fs_GC", home_dir, BASH_DIR);
     char * args[] = {bash, "FAST_GC", NULL};

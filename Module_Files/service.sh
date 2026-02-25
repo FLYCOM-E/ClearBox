@@ -42,6 +42,7 @@ StartSettings()
         [ -z "$clearbox_stop_install" ] && echo "clearbox_stop_install=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_stop_storage" ] && echo "clearbox_stop_storage=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_auto_file_all" ] && echo "clearbox_auto_file_all=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_auto_fast_gc" ] && echo "clearbox_auto_fast_gc=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_clear_disk" ] && echo "clearbox_clear_disk=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_file_all_disk" ] && echo "clearbox_file_all_disk=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_file_clear_disk" ] && echo "clearbox_file_clear_disk=0" >> "$work_dir/settings.prop"
