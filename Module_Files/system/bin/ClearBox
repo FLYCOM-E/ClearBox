@@ -37,113 +37,129 @@ echo -e "\033[93m  13：磁盘 & 软件优化 \t 00：模块管理\033[0m\n"
 echo -e "\033[96m ==============================================\033[0m"
 echo -e "\t\t\t   --- 键入 E、Q 退出 ---"
 echo -n " 请输入相应序号: "
-read in_put
-case "$in_put" in
+read input
+case "$input" in
     1)
       clear
       "$home_dir/BashCore" ClearAll
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     2)
       clear
       "$home_dir/BashCore" List_Dir
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     3)
       clear
       "$home_dir/BashCore" All_Dir
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     4)
       clear
       "$home_dir/BashCore" ClearCache
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     5)
       echo -en " » 确认？(y): "
-      read put_4
-      case "$put_4" in
+      read input_fa
+      case "$input_fa" in
           y | Y)
             clear
             "$home_dir/BashCore" File_All
             ;;
           *)
-            echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
+            echo -en "\033[92m » 您选择了否！\033[0m"
             ;;
       esac
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     6)
       clear
-      [ -z "$(ls "$work_dir/文件格式配置/")" ] && echo -en "\033[91m » 无文件格式配置！回车返回\033[0m" && read null && return 1
+      if [ -z "$(ls "$work_dir/文件格式配置/")" ]; then
+          echo -en "\033[91m » 无文件格式配置！请尝试重装模块。\033[0m"
+          echo -en "\033[92m » 回车返回\033[0m"; read null
+          return 1
+      fi
       count=0
       echo -e "\n\033[104m [深度清理，请备份重要文档！！]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      for FN in "$work_dir/文件格式配置"/*; do
-         Name=$(echo "$FN" | cut -f6 -d '/' | cut -f1 -d ".")
+      for file in "$work_dir/文件格式配置"/*; do
+         filename=$(basename "$file" | cut -f1 -d ".")
          count=$((count + 1))
-         Num[$count]="$count,$Name"
-         echo -e "\033[93m\t $count：清理 $Name\033[0m\n"
+         Num[$count]="$count,$filename"
+         echo -e "\033[93m\t $count：清理 $filename\033[0m\n"
       done
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号: "
-      read put1
-      C_num=0
+      read fc_input
+      count_2=0
       while true; do
-         C_num=$((C_num + 1))
-         if [ "$(echo "${Num[$C_num]}" | cut -f1 -d ',')" = "$put1" ]; then
-             Fname=$(echo "${Num[$C_num]}" | cut -f2 -d ',')
+         count_2=$((count_2 + 1))
+         if [ "$(echo "${Num[$count_2]}" | cut -f1 -d ',')" = "$fc_input" ]; then
+             filename=$(echo "${Num[$count_2]}" | cut -f2 -d ',')
              echo -en " » 确认？(y): "
-             read put_2
-             case "$put_2" in
+             read fc_input_2
+             case "$fc_input_2" in
                  y | Y)
                    clear
-                   "$home_dir/BashCore" File_Clear "$Fname"
+                   "$home_dir/BashCore" File_Clear "$filename"
                    break
                    ;;
                  *)
-                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
+                   echo -en "\033[92m » 您选择了否！\033[0m"
                    break
                    ;;
              esac
          fi
-         [ "$C_num" = "$count" ] && echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m" && break
+         [ "$count_2" = "$count" ] && echo -en "\033[91m » 输入错误！\033[0m" && break
       done
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     7)
       clear
-      [ -z "$(ls "$work_dir/清理规则/")" ] && echo -en "\033[91m » 无App清理配置！回车返回\033[0m" && read null && return 1
+      if [ -z "$(ls "$work_dir/清理规则/")" ]; then
+          echo -en "\033[91m » 无App清理配置！\033[0m"
+          echo -en "\033[92m » 回车返回\033[0m"; read null
+          return 1
+      fi
       count=0
       echo -e "\n\033[104m [软件清理，建议预检查配置文件]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      for FN in "$work_dir/清理规则"/*; do
-         Name=$(cat "$FN" | grep '@' | cut -f2 -d '/')
+      for file in "$work_dir/清理规则"/*; do
+         appname=$(cat "$file" | grep '@' | cut -f2 -d '/')
          count=$((count + 1))
-         Num[$count]="$count,$Name"
-         echo -e "\033[93m\t $count：清理 $Name\033[0m\n"
+         Num[$count]="$count,$appname"
+         echo -e "\033[93m\t $count：清理 $appname\033[0m\n"
       done
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号: "
-      read put1
-      C_num=0
+      read ac_input
+      count_2=0
       while true; do
-         C_num=$((C_num + 1))
-         if [ "$(echo "${Num[$C_num]}" | cut -f1 -d ',')" = "$put1" ]; then
-             Fname=$(echo "${Num[$C_num]}" | cut -f2 -d ',')
+         count_2=$((count_2 + 1))
+         if [ "$(echo "${Num[$count_2]}" | cut -f1 -d ',')" = "$ac_input" ]; then
+             appname=$(echo "${Num[$count_2]}" | cut -f2 -d ',')
              clear
-             "$home_dir/BashCore" Clear_App "$Fname"
+             "$home_dir/BashCore" Clear_App "$appname"
              break
          fi
-         [ "$C_num" = "$count" ] && echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m" && break
+         [ "$count_2" = "$count" ] && echo -en "\033[91m » 输入错误！\033[0m" && break
       done
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     8)
       echo -en " » 确认？(y): "
-      read put_2
-      case "$put_2" in
+      read sc_input
+      case "$sc_input" in
           y | Y)
             clear
             "$home_dir/BashCore" Clear_SCache
             ;;
           *)
-            echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
+            echo -en "\033[92m » 您选择了否！\033[0m"
             ;;
       esac
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     9)
       clear
@@ -156,8 +172,8 @@ case "$in_put" in
       echo -e "\033[93m \t5：定期运行 磁铁（一键归类文件\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
-      read put4
-      case "$put4" in
+      read at_input
+      case "$at_input" in
           1)
             clear
             NowTime=$(grep "time=" "$work_dir/TimedConfig/ClearAll.conf" | cut -f2 -d "=")
@@ -167,20 +183,20 @@ case "$in_put" in
             echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
-            read put4
-            case "$put4" in
+            read at_fast_input
+            case "$at_fast_input" in
                 1)
                   clear
                   echo -en " » 请输入纯数字，范围 1～30 天："
-                  read day_num
-                  if ! echo "$day_num" | grep [0-9] >>/dev/null; then
+                  read day_input
+                  if ! echo "$day_input" | grep [0-9] >>/dev/null; then
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                  elif [ "$day_num" -lt 1 ]; then
+                  elif [ "$day_input" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1天！设置失败！！\033[0m"
-                  elif [ "$day_num" -gt 30 ]; then
+                  elif [ "$day_input" -gt 30 ]; then
                       echo -en "\033[1;92m » 设置天数超过30天！设置失败！！\033[0m"
                   else
-                      echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/BashCore ClearAll" > "$work_dir/TimedConfig/ClearAll.conf"
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/BashCore ClearAll" > "$work_dir/TimedConfig/ClearAll.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
@@ -190,7 +206,7 @@ case "$in_put" in
                   echo " » 已关闭！"
                   ;;
                 *)
-                  echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
+                  echo -en "\033[91m » 输入错误！\033[0m"
                   ;;
             esac
             ;;
@@ -203,20 +219,20 @@ case "$in_put" in
             echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
-            read put4
-            case "$put4" in
+            read at_cust_input
+            case "$at_cust_input" in
                 1)
                   clear
                   echo -en " » 请输入纯数字，范围 1～24 小时："
-                  read hour_num
-                  if ! echo "$hour_num" | grep [0-9] >>/dev/null; then
+                  read hour_input
+                  if ! echo "$hour_input" | grep [0-9] >>/dev/null; then
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                  elif [ "$hour_num" -lt 1 ]; then
+                  elif [ "$hour_input" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1小时！设置失败！！\033[0m"
-                  elif [ "$hour_num" -ge 24 ]; then
+                  elif [ "$hour_input" -ge 24 ]; then
                       echo -en "\033[1;92m » 设置时间超过24小时！设置失败！！\033[0m"
                   else
-                      echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/BashCore List_Dir" > "$work_dir/TimedConfig/ListDir.conf"
+                      echo -e "time=${hour_input}/H\ndate=0\nrun=$home_dir/BashCore List_Dir" > "$work_dir/TimedConfig/ListDir.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
@@ -226,7 +242,7 @@ case "$in_put" in
                   echo " » 已关闭！"
                   ;;
                 *)
-                  echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
+                  echo -en "\033[91m » 输入错误！\033[0m"
                   ;;
             esac
             ;;
@@ -239,20 +255,20 @@ case "$in_put" in
             echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
-            read put4
-            case "$put4" in
+            read at_storage_input
+            case "$at_storage_input" in
                 1)
                   clear
                   echo -en " » 请输入纯数字，范围 60 分钟："
-                  read minute_num
-                  if ! echo "$minute_num" | grep [0-9] >>/dev/null; then
+                  read minute_input
+                  if ! echo "$minute_input" | grep [0-9] >>/dev/null; then
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                  elif [ "$minute_num" -lt 1 ]; then
+                  elif [ "$minute_input" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1分钟！设置失败！！\033[0m"
-                  elif [ "$minute_num" -ge 60 ]; then
+                  elif [ "$minute_input" -ge 60 ]; then
                       echo -en "\033[1;92m » 设置时间超过1小时！设置失败！！\033[0m"
                   else
-                      echo -e "time=${minute_num}/M\ndate=0\nrun=$home_dir/BashCore All_Dir" > "$work_dir/TimedConfig/ClearDir.conf"
+                      echo -e "time=${minute_input}/M\ndate=0\nrun=$home_dir/BashCore All_Dir" > "$work_dir/TimedConfig/ClearDir.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
@@ -262,7 +278,7 @@ case "$in_put" in
                   echo " » 已关闭！"
                   ;;
                 *)
-                  echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
+                  echo -en "\033[91m » 输入错误！\033[0m"
                   ;;
             esac
             ;;
@@ -275,20 +291,20 @@ case "$in_put" in
             echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
-            read put4
-            case "$put4" in
+            read at_appclean_input
+            case "$at_appclean_input" in
                 1)
                   clear
                   echo -en " » 请输入纯数字，范围 1～30 天："
-                  read day_num
-                  if ! echo "$day_num" | grep [0-9] >>/dev/null; then
+                  read day_input
+                  if ! echo "$day_input" | grep [0-9] >>/dev/null; then
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                  elif [ "$day_num" -lt 1 ]; then
+                  elif [ "$day_input" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1天！设置失败！！\033[0m"
-                  elif [ "$day_num" -gt 30 ]; then
+                  elif [ "$day_input" -gt 30 ]; then
                       echo -en "\033[1;92m » 设置天数超过30天！设置失败！！\033[0m"
                   else
-                      echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/BashCore ClearCache" > "$work_dir/TimedConfig/ClearCache.conf"
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/BashCore ClearCache" > "$work_dir/TimedConfig/ClearCache.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
@@ -298,7 +314,7 @@ case "$in_put" in
                   echo " » 已关闭！"
                   ;;
                 *)
-                  echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
+                  echo -en "\033[91m » 输入错误！\033[0m"
                   ;;
             esac
             ;;
@@ -311,22 +327,23 @@ case "$in_put" in
             echo -e "\033[93m \t0：关闭此功能\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
-            read put4
-            case "$put4" in
+            read at_fileall_input
+            case "$at_fileall_input" in
                 1)
                   clear
                   echo -en " » 请输入纯数字，范围 1～24 小时："
-                  read hour_num
-                  if ! echo "$hour_num" | grep [0-9] >>/dev/null; then
+                  read hour_input
+                  if ! echo "$hour_input" | grep [0-9] >>/dev/null; then
                       echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                  elif [ "$hour_num" -lt 1 ]; then
+                  elif [ "$hour_input" -lt 1 ]; then
                       echo -en "\033[1;92m » 间隔天数少于1小时！设置失败！！\033[0m"
-                  elif [ "$hour_num" -ge 24 ]; then
+                  elif [ "$hour_input" -ge 24 ]; then
                       echo -en "\033[1;92m » 设置时间超过24小时！设置失败！！\033[0m"
                   else
-                      echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/BashCore File_All" > "$work_dir/TimedConfig/FileAll.conf"
+                      echo -e "time=${hour_input}/H\ndate=0\nrun=$home_dir/BashCore File_All" > "$work_dir/TimedConfig/FileAll.conf"
                       echo " » 设定成功！"
                   fi
+                  echo -en "\033[92m » 回车返回\033[0m"; read null
                   ;;
                 0)
                   clear
@@ -342,26 +359,27 @@ case "$in_put" in
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
             ;;
       esac
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     10)
       clear
       if [ "$clearbox_stop_install" = 1 ]; then
-          i1="关闭"
+          text_1="关闭"
       else
-          i1="开启"
+          text_1="开启"
       fi
       echo -e "\033[104m [APP更新安装管理]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：$i1阻止APP更新安装\033[0m\n"
+      echo -e "\033[93m \t1：$text_1阻止APP更新安装\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
-      read put1
-      case "$put1" in
+      read sa_input
+      case "$sa_input" in
           1)
-            if [ "$i1" = "开启" ]; then
+            if [ "$clearbox_stop_install" != 1 ]; then
                 echo -en " » 确认？(y): "
-                read put_3
-                case "$put_3" in
+                read ok_input
+                case "$ok_input" in
                     y | Y)
                       clear
                       "$home_dir/BashCore" StopInstall STOP
@@ -379,26 +397,27 @@ case "$in_put" in
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
             ;;
       esac
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     11)
       clear
       if [ "$clearbox_stop_storage" = 1 ]; then
-          i1="关闭"
+          text_1="关闭"
       else
-          i1="开启"
+          text_1="开启"
       fi
       echo -e "\033[104m [内部储存固定功能]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：$i1固定内部储存\033[0m\n"
+      echo -e "\033[93m \t1：$text_1固定内部储存\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
-      read put1
-      case "$put1" in
+      read ss_input
+      case "$ss_input" in
           1)
-            if [ "$i1" = "开启" ]; then
+            if [ "$clearbox_stop_storage" != 1 ]; then
                 echo -en " » 确认？(y): "
-                read put_3
-                case "$put_3" in
+                read ok_input
+                case "$ok_input" in
                     y | Y)
                       clear
                       "$home_dir/BashCore" StopStorage STOP
@@ -416,33 +435,32 @@ case "$in_put" in
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
             ;;
       esac
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     12)
       clear
-      if [ "$clearbox_stop_cache" = 0 ]; then
-          i2="开启"
+      if [ "$clearbox_stop_cache" = 1 ]; then
+          text_1="关闭"
       else
-          i2="关闭"
+          text_1="开启"
       fi
       echo -e "\033[104m [阻止缓存]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：$i2阻止生成缓存功能\033[0m\n"
+      echo -e "\033[93m \t1：$text_1阻止生成缓存功能\033[0m\n"
       echo -e "\033[93m \t2：软件加入白名单\033[0m\n"
       echo -e "\033[93m \t3：取消白名单软件\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
-      read put2
-      case "$put2" in
+      read sc_input
+      case "$sc_input" in
           1)
-            if [ "$i2" = "开启" ]; then
+            if [ "$clearbox_stop_cache" != 1 ]; then
                 echo -en " » 确认？(y): "
-                read put
-                case "$put" in
+                read ok_input
+                case "$ok_input" in
                     y | Y)
                       clear
-                      if [ "$clearbox_stop_cache" = 0 ]; then
-                          sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
-                      fi
+                      sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
                       echo " » 已开启，重启生效 ~"
                       ;;
                     *)
@@ -458,35 +476,31 @@ case "$in_put" in
             ;;
           2)
             clear
-            # Off SELinux
-            [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
             echo -en " » 请输入软件包名（空格分隔）："
-            read packages
-            [ -z "$packages" ] && echo -en "\033[1;92m » 输入为空！！正在返回主页！\033[0m"
-            for package in $packages; do
+            read packages_input
+            [ -z "$packages_input" ] && echo -en "\033[1;92m » 输入为空！！正在返回主页！\033[0m"
+            for package in $packages_input; do
                 if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
                     echo " » $package 已存在白名单"
                     continue
                 elif ! cmd package list package | grep "package:$package\$" >> /dev/null; then
-                    echo " » $package 不在软件包列表"
+                    echo " » $package 不在软件包列表! "
                     continue
                 else
                     echo "$package" >> "$work_dir/whitelist.prop"
                     echo " » $package 已成功加入白名单!"
                 fi
             done
-            # Reset SELinux
-            [ "$OffSelinux" = 1 ] && setenforce 1
             ;;
           3)
             clear
             echo -en " » 请输入软件包名（空格分隔）："
-            read packages
-            [ -z "$packages" ] && echo -en "\033[1;92m » 输入为空！！正在返回主页！\033[0m"
-            for package in $packages; do
+            read packages_input
+            [ -z "$packages_input" ] && packages_input="null"
+            for package in $packages_input; do
                 if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
                     sed -i /"$package"/d "$work_dir/whitelist.prop"
-                    echo " $package 已成功从白名单中移除！"
+                    echo " $package 已成功从白名单移除！"
                 else
                     echo " $package 不在白名单中！"
                 fi
@@ -495,8 +509,9 @@ case "$in_put" in
           *)
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
             ;;
-        esac
-        ;;
+      esac
+      echo -en "\033[92m » 回车返回\033[0m"; read null
+      ;;
     13)
       clear
       echo -e "\033[104m [磁盘 & 软件优化]\033[0m"
@@ -505,13 +520,12 @@ case "$in_put" in
       echo -e "\033[93m \t2：Dexoat 预编译\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
-      read put3
-      case "$put3" in
+      read dg_input
+      case "$dg_input" in
           1)
             clear
             "$home_dir/BashCore" F2fs_GC
-            echo -en "\033[92m » 回车返回\033[0m"
-            read cache
+            echo -en "\033[92m » 回车返回\033[0m"; read null
             ;;
           2)
             clear
@@ -522,10 +536,11 @@ case "$in_put" in
             echo -e "\033[93m \t3：恢复（RESET）\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
-            read put3
-            case "$put3" in
+            read cust_mode
+            case "$cust_mode" in
                 1)
                   "$home_dir/BashCore" Dexoat_1
+                  echo -en "\033[92m » 回车返回\033[0m"; read null
                   ;;
                 2)
                   clear
@@ -536,19 +551,22 @@ case "$in_put" in
                   echo -e "\033[93m \t3：Everything 模式\033[0m\n"
                   echo -e "\033[96m ==============================================\033[0m\n"
                   echo -n " 请输入相应序号:"
-                  read put3
-                  case "$put3" in
+                  read mode
+                  case "$mode" in
                       1)
                         clear
                         "$home_dir/BashCore" Dexoat_2 speed
+                        echo -en "\033[92m » 回车返回\033[0m"; read null
                         ;;
                       2)
                         clear
                         "$home_dir/BashCore" Dexoat_2 speed-profile
+                        echo -en "\033[92m » 回车返回\033[0m"; read null
                         ;;
                       3)
                         clear
                         "$home_dir/BashCore" Dexoat_2 everything
+                        echo -en "\033[92m » 回车返回\033[0m"; read null
                         ;;
                       *)
                         echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
@@ -557,6 +575,7 @@ case "$in_put" in
                   ;;
                 3)
                   "$home_dir/BashCore" Dexoat_3
+                  echo -en "\033[92m » 回车返回\033[0m"; read null
                   ;;
                 *)
                   echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
@@ -567,6 +586,7 @@ case "$in_put" in
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
             ;;
       esac
+      echo -en "\033[92m » 回车返回\033[0m"; read null
       ;;
     00)
       clear
@@ -581,69 +601,66 @@ case "$in_put" in
       echo -e "\033[93m \t03：查看日志\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " 请输入相应序号:"
-      read put3
-      case "$put3" in
+      read settings_option_input
+      case "$settings_option_input" in
           0)
             clear
             sh "$home_dir/service.sh"
+            echo -en "\033[92m » 回车返回\033[0m"; read null
             ;;
           1)
             clear
-            if [ "$clearall" = 0 ]; then
-                i4="开启"
+            if [ "$clearbox_auto_file_all" = 1 ]; then
+                text_1="关闭"
             else
-                i4="关闭"
-            fi
-            if [ "$clearbox_auto_file_all" = 0 ]; then
-                i5="开启"
-            else
-                i5="关闭"
+                text_1="开启"
             fi
             echo -e "\033[104m [清理设置]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m \t1：外部储存相关设置\033[0m\n"
-            echo -e "\033[93m \t2：$i5一键及定时自动清理时运行文件归类\033[0m\n"
+            echo -e "\033[93m \t2：$text_1一键及定时自动清理时运行文件归类\033[0m\n"
             echo -e "\033[93m \t3：新增清理白名单\033[0m\n"
             echo -e "\033[93m \t4：取消白名单软件\033[0m\n"
             echo -e "\033[93m \t5：缓存清理跳过大小\033[0m\n"
             echo -e "\033[96m==============================================\033[0m\n"
             echo -n " 请输入相应序号:"
-            read put5
-            case "$put5" in
+            read clean_option_input
+            case "$clean_option_input" in
                 1)
                   clear
-                  if [ "$clearbox_clear_disk" = 0 ]; then
-                      i6="开启"
+                  if [ "$clearbox_clear_disk" = 1 ]; then
+                      text_1="关闭"
                   else
-                      i6="关闭"
+                      text_1="开启"
                   fi
-                  if [ "$clearbox_file_all_disk" = 0 ]; then
-                      i7="开启"
+                  if [ "$clearbox_file_all_disk" = 1 ]; then
+                      text_2="关闭"
                   else
-                      i7="关闭"
+                      text_2="开启"
                   fi
-                  if [ "$clearbox_clear_disk" = 0 ]; then
-                      i8="开启"
+                  if [ "$clearbox_clear_disk" = 1 ]; then
+                      text_3="关闭"
                   else
-                      i8="关闭"
+                      text_3="开启"
                   fi
                   echo -e "\033[104m [外部储存相关]\033[0m"
                   echo -e "\033[96m ==============================================\033[0m\n"
-                  echo -e "\033[93m \t1：$i6清理外部储存缓存\033[0m\n"
-                  echo -e "\033[93m \t2：$i7外部储存文件归类\033[0m\n"
-                  echo -e "\033[93m \t3：$i8外部储存文件清理\033[0m\n"
+                  echo -e "\033[93m \t1：$text_1清理外部储存缓存\033[0m\n"
+                  echo -e "\033[93m \t2：$text_2外部储存文件归类\033[0m\n"
+                  echo -e "\033[93m \t3：$text_3外部储存文件清理\033[0m\n"
                   echo -e "\033[96m ==============================================\033[0m\n"
                   echo -n " 请输入相应序号:"
-                  read put6
-                  case "$put6" in
+                  read disk_option_input
+                  case "$disk_option_input" in
                       1)
-                        if [ "$i6" = "开启" ]; then
+                        if [ "$clearbox_clear_disk" != 1 ]; then
                             echo -en " » 确认？(y): "
-                            read cleardisk_i
-                            case "$cleardisk_i" in
+                            read ok_input
+                            case "$ok_input" in
                                 y | Y)
                                   clear
-                                  [ "$cleardisk_i" = 0 ] && sed -i 's/clearbox_clear_disk=0/clearbox_clear_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                  sed -i 's/clearbox_clear_disk=0/clearbox_clear_disk=1/g' "$work_dir/settings.prop"
+                                  echo " » 已开启！"
                                   ;;
                                 *)
                                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -656,13 +673,14 @@ case "$in_put" in
                         fi
                         ;;
                       2)
-                        if [ "$i7" = "开启" ]; then
+                        if [ "$clearbox_file_all_disk" != 1 ]; then
                             echo -en " » 确认？(y): "
-                            read file_all_disk_i
-                            case "$file_all_disk_i" in
+                            read ok_input
+                            case "$ok_input" in
                                 y | Y)
                                   clear
-                                  [ "$clearbox_file_all_disk" = 0 ] && sed -i 's/clearbox_file_all_disk=0/clearbox_file_all_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                  sed -i 's/clearbox_file_all_disk=0/clearbox_file_all_disk=1/g' "$work_dir/settings.prop"
+                                  echo " » 已开启！"
                                   ;;
                                 *)
                                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -675,13 +693,14 @@ case "$in_put" in
                         fi
                         ;;
                       3)
-                        if [ "$i8" = "开启" ]; then
+                        if [ "$clearbox_clear_disk" != 1 ]; then
                             echo -en " » 确认？(y): "
-                            read file_clear_disk_i
-                            case "$file_clear_disk_i" in
+                            read ok_input
+                            case "$ok_input" in
                                 y | Y)
                                   clear
-                                  [ "$clearbox_file_clear_disk" = 0 ] && sed -i 's/clearbox_file_clear_disk=0/clearbox_file_clear_disk=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                                  sed -i 's/clearbox_file_clear_disk=0/clearbox_file_clear_disk=1/g' "$work_dir/settings.prop"
+                                  echo " » 已开启！"
                                   ;;
                                 *)
                                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -699,13 +718,14 @@ case "$in_put" in
                   esac
                   ;;
                 2)
-                  if [ "$i4" = "开启" ]; then
+                  if [ "$clearbox_auto_file_all" != 1 ]; then
                       echo -en " » 确认？(y): "
-                      read put_6
-                      case "$put_6" in
+                      read ok_input
+                      case "$ok_input" in
                           y | Y)
                             clear
-                            [ "$clearbox_auto_file_all" = 0 ] && sed -i 's/clearbox_auto_file_all=0/clearbox_auto_file_all=1/g' "$work_dir/settings.prop" && echo " » 已开启！"
+                            sed -i 's/clearbox_auto_file_all=0/clearbox_auto_file_all=1/g' "$work_dir/settings.prop"
+                            echo " » 已开启！"
                             ;;
                           *)
                             echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -719,36 +739,32 @@ case "$in_put" in
                   ;;
                 3)
                   clear
-                  # Off SELinux
-                  [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
                   echo -en " » 请输入软件包名（空格分隔）："
-                  read packages
-                  [ -z "$packages" ] && echo -en "\033[1;92m » 输入为空！！正在返回主页！\033[0m"
-                  for package in $packages; do
+                  read packages_input
+                  [ -z "$packages_input" ] && packages_input="null"
+                  for package in $packages_input; do
                       if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
                           echo " » $package 已存在白名单"
                           continue
                       elif ! cmd package list package | grep "package:$package\$" >> /dev/null; then
-                          echo " » $package 不在软件包列表"
+                          echo " » $package 不在软件包列表! "
                           continue
                       else
                           if cmd package list package -s | grep "package:$package\$" >> /dev/null; then
-                              echo " » $package 请不要添加系统软件"
+                              echo " » $package 无效. 请不要添加系统软件! "
                               continue
                           fi
                           echo "$package" >> "$work_dir/ClearWhitelist.prop"
                           echo " » $package 已成功加入白名单!"
                       fi
                   done
-                  # Reset SELinux
-                  [ "$OffSelinux" = 1 ] && setenforce 1
                   ;;
                 4)
                   clear
                   echo -en " » 请输入软件包名（空格分隔）："
-                  read packages
-                  [ -z "$packages" ] && echo -en "\033[91m » 输入为空！！正在返回主页！\033[0m"
-                  for package in $packages; do
+                  read packages_input
+                  [ -z "$packages_input" ] && packages_input="null"
+                  for package in $packages_input; do
                       if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
                           sed -i /"$package"/d "$work_dir/ClearWhitelist.prop"
                           echo " $package 已成功从白名单中移除！"
@@ -761,19 +777,19 @@ case "$in_put" in
                   clear
                   echo " » 当前最小大小为 $clearbox_clear_cache_size M"
                   echo -n " » 是否设置新值？(y/N):"
-                  read put
-                  case "$put" in
+                  read ok_input
+                  case "$ok_input" in
                       y | Y)
                         echo -n " » 请输入新值：(单位：兆（M）. 范围：100M):"
-                        read put
-                        if ! echo "$put" | grep [0-9] >>/dev/null; then
+                        read size_input
+                        if ! echo "$size_input" | grep [0-9] >>/dev/null; then
                             echo -en "\033[1;92m » 请输入纯数字！设置失败！！\033[0m"
-                        elif [ "$put" -lt 1 ]; then
+                        elif [ "$size_input" -lt 1 ]; then
                             echo -en "\033[1;92m » 设置大小小于1兆！设置失败！！\033[0m"
-                        elif [ "$put" -ge 100 ]; then
+                        elif [ "$size_input" -gt 100 ]; then
                             echo -en "\033[1;92m » 设置大小超过100兆！设置失败！！\033[0m"
                         else
-                            sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
+                            sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$size_input"'/g' "$work_dir/settings.prop"
                             echo " » 设定成功！"
                         fi
                         ;;
@@ -791,8 +807,8 @@ case "$in_put" in
             clear
             if [ -f "$home_dir/skip_mount" ]; then
                 echo -n " » 是否开启终端UI？您将可以在任意终端键入`ClearBox`命令进入该UI（y/N）:"
-                read put
-                case "$put" in
+                read ok_input
+                case "$ok_input" in
                     y | Y)
                       if rm "$home_dir/skip_mount" 2>/dev/null; then
                           echo " » 已开启，重启生效！"
@@ -806,8 +822,8 @@ case "$in_put" in
                 esac
             else
                 echo -n " » 是否关闭终端UI？（y/N）:"
-                read put
-                case "$put" in
+                read ok_input
+                case "$ok_input" in
                     y | Y)
                       if touch "$home_dir/skip_mount" 2>/dev/null; then
                           echo " » 已关闭，重启生效！"
@@ -823,7 +839,6 @@ case "$in_put" in
             ;;
           00)
             clear
-            [ "$(getenforce)" = "Enforcing" ] && setenforce 0 && OffSelinux=1
             echo -e "\033[104m [关于 ClearBox     $Version]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[92m     CCC  L     EEEEEE     A      RRRRR\033[0m"
@@ -835,14 +850,14 @@ case "$in_put" in
             echo -e "\033[93m \t1：GitHub\033[0m\n"
             echo -e "\033[93m \t2：内测-YHChat\033[0m\n"
             echo -e "\033[93m \t3：内测-Telegram\033[0m\n"
-            if [ "$clearbox_debug_mode" = "1" ]; then
+            if [ "$clearbox_debug_mode" = 1 ]; then
                 DebugTitle=$(echo -en "\033[91m 调试模式已打开 \033[0m")
                 echo -e "\t\t\t\t$DebugTitle"
             fi
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -en " 请输入相应序号:"
-            read put7
-            case "$put7" in
+            read abort_option_input
+            case "$abort_option_input" in
                 1)
                   if am start -a android.intent.action.VIEW -d "https://github.com/FLYCOM-E/ClearBox" >>/dev/null; then
                       echo " » 跳转成功！"
@@ -868,7 +883,6 @@ case "$in_put" in
                   echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
                   ;;
             esac
-            [ "$OffSelinux" = 1 ] && setenforce 1
             ;;
           01)
             clear
@@ -878,8 +892,8 @@ case "$in_put" in
             echo -e "\033[93m \t2：恢复\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -en " 请输入相应序号:"
-            read backup_put
-            case "$backup_put" in
+            read backup_option_input
+            case "$backup_option_input" in
                 1)
                   clear
                   "$home_dir/BashCore" configManager backup
@@ -897,11 +911,13 @@ case "$in_put" in
             ;;
           02)
             echo -en " » 确定完全卸载 ClearBox 并清理残留😉？(y/n): "
-            read unput
-            case "$unput" in
+            read ok_input
+            case "$ok_input" in
                 y | Y)
-                  sh "$home_dir/uninstall.sh" &
-                  wait && clear && exit 0
+                  sh "$home_dir/uninstall.sh"
+                  echo " » 谢谢您一直以来的支持，欢迎再来❤️❤️"
+                  echo " » Bye！"
+                  clear && exit 0
                   ;;
                 *)
                   echo -en "\033[92m » 您选择了否！正在返回主页！\033[0m"
@@ -914,13 +930,13 @@ case "$in_put" in
             if [ -f "$work_dir/LOG.log" ]; then
                 more "$work_dir/LOG.log"
             fi
-            echo -en " » 回车返回"
-            read null
+            echo -en "\033[92m » 回车返回\033[0m"; read null
             ;;
           *)
             echo -en "\033[91m » 输入错误！！正在返回主页！\033[0m"
             ;;
         esac
+        echo -en "\033[92m » 回车返回\033[0m"; read null
         ;;
     e | E | q | Q)
       clear
@@ -940,3 +956,4 @@ while true; do
     md_menu
     sleep 1
 done
+
