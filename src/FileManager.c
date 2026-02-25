@@ -296,7 +296,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         // 循环读取文件格式配置每个后缀并放进数组
         int count = 0;
         char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
-        while (fscanf(config_file_fp, "%s", file_args[count]) == 1)
+        while (fscanf(config_file_fp, "%30s", file_args[count]) == 1)
         {
             count++;
         }
