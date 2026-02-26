@@ -24,12 +24,12 @@ uninstall_md()
     rm -r "/sdcard/Android/ClearBox"
     
     dirList="/data/app /data/media/0 /mnt/expand /mnt/media_rw"
-    
     # 解锁
-    
     for dir in $dirList; do
         "$bin_dir/busybox" chattr -R -i "$dir"
     done
+    
+    kill $(pgrep StopCached)
     for path in "/data/user"/*; do
         "$bin_dir/busybox" chattr -R -i "$path"/* 2>/dev/null
     done
