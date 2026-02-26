@@ -246,6 +246,13 @@ int main(int argc, char * argv[])
             write_log(work_dir, SERVER_NAME, "内部储存固定失败");
         }
     }
+    else if (strcasecmp(argv[1], "Fast_GC") == 0)
+    {
+        if (fast_gc(home_dir, settings_file, 0) != 0)
+        {
+            write_log(work_dir, SERVER_NAME, "FAST GC 失败");
+        }
+    }
     else if (strcasecmp(argv[1], "F2fs_GC") == 0)
     {
         if (f2fs_gc(home_dir) != 0)
