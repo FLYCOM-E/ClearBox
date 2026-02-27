@@ -24,12 +24,18 @@ elif [ -d "/data/adb/ap/bin" ]; then
 elif [ -d "/data/adb/ksu/bin" ]; then
     export bin_dir="/data/adb/ksu/bin"
 else
-    # 这是一个回退方案，很明显一般系统不会带 busybox
-    # 以后可能会内置 chattr 指令集
-    ln -s /system/bin/toybox "$home_dir/bin/busybox"
+    # 这是一个回退方案
+    # 以后可能会内置必要函数不再依赖 busybox
+    for busybox in $(find /data/adb -name "busybox"); do
+        ln -s "$busybox" "$home_dir/bin/busybox"
+    done
     export bin_dir="$home_dir/bin"
 fi
 mkdir -p "$work_dir"
+if [ ! -f "$bin_dir/busybox" ]; then
+    echo "BusyBox not found" > "$work_dir/LOG.log"
+    exit 1
+fi
 echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir/PATH"
 ######
 sh "$home_dir/DirtyClear.sh"
@@ -65,8 +71,6 @@ StartSettings()
     if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
         if [ -d "$home_dir/ProFile" ]; then
             cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
-        else
-            echo "[ $(date) ] No Find ProFile! Please Reinstall Module." > "$work_dir/LOG.log"
         fi
     fi
     for f in "$work_dir/文件格式配置"/*; do
@@ -110,7 +114,7 @@ if [ "$clearbox_stop_cache" = 1 ]; then
         echo "[ $(date) ]：StopCached Start" >> "$work_dir/LOG.log"
     fi
 fi
-if pgrep Timed >/dev/null 2>&1; then
+if pgrep "Timed" >/dev/null 2>&1; then
     killall Timed
 fi
 if "$home_dir/Daemon/Timed" "$work_dir/TimedConfig"; then
