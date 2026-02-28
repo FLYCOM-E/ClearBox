@@ -2,9 +2,7 @@
 
 <div align="center">
 
-[![Magisk](https://img.shields.io/badge/Magisk-20.4+-blue.svg)](https://github.com/topjohnwu/Magisk)
-[![KernelSU](https://img.shields.io/badge/KernelSU-Supported-white.svg)](https://github.com/tiann/KernelSU)
-[![APatch](https://img.shields.io/badge/APatch-Supported-green.svg)](https://github.com/bmax121/APatch)
+[![✨Clean](https://img.shields.io/badge/ClearBox-Magisk Module-blue.svg?logo=android)](https://github.com/FLYCOM-E/ClearBox)
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg)](LICENSE)
 ![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4)
 
