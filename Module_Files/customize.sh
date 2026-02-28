@@ -63,7 +63,7 @@ else
     echo -e " » $TICKUPDATEAPP_3\n"
 fi
 ######
-case "$(getevent -qlc 1 2>/dev/null)" in
+case "$(timeout 10 getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
       if [ "$update" = 1 ]; then
           if [ "$clearbox_stop_install" = 1 ]; then
@@ -124,7 +124,7 @@ sleep "$LONG_S"
 echo -e " » $TICKUPDATETUI_1\n"
 sleep "$LONG_S"
 echo -e " » $TICKTITLE\n"
-case "$(getevent -qlc 1 2>/dev/null)" in
+case "$(timeout 10 getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
       rm "$MODPATH/skip_mount" 2>/dev/null
       echo -e " » $SUCCESSFUL✅\n"
@@ -146,7 +146,7 @@ if [ "$update" = 1 ]; then
     echo -e " » $CONFIGTITLE_2\n"
     sleep "$LONG_S"
     echo -e " » $TICKTITLE\n"
-    case "$(getevent -qlc 1 2>/dev/null)" in
+    case "$(timeout 10 getevent -qlc 1 2>/dev/null)" in
         *KEY_VOLUMEUP*)
           cp -r "$MODPATH/ProFile/"* "$work_dir/文件格式配置/"
           echo -e " » $SUCCESSFUL✅\n"
