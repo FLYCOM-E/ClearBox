@@ -8,6 +8,13 @@
 
 </div>
 
+
+
+   # 🌍 ？
+> **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) **|** **繁体中文** **|**
+
+
+
 # 什麼是 **ClearBox** ？
 
 **ClearBox** 是一個多功能、深度、快速的清理盒子，可為您的設備一鍵騰空空間、儲存整理、鎖定，軟體快取、安裝包、壓縮包、垃圾、空資料夾，壓制快取、文件歸類、清空，阻止軟體更新/安裝一網打盡，自動優化/清理、文件歸類功能，支持添加自定義清理規則和文件清理/整理歸類、白名單等各種規則，支持利用模組自動化系統添加自定義任務

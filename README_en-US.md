@@ -8,6 +8,13 @@
 
 </div>
 
+
+
+   # 🌍 ？
+> **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** **English** **|** [**繁体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
+
+
+
 # What is **ClearBox**?
 
 **ClearBox** is a multi-functional, deep, and fast cleaning tool that can quickly free up space on your device, organize storage, lock, clear software caches, installation packages, compressed files, junk files, empty folders, suppress cache, classify files, clear data, and prevent software updates/installs all in one go. It also supports automatic optimization/cleaning, file categorization features, and allows you to add custom cleaning rules, file cleaning/organization categorization, whitelists, and other rules. Additionally, it supports adding custom tasks via an automation system using modules.
