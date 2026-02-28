@@ -1,6 +1,6 @@
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/ClearBox.png)
 
-
+<div align="center">
 
 [![Magisk](https://img.shields.io/badge/Magisk-20.4+-blue.svg)](https://github.com/topjohnwu/Magisk)
 [![KernelSU](https://img.shields.io/badge/KernelSU-Supported-white.svg)](https://github.com/tiann/KernelSU)
@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg)](LICENSE)
 ![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4)
 
-
+</div>
 
    # 🌍 ？
 > **|** **简体中文** **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) **|** [**繁体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
