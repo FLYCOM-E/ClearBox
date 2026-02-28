@@ -8,54 +8,8 @@
 static int storage_cache_clean(char * data_path, char * work_dir);
 static int StorageClean(char * storage_dir, int home);
 
-int main(int argc, char * argv[])
+int storage_clean(char * work_dir)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    
-    argc--;
-    argv++;
-    if (argc < 1)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    char * work_dir = NULL;
-    
-    while (argc > 1)
-    {
-        if (strcmp(argv[0], "-w") == 0)
-        {
-            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
-            {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-                return 1;
-            }
-            work_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else
-        {
-            fprintf(stderr, L_ARGS_FAILED_2);
-            return 1;
-        }
-    }
-    if (work_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    
     int clear_disk = 0; // 是否清理外部储存
     char sdcard_dir[128] = "", // 外置SD完整路径
          data_dir[128] = "", // 内部储存完整路径

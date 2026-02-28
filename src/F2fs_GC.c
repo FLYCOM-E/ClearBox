@@ -13,31 +13,15 @@ static int fast_gc(void);
 static int get_f2fs_dirty(char * dirty_file);
 static int get_f2fs_free(char * free_file);
 
-int main(int argc, char * argv[])
+int disk_gc(int mode)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    if (argc < 2)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    if (strcasecmp(argv[1], "F2FS_GC") == 0)
+    if (mode == 0)
     {
         return f2fs_gc();
     }
-    else if (strcasecmp(argv[1], "FAST_GC") == 0)
+    else if (mode == 1)
     {
         return fast_gc();
-    }
-    else
-    {
-        fprintf(stderr, L_ARGS_FAILED_2);
-        return 1;
     }
     
     return 0;

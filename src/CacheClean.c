@@ -8,71 +8,13 @@
 #define GET_APPLIST "cmd package list package -3 2>/dev/null"
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
-static int app_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
+static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
 static int system_cache_clean(void);
 
-int main(int argc, char * argv[])
+int app_cache_clean(char * work_dir, int mode)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    
-    argc--;
-    argv++;
-    if (argc < 3)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    char * work_dir = NULL;
-    char * mode = NULL;
-    
-    while (argc > 1)
-    {
-        if (strcmp(argv[0], "-w") == 0)
-        {
-            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
-            {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-                return 1;
-            }
-            work_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else if (strcmp(argv[0], "-m") == 0)
-        {
-            mode = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else
-        {
-            fprintf(stderr, L_ARGS_FAILED_2);
-            return 1;
-        }
-    }
-    if (work_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    if (mode == NULL)
-    {
-        fprintf(stderr, L_ARG_MODE_ERR);
-        return 1;
-    }
-    
     // Case The Mode
-    if (strcmp(mode, "AppCache_3") == 0)
+    if (mode == 0)
     {       
         // whiteList定义
         char whitelist_file[strlen(work_dir) + 32];
@@ -92,7 +34,7 @@ int main(int argc, char * argv[])
         clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk");
          
         //调用处理函数
-        int clear_size = app_cache_clean(DATA_DIR, whitelist_file, clear_cache_size);
+        int clear_size = user_cache_clean(DATA_DIR, whitelist_file, clear_cache_size);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
@@ -129,7 +71,7 @@ int main(int argc, char * argv[])
             {
                 continue;
             }
-            clear_size = app_cache_clean(micro_dir, whitelist_file, clear_cache_size);
+            clear_size = user_cache_clean(micro_dir, whitelist_file, clear_cache_size);
             if (clear_size == -1)
             {
                 fprintf(stderr, L_CC_CLEAR_FAILED_SD);
@@ -141,14 +83,9 @@ int main(int argc, char * argv[])
         }
         closedir(card_id_dp);
     }
-    else if (strcmp(mode, "AppCache_S") == 0)
+    else if (mode == 1)
     {
         return system_cache_clean();
-    }
-    else
-    {
-        fprintf(stderr, L_ARGS_FAILED_2);
-        return 1;
     }
     
     return 0;
@@ -164,7 +101,7 @@ int main(int argc, char * argv[])
 返回：
     int 清理垃圾大小（单位：兆M），失败返回-1
 */
-static int app_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size)
+static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size)
 {
     // 定义所需变量
     int cache_size = 0, clean_size = 0, count = 0, no_count = 0;

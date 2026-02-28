@@ -34,6 +34,17 @@ int write_log(char * config_dir, char * name_id, char * text);
 int set_name_space(void);
 int get_settings_prop(char * settings_file, char * key);
 
+int app_cache_clean(char * work_dir, int mode);
+int cust_rule_clean(char * work_dir);
+int storage_clean(char * work_dir);
+int file_manager(char * work_dir, int mode, char * config_name);
+int app_cust_rule_clean(char * work_dir, char * app_package);
+int set_install(char * work_dir, char * bin_dir, char * mode);
+int set_storage(char * work_dir, char * bin_dir, char * mode);
+int disk_gc(int mode);
+int dexoat(int mode, char * cust_mode);
+int freezer_open(void);
+
 // Lang
 #ifdef zh_CN
     #include "LANG/zh_CN.h"

@@ -17,72 +17,45 @@ else
 endif
 
 home_dir = Module_Files
-bin_dir = Module_Files/bin
 daemon_bin_dir = Module_Files/Daemon
 
 FUNCTIONS_C = src/INCLUDE/functions.c
-ALL_FILE = $(home_dir)/BashCore \
-			$(bin_dir)/AppClean \
-			$(bin_dir)/CacheClean \
-			$(bin_dir)/Dexoat \
-			$(bin_dir)/FreeZer \
-			$(bin_dir)/StorageRuleClean \
-			$(bin_dir)/StorageClean \
-			$(bin_dir)/F2fs_GC \
-			$(bin_dir)/SetInstall \
-			$(bin_dir)/SetStorage \
-			$(bin_dir)/FileManager \
-			$(daemon_bin_dir)/StopCached \
-			$(daemon_bin_dir)/Timed
+BIN_C = src/BashCore.c \
+		src/AppClean.c \
+		src/CacheClean.c \
+		src/Dexoat.c \
+		src/FreeZer.c \
+		src/StorageRuleClean.c \
+		src/StorageClean.c \
+		src/F2fs_GC.c \
+		src/SetInstall.c \
+		src/SetStorage.c \
+		src/FileManager.c \
 
-all: $(ALL_FILE)
+CORE_ELF = $(home_dir)/BashCore
+DAEMON_ELF = $(daemon_bin_dir)/StopCached \
+				$(daemon_bin_dir)/Timed
+
+all: $(CORE_ELF) $(DAEMON_ELF)
 .PHONY: all
 
-$(home_dir)/BashCore: src/BashCore.c
-	@mkdir -p $(bin_dir) $(daemon_bin_dir)
-	$(CC) $(CFLAGS) src/BashCore.c $(FUNCTIONS_C) $(LDFLAGS) -o $(home_dir)/BashCore
+$(CORE_ELF): $(BIN_C)
+	$(CC) $(CFLAGS) $(BIN_C) $(FUNCTIONS_C) $(LDFLAGS) -o $(CORE_ELF)
 
 $(daemon_bin_dir)/StopCached: src/Daemon/StopCached.c
+	@mkdir -p $(daemon_bin_dir)
 	$(CC) $(CFLAGS) src/Daemon/StopCached.c $(FUNCTIONS_C) $(LDFLAGS) -o $(daemon_bin_dir)/StopCached
 
 $(daemon_bin_dir)/Timed: src/Daemon/Timed.c
+	@mkdir -p $(daemon_bin_dir)
 	$(CC) $(CFLAGS) src/Daemon/Timed.c $(FUNCTIONS_C) $(LDFLAGS) -o $(daemon_bin_dir)/Timed
 
-$(bin_dir)/AppClean: src/AppClean.c
-	$(CC) $(CFLAGS) src/AppClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/AppClean
-
-$(bin_dir)/CacheClean: src/CacheClean.c
-	$(CC) $(CFLAGS) src/CacheClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/CacheClean
-
-$(bin_dir)/Dexoat: src/Dexoat.c
-	$(CC) $(CFLAGS) src/Dexoat.c $(LDFLAGS) -o $(bin_dir)/Dexoat
-
-$(bin_dir)/FreeZer: src/FreeZer.c
-	$(CC) $(CFLAGS) src/FreeZer.c $(LDFLAGS) -o $(bin_dir)/FreeZer
-
-$(bin_dir)/StorageRuleClean: src/StorageRuleClean.c
-	$(CC) $(CFLAGS) src/StorageRuleClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/StorageRuleClean
-
-$(bin_dir)/StorageClean: src/StorageClean.c
-	$(CC) $(CFLAGS) src/StorageClean.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/StorageClean
-
-$(bin_dir)/F2fs_GC: src/F2fs_GC.c
-	$(CC) $(CFLAGS) src/F2fs_GC.c $(LDFLAGS) -o $(bin_dir)/F2fs_GC
-
-$(bin_dir)/SetInstall: src/SetInstall.c
-	$(CC) $(CFLAGS) src/SetInstall.c $(LDFLAGS) -o $(bin_dir)/SetInstall
-
-$(bin_dir)/SetStorage: src/SetStorage.c
-	$(CC) $(CFLAGS) src/SetStorage.c $(LDFLAGS) -o $(bin_dir)/SetStorage
-
-$(bin_dir)/FileManager: src/FileManager.c
-	$(CC) $(CFLAGS) src/FileManager.c $(FUNCTIONS_C) $(LDFLAGS) -o $(bin_dir)/FileManager
-
 clean: 
-	@rm $(ALL_FILE)
+	@rm $(CORE_ELF)
+	@rm $(DAEMON_ELF)
 	@rm $(home_dir)/ClearBox.apk
+	@rm -r $(daemon_bin_dir)
 	@rm -r $(home_dir)/语言包
-	@rm -r $(bin_dir)
 
 module_tar: 
 	@cp APKS/ClearBox_$(M_LANG).apk $(home_dir)/ClearBox.apk

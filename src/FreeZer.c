@@ -4,14 +4,8 @@
 #define PROP "ro.build.version.sdk"
 #define SET_FREEZER "device_config put activity_manager_native_boot use_freezer true"
 
-int main(void)
+int freezer_open(void)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    
     int sdk = 0;
     char sdk_str[PROP_VALUE_MAX] = {0};
     

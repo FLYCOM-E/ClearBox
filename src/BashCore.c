@@ -8,20 +8,8 @@
 // 这里每个声明均是一个子功能函数
 static int running(char * args[]);
 static int module_config(char * home_dir, char * mode, char * config_file);
-static int app_cache_clean(char * home_dir, char * work_dir);
-static int system_cache_clean(char * home_dir, char * work_dir);
-static int cust_rule_clean(char * home_dir, char * work_dir);
-static int storage_clean(char * home_dir, char * work_dir);
-static int file_clean(char * home_dir, char * work_dir, char * str);
-static int app_cust_rule_clean(char * home_dir, char * work_dir, char * str);
-static int file_all(char * home_dir, char * work_dir, char * settings_file, int auto_);
-static int set_install(char * home_dir, char * work_dir, char * bin_dir, char * str);
-static int set_storage(char * home_dir, char * work_dir, char * bin_dir, char * str);
-static int f2fs_gc(char * home_dir);
-static int fast_gc(char * home_dir, char * settings_file, int auto_);
-static int dexoat_system(char * home_dir);
-static int dexoat_cust(char * home_dir, char * str);
-static int freezer_open(char * home_dir);
+static int file_all(char * work_dir, char * settings_file, int auto_);
+static int fast_gc(char * settings_file, int auto_);
 
 int main(int argc, char * argv[])
 {
@@ -139,19 +127,19 @@ int main(int argc, char * argv[])
                 switch (i)
                 {
                     case 0: 
-                        fast_gc(home_dir, settings_file, 1);
+                        fast_gc(settings_file, 1);
                         break;
                     case 1: 
-                        app_cache_clean(home_dir, work_dir);
+                        app_cache_clean(work_dir, 0);
                         break;
                     case 2: 
-                        storage_clean(home_dir, work_dir);
+                        storage_clean(work_dir);
                         break;
                     case 3: 
-                        cust_rule_clean(home_dir, work_dir);
+                        cust_rule_clean(work_dir);
                         break;
                     case 4: 
-                        freezer_open(home_dir);
+                        freezer_open();
                         break;
                 }
                 exit(0);
@@ -163,34 +151,34 @@ int main(int argc, char * argv[])
         }
         
         // 文件归类是高资源占用操作不并行
-        file_all(home_dir, work_dir, settings_file, 1);
+        file_all(work_dir, settings_file, 1);
         
         write_log(work_dir, SERVER_NAME, "优化清理");
     }
     else if (strcasecmp(argv[1], "ClearCache") == 0)
     {
-        if (app_cache_clean(home_dir, work_dir) != 0)
+        if (app_cache_clean(work_dir, 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "清理第三方软件缓存失败");
         }
     }
     else if (strcasecmp(argv[1], "Clear_SCache") == 0)
     {
-        if (system_cache_clean(home_dir, work_dir) != 0)
+        if (app_cache_clean(work_dir, 1) != 0)
         {
             write_log(work_dir, SERVER_NAME, "清理系统软件缓存失败");
         }
     }
     else if (strcasecmp(argv[1], "List_Dir") == 0)
     {
-        if (cust_rule_clean(home_dir, work_dir) != 0)
+        if (cust_rule_clean(work_dir) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义规则清理失败");
         }
     }
     else if (strcasecmp(argv[1], "All_Dir") == 0)
     {
-        if (storage_clean(home_dir, work_dir) != 0)
+        if (storage_clean(work_dir) != 0)
         {
             write_log(work_dir, SERVER_NAME, "清理储存目录失败");
         }
@@ -201,7 +189,7 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (file_clean(home_dir, work_dir, argv[2]) != 0)
+        else if (file_manager(work_dir, 0, argv[2]) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义文件清理失败");
         }
@@ -212,14 +200,14 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (app_cust_rule_clean(home_dir, work_dir, argv[2]) != 0)
+        else if (app_cust_rule_clean(work_dir, argv[2]) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义软件清理失败");
         }
     }
     else if (strcasecmp(argv[1], "File_All") == 0)
     {
-        if (file_all(home_dir, work_dir, settings_file, 0) != 0)
+        if (file_all(work_dir, settings_file, 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义文件归类失败");
         }
@@ -230,7 +218,7 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (set_install(home_dir, work_dir, bin_dir, argv[2]) != 0)
+        else if (set_install(work_dir, bin_dir, argv[2]) != 0)
         {
             write_log(work_dir, SERVER_NAME, "阻止安装失败");
         }
@@ -241,28 +229,28 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (set_storage(home_dir, work_dir, bin_dir, argv[2]) != 0)
+        else if (set_storage(work_dir, bin_dir, argv[2]) != 0)
         {
             write_log(work_dir, SERVER_NAME, "内部储存固定失败");
         }
     }
     else if (strcasecmp(argv[1], "Fast_GC") == 0)
     {
-        if (fast_gc(home_dir, settings_file, 0) != 0)
+        if (fast_gc(settings_file, 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "FAST GC 失败");
         }
     }
     else if (strcasecmp(argv[1], "F2fs_GC") == 0)
     {
-        if (f2fs_gc(home_dir) != 0)
+        if (disk_gc(0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "F2FS GC 失败");
         }
     }
     else if (strcasecmp(argv[1], "Dexoat_1") == 0)
     {
-        if (dexoat_system(home_dir) != 0)
+        if (dexoat(0, "null") != 0)
         {
             write_log(work_dir, SERVER_NAME, "运行系统Dexoat失败");
         }
@@ -273,21 +261,21 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (dexoat_cust(home_dir, argv[2]) != 0)
+        else if (dexoat(1, argv[2]) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义模式Dexoat失败");
         }
     }
     else if (strcasecmp(argv[1], "Dexoat_3") == 0)
     {
-        if (dexoat_cust(home_dir, "space") != 0)
+        if (dexoat(1, "space") != 0)
         {
             write_log(work_dir, SERVER_NAME, "Dexoat RESET 失败");
         }
     }
     else if (strcasecmp(argv[1], "Freezer") == 0)
     {
-        freezer_open(home_dir);
+        freezer_open();
     }
     else if (strcasecmp(argv[1], "configManager") == 0)
     {
@@ -350,62 +338,8 @@ static int module_config(char * home_dir, char * mode, char * config_file)
     return running(args);
 }
 
-// 清理第三方软件缓存
-static int app_cache_clean(char * home_dir, char * work_dir)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/CacheClean", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-m", "AppCache_3", NULL};
-    return running(args);
-}
-
-// 清理系统软件缓存
-static int system_cache_clean(char * home_dir, char * work_dir)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/CacheClean", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-m", "AppCache_S", NULL};
-    return running(args);
-}
-
-// 运行处理自定义规则
-static int cust_rule_clean(char * home_dir, char * work_dir)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/StorageRuleClean", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, NULL};
-    return running(args);
-}
-
-// 清理储存目录
-static int storage_clean(char * home_dir, char * work_dir)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/StorageClean", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, NULL};
-    return running(args);
-}
-
-// 文件清理
-static int file_clean(char * home_dir, char * work_dir, char * str)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-m", "fileclean", "-n", str, NULL};
-    return running(args);
-}
-
-// 自定义软件 规则清理
-static int app_cust_rule_clean(char * home_dir, char * work_dir, char * str)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/AppClean", home_dir, BASH_DIR);
-    char * args[] = {bash, "-p", str, "-w", work_dir, NULL};
-    return running(args);
-}
-
 // 文件归类
-static int file_all(char * home_dir, char * work_dir, char * settings_file, int auto_)
+static int file_all(char * work_dir, char * settings_file, int auto_)
 {
     if (auto_ == 1) // 根据prop决定是否运行文件归类（仅用于一键/自动清理
     {
@@ -415,41 +349,11 @@ static int file_all(char * home_dir, char * work_dir, char * settings_file, int 
             return 0;
         }
     }
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/FileManager", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-m", "fileall", "-n", "null", NULL};
-    return running(args);
-}
-
-// 阻止安装
-static int set_install(char * home_dir, char * work_dir, char * bin_dir, char * str)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/SetInstall", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-b", bin_dir, "-s", str, NULL};
-    return running(args);
-}
-
-// 内部储存固定
-static int set_storage(char * home_dir, char * work_dir, char * bin_dir, char * str)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/SetStorage", home_dir, BASH_DIR);
-    char * args[] = {bash, "-w", work_dir, "-b", bin_dir, "-s", str, NULL};
-    return running(args);
-}
-
-// 磁盘GC
-static int f2fs_gc(char * home_dir)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/F2fs_GC", home_dir, BASH_DIR);
-    char * args[] = {bash, "F2FS_GC", NULL};
-    return running(args);
+    return file_manager(work_dir, 1, "null");
 }
 
 // 快速GC
-static int fast_gc(char * home_dir, char * settings_file, int auto_)
+static int fast_gc(char * settings_file, int auto_)
 {
     if (auto_ == 1)
     {
@@ -459,35 +363,5 @@ static int fast_gc(char * home_dir, char * settings_file, int auto_)
             return 0;
         }
     }
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/F2fs_GC", home_dir, BASH_DIR);
-    char * args[] = {bash, "FAST_GC", NULL};
-    return running(args);
-}
-
-// Dexoat 模式1：触发系统Dexoat
-static int dexoat_system(char * home_dir)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/Dexoat", home_dir, BASH_DIR);
-    char * args[] = {bash, "SYSTEM_DEXOAT", NULL};
-    return running(args);
-}
-
-// Dexoat 模式2：自定义模式Dexoat
-static int dexoat_cust(char * home_dir, char * str)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/Dexoat", home_dir, BASH_DIR);
-    char * args[] = {bash, "FAST_DEXOAT", str, NULL};
-    return running(args);
-}
-
-// 其它优化，打开原生墓碑
-static int freezer_open(char * home_dir)
-{
-    char bash[128] = "";
-    snprintf(bash, sizeof(bash), "%s/%s/FreeZer", home_dir, BASH_DIR);
-    char * args[] = {bash, NULL};
-    return running(args);
+    return disk_gc(1);
 }

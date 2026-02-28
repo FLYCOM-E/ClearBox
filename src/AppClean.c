@@ -7,72 +7,8 @@
 
 static int find_package(char * package, char * config_file);
 
-int main(int argc, char * argv[])
+int app_cust_rule_clean(char * work_dir, char * app_package)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    
-    argc--;
-    argv++;
-    if (argc < 4)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    char * work_dir = NULL;
-    char * app_package = NULL;
-    
-    // Get work_dir & package
-    while (argc > 1)
-    {
-        if (strcmp(argv[0], "-w") == 0)
-        {
-            if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-                return 1;
-            }
-            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
-            {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            work_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else if (strcmp(argv[0], "-p") == 0)
-        {
-            if (strlen(argv[1]) > MAX_PACKAGE - 2) // -2 for '\0'
-            {
-                fprintf(stderr, L_PACKAGE_TOOLONG, MAX_PACKAGE);
-                return 1;
-            }
-            app_package = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else
-        {
-            fprintf(stderr, L_ARGS_FAILED_2);
-            return 1;
-        }
-    }
-    if (work_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    if (app_package == NULL)
-    {
-        fprintf(stderr, L_ARG_PACKAGE_ERR);
-        return 1;
-    }
-    
     // 拼接工作目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);

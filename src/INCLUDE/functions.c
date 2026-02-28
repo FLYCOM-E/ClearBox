@@ -242,6 +242,14 @@ int set_name_space(void)
     return 0;
 }
 
+/*
+此函数用于获取模块 Settings 设置信息
+接收：
+    char * settings_file 设置文件（完整路径）
+    char * key 具体 prop
+返回：
+    int 返回 -1 失败，否则返回具体值。非数字值返回 0
+*/
 int get_settings_prop(char * settings_file, char * key)
 {
     int value = 0;
@@ -250,7 +258,7 @@ int get_settings_prop(char * settings_file, char * key)
     FILE * settings_file_fp = fopen(settings_file, "r");
     if (settings_file_fp == NULL)
     {
-        return 1;
+        return -1;
     }
     while (fgets(line, sizeof(line), settings_file_fp))
     {

@@ -4,36 +4,15 @@
 static int dexoat_system(void);
 static int dexoat_cust(char * mode);
 
-int main(int argc, char * argv[])
+int dexoat(int mode, char * cust_mode)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    if (argc < 2)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    if (strcasecmp(argv[1], "SYSTEM_DEXOAT") == 0)
+    if (mode == 0)
     {
         return dexoat_system();
     }
-    else if (strcasecmp(argv[1], "FAST_DEXOAT") == 0)
+    else if (mode == 1)
     {
-        if (argc < 3)
-        {
-            fprintf(stderr, L_ARGS_FAILED);
-            return 1;
-        }
-        return dexoat_cust(argv[2]);
-    }
-    else
-    {
-        fprintf(stderr, L_ARGS_FAILED_2);
-        return 1;
+        return dexoat_cust(cust_mode);
     }
     
     return 0;

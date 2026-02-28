@@ -3,54 +3,8 @@
 
 #define CONFIG_DIR_NAME "清理配置" // 配置目录名称
 
-int main(int argc, char * argv[])
+int cust_rule_clean(char * work_dir)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    
-    argc--;
-    argv++;
-    if (argc < 1)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    // 参数解析
-    char * work_dir = NULL;
-    while (argc > 1)
-    {
-        if (strcmp(argv[0], "-w") == 0)
-        {
-            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
-            {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-                return 1;
-            }
-            work_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else
-        {
-            fprintf(stderr, L_ARGS_FAILED_2);
-            return 1;
-        }
-    }
-    if (work_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    
     /// 配置目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);

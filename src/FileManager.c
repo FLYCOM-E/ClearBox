@@ -14,90 +14,16 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
 
 int file_clear = 0;
 
-int main(int argc, char * argv[])
+int file_manager(char * work_dir, int mode, char * config_name)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    
-    argc--;
-    argv++;
-    if (argc < 5)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    char * work_dir = NULL;
-    char * config_name = NULL;
-    char * mode = NULL;
-    
-    while (argc > 1)
-    {
-        if (strcmp(argv[0], "-w") == 0)
-        {
-            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
-            {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-                return 1;
-            }
-            work_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else if (strcmp(argv[0], "-m") == 0)
-        {
-            mode = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else if (strcmp(argv[0], "-n") == 0)
-        {
-            if (strlen(argv[1]) > MAX_CONFIG_NAME)
-            {
-                fprintf(stderr, L_MODE_TOOLONG);
-                return 1;
-            }
-            config_name = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else
-        {
-            fprintf(stderr, L_ARGS_FAILED_2);
-            return 1;
-        }
-    }
-    if (work_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    if (strcmp(mode, "fileclean") == 0)
+    if (mode == 0)
     {
         // 文件清理模式需要传入配置名称
-        if (config_name == NULL)
-        {
-            fprintf(stderr, L_ARGS_FAILED);
-            return 1;
-        }
         file_clear = 1;
     }
-    else if (strcmp(mode, "fileall") == 0)
+    else if (mode == 1)
     {
         config_name = NULL;
-    }
-    else
-    {
-        fprintf(stderr, L_MODE_ERR, mode);
-        return 1;
     }
     
     int file_clear_disk = 0, file_all_disk = 0;

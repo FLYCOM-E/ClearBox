@@ -7,93 +7,8 @@
 #define SETPROP_STOP "sed -i 's/clearbox_stop_install=0/clearbox_stop_install=1/g' %s/settings.prop" //Max Size 126
 #define SETPROP_RESET "sed -i 's/clearbox_stop_install=1/clearbox_stop_install=0/g' %s/settings.prop" //Max Size 126
 
-int main(int argc, char * argv[])
+int set_install(char * work_dir, char * bin_dir, char * mode)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT);
-        return 1;
-    }
-    
-    argc--;
-    argv++;
-    if (argc < 5)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    char * work_dir = NULL;
-    char * bin_dir = NULL;
-    char * mode = NULL;
-    
-    while (argc > 1)
-    {
-        if (strcmp(argv[0], "-w") == 0)
-        {
-            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
-            {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-                return 1;
-            }
-            work_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else if (strcmp(argv[0], "-b") == 0)
-        {
-            if (strlen(argv[1]) > MAX_BIN_DIR_LEN)
-            {
-                fprintf(stderr, L_BIN_PATH_TOOLONG);
-                return 1;
-            }
-            if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_BIN_PATH_NOTFOUND);
-                return 1;
-            }
-            bin_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else if (strcmp(argv[0], "-s") == 0)
-        {
-            if (strlen(argv[1]) > 5) // is 5
-            {
-                fprintf(stderr, L_MODE_TOOLONG);
-                return 1;
-            }
-            mode = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else
-        {
-            fprintf(stderr, L_ARGS_FAILED_2);
-            return 1;
-        }
-    }
-    if (work_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    if (bin_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_BINPATH_ERR);
-        return 1;
-    }
-    if (mode == NULL)
-    {
-        fprintf(stderr, L_ARG_MODE_ERR);
-        return 1;
-    }
-    
     // Stop & Reset
     char command_data[strlen(bin_dir) + strlen(DATA_DIR) + 64];
     
@@ -122,11 +37,6 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_SI_OFF_FAILED_STORAGE);
         }
         fflush(stdout);
-    }
-    else
-    {
-        fprintf(stderr, L_MODE_ERR, mode);
-        return 1;
     }
     
     char set_prop[strlen(work_dir) + 128];
