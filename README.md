@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Clean](https://img.shields.io/badge/ClearBox-Magisk Module-blue.svg?logo=android)](https://github.com/FLYCOM-E/ClearBox)
+[![✨Clean✨](https://img.shields.io/badge/ClearBox-MagiskModule-blue.svg?logo=android)](https://github.com/FLYCOM-E/ClearBox)
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg)](LICENSE)
 ![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4)
 
