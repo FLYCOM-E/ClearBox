@@ -2,6 +2,14 @@
 
 
 
+[![Magisk](https://img.shields.io/badge/Magisk-20.4+-blue.svg)](https://github.com/topjohnwu/Magisk)
+[![KernelSU](https://img.shields.io/badge/KernelSU-Supported-white.svg)](https://github.com/tiann/KernelSU)
+[![APatch](https://img.shields.io/badge/APatch-Supported-green.svg)](https://github.com/bmax121/APatch)
+[![License](https://img.shields.io/badge/License-GPL--3.0-red.svg)](LICENSE)
+![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4)
+
+
+
 # What is **ClearBox**?
 
 **ClearBox** is a multi-functional, deep, and fast cleaning tool that can quickly free up space on your device, organize storage, lock, clear software caches, installation packages, compressed files, junk files, empty folders, suppress cache, classify files, clear data, and prevent software updates/installs all in one go. It also supports automatic optimization/cleaning, file categorization features, and allows you to add custom cleaning rules, file cleaning/organization categorization, whitelists, and other rules. Additionally, it supports adding custom tasks via an automation system using modules.

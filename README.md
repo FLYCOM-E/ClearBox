@@ -2,6 +2,14 @@
 
 
 
+[![Magisk](https://img.shields.io/badge/Magisk-20.4+-blue.svg)](https://github.com/topjohnwu/Magisk)
+[![KernelSU](https://img.shields.io/badge/KernelSU-Supported-white.svg)](https://github.com/tiann/KernelSU)
+[![APatch](https://img.shields.io/badge/APatch-Supported-green.svg)](https://github.com/bmax121/APatch)
+[![License](https://img.shields.io/badge/License-GPL--3.0-red.svg)](LICENSE)
+![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4)
+
+
+
    # 🌍 ？
 > **|** **简体中文** **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) **|** [**繁体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
 
@@ -21,7 +29,7 @@ __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
    ## [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手动构建：
 ``` shell
-#(请配置NDK并设置变量$NDK为NDK根目录路径)
+#(请配置 NDK 并设置变量 $NDK 为 NDK 根目录路径)
 
 sudo apt install zip make
 
