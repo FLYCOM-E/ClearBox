@@ -185,7 +185,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "File_Clear") == 0)
     {
-        if (argc < 2)
+        if (argc < 3)
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
@@ -196,7 +196,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "Clear_App") == 0)
     {
-        if (argc < 2)
+        if (argc < 3)
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
@@ -214,7 +214,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "StopInstall") == 0)
     {
-        if (argc < 2)
+        if (argc < 3)
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
@@ -225,7 +225,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "StopStorage") == 0)
     {
-        if (argc < 2)
+        if (argc < 3)
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
@@ -257,7 +257,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "Dexoat_2") == 0)
     {
-        if (argc < 2)
+        if (argc < 3)
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
