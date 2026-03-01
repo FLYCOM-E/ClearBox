@@ -112,6 +112,8 @@ jobs:
                 ZIP_URL="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/$ZIP_NAME"
                 
                 sed -i "s|\"zipUrl\": \".*\"|\"zipUrl\": \"$ZIP_URL\"|g" "$JSON_PATH"
+                sed -i "s|\"version\": \".*\"|\"version\": \"$VERSION\"|g" "$JSON_PATH"
+                sed -i "s|\"versionCode\": .*|\"versionCode\": $VERSION_CODE,|g" "$JSON_PATH"
                 echo "Updated $JSON_PATH with $ZIP_URL"
               fi
             done
