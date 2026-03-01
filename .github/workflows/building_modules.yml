@@ -67,11 +67,17 @@ jobs:
           export M_TARGET=${{ matrix.target }}
           bash build.sh
       
+      - name: Unzip artifact for re-packaging
+        run: |
+          ZIP_FILE=$(ls *.zip | head -n 1)
+          unzip -o "$ZIP_FILE" -d temp
+          rm "$ZIP_FILE"
+      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ClearBox-${{ steps.get_version.outputs.version }}-${{ steps.get_version.outputs.versionCode }}-${{ matrix.language }}-${{ matrix.target }}
-          path: ./*.zip
+          path: temp/
           if-no-files-found: error
   
   collect:
