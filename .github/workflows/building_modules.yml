@@ -67,20 +67,11 @@ jobs:
           export M_TARGET=${{ matrix.target }}
           bash build.sh
       
-      - name: Extract module contents
-        run: |
-          mkdir -p output
-          for file in *.zip; do
-              if [ -f "$file" ]; then
-                  unzip -o "$file" -d output/
-              fi
-          done
-      
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ClearBox-${{ steps.get_version.outputs.version }}-${{ steps.get_version.outputs.versionCode }}-${{ matrix.language }}-${{ matrix.target }}
-          path: output/*.zip
+          path: ./*.zip
           if-no-files-found: error
   
   collect:
