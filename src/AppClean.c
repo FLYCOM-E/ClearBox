@@ -7,7 +7,7 @@
 
 static int find_package(char * package, char * config_file);
 
-int app_cust_rule_clean(char * work_dir, char * app_package)
+int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
 {
     // 拼接工作目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
@@ -19,7 +19,8 @@ int app_cust_rule_clean(char * work_dir, char * app_package)
     }
     
     // 遍历配置目录
-    int get_config = 0; // 已成功读取目标配置。需要声明在目录读取循环外部，不然后面读不到
+    int get_config = 0,// 已成功读取目标配置。需要声明在目录读取循环外部，不然后面读不到
+        total_clear_size = 0; // 总清理大小，如模式为全部清理则为所有配置累计清理和（单位 M）
     struct dirent * config_name;
     DIR * config_dir_fp = opendir(config_dir);
     if (config_dir_fp == NULL)
@@ -41,9 +42,12 @@ int app_cust_rule_clean(char * work_dir, char * app_package)
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_name -> d_name);
         
         // 这个函数目标是检查配置文件是否为目标配置文件
-        if (find_package(app_package, config_file) != 1)
+        if (mode == 0)
         {
-            continue;
+            if (find_package(app_package, config_file) != 1)
+            {
+                continue;
+            }
         }
         
         FILE * config_fp = fopen(config_file, "r");
@@ -155,7 +159,8 @@ int app_cust_rule_clean(char * work_dir, char * app_package)
                 }
                 else
                 {
-                    fprintf(stderr, L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
+                    printf(L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
+                    total_clear_size += (clear_size / 1024 / 1024);
                 }
             }
             else
@@ -169,10 +174,11 @@ int app_cust_rule_clean(char * work_dir, char * app_package)
     }
     closedir(config_dir_fp);
     
-    // 多个匹配配置有一个错误都会失败
+    // 此逻辑会导致处理多配置时最后一个处理失败会导致整体失败，暂未修复
     if (get_config == 1)
     {
-        printf(L_AC_CLEAN_SUCCESSFUL);
+        fflush(stdout); // 强制刷新一次，避免输出杂乱
+        fprintf(stderr, L_AC_CLEAN_SUCCESSFUL, total_clear_size);
     }
     else
     {

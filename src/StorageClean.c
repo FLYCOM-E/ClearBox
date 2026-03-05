@@ -31,9 +31,8 @@ int storage_clean(char * work_dir)
     }
     else
     {
-        fprintf(stderr, L_SC_CLEAR_DIRTY, clean_count);
+        fprintf(stderr, L_SC_SUCCESSFUL_STORAGE, clean_count);
     }
-    printf(L_SC_SUCCESSFUL_STORAGE);
     fflush(stdout);
     
     if (clear_disk != 1) // 1 允许清理外部储存
@@ -70,10 +69,9 @@ int storage_clean(char * work_dir)
         }
         else
         {
-            fprintf(stderr, L_SC_CLEAR_DIRTY, clean_count);
+            fprintf(stderr, L_SC_SUCCESSFUL_SD, entry -> d_name, clean_count);
             
         }
-        printf(L_SC_SUCCESSFUL_SD, entry -> d_name);
         fflush(stdout);
     }
     closedir(sdcard_id_dp);

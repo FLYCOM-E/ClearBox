@@ -52,7 +52,7 @@
 #define L_AC_CONFIG_ERR_2 " » %s 配置第 %d 行存在錯誤：路徑逃逸！\n"
 #define L_AC_CLEAR_PATH_ERR " » 清理 %s 失敗！\n"
 #define L_AC_CLEAR_PATH_SUCCESS " » %s 處理成功！%ld 兆\n"
-#define L_AC_CLEAN_SUCCESSFUL " » 軟體規則處理成功！\n"
+#define L_AC_CLEAN_SUCCESSFUL " » 軟體規則處理成功！共清理：%d MB\n"
 #define L_AC_CLEAN_FAILED " » 未找到指定軟體配置或發生錯誤！\n"
 
 // For CacheClean.c
@@ -121,13 +121,12 @@
 #define L_SS_OFF_STOP_STORAGE_FAILED " » 關閉內部儲存固定失敗！\n"
 
 // For StorageClean.c
-#define L_SC_SUCCESSFUL_STORAGE " » 內部儲存垃圾清理完成！\n"
-#define L_SC_SUCCESSFUL_SD " » 外部儲存 %s 垃圾清理完成！\n"
-#define L_SC_CLEAR " » 清理 %s 儲存快取\n"
+#define L_SC_SUCCESSFUL_STORAGE " » 內部儲存空間清理完成！\n » 共清理 %d 個空檔案/資料夾及 Log 檔案\n"
+#define L_SC_SUCCESSFUL_SD " » 外部儲存裝置 %s 清理完成！\n » 共清理 %d 個空檔案/資料夾及 Log 檔案\n"
+#define L_SC_CLEAR " » 正在清理 %s 儲存快取\n"
 #define L_SC_CLEAR_ERR " » 清理 %s 儲存快取失敗！\n"
-#define L_SC_CLEAR_CACHE_DONE " » 共清理 %d 個軟體快取！\n"
-#define L_SC_CLEAR_DIRTY " » 清理成功！共清理 %d 個空檔案/資料夾及Log檔案\n"
-#define L_SC_CLEAR_DIRTY_ERR " » 空檔案/資料夾及Log檔案清理失敗！\n"
+#define L_SC_CLEAR_CACHE_DONE " » 共清理 %d 個應用程式快取！\n"
+#define L_SC_CLEAR_DIRTY_ERR " » 空檔案/資料夾及 Log 檔案清理失敗！\n"
 
 // For StorageRuleClean.c
 #define L_SR_OPEN_CONFIG_ERR " » %s 配置開啟失敗！自動跳過\n"

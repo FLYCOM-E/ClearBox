@@ -38,7 +38,7 @@ int app_cache_clean(char * work_dir, int mode);
 int cust_rule_clean(char * work_dir);
 int storage_clean(char * work_dir);
 int file_manager(char * work_dir, int mode, char * config_name);
-int app_cust_rule_clean(char * work_dir, char * app_package);
+int app_cust_rule_clean(char * work_dir, char * app_package, int mode);
 int set_install(char * work_dir, char * bin_dir, char * mode);
 int set_storage(char * work_dir, char * bin_dir, char * mode);
 int disk_gc(int mode);

@@ -118,8 +118,8 @@ int main(int argc, char * argv[])
     // 根据输入参数执行对应操作
     if (strcasecmp(argv[1], "ClearAll") == 0)
     {
-        pid_t pids[5];
-        for (int i = 0; i < 5; i++)
+        pid_t pids[6];
+        for (int i = 0; i < 6; i++)
         {
             pids[i] = fork();
             if (pids[i] == 0)
@@ -127,25 +127,28 @@ int main(int argc, char * argv[])
                 switch (i)
                 {
                     case 0: 
-                        fast_gc(settings_file, 1);
+                        app_cust_rule_clean(work_dir, "null", 1);
                         break;
                     case 1: 
-                        app_cache_clean(work_dir, 0);
+                        fast_gc(settings_file, 1);
                         break;
                     case 2: 
-                        storage_clean(work_dir);
+                        app_cache_clean(work_dir, 0);
                         break;
                     case 3: 
-                        cust_rule_clean(work_dir);
+                        storage_clean(work_dir);
                         break;
                     case 4: 
+                        cust_rule_clean(work_dir);
+                        break;
+                    case 5:
                         freezer_open();
                         break;
                 }
                 exit(0);
             }
         }
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 6; i++)
         {
             waitpid(pids[i], NULL, 0);
         }
@@ -200,9 +203,16 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (app_cust_rule_clean(work_dir, argv[2]) != 0)
+        else if (app_cust_rule_clean(work_dir, argv[2], 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "自定义软件清理失败");
+        }
+    }
+    else if (strcasecmp(argv[1], "Clear_App_All") == 0)
+    {
+        if (app_cust_rule_clean(work_dir, "null", 1) != 0)
+        {
+            write_log(work_dir, SERVER_NAME, "软件规则清理失败");
         }
     }
     else if (strcasecmp(argv[1], "File_All") == 0)

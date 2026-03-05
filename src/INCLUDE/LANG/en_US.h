@@ -52,7 +52,7 @@
 #define L_AC_CONFIG_ERR_2 " » %s configuration line %d contains an error: path traversal!\n"
 #define L_AC_CLEAR_PATH_ERR " » Failed to clean %s!\n"
 #define L_AC_CLEAR_PATH_SUCCESS " » %s processed successfully! %ld MB\n"
-#define L_AC_CLEAN_SUCCESSFUL " » Application rule processing successful!\n"
+#define L_AC_CLEAN_SUCCESSFUL " » Software rules applied successfully! Total cleaned: %d MB\n"
 #define L_AC_CLEAN_FAILED " » Specified application configuration not found or an error occurred!\n"
 
 // For CacheClean.c
@@ -121,13 +121,12 @@
 #define L_SS_OFF_STOP_STORAGE_FAILED " » Failed to disable internal storage pinning!\n"
 
 // For StorageClean.c
-#define L_SC_SUCCESSFUL_STORAGE " » Internal storage junk cleaning completed!\n"
-#define L_SC_SUCCESSFUL_SD " » External storage %s junk cleaning completed!\n"
+#define L_SC_SUCCESSFUL_STORAGE " » Internal storage cleanup complete!\n » Total cleaned: %d empty files/folders and log files\n"
+#define L_SC_SUCCESSFUL_SD " » External storage %s cleanup complete!\n » Total cleaned: %d empty files/folders and log files\n"
 #define L_SC_CLEAR " » Cleaning %s storage cache\n"
 #define L_SC_CLEAR_ERR " » Failed to clean %s storage cache!\n"
-#define L_SC_CLEAR_CACHE_DONE " » Cleared cache of %d applications in total!\n"
-#define L_SC_CLEAR_DIRTY " » Cleanup successful! A total of %d empty files/folders and Log files cleaned\n"
-#define L_SC_CLEAR_DIRTY_ERR " » Failed to clean empty files/folders and Log files!\n"
+#define L_SC_CLEAR_CACHE_DONE " » Total cleaned: %d app caches!\n"
+#define L_SC_CLEAR_DIRTY_ERR " » Failed to clean empty files/folders and log files!\n"
 
 // For StorageRuleClean.c
 #define L_SR_OPEN_CONFIG_ERR " » Failed to open %s configuration! Automatically skipped\n"

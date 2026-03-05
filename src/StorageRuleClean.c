@@ -105,6 +105,6 @@ int cust_rule_clean(char * work_dir)
     }
     closedir(config_dir_dp);
     
-    printf(L_SR_END);
+    fprintf(stderr, L_SR_END);
     return 0;
 }
