@@ -145,7 +145,7 @@ Create a custom name **.conf** file in this directory, fill in and modify the fo
 ```conf
 time=interval/time unit (currently supports M/minutes, H/hours, D/days)
 date=0
-run=program to run and parameters (note: parameters like 「"xxx xxx", 'xxx xxx'」are currently not supported, only space-separated parsing)
+run=The program and arguments to execute; supports Shell syntax (parsed by Shell).
 post=notification title/notification message (send notification. This is an optional parameter, not recommended for minute-level tasks)
 ```
 

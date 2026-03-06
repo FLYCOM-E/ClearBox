@@ -5,8 +5,7 @@
 #define MAX_CONFIG 512 // 最大配置数量
 #define MAX_CONFIG_NAME 256 // 配置文件名称最大长度
 #define CONFIG_LINE_MAX_LEN 512 // 配置文件行最大长度
-#define MAX_COMMAND_LEN 1024 // 命令最大长度
-#define MAX_COMMAND_ARGS 32 // 命令参数最大数量（包含命令本身）
+#define MAX_COMMAND_LEN 4096 // 命令最大长度
 #define MAX_TITLE_LEN 128 // 通知标题最大长度
 #define MAX_MESSAGE_LEN 512 // 通知内容最大长度
 #define SERVER_NAME "ClearBox Timed"
@@ -111,22 +110,22 @@ int main(int argc, char * argv[])
                 }
                 while (fgets(line, sizeof(line), config_fp))
                 {
+                    // 提取名称/值并匹配读入结构体
+                    
                     line_count++;
                     line[strcspn(line, "\n")] = 0;
                     
-                    // 提取名称/值并匹配读入结构体
+                    // 解析 key/value
                     char * key = strtok(line, "=");
                     char * value = strtok(NULL, "=");
-                    
-                    // 这里仅检查 VALUE，但其实有检查 KEY 的作用
-                    if (value == NULL)
+                    if (value == NULL || key == NULL)
                     {
                         fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
                         continue;
                     }
                     
                     // Case
-                    if (strcmp(key, "time") == 0)
+                    if (strcasecmp(key, "time") == 0)
                     {
                         char * time_str = strtok(value, "/");
                         char * unit_str = strtok(NULL, "/");
@@ -142,19 +141,19 @@ int main(int argc, char * argv[])
                         }
                         time_ = 1;
                     }
-                    else if (strcmp(key, "date") == 0)
+                    else if (strcasecmp(key, "date") == 0)
                     {
                         // 这里不做检查，如果为错值 atol 会返回 0
                         config[read_config].old_time = (time_t)atol(value);
                         date_ = 1;
                     }
-                    else if (strcmp(key, "run") == 0)
+                    else if (strcasecmp(key, "run") == 0)
                     {
                         // 不检查，其实也不好检查
                         snprintf(config[read_config].run, sizeof(config[read_config].run), "%s", value);
                         run_ = 1;
                     }
-                    else if (strcmp(key, "post") == 0)
+                    else if (strcasecmp(key, "post") == 0)
                     {
                         char * message = strchr(value, '/');
                         char * title = strtok(value, "/");
@@ -190,7 +189,7 @@ int main(int argc, char * argv[])
                     run_ != 1)
                 {
                     fprintf(stderr, L_TD_CONFIG_ERROR, entry -> d_name);
-                    continue; // 跳过，read_config不自增，后面解析配置覆盖
+                    continue; // 跳过，read_config 不自增，后面解析自然覆盖
                 }
                 
                 // 保留配置名称
@@ -230,6 +229,7 @@ int main(int argc, char * argv[])
         exit(0);
     }
     setsid();
+    chdir("/");
     int fd = open("/dev/null", O_RDWR);
     dup2(fd, STDIN_FILENO);
     dup2(fd, STDOUT_FILENO);
@@ -241,7 +241,7 @@ int main(int argc, char * argv[])
     snprintf(start_success_str, sizeof(start_success_str), L_TD_START_SUCCESS, read_config);
     post(SERVER_NAME, start_success_str);
     
-    for ( ; ; ) // 主循环
+    for ( ; ; )
     {
         struct tm now_time;
         time_t time_tm = time(NULL);
@@ -299,12 +299,18 @@ int main(int argc, char * argv[])
                     post(config[i].title, config[i].message);
                 }
                 
-                config[i].old_time = time_tm;
+                // 配置文件
                 char config_file[strlen(argv[1]) + strlen(config[i].config_name) + 2];
                 snprintf(config_file, sizeof(config_file), "%s/%s", argv[1], config[i].config_name);
                 
-                /* 如果配置存在则更新，否则不重新创建，这是为了配合前端
-                删掉配置即停用的设置。重启进程前配置仍然生效*/
+                // 更新时间戳
+                config[i].old_time = time_tm;
+                
+                /* 
+                回写
+                如果配置存在则更新，否则不重新创建，这是为了配合前端
+                删掉配置即停用的设置。重启进程前配置仍然生效
+                */
                 if (access(config_file, F_OK) == 0)
                 {
                     FILE * config_file_fp = fopen(config_file, "w");
@@ -349,27 +355,6 @@ int main(int argc, char * argv[])
 
 static int running(char * command)
 {
-    // 解析命令参数
-    char command_cope[MAX_COMMAND_LEN] = {0};
-    snprintf(command_cope, sizeof(command_cope), "%s", command);
-    
-    int count = 0;
-    char * arg = NULL;
-    char * args[MAX_COMMAND_ARGS] = {NULL};
-    arg = strtok(command_cope, " ");
-    while (arg != NULL && count < (MAX_COMMAND_ARGS - 1))
-    {
-        args[count] = arg;
-        count++;
-        arg = strtok(NULL, " ");
-    }
-    if (count == 0)
-    {
-        return 1;
-    }
-    args[MAX_COMMAND_ARGS - 1] = NULL;
-    
-    // 执行命令
     pid_t new_pid = fork();
     if (new_pid == -1)
     {
@@ -377,8 +362,9 @@ static int running(char * command)
     }
     if (new_pid == 0)
     {
-        execvp(args[0], args);
-        _exit(errno);
+        system(command);
+        _exit(1);
     }
+    // 这里不等待子进程，避免阻塞
     return 0;
 }

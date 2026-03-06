@@ -167,6 +167,7 @@ int main(int argc, char * argv[])
         exit(0);
     }
     setsid();
+    chdir("/");
     int std = open("/dev/null", O_RDWR);
     dup2(std, STDIN_FILENO);
     dup2(std, STDOUT_FILENO);
