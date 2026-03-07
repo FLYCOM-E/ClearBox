@@ -19,7 +19,8 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     }
     
     // 遍历配置目录
-    int get_config = 0,// 已成功读取目标配置。需要声明在目录读取循环外部，不然后面读不到
+    int success_config = 0,
+        failed_config = 0,
         total_clear_size = 0; // 总清理大小，如模式为全部清理则为所有配置累计清理和（单位 M）
     struct dirent * config_name;
     DIR * config_dir_fp = opendir(config_dir);
@@ -60,8 +61,7 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
         }
         
         // 遍历配置文件
-        get_config = 0; // 清空配置读取标志
-        int count = 0;
+        int count = 0, get_config = 0;
         char app_dir[64 + MAX_PACKAGE];
         char line[MAX_PATH] = "", app_name[MAX_APP_NAME] = "";
         char * app_package_fp = NULL, * app_name_fp = NULL;
@@ -100,13 +100,15 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
                         if (access(app_dir, F_OK) == 0)
                         {
                             printf(L_AC_CLEAR, app_name);
-                            get_config = 1; //设置已读取配置信息标志
+                            get_config++;
+                            success_config++;
                             fflush(stdout);
                             continue;
                         }
                         else
                         {
                             fprintf(stderr, L_AC_CONFIG_APP_NOTFOUND, config_name -> d_name);
+                            failed_config++;
                             break;
                         }
                     }
@@ -174,15 +176,14 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     }
     closedir(config_dir_fp);
     
-    // 此逻辑会导致处理多配置时最后一个处理失败会导致整体失败，暂未修复
-    if (get_config == 1)
+    if (success_config != 0)
     {
         fflush(stdout); // 强制刷新一次，避免输出杂乱
         fprintf(stderr, L_AC_CLEAN_SUCCESSFUL, total_clear_size);
     }
     else
     {
-        fprintf(stderr, L_AC_CLEAN_FAILED);
+        fprintf(stderr, L_AC_CLEAN_FAILED, failed_config);
         return -1;
     }
     

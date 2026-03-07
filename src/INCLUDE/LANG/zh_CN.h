@@ -53,7 +53,7 @@
 #define L_AC_CLEAR_PATH_ERR " » 清理 %s 失败！\n"
 #define L_AC_CLEAR_PATH_SUCCESS " » %s 处理成功！%ld 兆\n"
 #define L_AC_CLEAN_SUCCESSFUL " » 软件规则处理成功！共清理：%d 兆\n"
-#define L_AC_CLEAN_FAILED " » 未找到指定软件配置或发生错误！\n"
+#define L_AC_CLEAN_FAILED " » 未找到指定软件配置或发生错误！#%d\n"
 
 // For CacheClean.c
 #define L_CC_CLEAR_FAILED " » 内部储存软件缓存清理失败\n"

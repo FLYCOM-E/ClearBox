@@ -53,7 +53,7 @@
 #define L_AC_CLEAR_PATH_ERR " » Failed to clean %s!\n"
 #define L_AC_CLEAR_PATH_SUCCESS " » %s processed successfully! %ld MB\n"
 #define L_AC_CLEAN_SUCCESSFUL " » Software rules applied successfully! Total cleaned: %d MB\n"
-#define L_AC_CLEAN_FAILED " » Specified application configuration not found or an error occurred!\n"
+#define L_AC_CLEAN_FAILED " » Specified application configuration not found or an error occurred! #%d\n"
 
 // For CacheClean.c
 #define L_CC_CLEAR_FAILED " » Failed to clean internal storage application cache\n"
