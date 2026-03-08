@@ -23,7 +23,7 @@ case "$1" in
       mkdir -p "$backupDir"
       cd "$tempDir"
       cp -r "$work_dir"/* "$tempDir/"
-      rm "$tempDir/运行日志.log" "$tempDir/RunStart" "$tempDir/PATH"
+      rm "$tempDir/LOG.log" "$tempDir/LOG.log.bak" "$tempDir/RunStart" "$tempDir/PATH"
       
       if "$bin_dir/busybox" tar -cjf "ClearBox_Config_$Version.tar.bz2" * >/dev/null 2>&1; then
           if mv "ClearBox_Config_$Version.tar.bz2" "$backupDir"; then

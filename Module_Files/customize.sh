@@ -4,6 +4,7 @@ exec 2>>/dev/null
 SKIPUNZIP=1
 SHOUT_S="0.3"
 LONG_S="1"
+TIMEOUT_S="10"
 update=0
 if [ -f "/data/adb/wipe_cache/PATH" ]; then
     source "/data/adb/wipe_cache/PATH"
@@ -63,7 +64,7 @@ else
     echo -e " » $TICKUPDATEAPP_3\n"
 fi
 ######
-case "$(timeout 10 getevent -qlc 1 2>/dev/null)" in
+case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
       if [ "$update" = 1 ]; then
           if [ "$clearbox_stop_install" = 1 ]; then
@@ -124,7 +125,7 @@ sleep "$LONG_S"
 echo -e " » $TICKUPDATETUI_1\n"
 sleep "$LONG_S"
 echo -e " » $TICKTITLE\n"
-case "$(timeout 10 getevent -qlc 1 2>/dev/null)" in
+case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
     *KEY_VOLUMEUP*)
       rm "$MODPATH/skip_mount" 2>/dev/null
       echo -e " » $SUCCESSFUL✅\n"
@@ -146,7 +147,7 @@ if [ "$update" = 1 ]; then
     echo -e " » $CONFIGTITLE_2\n"
     sleep "$LONG_S"
     echo -e " » $TICKTITLE\n"
-    case "$(timeout 10 getevent -qlc 1 2>/dev/null)" in
+    case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
         *KEY_VOLUMEUP*)
           cp -r "$MODPATH/ProFile/"* "$work_dir/文件格式配置/"
           echo -e " » $SUCCESSFUL✅\n"

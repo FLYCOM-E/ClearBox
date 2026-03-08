@@ -42,7 +42,7 @@ sh "$home_dir/DirtyClear.sh"
 ######
 StartSettings()
 {
-    PropSetting()
+    PropInit()
     {
         [ -z "$clearbox_stop_cache" ] && echo "clearbox_stop_cache=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_stop_install" ] && echo "clearbox_stop_install=0" >> "$work_dir/settings.prop"
@@ -58,7 +58,7 @@ StartSettings()
     ######
     touch "$work_dir/settings.prop" 2>/dev/null
     source "$work_dir/settings.prop"
-    PropSetting
+    PropInit
     ######
     mkdir -p "$work_dir/清理规则"
     mkdir -p "$work_dir/清理配置"
@@ -76,7 +76,9 @@ StartSettings()
     for f in "$work_dir/文件格式配置"/*; do
         name1=$(echo "$f" | cut -f1 -d '.')
         name2=$(echo "$f" | cut -f2 -d '.')
-        [ ! "$name2" = "conf" ] && mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
+        if [ ! "$name2" = "conf" ]; then
+            mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
+        fi
     done
     ######
     source "$work_dir/settings.prop"
@@ -115,7 +117,7 @@ if [ "$clearbox_stop_cache" = 1 ]; then
     fi
 fi
 if pgrep "Timed" >/dev/null 2>&1; then
-    killall Timed
+    kill $(pgrep Timed)
 fi
 if "$home_dir/Daemon/Timed" "$work_dir/TimedConfig"; then
     echo "[ $(date) ]：Timed Start" >> "$work_dir/LOG.log"
