@@ -12,11 +12,6 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
-if [ "$clearbox_debug_mode" = 1 ]; then
-    exec 2>>"$work_dir/LOG.log"
-else
-    exec 2>>/dev/null
-fi
 Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
 Str_1=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d '=' | cut -f1 -d "|")
 Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
