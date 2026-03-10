@@ -2,7 +2,7 @@
 # ClearBox
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
-export home_dir=${0%/*}
+export home_dir="${0%/*}"
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
 set=0
@@ -73,9 +73,20 @@ StartSettings()
             cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
         fi
     fi
-    for f in "$work_dir/文件格式配置"/*; do
-        name1=$(echo "$f" | cut -f1 -d '.')
-        name2=$(echo "$f" | cut -f2 -d '.')
+    if [ "$(ls "$work_dir/清理规则/")" = "" ]; then
+        if [ -d "$home_dir/AppConfig" ]; then
+            cmd package list package | cut -f2 -d ':' >"$work_dir/清理规则/AppList.txt"
+            for file in "$home_dir/AppConfig/"*; do
+                name="$(basename $file | sed 's/\.[^.]*$//')"
+                if grep "$name" "$work_dir/清理规则/AppList.txt" >/dev/null 2>&1; then
+                    cp "$file" "$work_dir/清理规则/"
+                fi
+            done
+        fi
+    fi   
+    for file in "$work_dir/文件格式配置/"*; do
+        name1=$(echo "$file" | cut -f1 -d '.')
+        name2=$(echo "$file" | cut -f2 -d '.')
         if [ ! "$name2" = "conf" ]; then
             mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
         fi
