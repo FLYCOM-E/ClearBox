@@ -349,7 +349,7 @@ int main(int argc, char * argv[])
         
         // 回收子进程
         while (waitpid(-1, NULL, WNOHANG) > 0);
-        sleep(60 - (time(NULL) % 60));
+        sleep((unsigned int)(60 - (time(NULL) % 60)));
     }
 }
 
