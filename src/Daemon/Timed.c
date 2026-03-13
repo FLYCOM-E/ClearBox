@@ -267,7 +267,7 @@ int main(int argc, char * argv[])
     for ( ; ; )
     {
         time_t now_time = time(NULL);
-        struct tm now_time_local
+        struct tm now_time_local;
         localtime_r(&now_time, &now_time_local);
         
         int i = 0;
@@ -322,7 +322,7 @@ int main(int argc, char * argv[])
                 snprintf(config_file, sizeof(config_file), "%s/%s", argv[1], config[i].config_name);
                 
                 // 更新时间戳
-                config[i].old_time = time_tm;
+                config[i].old_time = now_time;
                 
                 /* 
                 回写
