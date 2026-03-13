@@ -130,41 +130,41 @@ Clear system software cache, system cache, and also clear **MTP** host data (can
 
 
 
-## **8**：Automatic Cleaning
+## 8: Auto Cleanup
 
-Feature automation, driven by the **Timed** component for execution (ultra-low overhead).
+Feature automation, driven by the **Timed** component (ultra-low overhead).
 
-### **•  Did You Know?**
+### **•  Did you know?**
 
-You can use this module's **Timed** feature to run custom tasks! Please configure as follows:
+You can use the **Timed** module to run custom tasks! Follow the configuration below:
 
-Configuration directory：**`/data/adb/wipe_cache/TimedConfig`**
+Config Directory: **`/data/adb/wipe_cache/TimedConfig`**
 
-Create a custom name **.conf** file in this directory, fill in and modify the following three lines：
+In this directory, create a **.conf** file with a custom name, then add and modify the following lines (some are optional):
 
 ```conf
-time=interval/time unit (currently supports M/minutes, H/hours, D/days)
+time=Interval/Unit (Currently supports M/min, H/hour, D/day)
 date=0
-run=The program and arguments to execute; supports Shell syntax (parsed by Shell).
-post=notification title/notification message (send notification. This is an optional parameter, not recommended for minute-level tasks)
+run=Program and arguments to execute; supports Shell syntax (parsed by Shell)
+in=Start Hour/End Hour (Runs between Hour X and Hour X. Optional; do not exceed 23. Note: non-daily tasks will run multiple times within this window)
+post=Notification Title/Content (Sends a notification. Optional; not recommended for minute-level tasks)
 ```
 
-Example：
+Example:
 
-```conf
-time=1/H
+```
+time=1/D
 date=0
 run=/system/bin/sync
-post=Test Run/Has run "/system/bin/sync"
+in=0/5
+post=Test Run/Executed "/system/bin/sync"
 ```
 
-The above configuration will run the **`/system/bin/sync`** command once every hour and send a notification
+The above configuration will run the **/system/bin/sync** command once between **0:00** and **5:00** AM daily and send a notification.
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/timed_notification.png)
 
-After filling and saving, you need to manually execute **Make Current Configuration Effective Immediately** or **Restart** for **the task to take effect!**
-
-Note：Not suitable for time-precise tasks. Daily tasks will only run between 0-6 AM！
+After saving, you must manually run **Apply Current Configuration** or **Reboot** for the task to take effect!
 
 
 

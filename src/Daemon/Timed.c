@@ -23,6 +23,10 @@ struct config_file
     int post;
     char title[MAX_TITLE_LEN];
     char message[MAX_MESSAGE_LEN];
+    // For in time
+    int in;
+    int start_hour;
+    int end_hour;
     // other
     char run[MAX_COMMAND_LEN];
     char config_name[MAX_CONFIG_NAME];
@@ -153,6 +157,25 @@ int main(int argc, char * argv[])
                         snprintf(config[read_config].run, sizeof(config[read_config].run), "%s", value);
                         run_ = 1;
                     }
+                    else if (strcasecmp(key, "in") == 0)
+                    {
+                        config[read_config].start_hour = 0;
+                        config[read_config].end_hour = 0;
+                        
+                        char * start_tm_str = strtok(value, "/");
+                        char * end_tm_str = strtok(NULL, "/");
+                        if (start_tm_str && end_tm_str)
+                        {
+                            config[read_config].start_hour = atoi(start_tm_str);
+                            config[read_config].end_hour = atoi(end_tm_str);
+                            config[read_config].in = 1;
+                        }
+                        else
+                        {
+                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                            continue;
+                        }
+                    }
                     else if (strcasecmp(key, "post") == 0)
                     {
                         char * message = strchr(value, '/');
@@ -243,46 +266,41 @@ int main(int argc, char * argv[])
     
     for ( ; ; )
     {
-        struct tm now_time;
-        time_t time_tm = time(NULL);
-        localtime_r(&time_tm, &now_time);
-        
+        time_t now_time = time(NULL);
+        struct tm now_time_local
+        localtime_r(&now_time, &now_time_local);
         
         int i = 0;
         while (i < read_config)
         {
-            struct tm old_time;
-            localtime_r(&config[i].old_time, &old_time);
-            
             int run = 0;
+            if (config[i].in == 1)
+            {
+                if (!(now_time_local.tm_hour >= config[i].start_hour &&
+                    now_time_local.tm_hour <= config[i].end_hour))
+                {
+                    continue;
+                }
+            }
             switch (config[i].time_unit) // 匹配配置对应时间单位判断是否需要执行
             {
                 case 'D':
                     // day
-                    if ((now_time.tm_mday - old_time.tm_mday) >= config[i].time_num ||
-                       now_time.tm_mon != old_time.tm_mon ||
-                       now_time.tm_year != old_time.tm_year)
+                    if (difftime(now_time, config[i].old_time) >= (config[i].time_num * 86400))
                     {
-                        // 在0点到5点之间执行
-                        if (now_time.tm_hour >= 0 &&
-                           now_time.tm_hour <= 5)
-                        {
-                            run = 1;
-                        }
+                        run = 1;
                     }
                     break;
                 case 'H':
                     // hour
-                    if ((now_time.tm_hour - old_time.tm_hour) >= config[i].time_num ||
-                       now_time.tm_mday != old_time.tm_mday)
+                    if (difftime(now_time, config[i].old_time) >= (config[i].time_num * 3600))
                     {
                         run = 1;
                     }
                     break;
                 case 'M':
                     // minute
-                    if ((now_time.tm_min - old_time.tm_min) >= config[i].time_num ||
-                       now_time.tm_hour != old_time.tm_hour)
+                    if (difftime(now_time, config[i].old_time) >= (config[i].time_num * 60))
                     {
                         run = 1;
                     }

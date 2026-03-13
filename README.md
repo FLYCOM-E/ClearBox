@@ -140,31 +140,31 @@ bash build.sh
 
 配置目录：**`/data/adb/wipe_cache/TimedConfig`**
 
-在此目录下创建一个自定义名称 **.conf** 文件，填入并修改以下三行：
+在此目录下创建一个自定义名称 **.conf** 文件，填入并修改以下行（部分可选）：
 
 ```conf
 time=间隔时间/时间单位（目前支持M/分、H/时、D/天）
 date=0
 run=要运行的程序及参数，支持 Shell 语法（交由 Shell 解析）
+in=开始时间/结束时间（在X点到X点之间运行。这是一个可选参数，填写值请不要超过23，注意非天级任务会在此时段内多次运行）
 post=通知标题/通知内容（发送通知。这是一个可选参数，不建议在分钟级任务加这个）
 ```
 
 实例：
 
 ```conf
-time=1/H
+time=1/D
 date=0
 run=/system/bin/sync
+in=0/5
 post=Test Run/已运行“/system/bin/sync”
 ```
 
-以上配置会在每小时运行一次 **`/system/bin/sync`** 命令，并发送一个通知
+以上配置会在每天凌晨0~5点之间运行一次 **`/system/bin/sync`** 命令，并发送一条通知
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/timed_notification.png)
 
 填写完后保存，您需要手动运行 **立即生效当前配置** 或 **重启** 后 **该任务才会生效！**
-
-注：不适用于时间精确任务，天级任务仅会在凌晨0~6点运行！
 
 
 

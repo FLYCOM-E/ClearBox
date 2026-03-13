@@ -181,7 +181,7 @@ case "$input" in
                   elif [ "$day_input" -gt 30 ]; then
                       echo -e "\033[1;92m » 设置天数超过30天！设置失败！！\033[0m"
                   else
-                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/BashCore ClearAll" > "$work_dir/TimedConfig/ClearAll.conf"
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/BashCore ClearAll\nin=0/5" > "$work_dir/TimedConfig/ClearAll.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
@@ -289,7 +289,7 @@ case "$input" in
                   elif [ "$day_input" -gt 30 ]; then
                       echo -e "\033[1;92m » 设置天数超过30天！设置失败！！\033[0m"
                   else
-                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/BashCore ClearCache" > "$work_dir/TimedConfig/ClearCache.conf"
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/BashCore ClearCache\nin=0/5" > "$work_dir/TimedConfig/ClearCache.conf"
                       echo " » 设定成功！"
                   fi
                   ;;
