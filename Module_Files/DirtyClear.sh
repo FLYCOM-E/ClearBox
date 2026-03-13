@@ -25,8 +25,12 @@ exec 2>>/dev/null
 [ -n "$DebugPro" ] && sed -i 's|DebugPro=|clearbox_debug_mode=|g' "$work_dir/settings.prop"
 [ -n "$ClearCacheSize" ] && sed -i 's|ClearCacheSize=|clearbox_clear_cache_size=|g' "$work_dir/settings.prop"
 
-grep -q "in=" "$work_dir/TimedConfig/ClearAll.conf" || echo "in=0/5" >> "$work_dir/TimedConfig/ClearAll.conf"
-grep -q "in=" "$work_dir/TimedConfig/ClearCache.conf" || echo "in=0/5" >> "$work_dir/TimedConfig/ClearCache.conf"
+if [ -f "$work_dir/TimedConfig/ClearAll.conf" ]; then
+    grep -q "in=" "$work_dir/TimedConfig/ClearAll.conf" || echo "in=0/5" >> "$work_dir/TimedConfig/ClearAll.conf"
+fi
+if [ -f "$work_dir/TimedConfig/ClearCache.conf" ]; then
+    grep -q "in=" "$work_dir/TimedConfig/ClearCache.conf" || echo "in=0/5" >> "$work_dir/TimedConfig/ClearCache.conf"
+fi
 
 [ "$clearbox_clear_cache_size" -gt 100 ] && sed -i 's|clearbox_clear_cache_size=[0-9]*|clearbox_clear_cache_size=5|g' "$work_dir/settings.prop"
 sed -i '/^$/d' "$work_dir/settings.prop"
