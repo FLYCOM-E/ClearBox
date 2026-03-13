@@ -279,6 +279,7 @@ int main(int argc, char * argv[])
                 if (!(now_time_local.tm_hour >= config[i].start_hour &&
                     now_time_local.tm_hour <= config[i].end_hour))
                 {
+                    i++;
                     continue;
                 }
             }
