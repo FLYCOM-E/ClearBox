@@ -40,6 +40,7 @@
 #define L_TD_START_SUCCESS " » Service started successfully！A total of %d configurations loaded！\n"
 #define L_TD_W_POST_TITLE_TOOLONG " » Warning: %s configuration notification title length exceeds limit！Truncated\n"
 #define L_TD_W_POST_MESSAGE_TOOLONG " » Warning: %s configuration notification message length exceeds limit！Truncated\n"
+#define L_TD_CONFIG_WRITE_ERROR " » %s configuration write-back failed, reason: %s\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » Cleaning %s &\n"

@@ -40,6 +40,7 @@
 #define L_TD_START_SUCCESS " » 服务启动成功！共加载 %d 个配置！\n"
 #define L_TD_W_POST_TITLE_TOOLONG " » 警告：%s 配置通知标题长度超过限制！已截断\n"
 #define L_TD_W_POST_MESSAGE_TOOLONG " » 警告：%s 配置通知内容长度超过限制！已截断\n"
+#define L_TD_CONFIG_WRITE_ERROR " » %s 配置回写失败，原因：%s\n"
 
 // For AppClean.c
 #define L_AC_CLEAR " » 清理 %s &\n"

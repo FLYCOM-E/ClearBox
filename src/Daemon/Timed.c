@@ -30,6 +30,7 @@ struct config_file
     // other
     char run[MAX_COMMAND_LEN];
     char config_name[MAX_CONFIG_NAME];
+    time_t last_error_notify;
 };
 
 int main(int argc, char * argv[])
@@ -90,8 +91,15 @@ int main(int argc, char * argv[])
             }
             
             // 拼接完整路径并跳过目录/链接
-            char path[strlen(argv[1]) + strlen(entry -> d_name) + 2];
+            size_t path_len = (strlen(argv[1]) + strlen(entry -> d_name) + 2);
+            if (path_len > MAX_PATH)
+            {
+                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
+                continue;
+            }
+            char path[path_len];
             snprintf(path, sizeof(path), "%s/%s", argv[1], entry -> d_name);
+            
             if (lstat(path, &file_stat) == -1)
             {
                 continue;
@@ -133,10 +141,14 @@ int main(int argc, char * argv[])
                     {
                         char * time_str = strtok(value, "/");
                         char * unit_str = strtok(NULL, "/");
-                        if (time_str && unit_str)
+                        if (time_str && unit_str &&
+                            atoi(time_str) != 0 &&
+                            (unit_str[0] == 'D' ||
+                            unit_str[0] == 'H' ||
+                            unit_str[0] == 'M'))
                         {
-                            config[read_config].time_num = atoi(time_str);
                             config[read_config].time_unit = unit_str[0];
+                            config[read_config].time_num = atoi(time_str);
                         }
                         else
                         {
@@ -147,13 +159,22 @@ int main(int argc, char * argv[])
                     }
                     else if (strcasecmp(key, "date") == 0)
                     {
-                        // 这里不做检查，如果为错值 atol 会返回 0
+                        // 这里不做检查，如果出错则默认为当前时间
                         config[read_config].old_time = (time_t)atol(value);
+                        if (config[read_config].old_time <= 0)
+                        {
+                            config[read_config].old_time = time(NULL);
+                        }
                         date_ = 1;
                     }
                     else if (strcasecmp(key, "run") == 0)
                     {
-                        // 不检查，其实也不好检查
+                        // 不检查命令（不好做检查）
+                        if (strlen(value) >= MAX_COMMAND_LEN)
+                        {
+                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                            continue;
+                        }
                         snprintf(config[read_config].run, sizeof(config[read_config].run), "%s", value);
                         run_ = 1;
                     }
@@ -164,10 +185,24 @@ int main(int argc, char * argv[])
                         
                         char * start_tm_str = strtok(value, "/");
                         char * end_tm_str = strtok(NULL, "/");
+                        
                         if (start_tm_str && end_tm_str)
                         {
-                            config[read_config].start_hour = atoi(start_tm_str);
-                            config[read_config].end_hour = atoi(end_tm_str);
+                            int start_hour = 0, end_hour = 0;
+                            start_hour = atoi(start_tm_str);
+                            end_hour = atoi(end_tm_str);
+                            
+                            if (start_hour > 23 ||
+                                start_hour < 0 ||
+                                end_hour > 23 ||
+                                end_hour < 0)
+                            {
+                                fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                                continue;
+                            }
+                            
+                            config[read_config].start_hour = start_hour;
+                            config[read_config].end_hour = end_hour;
                             config[read_config].in = 1;
                         }
                         else
@@ -322,9 +357,6 @@ int main(int argc, char * argv[])
                 char config_file[strlen(argv[1]) + strlen(config[i].config_name) + 2];
                 snprintf(config_file, sizeof(config_file), "%s/%s", argv[1], config[i].config_name);
                 
-                // 更新时间戳
-                config[i].old_time = now_time;
-                
                 /* 
                 回写
                 如果配置存在则更新，否则不重新创建，这是为了配合前端
@@ -332,20 +364,49 @@ int main(int argc, char * argv[])
                 */
                 if (access(config_file, F_OK) == 0)
                 {
+                    errno = 0;
                     FILE * config_file_fp = fopen(config_file, "w");
                     if (config_file_fp)
                     {
-                        if (config[i].post == 1)
+                        if (config[i].post == 1 && config[i].in == 1)
+                        {
+                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s\npost=%s/%s\nin=%d/%d",
+                                    // time
+                                    config[i].time_num, config[i].time_unit,
+                                    // date
+                                    now_time,
+                                    // run
+                                    config[i].run,
+                                    // post
+                                    config[i].title, config[i].message,
+                                    // in
+                                    config[i].start_hour, config[i].end_hour
+                                  );
+                        }
+                        else if (config[i].post == 1 && config[i].in == 0)
                         {
                             fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s\npost=%s/%s",
                                     // time
                                     config[i].time_num, config[i].time_unit,
                                     // date
-                                    config[i].old_time,
+                                    now_time,
                                     // run
                                     config[i].run,
                                     // post
                                     config[i].title, config[i].message
+                                  );
+                        }
+                        else if (config[i].post == 0 && config[i].in == 1)
+                        {
+                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s\nin=%d/%d",
+                                    // time
+                                    config[i].time_num, config[i].time_unit,
+                                    // date
+                                    now_time,
+                                    // run
+                                    config[i].run,
+                                    // in
+                                    config[i].start_hour, config[i].end_hour
                                   );
                         }
                         else
@@ -354,14 +415,28 @@ int main(int argc, char * argv[])
                                     // time
                                     config[i].time_num, config[i].time_unit,
                                     // date
-                                    config[i].old_time,
+                                    now_time,
                                     // run
                                     config[i].run
                                   );
                         }
                         fclose(config_file_fp);
                     }
+                    // Check Errno
+                    if (errno != 0 &&
+                        difftime(now_time, config[i].last_error_notify) >= 3600)
+                    {
+                        char error_text[512] = {0};
+                        snprintf(error_text, sizeof(error_text), L_TD_CONFIG_WRITE_ERROR,
+                                 config[i].config_name,
+                                 strerror(errno));
+                        post(SERVER_NAME, error_text);
+                        config[i].last_error_notify = now_time; // 记录上次通知时间，避免短时间多次通知
+                    }
                 }
+                
+                // 更新时间戳
+                config[i].old_time = now_time;
             }
             i++;
         }
@@ -381,8 +456,8 @@ static int running(char * command)
     }
     if (new_pid == 0)
     {
-        system(command);
-        _exit(1);
+        execl("/bin/sh", "sh", "-c", command, NULL);
+        _exit(errno);
     }
     // 这里不等待子进程，避免阻塞
     return 0;
