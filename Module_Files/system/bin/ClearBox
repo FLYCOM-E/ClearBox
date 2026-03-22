@@ -15,6 +15,8 @@ fi
 Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
 Str_1=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d '=' | cut -f1 -d "|")
 Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
+file_config_dir="文件格式配置"
+app_config_dir="清理规则"
 ######
 # 菜单函数
 md_menu()
@@ -65,14 +67,14 @@ case "$input" in
       ;;
     6)
       clear
-      if [ -z "$(ls "$work_dir/文件格式配置/")" ]; then
+      if [ -z "$(ls "$work_dir/$file_config_dir/")" ]; then
           echo -e "\033[91m » 无文件格式配置！请尝试重装模块。\033[0m"
           return 1
       fi
       count=0
       echo -e "\n\033[104m [深度清理，请备份重要文档！！]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      for file in "$work_dir/文件格式配置"/*; do
+      for file in "$work_dir/$file_config_dir"/*; do
          filename=$(basename "$file" | cut -f1 -d ".")
          count=$((count + 1))
          Num[$count]="$count,$filename"
@@ -105,14 +107,14 @@ case "$input" in
       ;;
     7)
       clear
-      if [ -z "$(ls "$work_dir/清理规则/")" ]; then
+      if [ -z "$(ls "$work_dir/$app_config_dir/")" ]; then
           echo -e "\033[91m » 无App清理配置！\033[0m"
           return 1
       fi
       count=0
       echo -e "\n\033[104m [软件清理，建议预检查配置文件]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      for file in "$work_dir/清理规则"/*; do
+      for file in "$work_dir/$app_config_dir"/*; do
          appname=$(cat "$file" | grep '@' | cut -f2 -d '/')
          count=$((count + 1))
          Num[$count]="$count,$appname"

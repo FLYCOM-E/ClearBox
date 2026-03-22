@@ -3,6 +3,9 @@
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
 export home_dir="${0%/*}"
+app_config_dir="清理规则"
+storage_config_dir="清理配置"
+file_config_dir="文件格式配置"
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
 set=0
@@ -60,35 +63,36 @@ StartSettings()
     source "$work_dir/settings.prop"
     PropInit
     ######
-    mkdir -p "$work_dir/清理规则"
-    mkdir -p "$work_dir/清理配置"
-    mkdir -p "$work_dir/文件格式配置"
+    mkdir -p "$work_dir/$app_config_dir"
+    mkdir -p "$work_dir/$storage_config_dir"
+    mkdir -p "$work_dir/$file_config_dir"
     mkdir -p "$work_dir/TimedConfig"
     ######
     [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
     [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
     ######
-    if [ "$(ls "$work_dir/文件格式配置/")" = "" ]; then
+    if [ "$(ls "$work_dir/$file_config_dir/")" = "" ]; then
         if [ -d "$home_dir/ProFile" ]; then
-            cp -r "$home_dir/ProFile/"* "$work_dir/文件格式配置/"
+            cp -r "$home_dir/ProFile/"* "$work_dir/$file_config_dir/"
         fi
     fi
-    if [ "$(ls "$work_dir/清理规则/")" = "" ]; then
+    if [ "$(ls "$work_dir/$app_config_dir/")" = "" ]; then
         if [ -d "$home_dir/AppConfig" ]; then
-            cmd package list package | cut -f2 -d ':' >"$work_dir/清理规则/AppList.txt"
+            cmd package list package | cut -f2 -d ':' >"$work_dir/$app_config_dir/AppList.txt"
             for file in "$home_dir/AppConfig/"*; do
                 name="$(basename $file | sed 's/\.[^.]*$//')"
-                if grep "$name" "$work_dir/清理规则/AppList.txt" >/dev/null 2>&1; then
-                    cp "$file" "$work_dir/清理规则/"
+                if grep "$name" "$work_dir/$app_config_dir/AppList.txt" >/dev/null 2>&1; then
+                    cp "$file" "$work_dir/$app_config_dir/"
                 fi
             done
+            rm -f "$work_dir/$app_config_dir/AppList.txt"
         fi
     fi   
-    for file in "$work_dir/文件格式配置/"*; do
+    for file in "$work_dir/$file_config_dir/"*; do
         name1=$(echo "$file" | cut -f1 -d '.')
         name2=$(echo "$file" | cut -f2 -d '.')
         if [ ! "$name2" = "conf" ]; then
-            mv "$work_dir/文件格式配置/$name1.$name2" "$work_dir/文件格式配置/$name1.conf"
+            mv "$work_dir/$file_config_dir/$name1.$name2" "$work_dir/$file_config_dir/$name1.conf"
         fi
     done
     ######

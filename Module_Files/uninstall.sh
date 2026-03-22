@@ -12,8 +12,9 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
+lang_dir="语言包"
 source "$work_dir/settings.prop"
-source "$home_dir/语言包/Local.conf"
+source "$home_dir/$lang_dir/Local.conf"
 exec 2>>/dev/null
 ######
 # 还原模块设置并执行卸载

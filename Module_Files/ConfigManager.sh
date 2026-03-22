@@ -11,10 +11,11 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
+lang_dir="语言包"
 backupDir="/sdcard/Android/ClearBox"
 tempDir="/data/local/ClearBox_temp"
 source "$work_dir/settings.prop"
-source "$home_dir/语言包/Local.conf"
+source "$home_dir/$lang_dir/Local.conf"
 Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
 ######
 case "$1" in

@@ -11,6 +11,8 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
-"$home_dir/BashCore" ClearAll
+if ! am start wipe.cache.module/com.projectkr.shell.SplashActivity; then
+    "$home_dir/BashCore" ClearAll
+fi
 
 exit 0
