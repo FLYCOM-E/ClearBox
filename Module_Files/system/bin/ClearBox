@@ -115,9 +115,10 @@ case "$input" in
       echo -e "\n\033[104m [软件清理，建议预检查配置文件]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
       for file in "$work_dir/$app_config_dir"/*; do
-         appname=$(cat "$file" | grep '@' | cut -f2 -d '/')
+         appname=$(grep '@' "$file" | head -n1 | cut -f2 -d '/')
+         app_package=$(grep '@' "$file" | head -n1 | cut -f1 -d '/' | cut -f2 -d '@')
          count=$((count + 1))
-         Num[$count]="$count,$appname"
+         Num[$count]="$count,$app_package"
          echo -e "\033[93m\t $count：清理 $appname\033[0m\n"
       done
       echo -e "\033[96m ==============================================\033[0m\n"
@@ -127,9 +128,9 @@ case "$input" in
       while true; do
          count_2=$((count_2 + 1))
          if [ "$(echo "${Num[$count_2]}" | cut -f1 -d ',')" = "$ac_input" ]; then
-             appname=$(echo "${Num[$count_2]}" | cut -f2 -d ',')
+             app_package=$(echo "${Num[$count_2]}" | cut -f2 -d ',')
              clear
-             "$home_dir/BashCore" Clear_App "$appname"
+             "$home_dir/BashCore" Clear_App "$app_package"
              break
          fi
          [ "$count_2" = "$count" ] && echo -e "\033[91m » 输入错误！\033[0m" && break

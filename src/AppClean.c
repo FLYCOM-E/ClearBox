@@ -211,14 +211,14 @@ static int find_package(char * package, char * config_file)
     {
         return -1;
     }
-    while (fgets(config_len, sizeof(config_len), config_file_fp))
+    if (fgets(config_len, sizeof(config_len), config_file_fp) != NULL)
     {
         config_len[strcspn(config_len, "\n")] = 0;
-        if (strstr(config_len, package))
+        char * config_len_p = config_len;
+        while (isspace(* config_len_p)) config_len_p++;
+        if (* config_len_p == '@')
         {
-            char * config_len_p = config_len;
-            while (isspace(* config_len_p)) config_len_p++;
-            if (* config_len_p == '@')
+            if (strstr(config_len, package))
             {
                 end = 1;
             }
