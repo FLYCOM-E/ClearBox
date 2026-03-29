@@ -5,15 +5,15 @@
 #define ROM_NAME "RunStart" //Max Size 30
 #define WHITELIST_NAME "whitelist.prop" // 白名单文件
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
-#define MICRO_DATA_PATH "/mnt/expand/%s/user/0" //Max Size 100
-#define GET_SD_ID "ls /mnt/expand/ | cut -f1 -d ' '"
+#define MICRO_CARD_PATH "/mnt/expand"
+#define MAX_CARD 5 // 最大拓展卡数量
+#define MAX_CARD_ID_LEN 256
 #define LOGPRINT __android_log_print
 #define SERVER_NAME "ClearBox StopCached"
 
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
-                        char * bin_dir, int skip_reset
-                       );
+                        char * bin_dir, int skip_reset);
 
 int main(int argc, char * argv[])
 {
@@ -85,15 +85,36 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    //micro_dir定义
-    char card_id[128] = "", micro_dir[256] = "";
-    FILE * card_id_fp = popen(GET_SD_ID, "r");
-    if (card_id_fp)
+    // 检查及读取外部拓展储存
+    int card_count = 0;
+    struct dirent * entry;
+    char card_list[MAX_CARD][strlen(MICRO_CARD_PATH) + MAX_CARD_ID_LEN] = {0};
+    DIR * micro_card_dp = opendir(MICRO_CARD_PATH);
+    if (micro_card_dp)
     {
-        fgets(card_id, sizeof(card_id), card_id_fp);
-        card_id[strcspn(card_id, "\n")] = 0;
-        snprintf(micro_dir, sizeof(micro_dir), MICRO_DATA_PATH, card_id);
-        pclose(card_id_fp);
+        while ((entry = readdir(micro_card_dp)))
+        {
+            if (strcmp(entry -> d_name, ".") == 0 ||
+                strcmp(entry -> d_name, "..") == 0)
+            {
+                continue;
+            }
+            
+            if (card_count <= MAX_CARD)
+            {
+                snprintf(card_list[card_count], sizeof(card_list[card_count]),
+                         "%s/%s/user/0", MICRO_CARD_PATH, entry -> d_name);
+                if (access(card_list[card_count], F_OK) == 0)
+                {
+                    card_count++;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        closedir(micro_card_dp);
     }
     
     //定义储存文件
@@ -294,10 +315,15 @@ int main(int argc, char * argv[])
         // 调用处理函数，这里配合前面检查，skip_stop 为 1 则跳过
         if (skip_stop == 0)
         {
+            // 内部储存
             set_app_cache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
-            if (access(micro_dir, F_OK) == 0) //如果存在拓展SD则处理
+            // 外部储存
+            if (card_count > 0)
             {
-                set_app_cache(micro_dir, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+                for (int i = 0; i < card_count; i++)
+                {
+                    set_app_cache(card_list[i], top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+                }
             }
         }
         // 循环返回 ===
