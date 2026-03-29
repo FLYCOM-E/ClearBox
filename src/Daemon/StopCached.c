@@ -100,7 +100,7 @@ int main(int argc, char * argv[])
                 continue;
             }
             
-            if (card_count <= MAX_CARD)
+            if (card_count < MAX_CARD)
             {
                 snprintf(card_list[card_count], sizeof(card_list[card_count]),
                          "%s/%s/user/0", MICRO_CARD_PATH, entry -> d_name);
