@@ -83,6 +83,8 @@ int whitelist_check(char * whitelist_file, char * package)
     }
     else
     {
+        fprintf(stderr, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
+        errno = 0;
         end = -1;
     }
     return end;
@@ -213,7 +215,8 @@ int write_log(char * config_dir, char * name_id, char * text)
     }
     else
     {
-        fprintf(stderr, "WARN: LogFile Open error\n\n");
+        fprintf(stderr, L_OPEN_FILE_FAILED, log_file, strerror(errno));
+        errno = 0;
     }
     return 0;
 }
@@ -258,6 +261,8 @@ int get_settings_prop(char * settings_file, char * key)
     FILE * settings_file_fp = fopen(settings_file, "r");
     if (settings_file_fp == NULL)
     {
+        fprintf(stderr, L_OPEN_FILE_FAILED, settings_file, strerror(errno));
+        errno = 0;
         return -1;
     }
     while (fgets(line, sizeof(line), settings_file_fp))

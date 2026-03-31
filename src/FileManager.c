@@ -205,6 +205,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
+            fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
             continue;
         }
         
@@ -323,9 +324,17 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
                     {
                         if (file_clear == 1) // 清理模式直接清理并返回
                         {
-                            remove(path);
-                            file_count++;
+                            if (remove(path) == 0)
+                            {
+                                file_count++;
+                            }
+                            else
+                            {
+                                fprintf(stderr, L_DELETE_ERROR, path, strerror(errno));
+                                errno = 0;
+                            }
                             break;
+                            
                         }
                         
                         // 提取文件名称
@@ -347,7 +356,8 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
                         }
                         else
                         {
-                            fprintf(stderr, L_MOVE_ERROR, path);
+                            fprintf(stderr, L_MOVE_ERROR, path, strerror(errno));
+                            errno = 0;
                         }
                         break;
                     }

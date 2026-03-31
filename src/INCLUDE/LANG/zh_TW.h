@@ -16,15 +16,15 @@
 #define L_NOCONFIG " » 未找到任何配置！\n"
 #define L_ARG_BINPATH_ERR " » 未傳入 Bin 目錄！\n"
 #define L_OPEN_PATH_FAILED " » %s 目錄開啟失敗！\n"
-#define L_OPEN_FILE_FAILED " » %s 檔案開啟失敗！\n"
+#define L_OPEN_FILE_FAILED " » %s 檔案開啟失敗: %s\n"
 #define L_PATH_NOTISDIR " » %s 不是一個目錄！\n"
 #define L_PATH_NOTISFILE " » %s 不是一個檔案！\n"
 #define L_GET_APPLIST_ERROR " » 獲取軟體列表失敗！\n"
 #define L_GET_SYSTEM_VERSION_ERR " » 獲取系統版本失敗！\n"
 #define L_PATH_STAT_FAILED " » 獲取 %s 資訊失敗！\n"
 #define L_W_SETPROP_ERR " » 警告：PROP設定失敗！\n"
-#define L_MOVE_ERROR " » %s 移動失敗\n"
-#define L_DELETE_ERR " » 刪除 %s 失敗！\n"
+#define L_MOVE_ERROR " » %s 移動失敗: %s\n"
+#define L_DELETE_ERROR " » 刪除 %s 失敗: %s\n"
 #define L_SERVER_START_ERR " » 進程啟動失敗！\n"
 
 // For StopCached
@@ -73,11 +73,8 @@
 // For F2fs_GC.c
 #define L_FG_ERR_NOF2FS " » 您的裝置不是 F2FS 檔案系統\n » 維護僅支援 F2FS 環境！\n"
 #define L_FG_ERR_CHECK " » 您的裝置不支援當前GC功能\n"
-#define L_FG_W_GET_FREE " » 警告：取得目前空閒段失敗！\n"
-#define L_FG_W_GET_DIRTY " » 警告：取得目前髒段失敗！\n"
 #define L_FG_DIRTY " » 目前髒段: %d\n"
 #define L_FG_FREE " » 目前空閒段: %d\n\n"
-#define L_FG_ERR_OPENSYSFS " » GC啟動失敗! 節點開啟失敗！\n"
 #define L_FG_START " » GC已開始, 請您耐心等待，建議掛後台！\n"
 #define L_FG_ERR_WRITESYSFS " » GC啟動失敗! 節點寫入失敗！\n"
 #define L_FG_ERR_TIMEOUT " » GC等待逾時，已結束等待！\n"
@@ -130,7 +127,6 @@
 #define L_SC_CLEAR_DIRTY_ERR " » 空檔案/資料夾及 Log 檔案清理失敗！\n"
 
 // For StorageRuleClean.c
-#define L_SR_OPEN_CONFIG_ERR " » %s 配置開啟失敗！自動跳過\n"
 #define L_SR_START " » 處理 %s 配置📍\n"
 #define L_SR_W_CONFIG_STATTPATH_ERR " » 警告：%s 配置指定初始路徑不存在！\n"
 #define L_SR_CLEAR_SUCCESSFUL " » 清理 %s 成功！%ld 兆\n"

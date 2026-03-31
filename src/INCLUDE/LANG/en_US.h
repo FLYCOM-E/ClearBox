@@ -16,15 +16,15 @@
 #define L_NOCONFIG " » No configuration found!\n"
 #define L_ARG_BINPATH_ERR " » No Bin directory provided!\n"
 #define L_OPEN_PATH_FAILED " » Failed to open directory %s!\n"
-#define L_OPEN_FILE_FAILED " » Failed to open file %s!\n"
+#define L_OPEN_FILE_FAILED " » Failed to open file %s: %s\n"
 #define L_PATH_NOTISDIR " » %s is not a directory！\n"
 #define L_PATH_NOTISFILE " » %s is not a file！\n"
 #define L_GET_APPLIST_ERROR " » Failed to get application list!\n"
 #define L_GET_SYSTEM_VERSION_ERR " » Failed to get system version!\n"
 #define L_PATH_STAT_FAILED " » Failed to get information for %s!\n"
 #define L_W_SETPROP_ERR " » Warning: PROP setting failed!\n"
-#define L_MOVE_ERROR " » Failed to move %s\n"
-#define L_DELETE_ERR " » Failed to delete %s!\n"
+#define L_MOVE_ERROR " » Failed to move %s: %s\n"
+#define L_DELETE_ERROR " » Failed to delete %s: %s\n"
 #define L_SERVER_START_ERR " » Process startup failed!\n"
 
 // For StopCached
@@ -73,11 +73,8 @@
 // For F2fs_GC.c
 #define L_FG_ERR_NOF2FS " » Your device does not use the F2FS filesystem\n » Maintenance is only supported in F2FS environments!\n"
 #define L_FG_ERR_CHECK " » Your device does not support the current GC function\n"
-#define L_FG_W_GET_FREE " » Warning: Failed to get current free segments!\n"
-#define L_FG_W_GET_DIRTY " » Warning: Failed to get current dirty segments!\n"
 #define L_FG_DIRTY " » Current dirty segments: %d\n"
 #define L_FG_FREE " » Current free segments: %d\n\n"
-#define L_FG_ERR_OPENSYSFS " » GC startup failed! Failed to open node!\n"
 #define L_FG_START " » GC has started, please wait patiently. It is recommended to run in the background!\n"
 #define L_FG_ERR_WRITESYSFS " » GC startup failed! Failed to write to node!\n"
 #define L_FG_ERR_TIMEOUT " » GC wait timeout, waiting has been terminated!\n"
@@ -130,7 +127,6 @@
 #define L_SC_CLEAR_DIRTY_ERR " » Failed to clean empty files/folders and log files!\n"
 
 // For StorageRuleClean.c
-#define L_SR_OPEN_CONFIG_ERR " » Failed to open %s configuration! Automatically skipped\n"
 #define L_SR_START " » Processing %s configuration📍\n"
 #define L_SR_W_CONFIG_STATTPATH_ERR " » Warning: Starting path specified in %s configuration does not exist!\n"
 #define L_SR_CLEAR_SUCCESSFUL " » Cleaned %s successfully! %ld MB\n"

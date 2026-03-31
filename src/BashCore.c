@@ -49,7 +49,7 @@ int main(int argc, char * argv[])
     FILE * path_file_fp = fopen(PATH_ROM_FILE, "r");
     if (path_file_fp == NULL)
     {
-        fprintf(stderr, " » Error：Read PATH\n");
+        fprintf(stderr, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
         return 1;
     }
     while (fgets(path_file_line, sizeof(path_file_line), path_file_fp))
@@ -107,6 +107,10 @@ int main(int argc, char * argv[])
         {
             fprintf(fp, "home_dir=%s\nwork_dir=%s\nbin_dir=%s", home_dir, work_dir, bin_dir);
             fclose(fp);
+        }
+        else
+        {
+            fprintf(stderr, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
         }
         return 1;
     }

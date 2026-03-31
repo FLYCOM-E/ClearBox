@@ -117,7 +117,8 @@ int main(int argc, char * argv[])
                 FILE * config_fp = fopen(path, "r");
                 if (config_fp == NULL)
                 {
-                    fprintf(stderr, L_OPEN_PATH_FAILED, entry -> d_name);
+                    fprintf(stderr, L_OPEN_FILE_FAILED, entry -> d_name, strerror(errno));
+                    errno = 0;
                     continue;
                 }
                 while (fgets(line, sizeof(line), config_fp))

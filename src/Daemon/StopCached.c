@@ -125,40 +125,48 @@ int main(int argc, char * argv[])
     char top_app_list[5][MAX_PACKAGE] = {0}, reset_app[MAX_PACKAGE] = "";
     
     //提取RunStart储存值（如有）
-    char tmp[16] = "";
-    char rom_key_line[MAX_PACKAGE] = "";
-    char * rom_key_line_p = NULL;
-    FILE * rom_file_fp_r = fopen(rom_file, "r");
-    if (rom_file_fp_r)
+    if (access(rom_file, F_OK) == 0)
     {
-        while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp_r) != NULL)
+        char tmp[16] = "";
+        char rom_key_line[MAX_PACKAGE] = "";
+        char * rom_key_line_p = NULL;
+        FILE * rom_file_fp_r = fopen(rom_file, "r");
+        if (rom_file_fp_r)
         {
-            rom_key_line[strcspn(rom_key_line, "\n")] = 0;
-            //if匹配，如没找到对应值或值为空则跳过（保持原空值）
-            int i = 0;
-            while (i <= 4)
+            while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp_r) != NULL)
             {
-                snprintf(tmp, sizeof(tmp), "%d=", i + 1);
-                if (strstr(rom_key_line, tmp))
+                rom_key_line[strcspn(rom_key_line, "\n")] = 0;
+                //if匹配，如没找到对应值或值为空则跳过（保持原空值）
+                int i = 0;
+                while (i <= 4)
+                {
+                    snprintf(tmp, sizeof(tmp), "%d=", i + 1);
+                    if (strstr(rom_key_line, tmp))
+                    {
+                        rom_key_line_p = strchr(rom_key_line, '=');
+                        if (rom_key_line_p)
+                        {
+                            snprintf(top_app_list[i], sizeof(top_app_list[i]), "%s", rom_key_line_p + 1);
+                        }
+                    }
+                    i++;
+                }
+                if (strstr(rom_key_line, "reset="))
                 {
                     rom_key_line_p = strchr(rom_key_line, '=');
                     if (rom_key_line_p)
                     {
-                        snprintf(top_app_list[i], sizeof(top_app_list[i]), "%s", rom_key_line_p + 1);
+                        snprintf(reset_app, sizeof(reset_app), "%s", rom_key_line_p + 1);
                     }
                 }
-                i++;
             }
-            if (strstr(rom_key_line, "reset="))
-            {
-                rom_key_line_p = strchr(rom_key_line, '=');
-                if (rom_key_line_p)
-                {
-                    snprintf(reset_app, sizeof(reset_app), "%s", rom_key_line_p + 1);
-                }
-            }
+            fclose(rom_file_fp_r);
         }
-        fclose(rom_file_fp_r);
+        else
+        {
+            fprintf(stderr, L_OPEN_FILE_FAILED, rom_file, strerror(errno));
+            errno = 0;
+        }
     }
     
     // 如果包名含“ / ”则丢弃

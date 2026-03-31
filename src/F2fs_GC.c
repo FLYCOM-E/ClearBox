@@ -78,7 +78,7 @@ static int f2fs_gc(void)
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
     if (f2fs_sysfs_file_fp == NULL)
     {
-        fprintf(stderr, L_FG_ERR_OPENSYSFS);
+        fprintf(stderr, L_OPEN_FILE_FAILED, f2fs_sysfs_file, strerror(errno));
         return 1;
     }
     if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
@@ -126,6 +126,11 @@ static int f2fs_gc(void)
                 fflush(stdout);
                 break;
             }
+        }
+        else
+        {
+            fprintf(stderr, L_OPEN_FILE_FAILED, f2fs_sysfs_file, strerror(errno));
+            errno = 0;
         }
         
         if (time_m == 0)
@@ -182,8 +187,8 @@ static int get_f2fs_dirty(char * dirty_file)
     }
     else
     {
-        printf(L_FG_W_GET_DIRTY);
-        fflush(stdout);
+        fprintf(stderr, L_OPEN_FILE_FAILED, dirty_file, strerror(errno));
+        errno = 0;
         return 0;
     }
     return atoi(cache);
@@ -207,8 +212,8 @@ static int get_f2fs_free(char * free_file)
     }
     else
     {
-        printf(L_FG_W_GET_FREE);
-        fflush(stdout);
+        fprintf(stderr, L_OPEN_FILE_FAILED, free_file, strerror(errno));
+        errno = 0;
         return 0;
     }
     return atoi(cache);

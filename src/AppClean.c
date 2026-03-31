@@ -54,6 +54,8 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
         FILE * config_fp = fopen(config_file, "r");
         if (config_fp == NULL)
         {
+            fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+            errno = 0;
             closedir(config_dir_fp);
             continue;
             // 这里本来应直接退出，这是异常行为
@@ -209,6 +211,8 @@ static int find_package(char * package, char * config_file)
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
     {
+        fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+        errno = 0;
         return -1;
     }
     if (fgets(config_len, sizeof(config_len), config_file_fp) != NULL)

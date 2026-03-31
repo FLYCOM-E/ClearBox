@@ -33,7 +33,8 @@ int cust_rule_clean(char * work_dir)
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
-            fprintf(stderr, L_SR_OPEN_CONFIG_ERR, config_file_name -> d_name);
+            fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+            errno = 0;
             continue;
         }
         
