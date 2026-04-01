@@ -15,7 +15,7 @@
 #define L_ARG_CONFIGPATH_ERR " » 未传入配置目录！\n"
 #define L_NOCONFIG " » 未找到任何配置！\n"
 #define L_ARG_BINPATH_ERR " » 未传入 Bin 目录！\n"
-#define L_OPEN_PATH_FAILED " » %s 目录打开失败！\n"
+#define L_OPEN_PATH_FAILED " » %s 目录打开失败: %s\n"
 #define L_OPEN_FILE_FAILED " » %s 文件打开失败: %s\n"
 #define L_PATH_NOTISDIR " » %s 不是一个目录！\n"
 #define L_PATH_NOTISFILE " » %s 不是一个文件！\n"

@@ -14,7 +14,7 @@ int cust_rule_clean(char * work_dir)
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir);
+        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
         return 1;
     }
     
@@ -34,7 +34,6 @@ int cust_rule_clean(char * work_dir)
         if (config_file_fp == NULL)
         {
             fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
-            errno = 0;
             continue;
         }
         

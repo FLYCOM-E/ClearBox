@@ -44,6 +44,7 @@ int storage_clean(char * work_dir)
     DIR * sdcard_id_dp = opendir(CARD_HOME);
     if (sdcard_id_dp == NULL)
     {
+        fprintf(stderr, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
         return 0;
     }
     while ((entry = readdir(sdcard_id_dp)))
@@ -91,7 +92,7 @@ static int storage_cache_clean(char * data_path, char * work_dir)
 {
     if (access(data_path, F_OK) != 0)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, data_path);
+        fprintf(stderr, L_OPEN_PATH_FAILED, data_path, strerror(errno));
         return 1;
     }
     
@@ -107,7 +108,7 @@ static int storage_cache_clean(char * data_path, char * work_dir)
     DIR * app_data_dir_dp = opendir(app_data_path);
     if (app_data_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, app_data_path);
+        fprintf(stderr, L_OPEN_PATH_FAILED, app_data_path, strerror(errno));
         return 1;
     }
     
@@ -175,6 +176,7 @@ static int StorageClean(char * dir, int home)
     DIR * dir_dp = opendir(dir);
     if (dir_dp == NULL)
     {
+        fprintf(stderr, L_OPEN_PATH_FAILED, dir, strerror(errno));
         return -1;
     }
     

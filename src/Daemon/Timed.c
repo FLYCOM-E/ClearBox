@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
         DIR * config_dir_dp = opendir(argv[1]);
         if (config_dir_dp == NULL)
         {
-            fprintf(stderr, L_OPEN_PATH_FAILED, argv[1]);
+            fprintf(stderr, L_OPEN_PATH_FAILED, argv[1], strerror(errno));
             return 1;
         }
         
@@ -118,7 +118,6 @@ int main(int argc, char * argv[])
                 if (config_fp == NULL)
                 {
                     fprintf(stderr, L_OPEN_FILE_FAILED, entry -> d_name, strerror(errno));
-                    errno = 0;
                     continue;
                 }
                 while (fgets(line, sizeof(line), config_fp))
@@ -381,8 +380,7 @@ int main(int argc, char * argv[])
                                     // post
                                     config[i].title, config[i].message,
                                     // in
-                                    config[i].start_hour, config[i].end_hour
-                                  );
+                                    config[i].start_hour, config[i].end_hour);
                         }
                         else if (config[i].post == 1 && config[i].in == 0)
                         {
@@ -394,8 +392,7 @@ int main(int argc, char * argv[])
                                     // run
                                     config[i].run,
                                     // post
-                                    config[i].title, config[i].message
-                                  );
+                                    config[i].title, config[i].message);
                         }
                         else if (config[i].post == 0 && config[i].in == 1)
                         {
@@ -407,8 +404,7 @@ int main(int argc, char * argv[])
                                     // run
                                     config[i].run,
                                     // in
-                                    config[i].start_hour, config[i].end_hour
-                                  );
+                                    config[i].start_hour, config[i].end_hour);
                         }
                         else
                         {
@@ -418,14 +414,13 @@ int main(int argc, char * argv[])
                                     // date
                                     now_time,
                                     // run
-                                    config[i].run
-                                  );
+                                    config[i].run);
                         }
                         fclose(config_file_fp);
                     }
                     // Check Errno
                     if (errno != 0 &&
-                        difftime(now_time, config[i].last_error_notify) >= 3600)
+                        difftime(now_time, config[i].last_error_notify) >= 3600) // 1小时
                     {
                         char error_text[512] = {0};
                         snprintf(error_text, sizeof(error_text), L_TD_CONFIG_WRITE_ERROR,

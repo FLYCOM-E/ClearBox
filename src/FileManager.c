@@ -83,6 +83,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
     DIR * sdcard_id_dp = opendir(CARD_HOME);
     if (sdcard_id_dp == NULL)
     {
+        fprintf(stderr, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
         return 0;
     }
     while ((entry = readdir(sdcard_id_dp)))
@@ -156,7 +157,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir);
+        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
         return 1;
     }
     
@@ -279,6 +280,7 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
     DIR * storage_dp = opendir(storage);
     if (storage_dp == NULL)
     {
+        fprintf(stderr, L_OPEN_PATH_FAILED, storage, strerror(errno));
         return 0;
     }
     
@@ -331,7 +333,6 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
                             else
                             {
                                 fprintf(stderr, L_DELETE_ERROR, path, strerror(errno));
-                                errno = 0;
                             }
                             break;
                             
@@ -357,7 +358,6 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
                         else
                         {
                             fprintf(stderr, L_MOVE_ERROR, path, strerror(errno));
-                            errno = 0;
                         }
                         break;
                     }

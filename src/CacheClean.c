@@ -56,6 +56,7 @@ int app_cache_clean(char * work_dir, int mode)
         DIR * card_id_dp = opendir(CARD_HOME);
         if (card_id_dp == NULL)
         {
+            fprintf(stderr, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
             return 0;
         }
         while ((entry = readdir(card_id_dp)))
@@ -131,7 +132,7 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
     DIR * uid_dir_dp = opendir(work_dir);
     if (uid_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, work_dir);
+        fprintf(stderr, L_OPEN_PATH_FAILED, work_dir, strerror(errno));
         return -1;
     }
     
@@ -212,7 +213,7 @@ static int system_cache_clean(void)
     DIR * uid_dir_dp = opendir(DATA_DIR);
     if (uid_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, DATA_DIR);
+        fprintf(stderr, L_OPEN_PATH_FAILED, DATA_DIR, strerror(errno));
         return -1;
     }
     

@@ -15,7 +15,7 @@
 #define L_ARG_CONFIGPATH_ERR " » No configuration directory provided!\n"
 #define L_NOCONFIG " » No configuration found!\n"
 #define L_ARG_BINPATH_ERR " » No Bin directory provided!\n"
-#define L_OPEN_PATH_FAILED " » Failed to open directory %s!\n"
+#define L_OPEN_PATH_FAILED " » Failed to open directory %s: %s\n"
 #define L_OPEN_FILE_FAILED " » Failed to open file %s: %s\n"
 #define L_PATH_NOTISDIR " » %s is not a directory！\n"
 #define L_PATH_NOTISFILE " » %s is not a file！\n"

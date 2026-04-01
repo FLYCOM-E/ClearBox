@@ -87,34 +87,42 @@ int main(int argc, char * argv[])
     
     // 检查及读取外部拓展储存
     int card_count = 0;
-    struct dirent * entry;
     char card_list[MAX_CARD][strlen(MICRO_CARD_PATH) + MAX_CARD_ID_LEN] = {0};
-    DIR * micro_card_dp = opendir(MICRO_CARD_PATH);
-    if (micro_card_dp)
+    
+    if (access(MICRO_CARD_PATH, F_OK) == 0)
     {
-        while ((entry = readdir(micro_card_dp)))
+        struct dirent * entry;
+        DIR * micro_card_dp = opendir(MICRO_CARD_PATH);
+        if (micro_card_dp)
         {
-            if (strcmp(entry -> d_name, ".") == 0 ||
-                strcmp(entry -> d_name, "..") == 0)
+            while ((entry = readdir(micro_card_dp)))
             {
-                continue;
-            }
-            
-            if (card_count < MAX_CARD)
-            {
-                snprintf(card_list[card_count], sizeof(card_list[card_count]),
-                         "%s/%s/user/0", MICRO_CARD_PATH, entry -> d_name);
-                if (access(card_list[card_count], F_OK) == 0)
+                if (strcmp(entry -> d_name, ".") == 0 ||
+                    strcmp(entry -> d_name, "..") == 0)
                 {
-                    card_count++;
+                    continue;
+                }
+                
+                if (card_count < MAX_CARD)
+                {
+                    snprintf(card_list[card_count], sizeof(card_list[card_count]),
+                             "%s/%s/user/0", MICRO_CARD_PATH, entry -> d_name);
+                    if (access(card_list[card_count], F_OK) == 0)
+                    {
+                        card_count++;
+                    }
+                }
+                else
+                {
+                    break;
                 }
             }
-            else
-            {
-                break;
-            }
+            closedir(micro_card_dp);
         }
-        closedir(micro_card_dp);
+    }
+    else
+    {
+        fprintf(stderr, L_OPEN_PATH_FAILED, MICRO_CARD_PATH, strerror(errno));
     }
     
     //定义储存文件
@@ -165,7 +173,6 @@ int main(int argc, char * argv[])
         else
         {
             fprintf(stderr, L_OPEN_FILE_FAILED, rom_file, strerror(errno));
-            errno = 0;
         }
     }
     

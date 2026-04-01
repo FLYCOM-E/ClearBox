@@ -130,7 +130,6 @@ static int f2fs_gc(void)
         else
         {
             fprintf(stderr, L_OPEN_FILE_FAILED, f2fs_sysfs_file, strerror(errno));
-            errno = 0;
         }
         
         if (time_m == 0)
@@ -188,7 +187,6 @@ static int get_f2fs_dirty(char * dirty_file)
     else
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, dirty_file, strerror(errno));
-        errno = 0;
         return 0;
     }
     return atoi(cache);
@@ -213,7 +211,6 @@ static int get_f2fs_free(char * free_file)
     else
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, free_file, strerror(errno));
-        errno = 0;
         return 0;
     }
     return atoi(cache);

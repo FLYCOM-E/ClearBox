@@ -44,6 +44,10 @@ long s_remove(char * path, int all)
                 remove(path);
             }
         }
+        else
+        {
+            fprintf(stderr, L_OPEN_PATH_FAILED, path, strerror(errno));
+        }
     }
     else
     {
@@ -84,7 +88,6 @@ int whitelist_check(char * whitelist_file, char * package)
     else
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
-        errno = 0;
         end = -1;
     }
     return end;
@@ -110,6 +113,7 @@ long get_path_size(char * path)
     DIR * path_dp = opendir(path);
     if (path_dp == NULL)
     {
+        fprintf(stderr, L_OPEN_PATH_FAILED, path, strerror(errno));
         return 0;
     }
     
@@ -216,7 +220,6 @@ int write_log(char * config_dir, char * name_id, char * text)
     else
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, log_file, strerror(errno));
-        errno = 0;
     }
     return 0;
 }
@@ -262,7 +265,6 @@ int get_settings_prop(char * settings_file, char * key)
     if (settings_file_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, settings_file, strerror(errno));
-        errno = 0;
         return -1;
     }
     while (fgets(line, sizeof(line), settings_file_fp))
