@@ -6,7 +6,7 @@
     <bool name="force_root">true</bool>
 
     <string name="app_name">ClearBox</string>
-    <string name="btn_exit">Exit</string>
+    <string name="btn_exit">Return</string>
     <string name="float_monitor_tips">Double-click to close floating window, long press and drag to adjust position</string>
     <string name="permission_float">Please grant floating window permission</string>
     <string name="please_wait">Please wait</string>

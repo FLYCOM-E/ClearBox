@@ -6,7 +6,7 @@
     <bool name="force_root">true</bool>
 
     <string name="app_name">ClearBox</string>
-    <string name="btn_exit">退出</string>
+    <string name="btn_exit">返回</string>
     <string name="float_monitor_tips">双击悬浮窗关闭，长按拖动调整位置</string>
     <string name="permission_float">请授权显示悬浮窗权限</string>
     <string name="please_wait">请稍等</string>
