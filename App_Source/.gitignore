@@ -12,5 +12,4 @@ common/build
 captures
 release
 release_mini
-gradle
-app/build.gradle
+
