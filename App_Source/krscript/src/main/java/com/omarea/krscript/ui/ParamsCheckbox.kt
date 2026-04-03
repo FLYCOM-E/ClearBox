@@ -32,9 +32,9 @@ class ParamsCheckbox(private var actionParamInfo: ActionParamInfo, private var c
      */
     private fun getCheckState(actionParamInfo: ActionParamInfo, defaultValue: Boolean): Boolean {
         if (actionParamInfo.valueFromShell != null) {
-            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell!!.toLowerCase() == "true"
+            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell!!.lowercase() == "true"
         } else if (actionParamInfo.value != null) {
-            return actionParamInfo.value == "1" || actionParamInfo.value!!.toLowerCase() == "true"
+            return actionParamInfo.value == "1" || actionParamInfo.value!!.lowercase() == "true"
         }
         return defaultValue
     }

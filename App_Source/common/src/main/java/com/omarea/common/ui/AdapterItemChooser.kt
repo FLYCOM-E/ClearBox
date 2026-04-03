@@ -42,7 +42,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
                 results.values = list
                 results.count = list.size
             } else {
-                val prefixString = prefix.toLowerCase()
+                val prefixString = prefix.lowercase()
 
                 val values: ArrayList<SelectItem>
                 synchronized(adapter.mLock) {
@@ -58,7 +58,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
                     if (selected.contains(value)) {
                         newValues.add(value)
                     } else {
-                        val valueText = if (value.title == null) "" else value.title!!.toLowerCase()
+                        val valueText = if (value.title == null) "" else value.title!!.lowercase()
 
                         // First match against the whole, non-splitted value
                         if (valueText.contains(prefixString)) {

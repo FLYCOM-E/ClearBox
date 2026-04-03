@@ -25,7 +25,7 @@ class ShellTranslation(val context: Context) {
         if (separator != null) {
             val row = originRow.trim()
             val resources = context.resources
-            val type = row.substring(1, row.indexOf(separator)).toLowerCase(Locale.ENGLISH)
+            val type = row.substring(1, row.indexOf(separator)).lowercase(Locale.getDefault())
             val name = row.substring(row.indexOf(separator) + 1)
 
             try {
