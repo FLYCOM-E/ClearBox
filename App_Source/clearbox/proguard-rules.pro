@@ -15,7 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
 -keepclassmembers class * implements java.io.Serializable{*;}
-
--keep class wipe.cache.module.model.**{*;}
+-keep class wipe.cache.module.** { * ; }
+-keep class com.omarea.common.** { * ; }

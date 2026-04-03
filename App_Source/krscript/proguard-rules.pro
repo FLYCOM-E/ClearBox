@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn java.lang.invoke.StringConcatFactory
+-keep class wipe.cache.module.** { * ; }
+-keep class com.omarea.common.** { * ; }
