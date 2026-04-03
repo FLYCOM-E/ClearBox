@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title="模块管理">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+        <title>立即生效当前配置（免重启）</title>
+            <set>
+            sh "$home_dir/service.sh"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="清理设置" config-sh="cat ClearSettings.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>终端UI开关</title>
+            <get>
+            if [ -f "$home_dir/skip_mount" ]; then
+                echo 0
+            else
+                echo 1
+            fi
+            </get>
+            <set>
+            if [ -f "$home_dir/skip_mount" ]; then
+                if rm "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » 已开启！重启生效"
+                else
+                    echo " » 开启失败！"
+                fi
+            else
+                if touch "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » 已关闭！重启生效"
+                else
+                    echo " » 关闭失败！"
+                fi
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="配置备份" config-sh="cat BackupConfigs.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <page config-sh="Abort.sh" title="关于"/>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" warning="确定完全卸载此模块并清理残留😉？" auto-off="false" auto-finish="false" >
+        <title>卸载模块（！</title>
+            <set>
+            sh "$home_dir/uninstall.sh"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="日志">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+        <title>查看日志</title>
+            <set>
+            if [ -f "$work_dir/LOG.log" ]; then
+                cat "$work_dir/LOG.log"
+            fi
+            </set>
+    </action>
+</group>
+<!-- END -->

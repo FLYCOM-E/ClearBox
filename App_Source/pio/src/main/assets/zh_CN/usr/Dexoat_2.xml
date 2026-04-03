@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="001" >
+        <title>Speed 模式</title>
+            <set>
+            "$home_dir/BashCore" Dexoat_2 speed
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="002" >
+        <title>Speed-Profile 模式</title>
+            <set>
+            "$home_dir/BashCore" Dexoat_2 speed-profile
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="003" >
+        <title>Everything 模式</title>
+            <set>
+            "$home_dir/BashCore" Dexoat_2 everything
+            </set>
+    </action>
+</group>
+<!-- END -->

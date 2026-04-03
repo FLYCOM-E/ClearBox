@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title="Module Management">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+        <title>Apply the current configuration immediately (no restart required)</title>
+            <set>
+            sh "$home_dir/service.sh"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Clear Settings" config-sh="cat ClearSettings.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>Terminal UI Toggle</title>
+            <get>
+            if [ -f "$home_dir/skip_mount" ]; then
+                echo 0
+            else
+                echo 1
+            fi
+            </get>
+            <set>
+            if [ -f "$home_dir/skip_mount" ]; then
+                if rm "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » Enabled! Restart to take effect."
+                else
+                    echo " » Failed to start!"
+                fi
+            else
+                if touch "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » Closed! It will take effect after restarting."
+                else
+                    echo " » Failed to close!"
+                fi
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Configuration Backup" config-sh="cat BackupConfigs.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <page config-sh="Abort.sh" title="About"/>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" warning="Are you sure you want to completely uninstall this module and clean up the leftovers 😉?" auto-off="false" auto-finish="false" >
+        <title>Uninstall module (!</title>
+            <set>
+            sh "$home_dir/uninstall.sh"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="Log">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+        <title>View Log</title>
+            <set>
+            if [ -f "$work_dir/LOG.log" ]; then
+                cat "$work_dir/LOG.log"
+            fi
+            </set>
+    </action>
+</group>
+<!-- END -->

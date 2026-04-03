@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <action>
+        <title>自訂選擇間隔時間（單位：分鐘）</title>
+        <summary sh="echo -n '目前設定時間：'; grep 'time=' $work_dir/TimedConfig/ClearDir.conf | cut -f2 -d '='" />
+        <param name="minute_num" max="59" min="1" title="滑動滑塊選擇時間（單位：分鐘）" type="seekbar" value="10" />
+            <set>
+            echo -e "time=${minute_num}/M\ndate=0\nrun=$home_dir/BashCore All_Dir" > "$work_dir/TimedConfig/ClearDir.conf"
+            echo " » 設定成功！"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false" auto-off="false" >
+        <title>關閉此功能</title>
+            <set>
+            rm "$work_dir/TimedConfig/ClearDir.conf"
+            echo " » 已關閉！"
+            </set>
+    </action>
+</group>
+<!-- END -->

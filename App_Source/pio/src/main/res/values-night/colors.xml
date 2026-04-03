@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_bg_color">#141218</color>
+    <color name="md_primary">#00D2C4</color>
+    <color name="md_primary_container">#00D2C4</color>
+    <color name="md_secondary">#00D2C4</color>
+    <color name="md_secondary_container">#00D2C4</color>
+    <color name="md_surface">#141218</color>
+    <color name="md_background">#141218</color>
+</resources>

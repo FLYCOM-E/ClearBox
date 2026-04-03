@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Scheduled Run: One-click Optimize &amp; Cleanup" config-sh="cat Timed_xml/Time_ClearAll.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Scheduled Run: Clean/Remove Custom Directories" config-sh="cat Timed_xml/Time_ListDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Scheduled Run: Clean Junk Files &amp; Empty Folders" config-sh="cat Timed_xml/Time_ClearDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Scheduled Run: Clear All App Caches" config-sh="cat Timed_xml/Time_ClearCache.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Scheduled Run: Magnet (One-click File Organization" config-sh="cat Timed_xml/Time_FileAll.xml"/>
+    </pages>
+</group>
+<!-- END -->

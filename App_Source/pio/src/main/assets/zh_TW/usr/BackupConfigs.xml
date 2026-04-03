@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title="配置備份">
+    <action interruptible="false" auto-off="false">
+        <title>備份</title>
+            <set>
+            "$home_dir/BashCore" configManager backup
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="配置恢復">
+    <action>
+        <title>恢復</title>
+        <param name="config" label="文件選擇" type="file" editable="true" />
+            <set>
+            "$home_dir/BashCore" configManager recovery "$config"
+            </set>
+    </action>
+</group>
+<!-- END -->

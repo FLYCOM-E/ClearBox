@@ -1,0 +1,156 @@
+cat <<w
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="模組管理" config-sh="cat Settings.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="清理功能">
+    <action interruptible="false" auto-off="false" id="001">
+        <title>一鍵優化清理</title>
+            <set>
+            "$home_dir/BashCore" ClearAll
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="002">
+        <title>清理/刪掉自訂目錄</title>
+            <set>
+            "$home_dir/BashCore" List_Dir
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="003">
+        <title>清除垃圾檔案及空資料夾</title>
+            <set>
+            "$home_dir/BashCore" All_Dir
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="004">
+        <title>清空所有軟體快取</title>
+            <set>
+            "$home_dir/BashCore" ClearCache
+            </set>
+    </action>
+    <action warning="根據規則深度歸類內/外部儲存文件，儲存目錄：對應目錄下 Document 資料夾下" shell="default" auto-off="false" auto-finish="false" id="005">
+        <title>磁鐵（一鍵歸類文件</title>
+            <set>
+            "$home_dir/BashCore" File_All
+            </set>
+    </action>
+    <page
+        config-sh="Print_FileClearXml.sh"
+        desc="此頁面通過讀取清理配置文件動態構建"
+        title="深度檔案清理" />
+    <page
+        config-sh="Print_AppClearXml.sh"
+        desc="此頁面透過讀取配置規則文件動態構建"
+        title="軟件規則清理" />
+        <action shell="default" warning="清理系統運行時必要的快取，適合在系統出現奇怪 bug 或大更改時使用，清理後系統會自動重建這些快取，此操作並不能提升效能或有效降低儲存佔用，如果您不了解不建議隨意使用。清理後建議重新啟動" auto-off="false" auto-finish="false" id="003">
+            <title>清空系統快取</title>
+                <set>
+                "$home_dir/BashCore" Clear_SCache
+                </set>
+        </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group>
+    <pages>
+        <page title="自動清理" config-sh="cat Timed_ProSettings.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="阻止所有軟體更新 / 安裝">
+    <switch>
+        <title>阻止所有軟體更新 / 安裝</title>
+        <desc>阻止所有軟體更新 / 安裝開關</desc>
+            <get>
+            if grep "clearbox_stop_install=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_stop_install=0" "$work_dir/settings.prop" >/dev/null; then
+                "$home_dir/BashCore" StopInstall STOP
+            else
+                "$home_dir/BashCore" StopInstall RESET
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="內部儲存固定功能">
+    <switch>
+        <title>內部儲存固定功能</title>
+        <desc>內部儲存固定功能開關</desc>
+            <get>
+            if grep "clearbox_stop_storage=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_stop_storage=0" "$work_dir/settings.prop" >/dev/null; then
+                "$home_dir/BashCore" StopStorage STOP
+            else
+                "$home_dir/BashCore" StopStorage RESET
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="阻止快取功能">
+    <switch>
+        <title>阻止快取功能</title>
+        <desc>阻止生成快取功能開關</desc>
+        <get>
+        if grep "clearbox_stop_cache=1" "$work_dir/settings.prop" >/dev/null; then
+            echo 1
+        else
+            echo 0
+        fi
+        </get>
+        <set>
+        if grep "clearbox_stop_cache=0" "$work_dir/settings.prop" >/dev/null; then
+            sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
+            echo " » 已開啟，重啟生效 ~"
+        else
+            sed -i 's/clearbox_stop_cache=1/clearbox_stop_cache=0/g' "$work_dir/settings.prop"
+            echo " » 已關閉，重啟生效 ~"
+        fi
+        </set>
+    </switch>
+    <action interruptible="false" auto-off="false" >
+        <title>軟體加入白名單</title>
+        <desc>選擇應用</desc>
+            <set>
+            sh add_StopCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="cmd package list package | cut -f2 -d ':' | grep -vxFf $work_dir/whitelist.prop" />
+    </action>
+    <action interruptible="false" auto-off="false" >
+        <title>取消白名單軟件</title>
+        <desc>選擇應用</desc>
+            <set>
+            sh rm_StopCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="cat $work_dir/whitelist.prop" />
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="其它功能 (new">
+    <pages>
+        <page title="磁碟 &amp; 軟體優化" config-sh="cat GC_Dexoat.xml" />
+    </pages>
+</group>
+<!-- END -->
+w

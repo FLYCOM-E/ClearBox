@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="定期执行 一键优化清理" config-sh="cat Timed_xml/Time_ClearAll.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="定期執行 清理/刪除自訂目錄" config-sh="cat Timed_xml/Time_ListDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="定期执行 清理垃圾档案及空资料夹" config-sh="cat Timed_xml/Time_ClearDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="定期執行 清空所有軟體快取" config-sh="cat Timed_xml/Time_ClearCache.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="定期执行 磁铁（一键档案归类" config-sh="cat Timed_xml/Time_FileAll.xml"/>
+    </pages>
+</group>
+<!-- END -->

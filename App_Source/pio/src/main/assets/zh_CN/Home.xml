@@ -1,0 +1,156 @@
+cat <<w
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="模块管理" config-sh="cat Settings.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="清理功能">
+    <action interruptible="false" auto-off="false" id="001">
+        <title>一键优化清理</title>
+            <set>
+            "$home_dir/BashCore" ClearAll
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="002">
+        <title>清理/干掉自定义目录</title>
+            <set>
+            "$home_dir/BashCore" List_Dir
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="003">
+        <title>清除垃圾文件及空文件夹</title>
+            <set>
+            "$home_dir/BashCore" All_Dir
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="004">
+        <title>清空所有软件缓存</title>
+            <set>
+            "$home_dir/BashCore" ClearCache
+            </set>
+    </action>
+    <action warning="根据规则深度归类内/外部储存文件，储存目录：对应目录下 Document 文件夹下" shell="default" auto-off="false" auto-finish="false" id="005">
+        <title>磁铁（一键归类文件</title>
+            <set>
+            "$home_dir/BashCore" File_All
+            </set>
+    </action>
+    <page
+        config-sh="Print_FileClearXml.sh"
+        desc="此页面通过读取清理配置文件动态构建"
+        title="深度文件清理" />
+    <page
+        config-sh="Print_AppClearXml.sh"
+        desc="此页面通过读取配置规则文件动态构建"
+        title="软件规则清理" />
+        <action shell="default" warning="清理系统运行时必要的缓存，适合在系统出现奇怪bug或大更改时使用，清理后系统会自动重建这些缓存，此操作并不能提升性能或有效降低储存占用，如果您不了解不建议随意使用。清理后建议重启" auto-off="false" auto-finish="false" id="003">
+            <title>清空系统缓存</title>
+                <set>
+                "$home_dir/BashCore" Clear_SCache
+                </set>
+        </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group>
+    <pages>
+        <page title="自动清理" config-sh="cat Timed_ProSettings.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="阻止所有软件更新 / 安装">
+    <switch>
+        <title>阻止所有软件更新 / 安装</title>
+        <desc>阻止所有软件更新 / 安装开关</desc>
+            <get>
+            if grep "clearbox_stop_install=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_stop_install=0" "$work_dir/settings.prop" >/dev/null; then
+                "$home_dir/BashCore" StopInstall STOP
+            else
+                "$home_dir/BashCore" StopInstall RESET
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="内部储存固定功能">
+    <switch>
+        <title>内部储存固定功能</title>
+        <desc>内部储存固定功能开关</desc>
+            <get>
+            if grep "clearbox_stop_storage=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_stop_storage=0" "$work_dir/settings.prop" >/dev/null; then
+                "$home_dir/BashCore" StopStorage STOP
+            else
+                "$home_dir/BashCore" StopStorage RESET
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="阻止缓存功能">
+    <switch>
+        <title>阻止缓存功能</title>
+        <desc>阻止生成缓存功能开关</desc>
+        <get>
+        if grep "clearbox_stop_cache=1" "$work_dir/settings.prop" >/dev/null; then
+            echo 1
+        else
+            echo 0
+        fi
+        </get>
+        <set>
+        if grep "clearbox_stop_cache=0" "$work_dir/settings.prop" >/dev/null; then
+            sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
+            echo " » 已开启，重启生效 ~"
+        else
+            sed -i 's/clearbox_stop_cache=1/clearbox_stop_cache=0/g' "$work_dir/settings.prop"
+            echo " » 已关闭，重启生效 ~"
+        fi
+        </set>
+    </switch>
+    <action interruptible="false" auto-off="false" >
+        <title>软件加入白名单</title>
+        <desc>选择应用</desc>
+            <set>
+            sh add_StopCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="cmd package list package | cut -f2 -d ':' | grep -vxFf $work_dir/whitelist.prop" />
+    </action>
+    <action interruptible="false" auto-off="false" >
+        <title>取消白名单软件</title>
+        <desc>选择应用</desc>
+            <set>
+            sh rm_StopCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="cat $work_dir/whitelist.prop" />
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="其它功能 (new">
+    <pages>
+        <page title="磁盘 &amp; 软件优化" config-sh="cat GC_Dexoat.xml" />
+    </pages>
+</group>
+<!-- END -->
+w

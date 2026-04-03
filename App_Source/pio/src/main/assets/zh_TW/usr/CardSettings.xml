@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>清理外部儲存快取</title>
+            <get>
+            if grep "clearbox_clear_disk=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_clear_disk=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_clear_disk=0/clearbox_clear_disk=1/g' "$work_dir/settings.prop"
+                echo " » 已開啟！"
+            else
+                sed -i 's/clearbox_clear_disk=1/clearbox_clear_disk=0/g' "$work_dir/settings.prop"
+                echo " » 已關閉！"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>外部儲存文件歸類</title>
+            <get>
+            if grep "clearbox_file_all_disk=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_file_all_disk=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_file_all_disk=0/clearbox_file_all_disk=1/g' "$work_dir/settings.prop"
+                echo " » 已開啟！"
+            else
+                sed -i 's/clearbox_file_all_disk=1/clearbox_file_all_disk=0/g' "$work_dir/settings.prop"
+                echo " » 已關閉！"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>外部儲存文件清理</title>
+            <get>
+            if grep "clearbox_file_clear_disk=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_file_clear_disk=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_file_clear_disk=0/clearbox_file_clear_disk=1/g' "$work_dir/settings.prop"
+                echo " » 已開啟！"
+            else
+                sed -i 's/clearbox_file_clear_disk=1/clearbox_file_clear_disk=0/g' "$work_dir/settings.prop"
+                echo " » 已關閉！"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->

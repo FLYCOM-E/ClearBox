@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="window_bg_light">#FEF7FF</color>
+    <color name="window_bg_dark">#000000</color>
+    <color name="status_bg_dark">#222222</color>
+    <color name="status_bg_light">#FEF7FF</color>
+    <color name="cardBgDark">#222222</color>
+    <color name="cardBgDarkTransparent">#4C000000</color>
+    <color name="cardBgLight">#FEF7FF</color>
+    <color name="cardBgLightTransparent">#4CFFFFFF</color>
+
+    <color name="color_load_low">#02d98d</color>
+    <color name="color_load_mid">#87cb00</color>
+    <color name="color_load_hight">#fc8a1b</color>
+    <color name="color_load_veryhight">#f9592f</color>
+
+    <color name="colorAccent">@color/md_primary</color>
+    <color name="colorPrimary">#80B4DD</color>
+    <color name="colorPrimaryDark">#3D9AE6</color>
+    <color name="splash_bg_color">#FEF7FF</color>
+    
+    <color name="md_primary">#00D2C4</color>
+    <color name="md_primary_container">#00D2C4</color>
+    <color name="md_secondary">#00D2C4</color>
+    <color name="md_secondary_container">#00D2C4</color>
+    <color name="md_surface">#FEF7FF</color>
+    <color name="md_background">#FEF7FF</color>
+</resources>

@@ -1,0 +1,65 @@
+<resources>
+    <string name="btn_confirm">確定</string>
+    <string name="shell_executor">腳本執行器</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_skip">跳過</string>
+    <string name="btn_exit">返回</string>
+    <string name="btn_hide">隱藏</string>
+    <string name="btn_execute">執行</string>
+    <string name="onloading">:⁠-⁠)</string>
+    <string name="kr_shell_completed">All Done</string>
+    <string name="kr_shell_finish_error">Error</string>
+    <string name="script_losted">資源遺失\n</string>
+    <string name="btn_copy_output">複製</string>
+    <string name="copy_success">輸出日誌已複製到剪貼簿</string>
+    <string name="copy_fail">複製失敗</string>
+    <string name="do_not_empty">不可為空</string>
+    <string name="kr_param_load">獲取狀態</string>
+    <string name="kr_param_options_load">載入 </string>
+    <string name="kr_params_render">渲染介面...</string>
+    <string name="kr_please_choose_folder">請選擇目錄</string>
+    <string name="kr_please_choose_file">請選擇檔案</string>
+    <string name="kr_please_choose_app">請選擇應用</string>
+    <string name="kr_please_input_color">請輸入顏色</string>
+    <string name="kr_please_select">請選擇</string>
+    <string name="kr_write_external_storage">需要讀寫外置儲存權限！</string>
+    <string name="kr_download_create_fail">建立下載任務失敗</string>
+    <string name="kr_download_create_success">開始下載檔案</string>
+    <string name="kr_download_confirm">是否下載檔案</string>
+    <string name="kr_download_completed">檔案下載成功</string>
+    <string name="kr_download_downloading">檔案下載中</string>
+    <string name="kr_color_picker">請選擇顏色</string>
+    <string name="kr_invalid_color">輸入的色值無效，僅支援類似 #ff88aa00 的格式</string>
+
+    <string name="kr_shortcut_create_fail">建立捷徑失敗</string>
+    <string name="kr_shortcut_create_success">已發送建立捷徑申請</string>
+    <string name="kr_shortcut_create">新增捷徑</string>
+    <string formatted="false" name="kr_shortcut_create_desc">您希望將 「%s」 新增到桌面，方便快速使用嗎？</string>
+    <string name="kr_ushortcut_nsupported">該功能不支援新增為捷徑哦</string>
+    <string name="kr_script_task_notification">背景任務通知</string>
+    <string name="kr_bg_task_start">背景任務開始執行</string>
+    <string name="kr_script_task_running">開始執行</string>
+    <string name="kr_script_task_has_error">出現錯誤</string>
+    <string name="kr_script_task_finished">任務結束</string>
+    <string name="kr_bg_task_start_desc">您可透過通知查看任務執行狀態</string>
+    <string name="kr_slice_script_result">腳本輸出內容</string>
+    <string name="kr_slice_activity_fail">無法開啟活動~</string>
+
+    <string name="kr_page_before_load">準備解析配置</string>
+    <string name="kr_page_loading">(⁠・⁠∀⁠・⁠)</string>
+    <string name="kr_page_after_load">配置解析完成</string>
+    <string name="kr_page_sh_invalid">頁面發生錯誤</string>
+    <string name="kr_page_sh_file_permission">指定的設定檔不存在或無讀取權限</string>
+    <string name="kr_page_load_fail">頁面載入失敗</string>
+    <string name="kr_page_load_success">頁面載入成功</string>
+    <string name="kr_auto_run_item_losted">指定項已遺失</string>
+    <string name="kr_hidden_task_running">手速太快了，上個操作還沒完成！</string>
+    <string name="kr_lock_message">此功能已鎖定</string>
+    <string name="kr_sdk_too_low">您的系統版本過低</string>
+    <string name="kr_sdk_overtop">您的系統版本過高</string>
+    <string formatted="false" name="kr_sdk_message">此功能只能在 SDK %d ~ %d 的系統執行</string>
+    <string name="kr_sdk_discrepancy">系統版本不符</string>
+    <string formatted="false" name="kr_sdk_discrepancy_message">此功能只能在 SDK %d 的系統執行</string>
+    <string name="picker_not_item">暫無可用選項！</string>
+    <string name="picker_select_none">未選中任何一項！</string>
+</resources>

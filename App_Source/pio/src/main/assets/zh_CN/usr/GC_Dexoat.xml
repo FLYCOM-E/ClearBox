@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="001" >
+        <title>磁盘 GC</title>
+            <set>
+            "$home_dir/BashCore" F2fs_GC
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="002" >
+        <title>快速磁盘优化</title>
+            <set>
+            "$home_dir/BashCore" Fast_GC
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Dexoat 预编译" config-sh="cat . ./Dexoat.xml" />
+    </pages>
+</group>
+<!-- END -->

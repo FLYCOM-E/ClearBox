@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title="Configuration Backup">
+    <action interruptible="false" auto-off="false">
+        <title>Backup</title>
+            <set>
+            "$home_dir/BashCore" configManager backup
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="Configuration Restore">
+    <action>
+        <title>Restore</title>
+        <param name="config" label="File Selection" type="file" editable="true" />
+            <set>
+            "$home_dir/BashCore" configManager recovery "$config"
+            </set>
+    </action>
+</group>
+<!-- END -->

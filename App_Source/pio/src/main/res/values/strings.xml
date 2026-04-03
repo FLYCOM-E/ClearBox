@@ -1,0 +1,56 @@
+<resources>
+    <!-- Config Name -->
+    <string name="config_name">Config-en_US.conf</string>
+    
+    <!--Force ROOT acquisition-->
+    <bool name="force_root">true</bool>
+
+    <string name="app_name">ClearBox</string>
+    <string name="btn_exit">Exit</string>
+    <string name="float_monitor_tips">Double-click to close floating window, long press and drag to adjust position</string>
+    <string name="permission_float">Please grant floating window permission</string>
+    <string name="please_wait">Please wait</string>
+    <string name="title_activity_action_page">Function Pages</string>
+
+    <string name="author_name"> </string>
+    <string name="appliction_name">Welcome to · ClearBox</string>
+    <string name="engine_version_name">Powered By Kr-Script_MD3</string>
+    
+    <string name="tab_home">Home</string>
+    <string name="tab_favorites"></string>
+    <string name="tab_pages">All</string>
+
+    <string name="monitor_laod">Load：%d%%</string>
+    <string name="monitor_core_count"> %d Cores</string>
+    <string name="monitor_cache_cleared"> RAM Recycled </string>
+    <string name="monitor_ram_cleared"> RAM Fragments Organized </string>
+
+    <string name="copy_success">Copied</string>
+    <string name="btn_retry">Try Again</string>
+
+    <string name="pio_starting">ClearBox</string>
+    <string name="pop_before_start">(⁠・⁠∀⁠・⁠)</string>
+    <string name="pop_started">Welcome To ClearBox</string>
+    <string name="pio_permission_checking">Checking permissions…</string>
+    <string name="error_root">Seems like ROOT permission was not successfully obtained (・・;)!</string>
+    <string name="error_su_timeout">ROOT authorization timeout! Please check...</string>
+    <string name="transparent_ui">Transparent UI</string>
+    <string name="title_activity_file_selector">Please select file</string>
+    <string name="title_activity_folder_selector">Long press to select directory</string>
+    
+    <string name="power_poweroff">Shutdown</string>
+    <string name="power_reboot">Reboot</string>
+    <string name="power_hot_reboot">Hot Reboot</string>
+    <string name="power_safemode">Reboot to Safe Mode</string>
+    <string name="power_recovery">Reboot to Recovery</string>
+    <string name="power_bootloader">Reboot to FASTBOOT</string>
+    <string name="power_edl">Reboot to 9008 (EDL)</string>
+    
+    <string name="power_shutdown_cmd">sync; svc power shutdown || reboot -p;</string>
+    <string name="power_reboot_cmd">sync; svc power reboot || reboot;</string>
+    <string name="power_hot_reboot_cmd">sync; am restart || kill $(pgrep system_server);</string>
+    <string name="power_safemode_cmd">sync; setprop persist.sys.safemode 1; svc power reboot || reboot;</string>
+    <string name="power_fastboot_cmd">sync; reboot bootloader;</string>
+    <string name="power_recovery_cmd">sync; reboot recovery;</string>
+    <string name="power_emergency_cmd">sync; reboot edl;</string>
+</resources>

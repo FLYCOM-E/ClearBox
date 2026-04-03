@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="外部储存相关设置" config-sh="cat CardSettings.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <switch>
+        <title>一键/定时自动清理时运行文件归类</title>
+            <get>
+            if grep "clearbox_auto_file_all=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_auto_file_all=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_auto_file_all=0/clearbox_auto_file_all=1/g' "$work_dir/settings.prop"
+                echo " » 已开启！"
+            else
+                sed -i 's/clearbox_auto_file_all=1/clearbox_auto_file_all=0/g' "$work_dir/settings.prop"
+                echo " » 已关闭！"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <switch>
+        <title>一键/定时自动清理时快速磁盘优化</title>
+            <get>
+            if grep "clearbox_auto_fast_gc=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_auto_fast_gc=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_auto_fast_gc=0/clearbox_auto_fast_gc=1/g' "$work_dir/settings.prop"
+                echo " » 已开启！"
+            else
+                sed -i 's/clearbox_auto_fast_gc=1/clearbox_auto_fast_gc=0/g' "$work_dir/settings.prop"
+                echo " » 已关闭！"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="缓存清理白名单">
+    <action interruptible="false" auto-off="false" >
+        <title>新增清理白名单</title>
+        <desc>选择应用</desc>
+            <set>
+            . ./add_ClearCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="pm list package -3 | cut -f2 -d ':' | grep -vxFf $work_dir/ClearWhitelist.prop" />
+    </action>
+    <action interruptible="false" auto-off="false" >
+        <title>取消白名单软件</title>
+        <desc>选择应用</desc>
+            <set>
+            . ./rm_ClearCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="cat $work_dir/ClearWhitelist.prop" />
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="缓存清理大小设置">
+    <action>
+        <title>缓存清理跳过大小</title>
+        <summary sh="echo -n '当前设置大小：'; echo -n $(cat $work_dir/settings.prop | grep clearbox_clear_cache_size | cut -f2 -d '='); echo -n ' M'" />
+        <param name="put" desc="请输入新值[数字]：(单位：兆（M）. 范围：100M)" label="数字" max="100" min="1" required="required" type="int" />
+            <set>
+            sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
+            echo " » 设定成功！"
+            </set>
+    </action>
+</group>
+<!-- END -->

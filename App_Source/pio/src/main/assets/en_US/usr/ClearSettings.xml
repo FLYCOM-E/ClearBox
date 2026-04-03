@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="External Storage Settings" config-sh="cat CardSettings.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <switch>
+        <title>One-click and scheduled automatic cleanup of run file classification</title>
+            <get>
+            if grep "clearbox_auto_file_all=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_auto_file_all=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_auto_file_all=0/clearbox_auto_file_all=1/g' "$work_dir/settings.prop"
+                echo " » It's turned on!"
+            else
+                sed -i 's/clearbox_auto_file_all=1/clearbox_auto_file_all=0/g' "$work_dir/settings.prop"
+                echo " » Closed!"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <switch>
+        <title>Fast disk optimization during one-click/scheduled automatic cleaning</title>
+            <get>
+            if grep "clearbox_auto_fast_gc=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_auto_fast_gc=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_auto_fast_gc=0/clearbox_auto_fast_gc=1/g' "$work_dir/settings.prop"
+                echo " » Enabled!"
+            else
+                sed -i 's/clearbox_auto_fast_gc=1/clearbox_auto_fast_gc=0/g' "$work_dir/settings.prop"
+                echo " » Disabled!"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="Cache Cleaning Whitelist">
+    <action interruptible="false" auto-off="false" >
+        <title>Add to cleanup whitelist</title>
+        <desc>Select App</desc>
+            <set>
+            . ./add_ClearCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="pm list package -3 | cut -f2 -d ':' | grep -vxFf $work_dir/ClearWhitelist.prop" />
+    </action>
+    <action interruptible="false" auto-off="false" >
+        <title>Remove whitelist software</title>
+        <desc>Select App</desc>
+            <set>
+            . ./rm_ClearCacheWhitelist.sh
+            </set>
+        <param name="Package" type="app" options-sh="cat $work_dir/ClearWhitelist.prop" />
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="Cache Cleanup Size Setting">
+    <action>
+        <title>Skip cache cleaning by size</title>
+        <summary sh="echo -n 'Current set size:'; echo -n $(cat $work_dir/settings.prop | grep clearbox_clear_cache_size | cut -f2 -d '='); echo -n ' M'" />
+        <param name="put" desc="Please enter a new value [number]: (Unit: MB. Range: 100M)" label="number" max="100" min="1" required="required" type="int" />
+            <set>
+            sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
+            echo " » Setting successful!"
+            </set>
+    </action>
+</group>
+<!-- END -->

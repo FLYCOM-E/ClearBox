@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.KrScript" parent="Theme.Material3.DayNight">
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
+        <item name="actionBarTheme">@style/Theme.KrScript.AppBarOverlay</item>
+        <item name="cardBg">?attr/colorSurfaceContainer</item>
+        <item name="switchStyle">@style/Widget.Material3.CompoundButton.Switch</item>
+        <item name="checkboxStyle">@style/Widget.Material3.CompoundButton.CheckBox</item>
+        <item name="radioButtonStyle">@style/Widget.Material3.CompoundButton.RadioButton</item>
+        <item name="colorPrimary">@android:color/system_accent1_500</item>
+        <item name="colorPrimaryContainer">@android:color/system_accent1_200</item>
+        <item name="colorSecondary">@android:color/system_accent2_500</item>
+        <item name="colorSecondaryContainer">@android:color/system_accent2_200</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="colorSurface">@android:color/white</item>
+        <item name="colorSurfaceVariant">@android:color/white</item>
+    </style>
+    <style name="AppTheme" parent="Theme.KrScript" />
+    <style name="AppThemeDark" parent="Theme.KrScript" />
+    <style name="AppThemeWallpaperLight" parent="Theme.KrScript">
+        <item name="android:statusBarColor">#00FFFFFF</item>
+        <item name="android:navigationBarColor">#00FFFFFF</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="cardBg">@color/cardBgLightTransparent</item>
+    </style>
+    <style name="AppThemeWallpaper" parent="Theme.KrScript">
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="cardBg">@color/cardBgDarkTransparent</item>
+    </style>
+</resources>
