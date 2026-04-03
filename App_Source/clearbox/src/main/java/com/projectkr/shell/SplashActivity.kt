@@ -67,7 +67,7 @@ class SplashActivity : Activity() {
     private fun checkPermissions() {
         startLogo.visibility = View.VISIBLE
         checkRoot(Runnable {
-            startStateText.text = getString(R.string.pio_permission_checking)
+            startStateText.text = getString(R.string.permission_checking)
             hasRoot = true
             checkFileWrite(Runnable {
                 startToFinish()
@@ -175,7 +175,7 @@ class SplashActivity : Activity() {
                 val process = if (CheckRootStatus.lastCheckResult) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
                 if (process != null) {
                     val outputStream = DataOutputStream(process.outputStream)
-                    ScriptEnvironmen.executeShell(context, outputStream, config.beforeStartSh, params, null, "pio-splash")
+                    ScriptEnvironmen.executeShell(context, outputStream, config.beforeStartSh, params, null, "splash")
                     StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
                     StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()
                     process.waitFor()

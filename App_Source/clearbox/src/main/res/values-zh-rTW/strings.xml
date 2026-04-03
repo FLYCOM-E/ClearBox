@@ -28,10 +28,10 @@
     <string name="copy_success">已複製</string>
     <string name="btn_retry">再試試</string>
 
-    <string name="pio_starting">ClearBox</string>
+    <string name="starting">ClearBox</string>
     <string name="pop_before_start">(⁠・⁠∀⁠・⁠)</string>
     <string name="pop_started">Welcome To ClearBox</string>
-    <string name="pio_permission_checking">正在檢查權限……</string>
+    <string name="permission_checking">正在檢查權限……</string>
     <string name="error_root">貌似未成功獲取 ROOT 權限哦 (・・;)！</string>
     <string name="error_su_timeout">ROOT 授權超時！請排查...</string>
     <string name="transparent_ui">透明介面</string>

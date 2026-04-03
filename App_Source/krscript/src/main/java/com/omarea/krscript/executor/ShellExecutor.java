@@ -17,7 +17,7 @@ import java.util.HashMap;
  */
 public class ShellExecutor {
     private boolean started = false;
-    private String sessionTag = "pio_" + System.currentTimeMillis();
+    private String sessionTag = "clearbox_" + System.currentTimeMillis();
     private void killProcess(Context context) {
         ScriptEnvironmen.executeResultRoot(
                 context,

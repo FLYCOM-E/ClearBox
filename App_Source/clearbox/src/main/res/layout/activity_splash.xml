@@ -27,7 +27,7 @@
             android:layout_marginTop="50sp"
             android:gravity="center"
             android:keepScreenOn="true"
-            android:text="@string/pio_starting"
+            android:text="@string/starting"
             android:textColor="#08B4AB"
             android:textSize="35sp"
             android:textStyle="bold" />
