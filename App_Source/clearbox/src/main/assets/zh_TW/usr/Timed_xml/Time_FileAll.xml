@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title=" ">
-    <action>
+    <action interruptible="false">
         <title>自訂選擇間隔時間（單位：小時）</title>
         <summary sh="echo -n '目前設定時間：'; grep 'time=' $work_dir/TimedConfig/FileAll.conf | cut -f2 -d '='" />
         <param name="hour_num" max="23" min="1" title="滑動滑塊選擇時間（單位：小時）" type="seekbar" value="12" />

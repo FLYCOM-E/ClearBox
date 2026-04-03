@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title="模块管理">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
         <title>立即生效当前配置（免重启）</title>
             <set>
             sh "$home_dir/service.sh"
@@ -59,7 +59,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" warning="确定完全卸载此模块并清理残留😉？" auto-off="false" auto-finish="false" >
+    <action shell="default" warning="确定完全卸载此模块并清理残留😉？" interruptible="false" auto-off="false" auto-finish="false" >
         <title>卸载模块（！</title>
             <set>
             sh "$home_dir/uninstall.sh"
@@ -69,7 +69,7 @@
 <!-- END -->
 <!-- START -->
 <group title="日志">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
         <title>查看日志</title>
             <set>
             if [ -f "$work_dir/LOG.log" ]; then

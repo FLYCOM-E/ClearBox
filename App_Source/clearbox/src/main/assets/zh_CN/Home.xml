@@ -33,7 +33,7 @@ cat <<w
             "$home_dir/BashCore" ClearCache
             </set>
     </action>
-    <action warning="根据规则深度归类内/外部储存文件，储存目录：对应目录下 Document 文件夹下" shell="default" auto-off="false" auto-finish="false" id="005">
+    <action warning="根据规则深度归类内/外部储存文件，储存目录：对应目录下 Document 文件夹下" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
         <title>磁铁（一键归类文件</title>
             <set>
             "$home_dir/BashCore" File_All
@@ -47,7 +47,7 @@ cat <<w
         config-sh="Print_AppClearXml.sh"
         desc="此页面通过读取配置规则文件动态构建"
         title="软件规则清理" />
-        <action shell="default" warning="清理系统运行时必要的缓存，适合在系统出现奇怪bug或大更改时使用，清理后系统会自动重建这些缓存，此操作并不能提升性能或有效降低储存占用，如果您不了解不建议随意使用。清理后建议重启" auto-off="false" auto-finish="false" id="003">
+        <action shell="default" warning="清理系统运行时必要的缓存，适合在系统出现奇怪bug或大更改时使用，清理后系统会自动重建这些缓存，此操作并不能提升性能或有效降低储存占用，如果您不了解不建议随意使用。清理后建议重启" interruptible="false" auto-off="false" auto-finish="false" id="006">
             <title>清空系统缓存</title>
                 <set>
                 "$home_dir/BashCore" Clear_SCache

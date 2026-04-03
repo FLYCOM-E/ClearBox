@@ -11,7 +11,7 @@
 <!-- END -->
 <!-- START -->
 <group title="配置恢复">
-    <action>
+    <action interruptible="false">
         <title>恢复</title>
         <param name="config" label="文件选择" type="file" editable="true" />
             <set>

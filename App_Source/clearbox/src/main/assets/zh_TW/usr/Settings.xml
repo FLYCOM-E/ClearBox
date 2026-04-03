@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title="模組管理">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
         <title>立即生效當前配置（免重啟）</title>
             <set>
             sh "$home_dir/service.sh"
@@ -59,7 +59,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" warning="確定完全卸載此模組並清理殘留😉？" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" warning="確定完全卸載此模組並清理殘留😉？" auto-off="false" auto-finish="false" >
         <title>卸載模組（！</title>
             <set>
             sh "$home_dir/uninstall.sh"
@@ -69,7 +69,7 @@
 <!-- END -->
 <!-- START -->
 <group title="日誌">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
         <title>檢視日誌</title>
             <set>
             if [ -f "$work_dir/LOG.log" ]; then

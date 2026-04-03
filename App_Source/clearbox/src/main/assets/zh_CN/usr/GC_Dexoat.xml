@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title=" ">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="001" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>磁盘 GC</title>
             <set>
             "$home_dir/BashCore" F2fs_GC
@@ -11,7 +11,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="002" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="002" >
         <title>快速磁盘优化</title>
             <set>
             "$home_dir/BashCore" Fast_GC

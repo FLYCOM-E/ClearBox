@@ -74,7 +74,7 @@
 <!-- END -->
 <!-- START -->
 <group title="缓存清理大小设置">
-    <action>
+    <action interruptible="false">
         <title>缓存清理跳过大小</title>
         <summary sh="echo -n '当前设置大小：'; echo -n $(cat $work_dir/settings.prop | grep clearbox_clear_cache_size | cut -f2 -d '='); echo -n ' M'" />
         <param name="put" desc="请输入新值[数字]：(单位：兆（M）. 范围：100M)" label="数字" max="100" min="1" required="required" type="int" />

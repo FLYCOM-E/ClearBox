@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title=" ">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="001" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>觸發系統默認 Dexoat</title>
             <set>
             "$home_dir/BashCore" Dexoat_1
@@ -18,7 +18,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="001" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>恢復（RESET）</title>
             <set>
             "$home_dir/BashCore" Dexoat_3

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title="Module Management">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
         <title>Apply the current configuration immediately (no restart required)</title>
             <set>
             sh "$home_dir/service.sh"
@@ -59,7 +59,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" warning="Are you sure you want to completely uninstall this module and clean up the leftovers 😉?" auto-off="false" auto-finish="false" >
+    <action shell="default" warning="Are you sure you want to completely uninstall this module and clean up the leftovers 😉?" interruptible="false" auto-off="false" auto-finish="false" >
         <title>Uninstall module (!</title>
             <set>
             sh "$home_dir/uninstall.sh"
@@ -69,7 +69,7 @@
 <!-- END -->
 <!-- START -->
 <group title="Log">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
         <title>View Log</title>
             <set>
             if [ -f "$work_dir/LOG.log" ]; then

@@ -11,7 +11,7 @@
 <!-- END -->
 <!-- START -->
 <group title="Configuration Restore">
-    <action>
+    <action interruptible="false">
         <title>Restore</title>
         <param name="config" label="File Selection" type="file" editable="true" />
             <set>

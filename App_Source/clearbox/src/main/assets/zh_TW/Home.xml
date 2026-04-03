@@ -33,7 +33,7 @@ cat <<w
             "$home_dir/BashCore" ClearCache
             </set>
     </action>
-    <action warning="根據規則深度歸類內/外部儲存文件，儲存目錄：對應目錄下 Document 資料夾下" shell="default" auto-off="false" auto-finish="false" id="005">
+    <action warning="根據規則深度歸類內/外部儲存文件，儲存目錄：對應目錄下 Document 資料夾下" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
         <title>磁鐵（一鍵歸類文件</title>
             <set>
             "$home_dir/BashCore" File_All
@@ -47,7 +47,7 @@ cat <<w
         config-sh="Print_AppClearXml.sh"
         desc="此頁面透過讀取配置規則文件動態構建"
         title="軟件規則清理" />
-        <action shell="default" warning="清理系統運行時必要的快取，適合在系統出現奇怪 bug 或大更改時使用，清理後系統會自動重建這些快取，此操作並不能提升效能或有效降低儲存佔用，如果您不了解不建議隨意使用。清理後建議重新啟動" auto-off="false" auto-finish="false" id="003">
+        <action shell="default" warning="清理系統運行時必要的快取，適合在系統出現奇怪 bug 或大更改時使用，清理後系統會自動重建這些快取，此操作並不能提升效能或有效降低儲存佔用，如果您不了解不建議隨意使用。清理後建議重新啟動" auto-off="false" auto-finish="false" id="006">
             <title>清空系統快取</title>
                 <set>
                 "$home_dir/BashCore" Clear_SCache

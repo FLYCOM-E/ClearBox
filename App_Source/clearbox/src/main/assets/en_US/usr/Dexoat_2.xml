@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title=" ">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="001" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>Speed Mode</title>
             <set>
             "$home_dir/BashCore" Dexoat_2 speed
@@ -11,7 +11,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="002" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="002" >
         <title>Speed-Profile Mode</title>
             <set>
             "$home_dir/BashCore" Dexoat_2 speed-profile
@@ -21,7 +21,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" confirm="false" auto-off="false" auto-finish="false" id="003" >
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="003" >
         <title>Everything Mode</title>
             <set>
             "$home_dir/BashCore" Dexoat_2 everything
