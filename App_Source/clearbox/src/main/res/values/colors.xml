@@ -4,9 +4,9 @@
     <color name="window_bg_dark">#000000</color>
     <color name="status_bg_dark">#222222</color>
     <color name="status_bg_light">#FEF7FF</color>
-    <color name="cardBgDark">#222222</color>
+    <color name="cardBgDark">#4C000000</color>
     <color name="cardBgDarkTransparent">#4C000000</color>
-    <color name="cardBgLight">#FEF7FF</color>
+    <color name="cardBgLight">#4CFFFFFF</color>
     <color name="cardBgLightTransparent">#4CFFFFFF</color>
 
     <color name="color_load_low">#02d98d</color>
