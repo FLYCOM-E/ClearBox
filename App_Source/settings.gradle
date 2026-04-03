@@ -1,1 +1,1 @@
-include ':clearbox', ':krscript', ':common', ':kr-scripts'
+include ':clearbox', ':krscript', ':common'

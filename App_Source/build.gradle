@@ -19,7 +19,12 @@ allprojects {
             url 'https://jitpack.io'
         }
         google()
-        jcenter()
+        mavenCentral()
+    }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
 }
 
