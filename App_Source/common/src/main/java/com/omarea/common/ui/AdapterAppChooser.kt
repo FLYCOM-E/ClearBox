@@ -138,10 +138,10 @@ class AdapterAppChooser(
             val icon: Drawable? = iconCaches.get(packageName)
             if (icon == null && !app.notFound) {
                 try {
-                    val installInfo = context.packageManager.getPackageInfo(packageName, 0)
+                    val appInfo = context.packageManager.getPackageInfo(packageName, 0)
                     iconCaches.put(
-                            packageName,
-                            installInfo.applicationInfo.loadIcon(context.packageManager)
+                        packageName,
+                        context.packageManager.getApplicationIcon(packageName)
                     )
                 } catch (ex: Exception) {
                     app.notFound = true

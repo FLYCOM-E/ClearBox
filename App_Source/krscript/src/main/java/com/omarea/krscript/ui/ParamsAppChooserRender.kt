@@ -57,7 +57,7 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
 
         val options = ArrayList(packages.map {
             AdapterAppChooser.AppInfo().apply {
-                appName = "" + it.applicationInfo.loadLabel(pm)
+                appName = "" + it.applicationInfo?.loadLabel(pm)
                 packageName = it.packageName
             }
         })

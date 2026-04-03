@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk 34
+    compileSdk 36
     namespace 'com.projectkr.shell'
 
     compileOptions {
@@ -19,7 +19,6 @@ android {
     defaultConfig {
         applicationId "wipe.cache.module"
         minSdk 21
-        targetSdk 34
         versionCode 87
         versionName "V5.0.2"
     }
