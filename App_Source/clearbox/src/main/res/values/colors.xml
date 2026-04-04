@@ -25,4 +25,6 @@
     <color name="md_secondary_container">#00D2C4</color>
     <color name="md_surface">#FEF7FF</color>
     <color name="md_background">#FEF7FF</color>
+    
+    <color name="switch_thumb_color">#FEF7FF</color>
 </resources>

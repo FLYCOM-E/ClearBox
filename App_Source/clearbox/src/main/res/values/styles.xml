@@ -74,12 +74,14 @@
         <item name="colorPrimaryContainer">@color/md_primary_container</item>
         <item name="colorSecondary">@color/md_secondary</item>
         <item name="colorSecondaryContainer">@color/md_secondary_container</item>
+        <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
     <style name="AppThemeDark" parent="Theme.KrScript">
         <item name="colorPrimary">@color/md_primary</item>
         <item name="colorPrimaryContainer">@color/md_primary_container</item>
         <item name="colorSecondary">@color/md_secondary</item>
         <item name="colorSecondaryContainer">@color/md_secondary_container</item>
+        <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
     <style name="AppThemeWallpaper" parent="Theme.KrScript" />
     <style name="AppThemeWallpaperLight" parent="Theme.KrScript" />
