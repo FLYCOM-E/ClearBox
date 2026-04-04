@@ -15,6 +15,7 @@
         <item name="switchStyle">@style/Widget.Material3.CompoundButton.Switch</item>
         <item name="checkboxStyle">@style/Widget.Material3.CompoundButton.CheckBox</item>
         <item name="radioButtonStyle">@style/Widget.Material3.CompoundButton.RadioButton</item>
+        <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
     <style name="Theme.KrScript.AppBarOverlay" parent="ThemeOverlay.Material3.Toolbar.Surface">
         <item name="titleTextColor">?android:attr/textColorPrimary</item>

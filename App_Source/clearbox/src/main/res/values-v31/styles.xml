@@ -22,6 +22,7 @@
         <item name="android:windowBackground">@android:color/white</item>
         <item name="colorSurface">@android:color/white</item>
         <item name="colorSurfaceVariant">@android:color/white</item>
+        <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
     <style name="AppTheme" parent="Theme.KrScript" />
     <style name="AppThemeDark" parent="Theme.KrScript" />
