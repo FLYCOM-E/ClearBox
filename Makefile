@@ -59,7 +59,7 @@ clean:
 	@rm -r $(home_dir)/AppConfig
 
 module_tar: 
-	@cp APKS/ClearBox_$(M_LANG).apk $(home_dir)/ClearBox.apk
+	@cp App_Source/clearbox/clearbox-release.apk $(home_dir)/ClearBox.apk
 	@mkdir -p $(home_dir)/语言包 && cp LANG_Configs/$(M_LANG).conf $(home_dir)/语言包/Local.conf
 	@mkdir -p $(home_dir)/AppConfig && cp AppConfigs/* $(home_dir)/AppConfig/
 	@cp $(home_dir)/module.prop ./module.prop.bak

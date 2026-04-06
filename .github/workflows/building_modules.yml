@@ -11,6 +11,10 @@ on:
         description: 'NDK Version'
         required: false
         default: 'r28b'
+      jdk_version:
+        description: 'JDK Version'
+        required: false
+        default: '17'
     
   push:
     branches:
@@ -41,10 +45,18 @@ jobs:
           echo "versionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
       
       - name: Setup NDK
-        uses: nttld/setup-ndk@v1
+        uses: actions/setup-ndk@v4
         id: setup-ndk
         with:
           ndk-version: ${{ github.event.inputs.ndk_version || 'r28b' }}
+          add-to-path: true
+      
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        id: setup-jdk
+        with:
+          jdk-version: ${{ github.event.inputs.jdk_version || '17' }}
+          distribution: "temurin"
           add-to-path: true
       
       - name: Cache NDK
@@ -60,7 +72,9 @@ jobs:
       
       - name: Build ${{ matrix.language }} - ${{ matrix.target }}
         run: |
-          chmod +x *
+          chmod +x *; chmod +x App_Source/*
+          cd App_Source
+          ./gradlew assembleRelease --no-daemon
           export NDK=${{ steps.setup-ndk.outputs.ndk-path }}
           export M_API=${{ github.event.inputs.api_level || '21' }}
           export M_LANG=${{ matrix.language }}
