@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.ClearBox" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="krSwitchThumColor">@color/switch_thumb_color</item>
-    </style>
-</resources>

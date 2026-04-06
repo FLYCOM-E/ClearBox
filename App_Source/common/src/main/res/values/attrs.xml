@@ -15,4 +15,5 @@
     </attr>
     <!--格式为引用-->
     <attr name="radioButtonStyle" format="reference"/>
+    <attr name="krSwitchThumColor" format="color" />
 </resources>
