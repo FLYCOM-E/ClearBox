@@ -74,6 +74,7 @@ jobs:
           chmod +x *; chmod +x App_Source/*
           cd App_Source
           ./gradlew assembleRelease --no-daemon
+          cd ..
           export NDK=${{ steps.setup-ndk.outputs.ndk-path }}
           export M_API=${{ github.event.inputs.api_level || '21' }}
           export M_LANG=${{ matrix.language }}
