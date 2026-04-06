@@ -55,9 +55,8 @@ jobs:
         uses: actions/setup-java@v4
         id: setup-jdk
         with:
-          jdk-version: ${{ github.event.inputs.jdk_version || '17' }}
+          java-version: ${{ github.event.inputs.jdk_version || '17' }}
           distribution: "temurin"
-          add-to-path: true
       
       - name: Cache NDK
         uses: actions/cache@v4
