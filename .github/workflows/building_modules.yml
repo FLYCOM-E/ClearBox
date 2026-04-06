@@ -75,6 +75,7 @@ jobs:
           cd App_Source
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
           echo -e "storeFile=release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > keystore.properties
+          ls -lh
           ./gradlew assembleRelease --no-daemon
           rm -f release.keystore keystore.properties
           cd ..
