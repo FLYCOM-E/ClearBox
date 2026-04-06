@@ -74,9 +74,7 @@ jobs:
           chmod +x *; chmod +x App_Source/*
           cd App_Source
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
-          echo -e "storeFile=release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > keystore.properties
-          ls -lh
-          cat keystore.properties
+          echo -e "storeFile=$(pwd)/release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > keystore.properties
           ./gradlew assembleRelease --no-daemon
           rm -f release.keystore keystore.properties
           cd ..
