@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [aarch64, armv7a, x86_64, i686]
+        target: [aarch64, armv7a, x86_64]
         language: [zh_CN, en_US, zh_TW]
     
     steps:
@@ -113,7 +113,7 @@ jobs:
           git config --local user.name "GitHub Action"
           
           LANGS=("zh_CN" "en_US" "zh_TW")
-          ARCHS=("aarch64" "armv7a" "x86_64" "i686")
+          ARCHS=("aarch64" "armv7a" "x86_64")
           
           VERSION=$(grep '^version=' Module_Files/module.prop | cut -f2 -d '=')
           VERSION_CODE=$(grep '^versionCode=' Module_Files/module.prop | cut -f2 -d '=')
