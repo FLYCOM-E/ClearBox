@@ -58,12 +58,6 @@ jobs:
           java-version: ${{ github.event.inputs.jdk_version || '17' }}
           distribution: "temurin"
       
-      - name: Cache NDK
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.setup-ndk.outputs.ndk-path }}
-          key: ndk-${{ github.event.inputs.ndk_version || 'r28b' }}-${{ runner.os }}
-      
       - name: Install dependencies
         run: |
           sudo apt-get update

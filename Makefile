@@ -59,7 +59,8 @@ clean:
 	@rm -r $(home_dir)/AppConfig
 
 module_tar: 
-	@find App_Source -name "*.apk" -exec cp {} $(home_dir)/ClearBox.apk
+	# 一般只会有一个安装包
+	@find App_Source -name "*.apk" -exec cp {} $(home_dir)/ClearBox.apk \;
 	@mkdir -p $(home_dir)/语言包 && cp LANG_Configs/$(M_LANG).conf $(home_dir)/语言包/Local.conf
 	@mkdir -p $(home_dir)/AppConfig && cp AppConfigs/* $(home_dir)/AppConfig/
 	@cp $(home_dir)/module.prop ./module.prop.bak
