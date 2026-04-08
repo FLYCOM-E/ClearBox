@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.Menu
@@ -30,8 +29,6 @@ import wipe.cache.module.config.PageConfigSh
 import wipe.cache.module.model.*
 import wipe.cache.module.ui.ActionListFragment
 import wipe.cache.module.ui.ParamsFileChooserRender
-import com.omarea.vtools.FloatMonitor
-import com.projectkr.shell.permissions.CheckRootStatus
 import com.projectkr.shell.ui.TabIconHelper
 
 class MainActivity : AppCompatActivity() {
