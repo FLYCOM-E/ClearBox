@@ -7,8 +7,6 @@
 
     <string name="app_name">ClearBox</string>
     <string name="btn_exit">返回</string>
-    <string name="float_monitor_tips">双击悬浮窗关闭，长按拖动调整位置</string>
-    <string name="permission_float">请授权显示悬浮窗权限</string>
     <string name="please_wait">请稍等</string>
     <string name="title_activity_action_page">功能分页</string>
 
@@ -19,11 +17,6 @@
     <string name="tab_home">首页</string>
     <string name="tab_favorites"></string>
     <string name="tab_pages">全部</string>
-
-    <string name="monitor_laod">负载：%d%%</string>
-    <string name="monitor_core_count"> %d 核心</string>
-    <string name="monitor_cache_cleared"> 已回收 RAM </string>
-    <string name="monitor_ram_cleared"> RAM 碎片已整理 </string>
 
     <string name="copy_success">已复制</string>
     <string name="btn_retry">再试试</string>

@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private var krScriptConfig = KrScriptConfig()
 
     private lateinit var mainTabhost: android.widget.TabHost
-    private lateinit var mainTabhostCpu: View
     private lateinit var mainTabhost2: View
     private lateinit var mainTabhost3: View
 
@@ -56,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         setTitle(R.string.app_name)
 
         mainTabhost = findViewById(R.id.main_tabhost)
-        mainTabhostCpu = findViewById(R.id.main_tabhost_cpu)
         mainTabhost2 = findViewById(R.id.main_tabhost_2)
         mainTabhost3 = findViewById(R.id.main_tabhost_3)
 
@@ -64,15 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         mainTabhost.setup()
         val tabIconHelper = TabIconHelper(mainTabhost, this)
-        if (CheckRootStatus.lastCheckResult && krScriptConfig.allowHomePage) {
-            tabIconHelper.newTabSpec(getString(R.string.tab_home), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_cpu)
-        } else {
-            mainTabhostCpu.visibility = View.GONE
-        }
-        mainTabhost.setOnTabChangedListener {
-            tabIconHelper.updateHighlight()
-        }
-
+        
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
             val page2Config = krScriptConfig.pageListConfig
@@ -98,15 +88,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }).start()
-
-        if (CheckRootStatus.lastCheckResult && krScriptConfig.allowHomePage) {
-            val home = FragmentHome()
-            val fragmentManager = supportFragmentManager
-            val transaction = fragmentManager.beginTransaction()
-            transaction.replace(R.id.main_tabhost_cpu, home)
-            transaction.commitAllowingStateLoss()
-        }
-
+        
         if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 111)
         }
@@ -271,7 +253,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
-        menu.findItem(R.id.action_graph).isVisible = (mainTabhostCpu.visibility == View.VISIBLE)
         return true
     }
 
@@ -303,28 +284,6 @@ class MainActivity : AppCompatActivity() {
                 DialogHelper.customDialog(this, layout)
             }
             R.id.option_menu_reboot -> { DialogPower(this).showPowerMenu() }
-            R.id.action_graph -> {
-                if (FloatMonitor.isShown == true) {
-                    FloatMonitor(this).hidePopupWindow()
-                    return false
-                }
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (Settings.canDrawOverlays(this)) {
-                        FloatMonitor(this).showPopupWindow()
-                        Toast.makeText(this, getString(R.string.float_monitor_tips), Toast.LENGTH_LONG).show()
-                    } else {
-                        val intent = Intent()
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
-                        intent.data = Uri.fromParts("package", this.packageName, null)
-                        Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show()
-                        try { startActivity(intent) } catch (ex: Exception) {}
-                    }
-                } else {
-                    FloatMonitor(this).showPopupWindow()
-                    Toast.makeText(this, getString(R.string.float_monitor_tips), Toast.LENGTH_LONG).show()
-                }
-            }
         }
         return super.onOptionsItemSelected(item)
     }

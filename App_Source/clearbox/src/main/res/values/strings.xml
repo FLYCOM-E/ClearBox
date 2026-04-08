@@ -7,8 +7,6 @@
 
     <string name="app_name">ClearBox</string>
     <string name="btn_exit">Return</string>
-    <string name="float_monitor_tips">Double-click to close floating window, long press and drag to adjust position</string>
-    <string name="permission_float">Please grant floating window permission</string>
     <string name="please_wait">Please wait</string>
     <string name="title_activity_action_page">Function Pages</string>
 
@@ -19,11 +17,6 @@
     <string name="tab_home">Home</string>
     <string name="tab_favorites"></string>
     <string name="tab_pages">All</string>
-
-    <string name="monitor_laod">Load：%d%%</string>
-    <string name="monitor_core_count"> %d Cores</string>
-    <string name="monitor_cache_cleared"> RAM Recycled </string>
-    <string name="monitor_ram_cleared"> RAM Fragments Organized </string>
 
     <string name="copy_success">Copied</string>
     <string name="btn_retry">Try Again</string>
