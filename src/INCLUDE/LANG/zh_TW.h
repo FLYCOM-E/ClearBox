@@ -1,5 +1,5 @@
 // 通用宏
-#define L_NOT_USE_ROOT " » 請使用 Root 權限！\n"
+#define L_NOT_USE_ROOT " » 請使用 Root 權限！#%u\n"
 #define L_ARGS_FAILED " » 傳入參數不足！\n"
 #define L_ARGS_FAILED_2 " » 傳入參數錯誤！\n"
 #define L_CONFIG_PATH_NOTFOUND " » 配置路徑不存在/不可存取！\n"

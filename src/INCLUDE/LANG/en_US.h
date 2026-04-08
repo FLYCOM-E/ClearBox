@@ -1,5 +1,5 @@
 // 通用宏
-#define L_NOT_USE_ROOT " » Please use Root permissions!\n"
+#define L_NOT_USE_ROOT " » Please use Root permissions! #%u\n"
 #define L_ARGS_FAILED " » Insufficient arguments provided!\n"
 #define L_ARGS_FAILED_2 " » Incorrect arguments provided!\n"
 #define L_CONFIG_PATH_NOTFOUND " » Configuration path does not exist/is not accessible!\n"
