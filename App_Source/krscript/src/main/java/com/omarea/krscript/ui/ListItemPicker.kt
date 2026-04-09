@@ -3,7 +3,7 @@ package wipe.cache.module.ui
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import wipe.cache.module.R
+import com.omarea.common.R as CommonR
 import wipe.cache.module.model.PickerNode
 
 class ListItemPicker(context: Context, config: PickerNode) : ListItemClickable(context, R.layout.kr_action_list_item, config) {
@@ -11,6 +11,6 @@ class ListItemPicker(context: Context, config: PickerNode) : ListItemClickable(c
 
     init {
         widgetView?.visibility = View.VISIBLE
-        widgetView?.setImageDrawable(context.getDrawable(R.drawable.function))
+        widgetView?.setImageDrawable(context.getDrawable(CommonR.drawable.function))
     }
 }

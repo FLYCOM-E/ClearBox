@@ -3,7 +3,7 @@ package wipe.cache.module.ui
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import wipe.cache.module.R
+import com.omarea.common.R as CommonR
 import wipe.cache.module.model.ActionNode
 
 class ListItemAction(context: Context, config: ActionNode) : ListItemClickable(context, R.layout.kr_action_list_item, config) {
@@ -12,9 +12,9 @@ class ListItemAction(context: Context, config: ActionNode) : ListItemClickable(c
     init {
         widgetView?.visibility = View.VISIBLE
         if (config.params != null && config.params!!.size > 0) {
-            widgetView?.setImageDrawable(context.getDrawable(R.drawable.menu))
+            widgetView?.setImageDrawable(context.getDrawable(CommonR.drawable.menu))
         } else {
-            widgetView?.setImageDrawable(context.getDrawable(R.drawable.run))
+            widgetView?.setImageDrawable(context.getDrawable(CommonR.drawable.run))
         }
     }
 }

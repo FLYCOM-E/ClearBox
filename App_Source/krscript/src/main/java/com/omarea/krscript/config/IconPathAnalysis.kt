@@ -5,7 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import wipe.cache.module.R
+import com.omarea.common.R as CommonR
 import wipe.cache.module.model.ClickableNode
 
 
@@ -29,7 +29,7 @@ class IconPathAnalysis {
                 return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
             }
         }
-        return if (useDefault) context.getDrawable(R.drawable.function)!! else null
+        return if (useDefault) context.getDrawable(CommonR.drawable.function)!! else null
     }
 
     fun loadIcon(context: Context, clickableNode: ClickableNode): Drawable? {

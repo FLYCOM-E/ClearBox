@@ -3,7 +3,7 @@ package wipe.cache.module.ui
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import wipe.cache.module.R
+import com.omarea.common.R as CommonR
 import wipe.cache.module.model.PageNode
 
 class ListItemPage(context: Context, config: PageNode) : ListItemClickable(context, R.layout.kr_action_list_item, config) {
@@ -11,6 +11,6 @@ class ListItemPage(context: Context, config: PageNode) : ListItemClickable(conte
 
     init {
         widgetView?.visibility = View.VISIBLE
-        widgetView?.setImageDrawable(context.getDrawable(R.drawable.run))
+        widgetView?.setImageDrawable(context.getDrawable(CommonR.drawable.run))
     }
 }

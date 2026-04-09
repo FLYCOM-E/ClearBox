@@ -17,6 +17,7 @@ import com.omarea.common.ui.DialogHelper
 import wipe.cache.module.executor.ShellExecutor
 import wipe.cache.module.model.RunnableNode
 import wipe.cache.module.model.ShellHandlerBase
+import com.omarea.common.R as CommonR
 
 class BgTaskThread(private var process: Process) : Thread() {
     override fun run() {
@@ -71,7 +72,7 @@ class BgTaskThread(private var process: Process) : Thread() {
             val notificationBuilder = Notification.Builder(context)
                     .setContentTitle("" + notificationTitle + "(" + notificationID + ")")
                     .setContentText("" + notificationMShortMsg + " >> " + notificationMessageRows.lastOrNull())
-                    .setSmallIcon(R.drawable.run)
+                    .setSmallIcon(CommonR.drawable.run)
                     .setAutoCancel(true)
                     .setWhen(System.currentTimeMillis())
             if (progressTotal != progressCurrent) {
