@@ -8,6 +8,7 @@
 #define MAX_COMMAND_LEN 4096 // 命令最大长度
 #define MAX_TITLE_LEN 128 // 通知标题最大长度
 #define MAX_MESSAGE_LEN 512 // 通知内容最大长度
+#define CONFIG_PATH_NAME "TimedConfig"
 #define SERVER_NAME "ClearBox Timed"
 
 static int running(char * command);
@@ -52,32 +53,34 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    if (access(argv[1], F_OK) != 0)
+    char config_dir[sizeof(argv[1]) + sizeof(CONFIG_PATH_NAME) + 2];
+    snprintf(config_dir, sizeof(config_dir), "%s/%s", argv[1], CONFIG_PATH_NAME);
+    
+    if (access(config_dir, F_OK) != 0)
     {
         fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
         return 1;
     }
     
-    int read_config = 0;
-    struct config_file config[MAX_CONFIG]; // 创建结构体
-    
     // 获取传入PATH类型
     struct stat path_stat;
-    if (lstat(argv[1], &path_stat) == -1)
+    if (lstat(config_dir, &path_stat) == -1)
     {
-        fprintf(stderr, L_PATH_STAT_FAILED, argv[1]);
+        fprintf(stderr, L_PATH_STAT_FAILED, config_dir);
         return 1;
     }
     
+    int read_config = 0;
+    struct config_file config[MAX_CONFIG]; // 创建结构体
     // 目录类型继续解析，否则报错退出
     if (S_ISDIR(path_stat.st_mode))
     {
         struct stat file_stat;
         struct dirent * entry;
-        DIR * config_dir_dp = opendir(argv[1]);
+        DIR * config_dir_dp = opendir(config_dir);
         if (config_dir_dp == NULL)
         {
-            fprintf(stderr, L_OPEN_PATH_FAILED, argv[1], strerror(errno));
+            fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
             return 1;
         }
         
@@ -91,14 +94,14 @@ int main(int argc, char * argv[])
             }
             
             // 拼接完整路径并跳过目录/链接
-            size_t path_len = (strlen(argv[1]) + strlen(entry -> d_name) + 2);
+            size_t path_len = (strlen(config_dir) + strlen(entry -> d_name) + 2);
             if (path_len > MAX_PATH)
             {
                 fprintf(stderr, L_CONFIG_PATH_TOOLONG);
                 continue;
             }
             char path[path_len];
-            snprintf(path, sizeof(path), "%s/%s", argv[1], entry -> d_name);
+            snprintf(path, sizeof(path), "%s/%s", config_dir, entry -> d_name);
             
             if (lstat(path, &file_stat) == -1)
             {
@@ -271,7 +274,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        fprintf(stderr, L_PATH_NOTISDIR, argv[1]);
+        fprintf(stderr, L_PATH_NOTISDIR, config_dir);
         return 1;
     }
     
@@ -279,7 +282,9 @@ int main(int argc, char * argv[])
     pid_t new_pid = fork();
     if (new_pid == -1)
     {
-        fprintf(stderr, L_SERVER_START_ERR);
+        char post_text[sizeof(L_SERVER_START_ERR) + 128] = "";
+        snprintf(post_text, sizeof(post_text), L_SERVER_START_ERR, strerror(errno));
+        write_log(argv[1], SERVER_NAME, post_text);
         return 1;
     }
     if (new_pid != 0)
@@ -354,8 +359,8 @@ int main(int argc, char * argv[])
                 }
                 
                 // 配置文件
-                char config_file[strlen(argv[1]) + strlen(config[i].config_name) + 2];
-                snprintf(config_file, sizeof(config_file), "%s/%s", argv[1], config[i].config_name);
+                char config_file[strlen(config_dir) + strlen(config[i].config_name) + 2];
+                snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config[i].config_name);
                 
                 /* 
                 回写

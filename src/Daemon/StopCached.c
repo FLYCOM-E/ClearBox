@@ -195,7 +195,9 @@ int main(int argc, char * argv[])
     pid_t new_pid = fork();
     if (new_pid == -1)
     {
-        post(SERVER_NAME, L_SERVER_START_ERR);
+        char post_text[sizeof(L_SERVER_START_ERR) + 128] = "";
+        snprintf(post_text, sizeof(post_text), L_SERVER_START_ERR, strerror(errno));
+        write_log(work_dir, SERVER_NAME, post_text);
         return 1;
     }
     else if (new_pid != 0)

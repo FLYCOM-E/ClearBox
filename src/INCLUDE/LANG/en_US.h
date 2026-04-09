@@ -25,7 +25,7 @@
 #define L_W_SETPROP_ERR " » Warning: PROP setting failed!\n"
 #define L_MOVE_ERROR " » Failed to move %s: %s\n"
 #define L_DELETE_ERROR " » Failed to delete %s: %s\n"
-#define L_SERVER_START_ERR " » Process startup failed!\n"
+#define L_SERVER_START_ERR " » Process startup failed: %s\n"
 
 // For StopCached
 #define L_SCD_START_SUCCESS " » Cache blocking has been started!\n"

@@ -134,7 +134,7 @@ fi
 if pgrep "Timed" >/dev/null 2>&1; then
     kill $(pgrep Timed)
 fi
-if "$home_dir/Daemon/Timed" "$work_dir/TimedConfig"; then
+if "$home_dir/Daemon/Timed" "$work_dir"; then
     echo "[ $(date) ]：Timed Start" >> "$work_dir/LOG.log"
 fi
 ######

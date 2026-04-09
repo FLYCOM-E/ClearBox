@@ -25,7 +25,7 @@
 #define L_W_SETPROP_ERR " » 警告：PROP设置失败！\n"
 #define L_MOVE_ERROR " » %s 移动失败: %s\n"
 #define L_DELETE_ERROR " » 删除 %s 失败: %s\n"
-#define L_SERVER_START_ERR " » 进程启动失败！\n"
+#define L_SERVER_START_ERR " » 进程启动失败: %s\n"
 
 // For StopCached
 #define L_SCD_START_SUCCESS " » 缓存阻止已启动！\n"
