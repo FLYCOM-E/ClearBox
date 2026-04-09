@@ -280,3 +280,22 @@ int get_settings_prop(char * settings_file, char * key)
     fclose(settings_file_fp);
     return value;
 }
+
+/*
+此函数用于设置进程名称
+接收：
+    char * argv[]
+    char * new_name 新名称
+*/
+int set_server_name(char * argv[], char * new_name)
+{
+    size_t size = strlen(argv[0]);
+    if (strlen(new_name) <= size)
+    {
+        memset(argv[0], 0, size);
+        snprintf(argv[0], size, "%s", new_name);
+    }
+    prctl(PR_SET_NAME, new_name);
+    
+    return 0;
+}

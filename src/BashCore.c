@@ -304,11 +304,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "StopCached") == 0)
     {
-        stop_cache_daemon(work_dir, bin_dir);
+        stop_cache_daemon(argv, work_dir, bin_dir);
     }
     else if (strcasecmp(argv[1], "Timed") == 0)
     {
-        time_daemon(work_dir);
+        time_daemon(argv, work_dir);
     }
     else
     {

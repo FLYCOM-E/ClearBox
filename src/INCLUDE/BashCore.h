@@ -44,6 +44,7 @@ int post(char * title, char * message);
 int write_log(char * config_dir, char * name_id, char * text);
 int set_name_space(void);
 int get_settings_prop(char * settings_file, char * key);
+int set_server_name(char * argv[], char * new_name);
 
 int app_cache_clean(char * work_dir, int mode);
 int cust_rule_clean(char * work_dir);
@@ -55,5 +56,5 @@ int set_storage(char * work_dir, char * bin_dir, char * mode);
 int disk_gc(int mode);
 int dexoat(int mode, char * cust_mode);
 int freezer_open(void);
-int stop_cache_daemon(char * work_dir, char * bin_dir);
-int time_daemon(char * work_dir);
+int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir);
+int time_daemon(char * argv[], char * work_dir);

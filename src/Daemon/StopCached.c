@@ -9,13 +9,13 @@
 #define MAX_CARD 5 // 最大拓展卡数量
 #define MAX_CARD_ID_LEN 256
 #define LOGPRINT __android_log_print
-#define SERVER_NAME "StopCached"
+#define SERVER_NAME "ClearBox StopCached"
 
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
                         char * bin_dir, int skip_reset);
 
-int stop_cache_daemon(char * work_dir, char * bin_dir)
+int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
 {
     // 检查及读取外部拓展储存
     int card_count = 0;
@@ -143,7 +143,7 @@ int stop_cache_daemon(char * work_dir, char * bin_dir)
     close(std);
     setsid();
     chdir("/");
-    prctl(PR_SET_NAME, SERVER_NAME);
+    set_server_name(argv, SERVER_NAME);
     
     post(SERVER_NAME, L_SCD_START_SUCCESS);
     

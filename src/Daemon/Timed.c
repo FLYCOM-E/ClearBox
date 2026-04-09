@@ -9,7 +9,7 @@
 #define MAX_TITLE_LEN 128 // 通知标题最大长度
 #define MAX_MESSAGE_LEN 512 // 通知内容最大长度
 #define CONFIG_PATH_NAME "TimedConfig"
-#define SERVER_NAME "Timed"
+#define SERVER_NAME "ClearBox Timed"
 
 static int running(char * command);
 
@@ -34,7 +34,7 @@ struct config_file
     time_t last_error_notify;
 };
 
-int time_daemon(char * work_dir)
+int time_daemon(char * argv[], char * work_dir)
 {
     // 设置命名空间
     if (set_name_space() != 0)
@@ -287,7 +287,7 @@ int time_daemon(char * work_dir)
     close(fd);
     setsid();
     chdir("/");
-    prctl(PR_SET_NAME, SERVER_NAME);
+    set_server_name(argv, SERVER_NAME);
     
     // Post
     char start_success_str[256] = {0}; // 对应宏内容不能超过此大小
