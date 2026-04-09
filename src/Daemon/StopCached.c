@@ -9,7 +9,7 @@
 #define MAX_CARD 5 // 最大拓展卡数量
 #define MAX_CARD_ID_LEN 256
 #define LOGPRINT __android_log_print
-#define SERVER_NAME "ClearBox StopCached"
+#define SERVER_NAME "StopCached"
 
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
