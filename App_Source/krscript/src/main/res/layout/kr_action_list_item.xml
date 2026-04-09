@@ -11,7 +11,7 @@
         android:layout_height="10dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="15dp"
-        android:src="@drawable/kr_shortcut_icon"
+        android:src="@drawable/share"
         android:visibility="gone"
         app:tint="@color/kr_shortcut_color" />
 

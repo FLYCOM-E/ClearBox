@@ -25,7 +25,7 @@
         android:layout_height="22dp"
         android:layout_gravity="center_vertical"
         android:padding="2dp"
-        android:src="@drawable/kr_warn" />
+        android:src="@drawable/warning" />
 
     <View
         android:id="@+id/kr_param_color_preview"
@@ -43,6 +43,6 @@
         android:background="@android:color/transparent"
         android:padding="5dp"
         android:scaleType="centerInside"
-        android:src="@drawable/kr_color"
+        android:src="@drawable/color"
         android:tint="@android:color/darker_gray" />
 </LinearLayout>

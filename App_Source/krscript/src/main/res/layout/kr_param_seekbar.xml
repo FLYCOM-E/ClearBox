@@ -8,7 +8,7 @@
     <ImageButton
         android:id="@+id/kr_param_seekbar_minus"
         style="@style/SceneSeekbarIcon"
-        android:src="@drawable/kr_minus" />
+        android:src="@drawable/minus" />
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -34,7 +34,7 @@
     <ImageButton
         android:id="@+id/kr_param_seekbar_plus"
         style="@style/SceneSeekbarIcon"
-        android:src="@drawable/kr_plus" />
+        android:src="@drawable/plus" />
 
 
 </LinearLayout>

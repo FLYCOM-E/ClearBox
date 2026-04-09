@@ -11,6 +11,6 @@ class ListItemPage(context: Context, config: PageNode) : ListItemClickable(conte
 
     init {
         widgetView?.visibility = View.VISIBLE
-        widgetView?.setImageDrawable(context.getDrawable(R.drawable.kr_run))
+        widgetView?.setImageDrawable(context.getDrawable(R.drawable.run))
     }
 }

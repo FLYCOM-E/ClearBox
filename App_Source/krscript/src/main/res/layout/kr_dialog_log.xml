@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:scaleType="centerInside"
         android:padding="7dp"
-        android:src="@drawable/kr_hide" />
+        android:src="@drawable/hide" />
 
     <LinearLayout
         android:id="@+id/top_bar"

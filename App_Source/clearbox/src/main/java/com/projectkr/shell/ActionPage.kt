@@ -192,13 +192,13 @@ class ActionPage : AppCompatActivity() {
         actionPageFab.setOnClickListener { onMenuItemClick(menuOption) }
 
         if (menuOption.type == "file" && menuOption.iconPath.isEmpty()) {
-            actionPageFab.setImageDrawable(ContextCompat.getDrawable(this, KR.drawable.kr_folder))
+            actionPageFab.setImageDrawable(ContextCompat.getDrawable(this, KR.drawable.folder))
         } else if (menuOption.iconPath.isNotEmpty()) {
             val icon = IconPathAnalysis().loadLogo(this, menuOption, false)
             if (icon != null) actionPageFab.setImageDrawable(icon)
-            else actionPageFab.setImageDrawable(ContextCompat.getDrawable(this, KR.drawable.kr_fab))
+            else actionPageFab.setImageDrawable(ContextCompat.getDrawable(this, KR.drawable.menu))
         } else {
-            actionPageFab.setImageDrawable(ContextCompat.getDrawable(this, KR.drawable.kr_fab))
+            actionPageFab.setImageDrawable(ContextCompat.getDrawable(this, KR.drawable.menu))
         }
     }
 

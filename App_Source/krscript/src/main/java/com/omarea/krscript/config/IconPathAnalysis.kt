@@ -29,7 +29,7 @@ class IconPathAnalysis {
                 return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
             }
         }
-        return if (useDefault) context.getDrawable(R.drawable.kr_shortcut_logo)!! else null
+        return if (useDefault) context.getDrawable(R.drawable.function)!! else null
     }
 
     fun loadIcon(context: Context, clickableNode: ClickableNode): Drawable? {

@@ -20,7 +20,7 @@
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
             android:layout_marginEnd="6dp"
-            android:src="@drawable/kr_stop" />
+            android:src="@drawable/stop" />
 
         <TextView
             android:id="@+id/kr_task_title"

@@ -45,7 +45,7 @@
             android:layout_marginStart="4dp"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
-            android:src="@drawable/kr_folder"
+            android:src="@drawable/folder"
             android:tint="@android:color/darker_gray" />
     </RelativeLayout>
 </LinearLayout>

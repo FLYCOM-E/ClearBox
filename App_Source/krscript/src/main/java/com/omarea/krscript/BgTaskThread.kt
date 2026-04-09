@@ -71,7 +71,7 @@ class BgTaskThread(private var process: Process) : Thread() {
             val notificationBuilder = Notification.Builder(context)
                     .setContentTitle("" + notificationTitle + "(" + notificationID + ")")
                     .setContentText("" + notificationMShortMsg + " >> " + notificationMessageRows.lastOrNull())
-                    .setSmallIcon(R.drawable.kr_run)
+                    .setSmallIcon(R.drawable.run)
                     .setAutoCancel(true)
                     .setWhen(System.currentTimeMillis())
             if (progressTotal != progressCurrent) {

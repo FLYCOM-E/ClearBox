@@ -12,9 +12,9 @@ class ListItemAction(context: Context, config: ActionNode) : ListItemClickable(c
     init {
         widgetView?.visibility = View.VISIBLE
         if (config.params != null && config.params!!.size > 0) {
-            widgetView?.setImageDrawable(context.getDrawable(R.drawable.kr_list))
+            widgetView?.setImageDrawable(context.getDrawable(R.drawable.menu))
         } else {
-            widgetView?.setImageDrawable(context.getDrawable(R.drawable.kr_run))
+            widgetView?.setImageDrawable(context.getDrawable(R.drawable.run))
         }
     }
 }
