@@ -268,12 +268,12 @@ int time_daemon(char * argv[], char * work_dir)
     }
     
     // Daemon
+    char log_text[sizeof(L_SERVER_START_ERR) + strlen(L_TD_START_SUCCESS) + 128] = "";
     pid_t new_pid = fork();
     if (new_pid == -1)
     {
-        char post_text[sizeof(L_SERVER_START_ERR) + 128] = "";
-        snprintf(post_text, sizeof(post_text), L_SERVER_START_ERR, strerror(errno));
-        write_log(work_dir, SERVER_NAME, post_text);
+        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
+        write_log(work_dir, SERVER_NAME, log_text);
         return 1;
     }
     if (new_pid != 0)
@@ -289,10 +289,9 @@ int time_daemon(char * argv[], char * work_dir)
     chdir("/");
     set_server_name(argv, SERVER_NAME);
     
-    // Post
-    char start_success_str[256] = {0}; // 对应宏内容不能超过此大小
-    snprintf(start_success_str, sizeof(start_success_str), L_TD_START_SUCCESS, read_config);
-    post(SERVER_NAME, start_success_str);
+    snprintf(log_text, sizeof(log_text), L_TD_START_SUCCESS, read_config, getpid());
+    post(SERVER_NAME, log_text);
+    write_log(work_dir, SERVER_NAME, log_text);
     
     for ( ; ; )
     {

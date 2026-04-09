@@ -124,12 +124,12 @@ int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
     }
     
     // 创建子进程脱离终端
+    char log_text[sizeof(L_SERVER_START_ERR) + sizeof(L_SCD_START_SUCCESS) + 128] = "";
     pid_t new_pid = fork();
     if (new_pid == -1)
     {
-        char post_text[sizeof(L_SERVER_START_ERR) + 128] = "";
-        snprintf(post_text, sizeof(post_text), L_SERVER_START_ERR, strerror(errno));
-        write_log(work_dir, SERVER_NAME, post_text);
+        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
+        write_log(work_dir, SERVER_NAME, log_text);
         return 1;
     }
     else if (new_pid != 0)
@@ -145,7 +145,9 @@ int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
     chdir("/");
     set_server_name(argv, SERVER_NAME);
     
-    post(SERVER_NAME, L_SCD_START_SUCCESS);
+    snprintf(log_text, sizeof(log_text), L_SCD_START_SUCCESS, getpid());
+    post(SERVER_NAME, log_text);
+    write_log(work_dir, SERVER_NAME, log_text);
     
     /* 
     等待时间

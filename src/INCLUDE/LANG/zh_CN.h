@@ -28,7 +28,7 @@
 #define L_SERVER_START_ERR " » 进程启动失败: %s\n"
 
 // For StopCached
-#define L_SCD_START_SUCCESS " » 缓存阻止已启动！\n"
+#define L_SCD_START_SUCCESS " » 缓存阻止已启动！#%u\n"
 #define L_SCD_GETAPP_ERR_EXIT " » 进程已退出，原因：GETTOPAPP ERROR\n"
 
 // For Timed
@@ -37,7 +37,7 @@
 #define L_TD_LINE_ERR_KEY " » %s 配置：%d 行 %s 未定义错误。已忽略该行\n"
 #define L_TD_MAX_CONFIG " » 已达到加载配置数量限制 %d。已跳过更多配置\n"
 #define L_TD_CONFIG_SUCCESS " » %s 配置加载成功\n"
-#define L_TD_START_SUCCESS " » 服务启动成功！共加载 %d 个配置！\n"
+#define L_TD_START_SUCCESS " » 服务启动成功！共加载 %d 个配置！#%u\n"
 #define L_TD_W_POST_TITLE_TOOLONG " » 警告：%s 配置通知标题长度超过限制！已截断\n"
 #define L_TD_W_POST_MESSAGE_TOOLONG " » 警告：%s 配置通知内容长度超过限制！已截断\n"
 #define L_TD_CONFIG_WRITE_ERROR " » %s 配置回写失败，原因：%s\n"

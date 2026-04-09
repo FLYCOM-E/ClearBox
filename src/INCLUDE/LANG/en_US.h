@@ -28,7 +28,7 @@
 #define L_SERVER_START_ERR " » Process startup failed: %s\n"
 
 // For StopCached
-#define L_SCD_START_SUCCESS " » Cache blocking has been started!\n"
+#define L_SCD_START_SUCCESS " » Cache blocking has been started! #%u\n"
 #define L_SCD_GETAPP_ERR_EXIT " » Process has exited, reason: GETTOPAPP ERROR\n"
 
 // For Timed
@@ -37,7 +37,7 @@
 #define L_TD_LINE_ERR_KEY " » %s configuration: line %d %s undefined error. Ignored this line\n"
 #define L_TD_MAX_CONFIG " » Reached configuration loading limit %d. Skipped more configurations\n"
 #define L_TD_CONFIG_SUCCESS " » %s configuration loaded successfully\n"
-#define L_TD_START_SUCCESS " » Service started successfully！A total of %d configurations loaded！\n"
+#define L_TD_START_SUCCESS " » Service started successfully！A total of %d configurations loaded！#%u\n"
 #define L_TD_W_POST_TITLE_TOOLONG " » Warning: %s configuration notification title length exceeds limit！Truncated\n"
 #define L_TD_W_POST_MESSAGE_TOOLONG " » Warning: %s configuration notification message length exceeds limit！Truncated\n"
 #define L_TD_CONFIG_WRITE_ERROR " » %s configuration write-back failed, reason: %s\n"
