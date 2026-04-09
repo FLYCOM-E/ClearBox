@@ -126,7 +126,7 @@ if [ "$first_stage" = 1 ]; then
 fi
 ######
 if [ "$clearbox_stop_cache" = 1 ]; then
-    if ! pgrep "ClearBox StopCached" >/dev/null 2>&1; then
+    if ! pgrep "StopCached" >/dev/null 2>&1; then
         "$home_dir/BashCore" "StopCached" -b "$bin_dir" -w "$work_dir"
     fi
 fi
