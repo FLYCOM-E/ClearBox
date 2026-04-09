@@ -3,6 +3,7 @@ package wipe.cache.module.ui
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import wipe.cache.module.R
 import com.omarea.common.R as CommonR
 import wipe.cache.module.model.ActionNode
 
