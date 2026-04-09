@@ -9,7 +9,7 @@
 #define MAX_TITLE_LEN 128 // 通知标题最大长度
 #define MAX_MESSAGE_LEN 512 // 通知内容最大长度
 #define CONFIG_PATH_NAME "TimedConfig"
-#define SERVER_NAME "ClearBox Timed"
+#define SERVER_NAME "Timed"
 
 static int running(char * command);
 
@@ -34,27 +34,16 @@ struct config_file
     time_t last_error_notify;
 };
 
-int main(int argc, char * argv[])
+int time_daemon(char * work_dir)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT, getuid());
-        return 1;
-    }
-    if (argc != 2)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
     // 设置命名空间
     if (set_name_space() != 0)
     {
         return 1;
     }
     
-    char config_dir[sizeof(argv[1]) + sizeof(CONFIG_PATH_NAME) + 2];
-    snprintf(config_dir, sizeof(config_dir), "%s/%s", argv[1], CONFIG_PATH_NAME);
+    char config_dir[strlen(work_dir) + sizeof(CONFIG_PATH_NAME) + 2];
+    snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_PATH_NAME);
     
     if (access(config_dir, F_OK) != 0)
     {
@@ -284,20 +273,21 @@ int main(int argc, char * argv[])
     {
         char post_text[sizeof(L_SERVER_START_ERR) + 128] = "";
         snprintf(post_text, sizeof(post_text), L_SERVER_START_ERR, strerror(errno));
-        write_log(argv[1], SERVER_NAME, post_text);
+        write_log(work_dir, SERVER_NAME, post_text);
         return 1;
     }
     if (new_pid != 0)
     {
         exit(0);
     }
-    setsid();
-    chdir("/");
     int fd = open("/dev/null", O_RDWR);
     dup2(fd, STDIN_FILENO);
     dup2(fd, STDOUT_FILENO);
     dup2(fd, STDERR_FILENO);
     close(fd);
+    setsid();
+    chdir("/");
+    prctl(PR_SET_NAME, SERVER_NAME);
     
     // Post
     char start_success_str[256] = {0}; // 对应宏内容不能超过此大小

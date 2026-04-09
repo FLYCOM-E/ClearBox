@@ -13,7 +13,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sched.h>
-
+#include <sys/prctl.h>
 #include <android/log.h>
 #include <sys/system_properties.h>
 
@@ -25,6 +25,17 @@
 #define SETTINGS_FILE "settings.prop" // 设置信息文件名 Max Size 30
 #define SETTINGS_FILE_MAX_LINE 256 // 设置信息文件最大行长
 #define getprop __system_property_get
+
+// Lang
+#ifdef zh_CN
+    #include "LANG/zh_CN.h"
+#elif defined(en_US)
+    #include "LANG/en_US.h"
+#elif defined(zh_TW)
+    #include "LANG/zh_TW.h"
+#else
+    #include "LANG/zh_CN.h"
+#endif
 
 long s_remove(char * path, int all);
 int whitelist_check(char * whitelist_file, char * package);
@@ -44,14 +55,5 @@ int set_storage(char * work_dir, char * bin_dir, char * mode);
 int disk_gc(int mode);
 int dexoat(int mode, char * cust_mode);
 int freezer_open(void);
-
-// Lang
-#ifdef zh_CN
-    #include "LANG/zh_CN.h"
-#elif defined(en_US)
-    #include "LANG/en_US.h"
-#elif defined(zh_TW)
-    #include "LANG/zh_TW.h"
-#else
-    #include "LANG/zh_CN.h"
-#endif
+int stop_cache_daemon(char * work_dir, char * bin_dir);
+int time_daemon(char * work_dir);

@@ -127,14 +127,14 @@ fi
 ######
 if [ "$clearbox_stop_cache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
-        "$home_dir/Daemon/StopCached" -b "$bin_dir" -w "$work_dir"
+        "$home_dir/BashCore" "StopCached" -b "$bin_dir" -w "$work_dir"
         echo "[ $(date) ]：StopCached Start" >> "$work_dir/LOG.log"
     fi
 fi
 if pgrep "Timed" >/dev/null 2>&1; then
     kill $(pgrep Timed)
 fi
-if "$home_dir/Daemon/Timed" "$work_dir"; then
+if "$home_dir/BashCore" "Timed" "$work_dir"; then
     echo "[ $(date) ]：Timed Start" >> "$work_dir/LOG.log"
 fi
 ######

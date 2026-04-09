@@ -17,7 +17,6 @@ else
 endif
 
 home_dir = Module_Files
-daemon_bin_dir = Module_Files/Daemon
 
 FUNCTIONS_C = src/INCLUDE/functions.c
 BIN_C = src/BashCore.c \
@@ -31,35 +30,24 @@ BIN_C = src/BashCore.c \
 		src/SetInstall.c \
 		src/SetStorage.c \
 		src/FileManager.c \
+		src/Daemon/StopCached.c \
+		src/Daemon/Timed.c
 
 CORE_ELF = $(home_dir)/BashCore
-DAEMON_ELF = $(daemon_bin_dir)/StopCached \
-				$(daemon_bin_dir)/Timed
 
-all: $(CORE_ELF) $(DAEMON_ELF)
+all: $(CORE_ELF)
 .PHONY: all
 
 $(CORE_ELF): $(BIN_C)
 	$(CC) $(CFLAGS) $(BIN_C) $(FUNCTIONS_C) $(LDFLAGS) -o $(CORE_ELF)
 
-$(daemon_bin_dir)/StopCached: src/Daemon/StopCached.c
-	@mkdir -p $(daemon_bin_dir)
-	$(CC) $(CFLAGS) src/Daemon/StopCached.c $(FUNCTIONS_C) $(LDFLAGS) -o $(daemon_bin_dir)/StopCached
-
-$(daemon_bin_dir)/Timed: src/Daemon/Timed.c
-	@mkdir -p $(daemon_bin_dir)
-	$(CC) $(CFLAGS) src/Daemon/Timed.c $(FUNCTIONS_C) $(LDFLAGS) -o $(daemon_bin_dir)/Timed
-
 clean: 
 	@rm $(CORE_ELF)
-	@rm $(DAEMON_ELF)
-	@rm $(home_dir)/ClearBox.apk
-	@rm -r $(daemon_bin_dir)
+	@rm -f $(home_dir)/ClearBox.apk
 	@rm -r $(home_dir)/语言包
 	@rm -r $(home_dir)/AppConfig
 
 module_tar: 
-	# 一般只会有一个安装包
 	@find App_Source -name "*.apk" -exec cp {} $(home_dir)/ClearBox.apk \;
 	@mkdir -p $(home_dir)/语言包 && cp LANG_Configs/$(M_LANG).conf $(home_dir)/语言包/Local.conf
 	@mkdir -p $(home_dir)/AppConfig && cp AppConfigs/* $(home_dir)/AppConfig/

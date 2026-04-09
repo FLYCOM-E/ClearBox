@@ -9,82 +9,14 @@
 #define MAX_CARD 5 // 最大拓展卡数量
 #define MAX_CARD_ID_LEN 256
 #define LOGPRINT __android_log_print
-#define SERVER_NAME "ClearBox StopCached"
+#define SERVER_NAME "StopCached"
 
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
                         char * bin_dir, int skip_reset);
 
-int main(int argc, char * argv[])
+int stop_cache_daemon(char * work_dir, char * bin_dir)
 {
-    if (getuid() != 0)
-    {
-        fprintf(stderr, L_NOT_USE_ROOT, getuid());
-        return 1;
-    }
-    
-    argc--;
-    argv++;
-    if (argc < 3)
-    {
-        fprintf(stderr, L_ARGS_FAILED);
-        return 1;
-    }
-    
-    char * work_dir = NULL;
-    char * bin_dir = NULL;
-    
-    while (argc > 1)
-    {
-        if (strcmp(argv[0], "-w") == 0) //work_dir
-        {
-            if (strlen(argv[1]) > MAX_WORK_DIR_LEN)
-            {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-                return 1;
-            }
-            else if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-                return 1;
-            }
-            work_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else if (strcmp(argv[0], "-b") == 0) //bin_dir
-        {
-            if (strlen(argv[1]) > MAX_BIN_DIR_LEN)
-            {
-                fprintf(stderr, L_BIN_PATH_TOOLONG);
-                return 1;
-            }
-            else if (access(argv[1], F_OK) != 0)
-            {
-                fprintf(stderr, L_BIN_PATH_NOTFOUND);
-                return 1;
-            }
-            bin_dir = argv[1];
-            argc -= 2;
-            argv += 2;
-        }
-        else
-        {
-            fprintf(stderr, L_ARGS_FAILED_2);
-            return 1;
-        }
-    }
-    if (work_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_CONFIGPATH_ERR);
-        return 1;
-    }
-    if (bin_dir == NULL)
-    {
-        fprintf(stderr, L_ARG_BINPATH_ERR);
-        return 1;
-    }
-    
     // 检查及读取外部拓展储存
     int card_count = 0;
     char card_list[MAX_CARD][strlen(MICRO_CARD_PATH) + MAX_CARD_ID_LEN] = {0};
@@ -204,13 +136,15 @@ int main(int argc, char * argv[])
     {
         exit(0);
     }
-    setsid();
-    chdir("/");
     int std = open("/dev/null", O_RDWR);
     dup2(std, STDIN_FILENO);
     dup2(std, STDOUT_FILENO);
     dup2(std, STDERR_FILENO);
     close(std);
+    setsid();
+    chdir("/");
+    prctl(PR_SET_NAME, SERVER_NAME);
+    
     post(SERVER_NAME, L_SCD_START_SUCCESS);
     
     /* 

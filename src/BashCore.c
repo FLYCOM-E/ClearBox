@@ -302,6 +302,14 @@ int main(int argc, char * argv[])
             module_config(home_dir, argv[2], argv[3]);
         }
     }
+    else if (strcasecmp(argv[1], "StopCached") == 0)
+    {
+        stop_cache_daemon(work_dir, bin_dir);
+    }
+    else if (strcasecmp(argv[1], "Timed") == 0)
+    {
+        time_daemon(work_dir);
+    }
     else
     {
         fprintf(stderr, L_ARGS_FAILED_2);
