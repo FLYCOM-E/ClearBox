@@ -274,7 +274,7 @@ int get_settings_prop(char * settings_file, char * key)
         line_key = strtok_r(line, "=", &line_p);
         if (strcmp(line_key, key) == 0)
         {
-            value = (int)atol(strtok_r(NULL, "=", &line_p));
+            value = (int)strtol(strtok_r(NULL, "=", &line_p), NULL, 10);
             break;
         }
     }

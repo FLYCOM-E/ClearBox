@@ -73,8 +73,8 @@
 // For F2fs_GC.c
 #define L_FG_ERR_NOF2FS " » Your device does not use the F2FS filesystem\n » Maintenance is only supported in F2FS environments!\n"
 #define L_FG_ERR_CHECK " » Your device does not support the current GC function\n"
-#define L_FG_DIRTY " » Current dirty segments: %d\n"
-#define L_FG_FREE " » Current free segments: %d\n\n"
+#define L_FG_DIRTY " » Current dirty segments: %ld\n"
+#define L_FG_FREE " » Current free segments: %ld\n\n"
 #define L_FG_START " » GC has started, please wait patiently. It is recommended to run in the background!\n"
 #define L_FG_ERR_WRITESYSFS " » GC startup failed! Failed to write to node!\n"
 #define L_FG_ERR_TIMEOUT " » GC wait timeout, waiting has been terminated!\n"
@@ -82,8 +82,8 @@
 #define L_FG_RUN_MS " » Has been running for %d minutes %d seconds...\n"
 #define L_FG_RUN_M " » Has been running for %d minutes...\n"
 #define L_FG_RUN_S " » Has been running for %d seconds...\n"
-#define L_FG_END_DIRTY " » Disk dirty blocks reduced by %d\n"
-#define L_FG_END_DIRTY_2 " » Disk dirty blocks increased by %d\n » GC may still be optimizing or may not be suitable for your device!\n"
+#define L_FG_END_DIRTY " » Disk dirty blocks reduced by %ld\n"
+#define L_FG_END_DIRTY_2 " » Disk dirty blocks increased by %ld\n » GC may still be optimizing or may not be suitable for your device!\n"
 #define L_FG_DONE " » GC completed!\n"
 #define L_FG_FAST_GC_DONE " » Fast disk optimization completed. You can try more aggressive GC optimization (・∀・)\n"
 

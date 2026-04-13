@@ -10,8 +10,8 @@
 
 static int f2fs_gc(void);
 static int fast_gc(void);
-static int get_f2fs_dirty(char * dirty_file);
-static int get_f2fs_free(char * free_file);
+static long get_f2fs_dirty(char * dirty_file);
+static long get_f2fs_free(char * free_file);
 
 int disk_gc(int mode)
 {
@@ -68,7 +68,7 @@ static int f2fs_gc(void)
     }
     
     // Get Dirty & Free
-    int f2fs_dirty = 0, f2fs_free = 0;
+    long f2fs_dirty = 0, f2fs_free = 0;
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
     fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
@@ -120,7 +120,7 @@ static int f2fs_gc(void)
         {
             fgets(cache, sizeof(cache), sysfs_file_fp);
             fclose(sysfs_file_fp);
-            if (atoi(cache) == 0)
+            if (strtol(cache, NULL, 10) == 0)
             {
                 fprintf(stderr, L_FG_END);
                 fflush(stdout);
@@ -148,7 +148,7 @@ static int f2fs_gc(void)
     }
     
     // Again Get Dirty & Free
-    int old_f2fs_dirty = f2fs_dirty;
+    long old_f2fs_dirty = f2fs_dirty;
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
     fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
@@ -175,7 +175,7 @@ static int f2fs_gc(void)
 返回：
     int 成功返回脏段数量，失败返回0（与脏段为0同）
 */
-static int get_f2fs_dirty(char * dirty_file)
+static long get_f2fs_dirty(char * dirty_file)
 {
     char cache[16] = "";
     FILE * f2fs_dirty_fp = fopen(dirty_file, "r");
@@ -189,7 +189,7 @@ static int get_f2fs_dirty(char * dirty_file)
         fprintf(stderr, L_OPEN_FILE_FAILED, dirty_file, strerror(errno));
         return 0;
     }
-    return atoi(cache);
+    return strtol(cache, NULL, 10);
 }
 
 /*
@@ -199,7 +199,7 @@ static int get_f2fs_dirty(char * dirty_file)
 返回：
     int 成功返回空闲段数量，失败返回0（与空闲段为0同）
 */
-static int get_f2fs_free(char * free_file)
+static long get_f2fs_free(char * free_file)
 {
     char cache[16] = "";
     FILE * f2fs_free_fp = fopen(free_file, "r");
@@ -213,7 +213,7 @@ static int get_f2fs_free(char * free_file)
         fprintf(stderr, L_OPEN_FILE_FAILED, free_file, strerror(errno));
         return 0;
     }
-    return atoi(cache);
+    return strtol(cache, NULL, 10);
 }
 
 // 快速磁盘优化

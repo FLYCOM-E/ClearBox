@@ -17,7 +17,7 @@ struct config_file
 {
     // for time
     char time_unit;
-    int time_num;
+    long time_num;
     // for date
     time_t old_time;
     // For post
@@ -26,8 +26,8 @@ struct config_file
     char message[MAX_MESSAGE_LEN];
     // For in time
     int in;
-    int start_hour;
-    int end_hour;
+    long start_hour;
+    long end_hour;
     // other
     char run[MAX_COMMAND_LEN];
     char config_name[MAX_CONFIG_NAME];
@@ -141,13 +141,13 @@ int time_daemon(char * argv[], char * work_dir)
                         char * time_str = strtok_r(value, "/", &value_p);
                         char * unit_str = strtok_r(NULL, "/", &value_p);
                         if (time_str && unit_str &&
-                            atoi(time_str) != 0 &&
+                            strtol(time_str, NULL, 10) != 0 &&
                             (unit_str[0] == 'D' ||
                             unit_str[0] == 'H' ||
                             unit_str[0] == 'M'))
                         {
                             config[read_config].time_unit = unit_str[0];
-                            config[read_config].time_num = atoi(time_str);
+                            config[read_config].time_num = strtol(time_str, NULL, 10);
                         }
                         else
                         {
@@ -159,7 +159,7 @@ int time_daemon(char * argv[], char * work_dir)
                     else if (strcasecmp(key, "date") == 0)
                     {
                         // 这里不做检查，如果出错则默认为当前时间
-                        config[read_config].old_time = (time_t)atol(value);
+                        config[read_config].old_time = (time_t)strtol(value, NULL, 10);
                         if (config[read_config].old_time <= 0)
                         {
                             config[read_config].old_time = time(NULL);
@@ -188,9 +188,9 @@ int time_daemon(char * argv[], char * work_dir)
                         
                         if (start_tm_str && end_tm_str)
                         {
-                            int start_hour = 0, end_hour = 0;
-                            start_hour = atoi(start_tm_str);
-                            end_hour = atoi(end_tm_str);
+                            long start_hour = 0, end_hour = 0;
+                            start_hour = strtol(start_tm_str, NULL, 10);
+                            end_hour = strtol(end_tm_str, NULL, 10);
                             
                             if (start_hour > 23 ||
                                 start_hour < 0 ||
@@ -325,21 +325,21 @@ int time_daemon(char * argv[], char * work_dir)
             {
                 case 'D':
                     // day
-                    if (difftime(now_time, config[i].old_time) >= (config[i].time_num * 86400))
+                    if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 86400))
                     {
                         run = 1;
                     }
                     break;
                 case 'H':
                     // hour
-                    if (difftime(now_time, config[i].old_time) >= (config[i].time_num * 3600))
+                    if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 3600))
                     {
                         run = 1;
                     }
                     break;
                 case 'M':
                     // minute
-                    if (difftime(now_time, config[i].old_time) >= (config[i].time_num * 60))
+                    if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 60))
                     {
                         run = 1;
                     }

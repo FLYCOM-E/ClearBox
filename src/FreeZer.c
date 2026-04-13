@@ -6,7 +6,7 @@
 
 int freezer_open(void)
 {
-    int sdk = 0;
+    long sdk = 0;
     char sdk_str[PROP_VALUE_MAX] = {0};
     
     if (getprop(PROP, sdk_str) <= 0)
@@ -16,7 +16,7 @@ int freezer_open(void)
     }
     else
     {
-        sdk = atoi(sdk_str);
+        sdk = strtol(sdk_str, NULL, 10);
         if (sdk >= 30)
         {
             if (system(SET_FREEZER) == 0)

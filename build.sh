@@ -18,6 +18,8 @@ elif [ "$M_TARGET" = "x86_64" ]; then
     export TARGET=x86_64-linux-android
 elif [ "$M_TARGET" = "i686" ]; then
     export TARGET=i686-linux-android
+elif [ "$M_TARGET" = "riscv64" ]; then
+    export TARGET=riscv64-linux-android
 else
     echo "TARGET Error! "
     exit 1

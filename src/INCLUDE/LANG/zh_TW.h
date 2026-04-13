@@ -73,8 +73,8 @@
 // For F2fs_GC.c
 #define L_FG_ERR_NOF2FS " » 您的裝置不是 F2FS 檔案系統\n » 維護僅支援 F2FS 環境！\n"
 #define L_FG_ERR_CHECK " » 您的裝置不支援當前GC功能\n"
-#define L_FG_DIRTY " » 目前髒段: %d\n"
-#define L_FG_FREE " » 目前空閒段: %d\n\n"
+#define L_FG_DIRTY " » 目前髒段: %ld\n"
+#define L_FG_FREE " » 目前空閒段: %ld\n\n"
 #define L_FG_START " » GC已開始, 請您耐心等待，建議掛後台！\n"
 #define L_FG_ERR_WRITESYSFS " » GC啟動失敗! 節點寫入失敗！\n"
 #define L_FG_ERR_TIMEOUT " » GC等待逾時，已結束等待！\n"
@@ -82,8 +82,8 @@
 #define L_FG_RUN_MS " » 已執行 %d 分 %d 秒...\n"
 #define L_FG_RUN_M " » 已執行 %d 分...\n"
 #define L_FG_RUN_S " » 已執行 %d 秒...\n"
-#define L_FG_END_DIRTY " » 磁碟髒塊減少 %d\n"
-#define L_FG_END_DIRTY_2 " » 磁碟髒塊增加 %d\n » GC可能仍在最佳化或並不適合您的裝置！\n"
+#define L_FG_END_DIRTY " » 磁碟髒塊減少 %ld\n"
+#define L_FG_END_DIRTY_2 " » 磁碟髒塊增加 %ld\n » GC可能仍在最佳化或並不適合您的裝置！\n"
 #define L_FG_DONE " » GC已完成！\n"
 #define L_FG_FAST_GC_DONE " » 快速磁碟最佳化完成，可以試試更激進的GC最佳化哦 (・∀・)\n"
 

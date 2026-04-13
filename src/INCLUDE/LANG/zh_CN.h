@@ -73,8 +73,8 @@
 // For F2fs_GC.c
 #define L_FG_ERR_NOF2FS " » 您的设备不是 F2FS 文件系统\n » 维护仅支持 F2FS 环境！\n"
 #define L_FG_ERR_CHECK " » 您的设备不支持当前GC功能\n"
-#define L_FG_DIRTY " » 目前脏段: %d\n"
-#define L_FG_FREE " » 目前空闲段: %d\n\n"
+#define L_FG_DIRTY " » 目前脏段: %ld\n"
+#define L_FG_FREE " » 目前空闲段: %ld\n\n"
 #define L_FG_START " » GC已开始, 请您耐心等待，建议挂后台！\n"
 #define L_FG_ERR_WRITESYSFS " » GC启动失败! 节点写入失败！\n"
 #define L_FG_ERR_TIMEOUT " » GC等待超时，已结束等待！\n"
@@ -82,8 +82,8 @@
 #define L_FG_RUN_MS " » 已运行 %d 分 %d 秒...\n"
 #define L_FG_RUN_M " » 已运行 %d 分...\n"
 #define L_FG_RUN_S " » 已运行 %d 秒...\n"
-#define L_FG_END_DIRTY " » 磁盘脏块减少 %d\n"
-#define L_FG_END_DIRTY_2 " » 磁盘脏块增加 %d\n » GC可能仍在优化或并不适合您的设备！\n"
+#define L_FG_END_DIRTY " » 磁盘脏块减少 %ld\n"
+#define L_FG_END_DIRTY_2 " » 磁盘脏块增加 %ld\n » GC可能仍在优化或并不适合您的设备！\n"
 #define L_FG_DONE " » GC已完成！\n"
 #define L_FG_FAST_GC_DONE " » 快速磁盘优化完成，可以试试更激进的GC优化哦 (・∀・)\n"
 
