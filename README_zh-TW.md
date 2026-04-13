@@ -6,6 +6,9 @@
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg?logo=opensourceinitiative)](LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4&logo=github)](https://github.com/FLYCOM-E/ClearBox/releases)
 
+[![Telegram](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/clearboxmodule)
+[![THChat](https://img.shields.io/badge/YHchat-8068E2.svg?logo=icloud&logoColor=white)](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
+
 </div>
 
 
@@ -229,5 +232,3 @@ post=Test Run/已執行「/system/bin/sync」
 ## 歡迎以任何形式參與開發、貢獻！
 
 模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 項目製作而成，感謝該項目
-
-模組內測請前往：[**YHChat**](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)、[**Telegram**](https://t.me/clearboxmodule)
