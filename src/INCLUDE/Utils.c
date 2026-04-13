@@ -270,10 +270,11 @@ int get_settings_prop(char * settings_file, char * key)
     while (fgets(line, sizeof(line), settings_file_fp))
     {
         line[strcspn(line, "\n")] = 0;
-        line_key = strtok(line, "=");
+        char * line_p = NULL;
+        line_key = strtok_r(line, "=", &line_p);
         if (strcmp(line_key, key) == 0)
         {
-            value = (int)atol(strtok(NULL, "="));
+            value = (int)atol(strtok_r(NULL, "=", &line_p));
             break;
         }
     }

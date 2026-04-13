@@ -91,8 +91,10 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
             {
                 if (* line_ptr == '@')
                 {
-                    app_package_fp = strtok(line, "/");
-                    app_name_fp = strtok(NULL, "/");
+                    char * line_p = NULL;
+                    app_package_fp = strtok_r(line, "/", &line_p);
+                    app_name_fp = strtok_r(NULL, "/", &line_p);
+                    
                     if (app_package_fp && app_name_fp) // 如果软件名称 & 软件包名为空或者填写有误则跳过
                     {
                         snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                  //软件名称

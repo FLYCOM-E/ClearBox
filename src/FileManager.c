@@ -190,7 +190,8 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
         
-        char * config_file_name_p = strtok(config_file_name, ".");
+        char * have_p = NULL;
+        char * config_file_name_p = strtok_r(config_file_name, ".", &have_p);
         char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_file_name_p) + 8];
         snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_file_name_p);
         if (file_clear != 1) // 不是清理模式则创建最终归类目录

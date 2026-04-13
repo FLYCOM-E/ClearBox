@@ -125,8 +125,9 @@ int time_daemon(char * argv[], char * work_dir)
                     }
                     
                     // 解析 key/value
-                    char * key = strtok(line, "=");
-                    char * value = strtok(NULL, "=");
+                    char * line_p = NULL;
+                    char * key = strtok_r(line, "=", &line_p);
+                    char * value = strtok_r(NULL, "=", &line_p);
                     if (value == NULL || key == NULL)
                     {
                         fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
@@ -136,8 +137,9 @@ int time_daemon(char * argv[], char * work_dir)
                     // Case
                     if (strcasecmp(key, "time") == 0)
                     {
-                        char * time_str = strtok(value, "/");
-                        char * unit_str = strtok(NULL, "/");
+                        char * value_p = NULL;
+                        char * time_str = strtok_r(value, "/", &value_p);
+                        char * unit_str = strtok_r(NULL, "/", &value_p);
                         if (time_str && unit_str &&
                             atoi(time_str) != 0 &&
                             (unit_str[0] == 'D' ||
@@ -180,8 +182,9 @@ int time_daemon(char * argv[], char * work_dir)
                         config[read_config].start_hour = 0;
                         config[read_config].end_hour = 0;
                         
-                        char * start_tm_str = strtok(value, "/");
-                        char * end_tm_str = strtok(NULL, "/");
+                        char * value_p = NULL;
+                        char * start_tm_str = strtok_r(value, "/", &value_p);
+                        char * end_tm_str = strtok_r(NULL, "/", &value_p);
                         
                         if (start_tm_str && end_tm_str)
                         {
@@ -210,8 +213,9 @@ int time_daemon(char * argv[], char * work_dir)
                     }
                     else if (strcasecmp(key, "post") == 0)
                     {
+                        char * value_p = NULL;
                         char * message = strchr(value, '/');
-                        char * title = strtok(value, "/");
+                        char * title = strtok_r(value, "/", &value_p);
                         if (title && message)
                         {
                             if (strlen(title) > MAX_TITLE_LEN)
@@ -273,7 +277,7 @@ int time_daemon(char * argv[], char * work_dir)
     }
     
     // Daemon
-    char log_text[sizeof(L_SERVER_START_ERR) + strlen(L_TD_START_SUCCESS) + 128] = "";
+    char log_text[sizeof(L_SERVER_START_ERR) + sizeof(L_TD_START_SUCCESS) + 128] = "";
     pid_t new_pid = fork();
     if (new_pid == -1)
     {

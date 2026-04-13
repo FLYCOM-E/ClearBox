@@ -54,8 +54,9 @@ int main(int argc, char * argv[])
     }
     while (fgets(path_file_line, sizeof(path_file_line), path_file_fp))
     {
-        path_file_key = strtok(path_file_line, "=");
-        path_file_value = strtok(NULL, "=");
+        char * path_file_line_p = NULL;
+        path_file_key = strtok_r(path_file_line, "=", &path_file_line_p);
+        path_file_value = strtok_r(NULL, "=", &path_file_line_p);
         
         if (strcmp(path_file_key, "home_dir") == 0)
         {

@@ -19,7 +19,7 @@ int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
 {
     // 检查及读取外部拓展储存
     int card_count = 0;
-    char card_list[MAX_CARD][strlen(MICRO_CARD_PATH) + MAX_CARD_ID_LEN] = {0};
+    char card_list[MAX_CARD][sizeof(MICRO_CARD_PATH) + MAX_CARD_ID_LEN] = {0};
     
     if (access(MICRO_CARD_PATH, F_OK) == 0)
     {
