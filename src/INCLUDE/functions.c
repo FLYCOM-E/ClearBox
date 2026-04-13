@@ -306,11 +306,12 @@ int set_server_name(char * argv[], char * new_name)
     char * file 目标文件
     char * target_line 目标行
     char * text 替换内容
+    int mode 为 1 则模糊匹配（慎）
 返回：
     成功返回 0，失败返回 1，未找到返回 2
 全局替换
 */
-int s_sed(char * file, char * target_line, char * text)
+int s_sed(char * file, char * target_line, char * text, int mode)
 {
     int found = 0;
     char line[MAX_PATH] = "";
@@ -334,14 +335,29 @@ int s_sed(char * file, char * target_line, char * text)
     while (fgets(line, sizeof(line), file_fp))
     {
         line[strcspn(line, "\n")] = 0;
-        if (strcmp(line, target_line) == 0)
+        if (mode == 1)
         {
-            fprintf(tmp_fp, "%s\n", text);
-            found = 1;
+            if (strstr(line, target_line))
+            {
+                fprintf(tmp_fp, "%s\n", text);
+                found = 1;
+            }
+            else
+            {
+                fprintf(tmp_fp, "%s\n", line);
+            }
         }
         else
         {
-            fprintf(tmp_fp, "%s\n", line);
+            if (strcmp(line, target_line) == 0)
+            {
+                fprintf(tmp_fp, "%s\n", text);
+                found = 1;
+            }
+            else
+            {
+                fprintf(tmp_fp, "%s\n", line);
+            }
         }
     }
     

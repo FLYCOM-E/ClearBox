@@ -45,7 +45,7 @@ int write_log(char * config_dir, char * name_id, char * text);
 int set_name_space(void);
 int get_settings_prop(char * settings_file, char * key);
 int set_server_name(char * argv[], char * new_name);
-int s_sed(char * file, char * target_line, char * text);
+int s_sed(char * file, char * target_line, char * text, int mode);
 
 int app_cache_clean(char * work_dir, int mode);
 int cust_rule_clean(char * work_dir);

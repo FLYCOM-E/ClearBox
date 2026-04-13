@@ -119,6 +119,11 @@ int time_daemon(char * argv[], char * work_dir)
                     line_count++;
                     line[strcspn(line, "\n")] = 0;
                     
+                    if (line[0] == '#')
+                    {
+                        continue;
+                    }
+                    
                     // 解析 key/value
                     char * key = strtok(line, "=");
                     char * value = strtok(NULL, "=");
@@ -358,68 +363,18 @@ int time_daemon(char * argv[], char * work_dir)
                 */
                 if (access(config_file, F_OK) == 0)
                 {
-                    errno = 0;
-                    FILE * config_file_fp = fopen(config_file, "w");
-                    if (config_file_fp)
-                    {
-                        if (config[i].post == 1 && config[i].in == 1)
-                        {
-                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s\npost=%s/%s\nin=%d/%d",
-                                    // time
-                                    config[i].time_num, config[i].time_unit,
-                                    // date
-                                    now_time,
-                                    // run
-                                    config[i].run,
-                                    // post
-                                    config[i].title, config[i].message,
-                                    // in
-                                    config[i].start_hour, config[i].end_hour);
-                        }
-                        else if (config[i].post == 1 && config[i].in == 0)
-                        {
-                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s\npost=%s/%s",
-                                    // time
-                                    config[i].time_num, config[i].time_unit,
-                                    // date
-                                    now_time,
-                                    // run
-                                    config[i].run,
-                                    // post
-                                    config[i].title, config[i].message);
-                        }
-                        else if (config[i].post == 0 && config[i].in == 1)
-                        {
-                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s\nin=%d/%d",
-                                    // time
-                                    config[i].time_num, config[i].time_unit,
-                                    // date
-                                    now_time,
-                                    // run
-                                    config[i].run,
-                                    // in
-                                    config[i].start_hour, config[i].end_hour);
-                        }
-                        else
-                        {
-                            fprintf(config_file_fp, "time=%d/%c\ndate=%ld\nrun=%s",
-                                    // time
-                                    config[i].time_num, config[i].time_unit,
-                                    // date
-                                    now_time,
-                                    // run
-                                    config[i].run);
-                        }
-                        fclose(config_file_fp);
-                    }
+                    char line[128] = "";
+                    snprintf(line, sizeof(line), "date=%ld", now_time);
+                    
+                    int success = s_sed(config_file, "date=", line, 1);
+                    
                     // Check Errno
-                    if (errno != 0 &&
+                    if (success != 0 &&
                         difftime(now_time, config[i].last_error_notify) >= 3600) // 1小时
                     {
                         char error_text[512] = {0};
                         snprintf(error_text, sizeof(error_text), L_TD_CONFIG_WRITE_ERROR,
-                                 config[i].config_name,
-                                 strerror(errno));
+                                 config[i].config_name);
                         post(SERVER_NAME, error_text);
                         config[i].last_error_notify = now_time; // 记录上次通知时间，避免短时间多次通知
                     }

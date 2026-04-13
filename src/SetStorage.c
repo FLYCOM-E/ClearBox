@@ -52,11 +52,11 @@ int set_storage(char * work_dir, char * bin_dir, char * mode)
     
     if (strcasecmp(mode, "STOP") == 0)
     {
-        success = s_sed(settings_file, PROP_RESET, PROP_STOP);
+        success = s_sed(settings_file, PROP_RESET, PROP_STOP, 0);
     }
     else
     {
-        success = s_sed(settings_file, PROP_STOP, PROP_RESET);
+        success = s_sed(settings_file, PROP_STOP, PROP_RESET, 0);
     }
     if (success != 0)
     {
