@@ -4,8 +4,8 @@
 #define DATA_DIR "/data/media/0"
 #define STOP_COMMAND "%s/busybox chattr +i %s 2>/dev/null" //Max Size 62
 #define RESET_COMMAND "%s/busybox chattr -i %s 2>/dev/null" //Max Size 62
-#define SETPROP_STOP "sed -i 's/clearbox_stop_storage=0/clearbox_stop_storage=1/g' %s/settings.prop" //Max Size 126
-#define SETPROP_RESET "sed -i 's/clearbox_stop_storage=1/clearbox_stop_storage=0/g' %s/settings.prop" //Max Size 126
+#define PROP_STOP "clearbox_stop_storage=1"
+#define PROP_RESET "clearbox_stop_storage=0"
 
 int set_storage(char * work_dir, char * bin_dir, char * mode)
 {
@@ -46,16 +46,19 @@ int set_storage(char * work_dir, char * bin_dir, char * mode)
         return 1;
     }
     
-    char set_prop[strlen(work_dir) + 128];
+    int success = 0;
+    char settings_file[strlen(work_dir) + sizeof(SETTINGS_FILE) + 2];
+    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
+    
     if (strcasecmp(mode, "STOP") == 0)
     {
-        snprintf(set_prop, sizeof(set_prop), SETPROP_STOP, work_dir);
+        success = s_sed(settings_file, PROP_RESET, PROP_STOP);
     }
     else
     {
-        snprintf(set_prop, sizeof(set_prop), SETPROP_RESET, work_dir);
+        success = s_sed(settings_file, PROP_STOP, PROP_RESET);
     }
-    if (system(set_prop) != 0)
+    if (success != 0)
     {
         fprintf(stderr, L_W_SETPROP_ERR);
     }

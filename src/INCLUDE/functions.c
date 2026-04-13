@@ -299,3 +299,64 @@ int set_server_name(char * argv[], char * new_name)
     
     return 0;
 }
+
+/*
+此函数用于替换文件行
+接收：
+    char * file 目标文件
+    char * target_line 目标行
+    char * text 替换内容
+返回：
+    成功返回 0，失败返回 1，未找到返回 2
+全局替换
+*/
+int s_sed(char * file, char * target_line, char * text)
+{
+    int found = 0;
+    char line[MAX_PATH] = "";
+    char tmp_file[strlen(file) + 128];
+    snprintf(tmp_file, sizeof(tmp_file), "%s_%ld", file, (time(NULL) + getpid()));
+    
+    FILE * tmp_fp = fopen(tmp_file, "w");
+    FILE * file_fp = fopen(file, "r");
+    if (file_fp == NULL)
+    {
+        fprintf(stderr, L_OPEN_FILE_FAILED, file, strerror(errno));
+        return 1;
+    }
+    if (tmp_fp == NULL)
+    {
+        fclose(file_fp);
+        fprintf(stderr, L_OPEN_FILE_FAILED, tmp_file, strerror(errno));
+        return 1;
+    }
+    
+    while (fgets(line, sizeof(line), file_fp))
+    {
+        line[strcspn(line, "\n")] = 0;
+        if (strcmp(line, target_line) == 0)
+        {
+            fprintf(tmp_fp, "%s\n", text);
+            found = 1;
+        }
+        else
+        {
+            fprintf(tmp_fp, "%s\n", line);
+        }
+    }
+    
+    fclose(tmp_fp);
+    fclose(file_fp);
+    
+    if (rename(tmp_file, file) != 0)
+    {
+        unlink(tmp_file);
+        fprintf(stderr, L_MOVE_ERROR, file, strerror(errno));
+        return 1;
+    }
+    if (found == 0)
+    {
+        return 2;
+    }
+    return 0;
+}
