@@ -49,7 +49,7 @@
 #define L_AC_CONFIG_PACKAGE_ERR " » Declaration error in %s configuration, package name not correctly filled!\n"
 #define L_AC_CONFIG_APPNAME_ERR " » Declaration error in %s configuration, application name not correctly filled!\n"
 #define L_AC_CONFIG_ERR " » Error in %s configuration! Please correctly fill the declaration on the first line\n"
-#define L_AC_CONFIG_ERR_1 " » %s configuration line %d contains a dangerous error: starts with '／'!\n"
+#define L_AC_CONFIG_ERR_1 " » %s configuration line %d contains a dangerous error: starts with '/' !\n"
 #define L_AC_CONFIG_ERR_2 " » %s configuration line %d contains an error: path traversal!\n"
 #define L_AC_CLEAR_PATH_ERR " » Failed to clean %s!\n"
 #define L_AC_CLEAR_PATH_SUCCESS " » %s processed successfully! %ld MB\n"

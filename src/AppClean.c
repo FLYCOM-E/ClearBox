@@ -167,44 +167,37 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
                 break;
             }
         }
-        else if (get_config == 1) // 1: 已读取文件声明信息，这里如果仍然不匹配则会报错跳过，保证配置第一行正确
+        
+        char app_cf_dir[strlen(app_dir) + strlen(line) + 2];
+        snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, line);
+        
+        // 不允许绝对路径
+        if (* line_ptr == '/')
         {
-            char app_cf_dir[strlen(app_dir) + strlen(line) + 2];
-            snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, line);
-            
-            // 不允许绝对路径
-            if (* line_ptr == '/')
-            {
-                fprintf(stderr, L_AC_CONFIG_ERR_1, config_file, count);
-                continue;
-            }
-            // 防止路径逃逸
-            if (strstr(line, "../"))
-            {
-                fprintf(stderr, L_AC_CONFIG_ERR_2, config_file, count);
-                continue;
-            }
-            // 这可以避免很多报错
-            if (access(app_cf_dir, F_OK) != 0)
-            {
-                continue;
-            }
-            
-            long clear_size = s_remove(app_cf_dir, 0);
-            if (clear_size == -1)
-            {
-                fprintf(stderr, L_AC_CLEAR_PATH_ERR, line);
-            }
-            else
-            {
-                printf(L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
-                (* total_clear_size) += (clear_size / 1024 / 1024);
-            }
+            fprintf(stderr, L_AC_CONFIG_ERR_1, config_file, count);
+            continue;
+        }
+        // 防止路径逃逸
+        if (strstr(line, "/../"))
+        {
+            fprintf(stderr, L_AC_CONFIG_ERR_2, config_file, count);
+            continue;
+        }
+        // 这可以避免很多报错
+        if (access(app_cf_dir, F_OK) != 0)
+        {
+            continue;
+        }
+        
+        long clear_size = s_remove(app_cf_dir, 0);
+        if (clear_size == -1)
+        {
+            fprintf(stderr, L_AC_CLEAR_PATH_ERR, line);
         }
         else
         {
-            fprintf(stderr, L_AC_CONFIG_ERR, config_file);
-            break;
+            printf(L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
+            (* total_clear_size) += (clear_size / 1024 / 1024);
         }
         fflush(stdout);
     }

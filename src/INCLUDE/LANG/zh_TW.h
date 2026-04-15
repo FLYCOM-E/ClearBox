@@ -49,7 +49,7 @@
 #define L_AC_CONFIG_PACKAGE_ERR " » %s 配置宣告錯誤，未正確填寫套件名稱！\n"
 #define L_AC_CONFIG_APPNAME_ERR " » %s 配置宣告錯誤，未正確填寫軟體名稱！\n"
 #define L_AC_CONFIG_ERR " » %s 配置錯誤！請在第一行正確填寫宣告\n"
-#define L_AC_CONFIG_ERR_1 " » %s 配置第 %d 行存在危險錯誤：從「／」開始！\n"
+#define L_AC_CONFIG_ERR_1 " » %s 配置第 %d 行存在危險錯誤：從 “/” 開始！\n"
 #define L_AC_CONFIG_ERR_2 " » %s 配置第 %d 行存在錯誤：路徑逃逸！\n"
 #define L_AC_CLEAR_PATH_ERR " » 清理 %s 失敗！\n"
 #define L_AC_CLEAR_PATH_SUCCESS " » %s 處理成功！%ld 兆\n"
