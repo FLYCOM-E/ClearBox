@@ -17,6 +17,7 @@ import androidx.core.content.PermissionChecker
 import com.omarea.common.ui.ProgressBarDialog
 import com.projectkr.shell.ui.AdapterFileSelector
 import java.io.File
+import androidx.activity.OnBackPressedCallback
 
 class ActivityFileSelector : AppCompatActivity() {
     companion object {
@@ -55,15 +56,20 @@ class ActivityFileSelector : AppCompatActivity() {
                 if (mode == MODE_FOLDER) title = getString(R.string.title_activity_folder_selector)
             }
         }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && adapterFileSelector != null && adapterFileSelector!!.goParent()) {
-            return true
-        } else {
-            setResult(Activity.RESULT_CANCELED, Intent())
-        }
-        return super.onKeyDown(keyCode, event)
+        
+       onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (adapterFileSelector != null && adapterFileSelector!!.goParent()) {
+                    
+                } else {
+                    isEnabled = false
+                    setResult(Activity.RESULT_CANCELED, Intent())
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+       })
+       
+       loadData()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

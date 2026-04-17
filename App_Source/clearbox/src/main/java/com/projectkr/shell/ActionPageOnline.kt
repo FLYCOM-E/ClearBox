@@ -34,6 +34,7 @@ import wipe.cache.module.WebViewInjector
 import wipe.cache.module.downloader.Downloader
 import wipe.cache.module.ui.ParamsFileChooserRender
 import java.util.*
+import androidx.activity.OnBackPressedCallback
 
 class ActionPageOnline : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -69,7 +70,18 @@ class ActionPageOnline : AppCompatActivity() {
         krDownloadNameCopy = findViewById(R.id.kr_download_name_copy)
         krDownloadUrlCopy = findViewById(R.id.kr_download_url_copy)
         krDownloadProgress = findViewById(R.id.kr_download_progress)
-
+        
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (krOnlineWebview.canGoBack()) {
+                    krOnlineWebview.goBack()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
+        
         loadIntentData()
     }
 
@@ -260,15 +272,6 @@ class ActionPageOnline : AppCompatActivity() {
 
     private fun getPath(uri: Uri): String? {
         return try { FilePathResolver().getPath(this, uri) } catch (ex: java.lang.Exception) { null }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return if (keyCode == KeyEvent.KEYCODE_BACK && krOnlineWebview.canGoBack()) {
-            krOnlineWebview.goBack()
-            true
-        } else {
-            super.onKeyDown(keyCode, event)
-        }
     }
 
     override fun onDestroy() {
