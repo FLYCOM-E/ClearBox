@@ -8,7 +8,6 @@
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="actionBarTheme">@style/Theme.KrScript.AppBarOverlay</item>
         <item name="cardBg">?attr/colorSurfaceContainer</item>
         <item name="switchStyle">@style/Widget.Material3.CompoundButton.Switch</item>
