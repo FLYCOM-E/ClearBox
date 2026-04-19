@@ -83,7 +83,7 @@ int cust_rule_clean(char * work_dir)
             }
             
             // 判断存在 & 路径逃逸
-            if (access(path, F_OK) == 0 && strstr(path, "../"))
+            if (access(path, F_OK) == 0 && strstr(path, "/../"))
             {
                 fprintf(stderr, L_SR_LINE_FAILED_PATH_ERR, count);
             }

@@ -107,16 +107,16 @@
 #define L_OPEN_FREEZER_SUCCESSFUL " » 已打开安卓原生墓碑 (^^)\n"
 
 // For SetInstall.c
-#define L_SI_OPEN_FAILED_STORAGE " » 内部储存阻止更新失败！\n"
+#define L_SI_OPEN_FAILED_STORAGE " » 内部储存阻止更新失败: %s\n"
 #define L_SI_OPEN_SUCCESSFUL_STORAGE " » 内部储存已阻止更新！\n"
-#define L_SI_OFF_FAILED_STORAGE " » 内部储存关闭阻止更新失败！\n"
+#define L_SI_OFF_FAILED_STORAGE " » 内部储存关闭阻止更新失败: %s\n"
 #define L_SI_OFF_SUCCESSFUL_STORAGE " » 内部储存已关闭已阻止更新！\n"
 
 // For SetStorage.c
 #define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL " » 已开启内部储存固定！\n"
-#define L_SS_OPEN_STOP_STORAGE_FAILED " » 开启内部储存固定失败！\n"
+#define L_SS_OPEN_STOP_STORAGE_FAILED " » 开启内部储存固定失败: %s\n"
 #define L_SS_OFF_STOP_STORAGE_SUCCESSFUL " » 已关闭内部储存固定！\n"
-#define L_SS_OFF_STOP_STORAGE_FAILED " » 关闭内部储存固定失败！\n"
+#define L_SS_OFF_STOP_STORAGE_FAILED " » 关闭内部储存固定失败: %s\n"
 
 // For StorageClean.c
 #define L_SC_SUCCESSFUL_STORAGE " » 内部储存垃圾清理完成！\n » 共清理 %d 个空文件/文件夹及Log文件\n"

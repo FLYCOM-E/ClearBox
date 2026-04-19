@@ -60,9 +60,9 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
         }
     }
     
+    fflush(stdout); // 强制刷新一次，避免输出杂乱
     if (success_config != 0)
     {
-        fflush(stdout); // 强制刷新一次，避免输出杂乱
         fprintf(stderr, L_AC_CLEAN_SUCCESSFUL, total_clear_size);
     }
     else

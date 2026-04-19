@@ -12,6 +12,21 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
+bin_dir=""
+if [ -d "/data/adb/magisk" ]; then
+    bin_dir="/data/adb/magisk"
+elif [ -d "/data/adb/ap/bin" ]; then
+    bin_dir="/data/adb/ap/bin"
+elif [ -d "/data/adb/ksu/bin" ]; then
+    bin_dir="/data/adb/ksu/bin"
+else
+    # 这是一个回退方案
+    for busybox in $(find /data/adb -name "busybox"); do
+        ln -s "$busybox" "$home_dir/busybox"
+    done
+    bin_dir="$home_dir"
+fi
+######
 lang_dir="语言包"
 source "$work_dir/settings.prop"
 source "$home_dir/$lang_dir/Local.conf"

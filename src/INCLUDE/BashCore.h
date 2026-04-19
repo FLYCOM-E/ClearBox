@@ -16,6 +16,7 @@
 #include <sys/prctl.h>
 #include <android/log.h>
 #include <sys/system_properties.h>
+#include <linux/fs.h>
 
 #define MAX_PACKAGE 256 // 软件包名最大长度
 #define MAX_PATH 4096 // 文件路径最大长度
@@ -46,16 +47,17 @@ int set_name_space(void);
 int get_settings_prop(char * settings_file, char * key);
 int set_server_name(char * argv[], char * new_name);
 int s_sed(char * file, char * target_line, char * text, int mode);
+int s_chattr(char * path, int mode, int dir);
 
 int app_cache_clean(char * work_dir, int mode);
 int cust_rule_clean(char * work_dir);
 int storage_clean(char * work_dir);
 int file_manager(char * work_dir, int mode, char * config_name);
 int app_cust_rule_clean(char * work_dir, char * app_package, int mode);
-int set_install(char * work_dir, char * bin_dir, char * mode);
-int set_storage(char * work_dir, char * bin_dir, char * mode);
+int set_install(char * work_dir, char * mode);
+int set_storage(char * work_dir, char * mode);
 int disk_gc(int mode);
 int dexoat(int mode, char * cust_mode);
 int freezer_open(void);
-int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir);
+int stop_cache_daemon(char * argv[], char * work_dir);
 int time_daemon(char * argv[], char * work_dir);

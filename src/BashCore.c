@@ -89,11 +89,7 @@ int main(int argc, char * argv[])
         fprintf(stderr, " » Error：WORK_PATH\n");
         return 1;
     }
-    if (access(bin_dir, F_OK) != 0)
-    {
-        fprintf(stderr, " » Error：BIN_PATH\n");
-        return 1;
-    }
+    // bin_dir 未使用这里不校验
     
     /* 
     尝试重写纠正
@@ -233,7 +229,7 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (set_install(work_dir, bin_dir, argv[2]) != 0)
+        else if (set_install(work_dir, argv[2]) != 0)
         {
             write_log(work_dir, SERVER_NAME, "阻止安装失败");
         }
@@ -244,7 +240,7 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED_2);
         }
-        else if (set_storage(work_dir, bin_dir, argv[2]) != 0)
+        else if (set_storage(work_dir, argv[2]) != 0)
         {
             write_log(work_dir, SERVER_NAME, "内部储存固定失败");
         }
@@ -305,7 +301,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "StopCached") == 0)
     {
-        stop_cache_daemon(argv, work_dir, bin_dir);
+        stop_cache_daemon(argv, work_dir);
     }
     else if (strcasecmp(argv[1], "Timed") == 0)
     {

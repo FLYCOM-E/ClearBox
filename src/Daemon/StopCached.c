@@ -13,9 +13,9 @@
 
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
-                        char * bin_dir, int skip_reset);
+                        int skip_reset);
 
-int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
+int stop_cache_daemon(char * argv[], char * work_dir)
 {
     // 检查及读取外部拓展储存
     int card_count = 0;
@@ -269,13 +269,13 @@ int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
         if (skip_stop == 0)
         {
             // 内部储存
-            set_app_cache(DATA_DIR, top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+            set_app_cache(DATA_DIR, top_app_list[0], reset_app, work_dir, skip_reset);
             // 外部储存
             if (card_count > 0)
             {
                 for (int i = 0; i < card_count; i++)
                 {
-                    set_app_cache(card_list[i], top_app_list[0], reset_app, work_dir, bin_dir, skip_reset);
+                    set_app_cache(card_list[i], top_app_list[0], reset_app, work_dir, skip_reset);
                 }
             }
         }
@@ -291,7 +291,6 @@ int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
     char * top_app 前台App包名
     char * reset_app 待恢复App包名
     char * work_dir 配置目录
-    char * bin_dir Bin目录
     int skip_reset 是否跳过恢复
 返回：
     int 成功返回0，失败返回-1
@@ -299,24 +298,15 @@ int stop_cache_daemon(char * argv[], char * work_dir, char * bin_dir)
 */
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
-                        char * bin_dir, int skip_reset
-                       )
+                        int skip_reset)
 {
     char top_app_dir[strlen(dir) + strlen(top_app) + 16],
          reset_app_dir[strlen(dir) + strlen(reset_app) + 16],
-         whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 8],
-         busybox_bin[strlen(bin_dir) + 32];
+         whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 8];
     snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);              //topApp缓存目录定义
     snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app);         //resetApp缓存目录定义
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);   //定义WhiteList
-    snprintf(busybox_bin, sizeof(busybox_bin), "%s/busybox", bin_dir);                  //定义BusyBox
     int in_whitelist = 0;
-    
-    if (access(busybox_bin, F_OK) != 0)
-    {
-        LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "busybox bin not Found! \n");
-        return 1;
-    }
     
     //检查缓存目录是否真实存在并过滤路径逃逸
     if (access(top_app_dir, F_OK) == 0 &&
@@ -331,39 +321,16 @@ static int set_app_cache(char * dir, char * top_app,
         // in_whitelist = 0 时执行缓存阻止
         if (in_whitelist == 0)
         {
-            pid_t newPid = fork();
-            if (newPid == -1)
+            if (s_chattr(top_app_dir, 1, 1) == 0)
             {
-                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s: Fork Error\n", top_app);
-                goto reset; // 失败直接跳过 Stop
-            }
-            if (newPid == 0)
-            {
-                execlp(busybox_bin, "busybox", "chattr", "-R", "+i", top_app_dir, NULL);
-                _exit(127);
+                LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Stop %s Success\n", top_app);
             }
             else
             {
-                int end = 0;
-                if (waitpid(newPid, &end, 0) == -1)
-                {
-                    LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s: Wait Error\n", top_app);
-                    goto reset; // 失败后直接跳过Stop部分
-                }
-                
-                if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
-                {
-                    LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Stop %s Success\n", top_app);
-                }
-                else
-                {
-                    LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s Failed\n", top_app);
-                }
+                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s Failed: %s\n", top_app, strerror(errno));
             }
         }
     }
-    
-    reset:
     
     // 配合前面，skip_reset 为 1 不执行恢复
     if (skip_reset == 1)
@@ -375,34 +342,13 @@ static int set_app_cache(char * dir, char * top_app,
     if (access(reset_app_dir, F_OK) == 0 &&
        strstr(reset_app_dir, "/../") == NULL)
     {
-        pid_t newPid = fork();
-        if (newPid == -1)
+        if (s_chattr(reset_app_dir, 0, 1) == 0)
         {
-            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s: Fork Error\n", reset_app);
-            return 1;
-        }
-        if (newPid == 0)
-        {
-            execlp(busybox_bin, "busybox", "chattr", "-R", "-i", reset_app_dir, NULL);
-            _exit(127);
+            LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", reset_app);
         }
         else
         {
-            int end = 0;
-            if (waitpid(newPid, &end, 0) == -1)
-            {
-                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s: Wait Error\n", reset_app);
-                return 1;
-            }
-            
-            if (WIFEXITED(end) && WEXITSTATUS(end) == 0)
-            {
-                LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", reset_app);
-            }
-            else
-            {
-                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed\n", reset_app);
-            }
+            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", reset_app, strerror(errno));
         }
     }
     return 0;

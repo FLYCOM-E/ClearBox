@@ -20,26 +20,8 @@ while [ "$(getprop sys.boot_completed)" != 1 ]; do
 done
 ######
 export work_dir="/data/adb/wipe_cache"
-if [ -d "/data/adb/magisk" ]; then
-    export bin_dir="/data/adb/magisk"
-elif [ -d "/data/adb/ap/bin" ]; then
-    export bin_dir="/data/adb/ap/bin"
-elif [ -d "/data/adb/ksu/bin" ]; then
-    export bin_dir="/data/adb/ksu/bin"
-else
-    # 这是一个回退方案
-    # 以后可能会内置必要函数不再依赖 busybox
-    for busybox in $(find /data/adb -name "busybox"); do
-        ln -s "$busybox" "$home_dir/bin/busybox"
-    done
-    export bin_dir="$home_dir/bin"
-fi
 mkdir -p "$work_dir"
-if [ ! -f "$bin_dir/busybox" ]; then
-    echo "BusyBox not found" > "$work_dir/LOG.log"
-    exit 1
-fi
-echo -en "home_dir=$home_dir\nwork_dir=$work_dir\nbin_dir=$bin_dir" > "$work_dir/PATH"
+echo -en "home_dir=$home_dir\nwork_dir=$work_dir\n" > "$work_dir/PATH"
 ######
 sh "$home_dir/DirtyClear.sh"
 ######
@@ -127,12 +109,12 @@ fi
 ######
 if [ "$clearbox_stop_cache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
-        "$home_dir/BashCore" "StopCached" -b "$bin_dir" -w "$work_dir"
+        "$home_dir/BashCore" "StopCached"
     fi
 fi
 if pgrep "ClearBox Timed" >/dev/null 2>&1; then
     kill $(pgrep "ClearBox Timed")
 fi
-"$home_dir/BashCore" "Timed" "$work_dir"
+"$home_dir/BashCore" "Timed"
 ######
 exit 0
