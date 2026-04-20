@@ -26,6 +26,7 @@
 #define SETTINGS_FILE "settings.prop" // 设置信息文件名 Max Size 30
 #define SETTINGS_FILE_MAX_LINE 256 // 设置信息文件最大行长
 #define getprop __system_property_get
+#define print_log __android_log_print
 
 // Lang
 #ifdef zh_CN

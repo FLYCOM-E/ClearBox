@@ -1,24 +1,24 @@
 // 此 Code 来自ClearBox模块，是crond代替品哦～
 #include "../INCLUDE/BashCore.h"
 
-#define WAIT_TIME 60 // 单次循环等待时间，单位秒
-#define MAX_CONFIG 512 // 最大配置数量
-#define MAX_CONFIG_NAME 256 // 配置文件名称最大长度
-#define CONFIG_LINE_MAX_LEN 512 // 配置文件行最大长度
-#define MAX_COMMAND_LEN 4096 // 命令最大长度
-#define MAX_TITLE_LEN 128 // 通知标题最大长度
-#define MAX_MESSAGE_LEN 512 // 通知内容最大长度
-#define CONFIG_PATH_NAME "TimedConfig"
-#define SERVER_NAME "ClearBox Timed"
+#define SERVER_NAME "ClearBox Timed"   // 进程名
+#define WAIT_TIME 60                   // 单次循环等待秒数（自动对齐）
+#define MAX_CONFIG 512                 // 最大配置数量
+#define MAX_CONFIG_NAME 256            // 配置文件名称最大长度
+#define CONFIG_LINE_MAX_LEN 512        // 配置文件行最大长度
+#define MAX_COMMAND_LEN 4096           // 命令最大长度
+#define MAX_TITLE_LEN 128              // 通知标题最大长度
+#define MAX_MESSAGE_LEN 512            // 通知内容最大长度
+#define CONFIG_PATH_NAME "TimedConfig" // 配置目录名
 
 static int running(char * command);
 
 struct config_file
 {
-    // for time
+    // For time
     char time_unit;
     long time_num;
-    // for date
+    // For date
     time_t old_time;
     // For post
     int post;
@@ -28,10 +28,11 @@ struct config_file
     int in;
     long start_hour;
     long end_hour;
-    // other
+    // Other
     char run[MAX_COMMAND_LEN];
     char config_name[MAX_CONFIG_NAME];
     time_t last_error_notify;
+    int disable;
 };
 
 int time_daemon(char * argv[], char * work_dir)
@@ -42,16 +43,16 @@ int time_daemon(char * argv[], char * work_dir)
         return 1;
     }
     
+    // 拼接及检查配置目录
     char config_dir[strlen(work_dir) + sizeof(CONFIG_PATH_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_PATH_NAME);
-    
     if (access(config_dir, F_OK) != 0)
     {
         fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
         return 1;
     }
     
-    // 获取传入PATH类型
+    // 获取传入 PATH 类型
     struct stat path_stat;
     if (lstat(config_dir, &path_stat) == -1)
     {
@@ -62,217 +63,201 @@ int time_daemon(char * argv[], char * work_dir)
     int read_config = 0;
     struct config_file config[MAX_CONFIG]; // 创建结构体
     // 目录类型继续解析，否则报错退出
-    if (S_ISDIR(path_stat.st_mode))
+    if (S_ISDIR(path_stat.st_mode) == 0)
     {
-        struct stat file_stat;
-        struct dirent * entry;
-        DIR * config_dir_dp = opendir(config_dir);
-        if (config_dir_dp == NULL)
+        fprintf(stderr, L_PATH_NOTISDIR, config_dir);
+        return 1;
+    }
+    
+    struct dirent * entry;
+    DIR * config_dir_dp = opendir(config_dir);
+    if (config_dir_dp == NULL)
+    {
+        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
+        return 1;
+    }
+    // 遍历配置目录
+    while ((entry = readdir(config_dir_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+           strcmp(entry -> d_name, "..") == 0)
         {
-            fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
-            return 1;
+            continue;
         }
         
-        // 遍历配置目录
-        while ((entry = readdir(config_dir_dp)))
+        // 拼接完整路径
+        size_t path_len = (strlen(config_dir) + strlen(entry -> d_name) + 2);
+        if (path_len > MAX_PATH)
         {
-            if (strcmp(entry -> d_name, ".") == 0 ||
-               strcmp(entry -> d_name, "..") == 0)
+            fprintf(stderr, L_CONFIG_PATH_TOOLONG);
+            continue;
+        }
+        char path[path_len];
+        snprintf(path, sizeof(path), "%s/%s", config_dir, entry -> d_name);
+        
+        int line_count = 0; // 行计数
+        int time_ = 0, date_ = 0, run_ = 0; // 记录是否解析标志位
+        char line[CONFIG_LINE_MAX_LEN] = {0};
+        
+        // 这里有检查作用，非普通文件即失败，同时提示这里有非文件
+        FILE * config_fp = fopen(path, "r");
+        if (config_fp == NULL)
+        {
+            fprintf(stderr, L_OPEN_FILE_FAILED, entry -> d_name, strerror(errno));
+            continue;
+        }
+        while (fgets(line, sizeof(line), config_fp))
+        {
+            line_count++;
+            line[strcspn(line, "\n")] = 0;
+            // 注释跳过
+            if (line[0] == '#')
             {
                 continue;
             }
             
-            // 拼接完整路径并跳过目录/链接
-            size_t path_len = (strlen(config_dir) + strlen(entry -> d_name) + 2);
-            if (path_len > MAX_PATH)
+            // 解析 KEY/VALUE
+            char * line_p = NULL;
+            char * key = strtok_r(line, "=", &line_p);
+            char * value = strtok_r(NULL, "=", &line_p);
+            if (value == NULL || key == NULL)
             {
-                fprintf(stderr, L_CONFIG_PATH_TOOLONG);
+                fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
                 continue;
             }
-            char path[path_len];
-            snprintf(path, sizeof(path), "%s/%s", config_dir, entry -> d_name);
             
-            if (lstat(path, &file_stat) == -1)
+            // 匹配提取键值读入结构体
+            if (strcasecmp(key, "time") == 0)
             {
-                continue;
-            }
-            if (S_ISDIR(file_stat.st_mode) || S_ISLNK(file_stat.st_mode))
-            {
-                continue;
-            }
-            else
-            {
-                int line_count = 0; // 行计数
-                int time_ = 0, date_ = 0, run_ = 0; // 记录是否解析标志位
-                char line[CONFIG_LINE_MAX_LEN] = {0};
-                
-                FILE * config_fp = fopen(path, "r");
-                if (config_fp == NULL)
+                char * value_p = NULL;
+                char * time_str = strtok_r(value, "/", &value_p);
+                char * unit_str = strtok_r(NULL, "/", &value_p);
+                if (time_str && unit_str &&
+                    strtol(time_str, NULL, 10) != 0 &&
+                    (unit_str[0] == 'D' ||
+                    unit_str[0] == 'H' ||
+                    unit_str[0] == 'M'))
                 {
-                    fprintf(stderr, L_OPEN_FILE_FAILED, entry -> d_name, strerror(errno));
+                    config[read_config].time_unit = unit_str[0];
+                    config[read_config].time_num = strtol(time_str, NULL, 10);
+                    time_ = 1; // 已读取 TIME
+                }
+                else
+                {
+                    fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
                     continue;
                 }
-                while (fgets(line, sizeof(line), config_fp))
+            }
+            else if (strcasecmp(key, "date") == 0)
+            {
+                // 这里不做检查，如空则设置为当前时间
+                config[read_config].old_time = (time_t)strtol(value, NULL, 10);
+                if (config[read_config].old_time <= 0)
                 {
-                    // 提取名称/值并匹配读入结构体
-                    
-                    line_count++;
-                    line[strcspn(line, "\n")] = 0;
-                    
-                    if (line[0] == '#')
-                    {
-                        continue;
-                    }
-                    
-                    // 解析 key/value
-                    char * line_p = NULL;
-                    char * key = strtok_r(line, "=", &line_p);
-                    char * value = strtok_r(NULL, "=", &line_p);
-                    if (value == NULL || key == NULL)
+                    config[read_config].old_time = time(NULL);
+                }
+                date_ = 1; // 已读取 DATE
+            }
+            else if (strcasecmp(key, "run") == 0)
+            {
+                // 不检查命令（不好做检查）
+                if (strlen(value) >= MAX_COMMAND_LEN)
+                {
+                    fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                    continue;
+                }
+                snprintf(config[read_config].run, sizeof(config[read_config].run), "%s", value);
+                run_ = 1;
+            }
+            else if (strcasecmp(key, "in") == 0)
+            {
+                config[read_config].start_hour = 0;
+                config[read_config].end_hour = 0;
+                
+                char * value_p = NULL;
+                char * start_tm_str = strtok_r(value, "/", &value_p);
+                char * end_tm_str = strtok_r(NULL, "/", &value_p);
+                if (start_tm_str && end_tm_str)
+                {
+                    long start_hour = 0, end_hour = 0;
+                    start_hour = strtol(start_tm_str, NULL, 10);
+                    end_hour = strtol(end_tm_str, NULL, 10);
+                    if (start_hour > 23 ||
+                        start_hour < 0 ||
+                        end_hour > 23 ||
+                        end_hour < 0)
                     {
                         fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
                         continue;
                     }
                     
-                    // Case
-                    if (strcasecmp(key, "time") == 0)
-                    {
-                        char * value_p = NULL;
-                        char * time_str = strtok_r(value, "/", &value_p);
-                        char * unit_str = strtok_r(NULL, "/", &value_p);
-                        if (time_str && unit_str &&
-                            strtol(time_str, NULL, 10) != 0 &&
-                            (unit_str[0] == 'D' ||
-                            unit_str[0] == 'H' ||
-                            unit_str[0] == 'M'))
-                        {
-                            config[read_config].time_unit = unit_str[0];
-                            config[read_config].time_num = strtol(time_str, NULL, 10);
-                        }
-                        else
-                        {
-                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
-                            continue;
-                        }
-                        time_ = 1;
-                    }
-                    else if (strcasecmp(key, "date") == 0)
-                    {
-                        // 这里不做检查，如果出错则默认为当前时间
-                        config[read_config].old_time = (time_t)strtol(value, NULL, 10);
-                        if (config[read_config].old_time <= 0)
-                        {
-                            config[read_config].old_time = time(NULL);
-                        }
-                        date_ = 1;
-                    }
-                    else if (strcasecmp(key, "run") == 0)
-                    {
-                        // 不检查命令（不好做检查）
-                        if (strlen(value) >= MAX_COMMAND_LEN)
-                        {
-                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
-                            continue;
-                        }
-                        snprintf(config[read_config].run, sizeof(config[read_config].run), "%s", value);
-                        run_ = 1;
-                    }
-                    else if (strcasecmp(key, "in") == 0)
-                    {
-                        config[read_config].start_hour = 0;
-                        config[read_config].end_hour = 0;
-                        
-                        char * value_p = NULL;
-                        char * start_tm_str = strtok_r(value, "/", &value_p);
-                        char * end_tm_str = strtok_r(NULL, "/", &value_p);
-                        
-                        if (start_tm_str && end_tm_str)
-                        {
-                            long start_hour = 0, end_hour = 0;
-                            start_hour = strtol(start_tm_str, NULL, 10);
-                            end_hour = strtol(end_tm_str, NULL, 10);
-                            
-                            if (start_hour > 23 ||
-                                start_hour < 0 ||
-                                end_hour > 23 ||
-                                end_hour < 0)
-                            {
-                                fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
-                                continue;
-                            }
-                            
-                            config[read_config].start_hour = start_hour;
-                            config[read_config].end_hour = end_hour;
-                            config[read_config].in = 1;
-                        }
-                        else
-                        {
-                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
-                            continue;
-                        }
-                    }
-                    else if (strcasecmp(key, "post") == 0)
-                    {
-                        char * value_p = NULL;
-                        char * message = strchr(value, '/');
-                        char * title = strtok_r(value, "/", &value_p);
-                        if (title && message)
-                        {
-                            if (strlen(title) > MAX_TITLE_LEN)
-                            {
-                                fprintf(stderr, L_TD_W_POST_TITLE_TOOLONG, entry -> d_name);
-                            }
-                            if (strlen(message + 1) > MAX_MESSAGE_LEN)
-                            {
-                                fprintf(stderr, L_TD_W_POST_MESSAGE_TOOLONG, entry -> d_name);
-                            }
-                            snprintf(config[read_config].title, sizeof(config[read_config].title), "%s", title);
-                            snprintf(config[read_config].message, sizeof(config[read_config].message), "%s", message + 1);
-                            config[read_config].post = 1;
-                        }
-                        else
-                        {
-                            fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        fprintf(stderr, L_TD_LINE_ERR_KEY, entry -> d_name, line_count, key);
-                    }
+                    config[read_config].start_hour = start_hour;
+                    config[read_config].end_hour = end_hour;
+                    config[read_config].in = 1;
                 }
-                fclose(config_fp);
-                
-                if (time_ != 1 ||
-                    date_ != 1 ||
-                    run_ != 1)
+                else
                 {
-                    fprintf(stderr, L_TD_CONFIG_ERROR, entry -> d_name);
-                    continue; // 跳过，read_config 不自增，后面解析自然覆盖
+                    fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                    continue;
                 }
-                
-                // 保留配置名称
-                snprintf(config[read_config].config_name, sizeof(config[read_config].config_name), "%s", entry -> d_name);
-                
-                read_config += 1;
-                if (read_config == MAX_CONFIG) // 限制配置数量
+            }
+            else if (strcasecmp(key, "post") == 0)
+            {
+                char * value_p = NULL;
+                char * message = strchr(value, '/');
+                char * title = strtok_r(value, "/", &value_p);
+                if (title && message)
                 {
-                    printf(L_TD_MAX_CONFIG, MAX_CONFIG);
-                    break;
+                    if (strlen(title) > MAX_TITLE_LEN)
+                    {
+                        fprintf(stderr, L_TD_W_POST_TITLE_TOOLONG, entry -> d_name);
+                    }
+                    if (strlen(message + 1) > MAX_MESSAGE_LEN)
+                    {
+                        fprintf(stderr, L_TD_W_POST_MESSAGE_TOOLONG, entry -> d_name);
+                    }
+                    snprintf(config[read_config].title, sizeof(config[read_config].title), "%s", title);
+                    snprintf(config[read_config].message, sizeof(config[read_config].message), "%s", message + 1);
+                    config[read_config].post = 1;
                 }
-                printf(L_TD_CONFIG_SUCCESS, entry -> d_name);
+                else
+                {
+                    fprintf(stderr, L_TD_LINE_ERR_VALUE, entry -> d_name, line_count, key);
+                    continue;
+                }
+            }
+            else
+            {
+                fprintf(stderr, L_TD_LINE_ERR_KEY, entry -> d_name, line_count, key);
             }
         }
-        closedir(config_dir_dp);
-        if (read_config == 0)
+        fclose(config_fp);
+        
+        if (time_ != 1 ||
+            date_ != 1 ||
+            run_ != 1) // post、in 非必须字段不检查
         {
-            fprintf(stderr, L_NOCONFIG);
-            return 1;
+            fprintf(stderr, L_TD_CONFIG_ERROR, entry -> d_name);
+            continue; // 失败 read_config 不自增
+        }
+        
+        // 设置配置为启用并保留名称
+        config[read_config].disable = 0; 
+        snprintf(config[read_config].config_name, sizeof(config[read_config].config_name), "%s", entry -> d_name);
+        printf(L_TD_CONFIG_SUCCESS, entry -> d_name);
+        
+        read_config += 1;
+        if (read_config == MAX_CONFIG) // 限制配置数量
+        {
+            printf(L_TD_MAX_CONFIG, MAX_CONFIG);
+            break;
         }
     }
-    else
+    closedir(config_dir_dp);
+    
+    if (read_config == 0)
     {
-        fprintf(stderr, L_PATH_NOTISDIR, config_dir);
+        fprintf(stderr, L_NOCONFIG);
         return 1;
     }
     
@@ -311,6 +296,13 @@ int time_daemon(char * argv[], char * work_dir)
         int i = 0;
         while (i < read_config)
         {
+            // 检查停用状态
+            if (config[i].disable == 1)
+            {
+                i++;
+                continue;
+            }
+            
             int run = 0;
             if (config[i].in == 1)
             {
@@ -362,14 +354,15 @@ int time_daemon(char * argv[], char * work_dir)
                 
                 /* 
                 回写
-                如果配置存在则更新，否则不重新创建，这是为了配合前端
-                删掉配置即停用的设置。重启进程前配置仍然生效
+                如果配置存在则更新，否则设置为停用。
+                这是为了配合前端删掉配置即停用的设置。
                 */
                 if (access(config_file, F_OK) == 0)
                 {
                     char line[128] = "";
                     snprintf(line, sizeof(line), "date=%ld", now_time);
                     
+                    // 更新 DATE
                     int success = s_sed(config_file, "date=", line, 1);
                     
                     // Check Errno
@@ -382,6 +375,10 @@ int time_daemon(char * argv[], char * work_dir)
                         post(SERVER_NAME, error_text);
                         config[i].last_error_notify = now_time; // 记录上次通知时间，避免短时间多次通知
                     }
+                }
+                else
+                {
+                    config[i].disable = 1;
                 }
                 
                 // 更新时间戳

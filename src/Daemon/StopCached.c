@@ -1,15 +1,14 @@
 // By ClearBox StopCache
 #include "../INCLUDE/BashCore.h"
 
-#define DATA_DIR "/data/data" // 软件数据根目录
-#define ROM_NAME "RunStart" //Max Size 30
-#define WHITELIST_NAME "whitelist.prop" // 白名单文件
+#define SERVER_NAME "StopCached"        // 进程名（MAX 15）
+#define DATA_DIR "/data/data"           // 软件数据根目录
+#define MICRO_CARD_PATH "/mnt/expand"   // 拓展卡根目录
+#define ROM_NAME "RunStart"             // 储存文件名
+#define WHITELIST_NAME "whitelist.prop" // 白名单文件名
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
-#define MICRO_CARD_PATH "/mnt/expand"
-#define MAX_CARD 5 // 最大拓展卡数量
-#define MAX_CARD_ID_LEN 256
-#define LOGPRINT __android_log_print
-#define SERVER_NAME "StopCached"
+#define MAX_CARD 5                      // 最大拓展卡数量
+#define MAX_CARD_ID_LEN 256             // 拓展卡 ID 限制长度
 
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
@@ -57,14 +56,14 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         fprintf(stderr, L_OPEN_PATH_FAILED, MICRO_CARD_PATH, strerror(errno));
     }
     
-    //定义储存文件
-    char rom_file[strlen(work_dir) + 32];
+    // 定义储存文件
+    char rom_file[strlen(work_dir) + sizeof(ROM_NAME) + 2];
     snprintf(rom_file, sizeof(rom_file), "%s/%s", work_dir, ROM_NAME);
     
-    //定义待处理app临时储存变量
+    // 定义待处理 app 临时储存变量
     char top_app_list[5][MAX_PACKAGE] = {0}, reset_app[MAX_PACKAGE] = "";
     
-    //提取RunStart储存值（如有）
+    // 提取 RunStart 储存值
     if (access(rom_file, F_OK) == 0)
     {
         char tmp[16] = "";
@@ -76,7 +75,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
             while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp_r) != NULL)
             {
                 rom_key_line[strcspn(rom_key_line, "\n")] = 0;
-                //if匹配，如没找到对应值或值为空则跳过（保持原空值）
+                // 如没找到对应值或值为空则跳过（保持原空值）
                 int i = 0;
                 while (i <= 4)
                 {
@@ -158,16 +157,16 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     深度休眠循环次数阀值
     */
     unsigned int cycle_time = 10,
-        deep_time = 60,
-        get_error = 0,
-        max_get_error = 10,
-        empty_count = 0,
-        max_empty_count = 30;
+                 deep_time = 60,
+                 get_error = 0,
+                 max_get_error = 10,
+                 empty_count = 0,
+                 max_empty_count = 30;
     
-    //Start the cycle
+    // Start
     for ( ; ; )
     {
-        //检查获取前台失败次数
+        // 检查获取前台失败次数
         if (get_error == max_get_error)
         {
             post(SERVER_NAME, L_SCD_GETAPP_ERR_EXIT);
@@ -218,7 +217,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
             }
         }
         
-        //更新当前包名记录
+        // 更新当前包名记录
         snprintf(reset_app, sizeof(reset_app), "%s", top_app_list[4]);
         snprintf(top_app_list[4], sizeof(top_app_list[4]), "%s", top_app_list[3]);
         snprintf(top_app_list[3], sizeof(top_app_list[3]), "%s", top_app_list[2]);
@@ -229,7 +228,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         FILE * rom_file_fp_w = fopen(rom_file, "w");
         if (rom_file_fp_w)
         {
-            // 这里不检查错误情况
+            // 写入失败不检查
             fprintf(rom_file_fp_w,
                     "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s",
                     top_app_list[0],
@@ -237,8 +236,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
                     top_app_list[2],
                     top_app_list[3],
                     top_app_list[4],
-                    reset_app
-                   );
+                    reset_app);
             fclose(rom_file_fp_w);
         }
         
@@ -285,7 +283,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
 }
 
 /*
-缓存阻止实现
+缓存阻止/恢复
 接收：
     char * dir 软件数据根目录
     char * top_app 前台App包名
@@ -294,7 +292,6 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     int skip_reset 是否跳过恢复
 返回：
     int 成功返回0，失败返回-1
-    
 */
 static int set_app_cache(char * dir, char * top_app,
                         char * reset_app, char * work_dir,
@@ -306,28 +303,20 @@ static int set_app_cache(char * dir, char * top_app,
     snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);              //topApp缓存目录定义
     snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app);         //resetApp缓存目录定义
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);   //定义WhiteList
-    int in_whitelist = 0;
     
     //检查缓存目录是否真实存在并过滤路径逃逸
-    if (access(top_app_dir, F_OK) == 0 &&
-       strstr(top_app_dir, "/../") == NULL)
+    if (whitelist_check(whitelist_file, top_app) != 1)
     {
-        //检查是否位于白名单
-        if (whitelist_check(whitelist_file, top_app) == 1)
-        {
-            in_whitelist = 1;
-        }
-        
-        // in_whitelist = 0 时执行缓存阻止
-        if (in_whitelist == 0)
+        if (access(top_app_dir, F_OK) == 0 &&
+            strstr(top_app_dir, "/../") == NULL)
         {
             if (s_chattr(top_app_dir, 1, 1) == 0)
             {
-                LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Stop %s Success\n", top_app);
+                print_log(ANDROID_LOG_INFO, SERVER_NAME, "Stop %s Success\n", top_app);
             }
             else
             {
-                LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s Failed: %s\n", top_app, strerror(errno));
+                print_log(ANDROID_LOG_WARN, SERVER_NAME, "Stop %s Failed: %s\n", top_app, strerror(errno));
             }
         }
     }
@@ -344,11 +333,11 @@ static int set_app_cache(char * dir, char * top_app,
     {
         if (s_chattr(reset_app_dir, 0, 1) == 0)
         {
-            LOGPRINT(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", reset_app);
+            print_log(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", reset_app);
         }
         else
         {
-            LOGPRINT(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", reset_app, strerror(errno));
+            print_log(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", reset_app, strerror(errno));
         }
     }
     return 0;
