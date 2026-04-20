@@ -1,4 +1,10 @@
-// By ClearBox StopCache
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+  此 Code 来自 ClearBox 模块，用于 App 自动缓存阻止功能（DAEMON）
+*/
+
 #include "../INCLUDE/BashCore.h"
 
 #define SERVER_NAME "StopCached"        // 进程名（MAX 15）

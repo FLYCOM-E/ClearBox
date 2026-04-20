@@ -17,6 +17,7 @@
 #define L_ARG_BINPATH_ERR " » No Bin directory provided!\n"
 #define L_OPEN_PATH_FAILED " » Failed to open directory %s: %s\n"
 #define L_OPEN_FILE_FAILED " » Failed to open file %s: %s\n"
+#define L_MKDIR_ERROR " » Failed to create directory %s: %s\n"
 #define L_PATH_NOTISDIR " » %s is not a directory！\n"
 #define L_PATH_NOTISFILE " » %s is not a file！\n"
 #define L_GET_APPLIST_ERROR " » Failed to get application list!\n"
@@ -26,6 +27,7 @@
 #define L_MOVE_ERROR " » Failed to move %s: %s\n"
 #define L_DELETE_ERROR " » Failed to delete %s: %s\n"
 #define L_SERVER_START_ERR " » Process startup failed: %s\n"
+#define L_PATH_FILE_ERROR " » PATH configuration error, automatically rewriting ... Please try again. If it fails, please delete %s and update the configuration before retrying\n"
 
 // For StopCached
 #define L_SCD_START_SUCCESS " » Cache blocking has been started! #%u"

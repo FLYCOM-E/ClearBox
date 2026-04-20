@@ -1,9 +1,15 @@
-// 此Code来自ClearBox模块，用于阻止安装功能
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+         此 Code 来自 ClearBox 模块，用于阻止安装功能
+*/
+
 #include "INCLUDE/BashCore.h"
 
-#define DATA_DIR "/data/app"
-#define PROP_STOP "clearbox_stop_install=1"
-#define PROP_RESET "clearbox_stop_install=0"
+#define DATA_DIR "/data/app"                    // 阻止目录
+#define PROP_STOP "clearbox_stop_install=1"     // PROP OPEN
+#define PROP_RESET "clearbox_stop_install=0"    // PROP CLOSE
 
 int set_install(char * work_dir, char * mode)
 {

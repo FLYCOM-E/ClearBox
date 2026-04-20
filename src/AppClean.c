@@ -1,9 +1,15 @@
-// 此Code来自ClearBox模块，用于自定义规则软件内部清理
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+     此 Code 来自 ClearBox 模块，用于自定义规则软件内部清理
+*/
+
 #include "INCLUDE/BashCore.h"
 
-#define MAX_APP_NAME 128 // 软件名称最大长度
-#define DATA_DIR "/data/data" //Max Size 62
-#define CONFIG_DIR_NAME "清理规则" // 配置目录名称
+#define MAX_APP_NAME 128            // 软件名称最大长度
+#define DATA_DIR "/data/data"       // 软件数据根目录
+#define CONFIG_DIR_NAME "清理规则"   // 配置目录名称
 
 static int read_clear(char * config_file, int * success_config, int * failed_config, int * total_clear_size);
 
@@ -18,11 +24,11 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
         return 1;
     }
     
-    // 遍历配置目录
-    int success_config = 0,
-        failed_config = 0,
+    int success_config = 0,   // 成功处理配置数量
+        failed_config = 0,    // 处理失败配置数量
         total_clear_size = 0; // 总清理大小，如模式为全部清理则为所有配置累计清理和（单位 M）
     
+    // mode 1 为全部清理模式
     if (mode == 1)
     {
         struct dirent * config_name;
@@ -40,7 +46,6 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
                 continue;
             }
             
-            //config_file: 配置文件
             char config_file[strlen(config_dir) + strlen(config_name -> d_name) + 2];
             snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_name -> d_name);
             
@@ -51,7 +56,7 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     }
     else
     {
-        //config_file: 配置文件
+        // 清理指定配置
         char config_file[strlen(config_dir) + strlen(app_package) + 10];
         snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, app_package);
         if (access(config_file, F_OK) == 0)
@@ -59,8 +64,8 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
             read_clear(config_file, &success_config, &failed_config, &total_clear_size);
         }
     }
+    fflush(stdout);
     
-    fflush(stdout); // 强制刷新一次，避免输出杂乱
     if (success_config != 0)
     {
         fprintf(stderr, L_AC_CLEAN_SUCCESSFUL, total_clear_size);
@@ -93,9 +98,9 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         return 1;
     }
     
-    // 遍历配置文件
+    // 读取及处理配置
     int count = 0, get_config = 0;
-    char app_dir[64 + MAX_PACKAGE];
+    char app_dir[sizeof(DATA_DIR) + MAX_PACKAGE + 2];
     char line[MAX_PATH] = "", app_name[MAX_APP_NAME] = "";
     char * app_package_fp = NULL, * app_name_fp = NULL;
     
@@ -104,32 +109,29 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         line[strcspn(line, "\n")] = 0;
         count++;  //记录行数
         
-        char * line_ptr = line;
-        while (isspace(* line_ptr)) line_ptr++;
-        
         // 如果该行被注释/为空则返回
-        if (* line_ptr == '#' || 
-            strlen(line_ptr) < 1)
+        if (line[0] == '#' ||
+            strlen(line) <= 1) // 此空行检查请不要删除，除非您知道自己在做什么
         {
             continue;
         }
         
         /*
-        配置文件第一行以＠开头
-        格式：
+        配置文件第一行以 ＠ 开头，格式：
         @<软件包名>/<软件名称>
         */
-        if (get_config == 0) // = 0 意味着当前配置未读取到初始行
+        if (get_config == 0) // 未读取初始行
         {
-            if (* line_ptr == '@')
+            if (line[0] == '@')
             {
                 char * line_p = NULL;
                 app_package_fp = strtok_r(line, "/", &line_p);
                 app_name_fp = strtok_r(NULL, "/", &line_p);
                 
-                if (app_package_fp && app_name_fp) // 如果软件名称 & 软件包名为空或者填写有误则跳过
+                if (app_package_fp && app_name_fp &&
+                    strcmp(app_package_fp + 1, ""))
                 {
-                    snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                  //软件名称
+                    snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                     //软件名称
                     snprintf(app_dir, sizeof(app_dir), "%s/%s", DATA_DIR, app_package_fp + 1);   //软件目录
                     
                     if (access(app_dir, F_OK) == 0)
@@ -172,7 +174,7 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, line);
         
         // 不允许绝对路径
-        if (* line_ptr == '/')
+        if (line[0] == '/')
         {
             fprintf(stderr, L_AC_CONFIG_ERR_1, config_file, count);
             continue;

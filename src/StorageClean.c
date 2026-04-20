@@ -1,30 +1,32 @@
-// 此Code来自ClearBox模块，用于删除垃圾缓存及空文件夹
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+     此 Code 来自 ClearBox 模块，用于删除垃圾缓存及空文件夹
+*/
+
 #include "INCLUDE/BashCore.h"
 
-#define WHITELIST "%s/ClearWhitelist.prop" // 白名单文件名
-#define CARD_HOME "/mnt/media_rw" // 外置SD卡根目录
-#define STORAGES_DIR "/data/media/0" //Max Size 100
+#define WHITELIST "ClearWhitelist.prop"     // 白名单文件名
+#define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录
+#define STORAGES_DIR "/data/media/0"        // 储存目录
 
-static int storage_cache_clean(char * data_path, char * work_dir);
-static int StorageClean(char * storage_dir, int home);
+static int storage_cache_clear(char * data_path, char * work_dir);
+static int storage_clear(char * storage_dir, int home);
 
 int storage_clean(char * work_dir)
 {
-    int clear_disk = 0; // 是否清理外部储存
-    char sdcard_dir[128] = "", // 外置SD完整路径
-         data_dir[128] = "", // 内部储存完整路径
-         settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
-    
-    // 拼接路径
+    int clean_count = 0;
+    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
-    snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
     
     // 设置查找对应值
-    clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk");
+    int clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk");
     
     // 处理内部储存
-    storage_cache_clean(data_dir, work_dir);
-    int clean_count = StorageClean(data_dir, 1);
+    storage_cache_clear(STORAGES_DIR, work_dir);
+    clean_count = storage_clear(STORAGES_DIR, 1);
+    
     if (clean_count == -1)
     {
         fprintf(stderr, L_SC_CLEAR_DIRTY_ERR);
@@ -55,6 +57,7 @@ int storage_clean(char * work_dir)
             continue;
         }
         
+        char sdcard_dir[sizeof(CARD_HOME) + strlen(entry -> d_name) + 2];
         snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
         if (access(sdcard_dir, F_OK) != 0)
         {
@@ -62,8 +65,9 @@ int storage_clean(char * work_dir)
         }
         
         // 调用函数（外部储存
-        storage_cache_clean(sdcard_dir, work_dir);
-        clean_count = StorageClean(sdcard_dir, 1);
+        storage_cache_clear(sdcard_dir, work_dir);
+        clean_count = storage_clear(sdcard_dir, 1);
+        
         if (clean_count == -1)
         {
             fprintf(stderr, L_SC_CLEAR_DIRTY_ERR);
@@ -88,7 +92,7 @@ int storage_clean(char * work_dir)
 返回：
     int 成功返回0，失败返回1
 */
-static int storage_cache_clean(char * data_path, char * work_dir)
+static int storage_cache_clear(char * data_path, char * work_dir)
 {
     if (access(data_path, F_OK) != 0)
     {
@@ -96,14 +100,14 @@ static int storage_cache_clean(char * data_path, char * work_dir)
         return 1;
     }
     
-    // 拼接/定义路径
+    // 拼接路径/白名单文件
     int clean_count = 0;
     char whitelist_file[strlen(work_dir) + strlen(WHITELIST) + 2],
          app_data_path[strlen(data_path) + 32];
     snprintf(app_data_path, sizeof(app_data_path), "%s/Android/data", data_path);
-    snprintf(whitelist_file, sizeof(whitelist_file), WHITELIST, work_dir);
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST);
     
-    // 打开目录
+    // 递归遍历目录
     struct dirent * entry;
     DIR * app_data_dir_dp = opendir(app_data_path);
     if (app_data_dir_dp == NULL)
@@ -111,8 +115,6 @@ static int storage_cache_clean(char * data_path, char * work_dir)
         fprintf(stderr, L_OPEN_PATH_FAILED, app_data_path, strerror(errno));
         return 1;
     }
-    
-    // 遍历目录
     while ((entry = readdir(app_data_dir_dp)))
     {
         if (strcmp(entry -> d_name, ".") == 0 ||
@@ -128,6 +130,7 @@ static int storage_cache_clean(char * data_path, char * work_dir)
         {
             continue;
         }
+        
         // 白名单检查
         if (whitelist_check(whitelist_file, entry -> d_name) == 1)
         {
@@ -155,12 +158,12 @@ static int storage_cache_clean(char * data_path, char * work_dir)
 /*
 递归清理函数
 接收：
-    char * storage_dir 储存根目录
+    char * dir 储存根目录
     int home 如果外置储存根目录为空是否删除该根目录，默认使用1（跳过删除）
 返回：
     int 成功返回清理空文件夹/文件数量，失败返回-1
 */
-static int StorageClean(char * dir, int home)
+static int storage_clear(char * dir, int home)
 {
     if (access(dir, F_OK) != 0)
     {
@@ -214,7 +217,7 @@ static int StorageClean(char * dir, int home)
                     continue;
                 }
             }
-            count += StorageClean(path, 0);
+            count += storage_clear(path, 0);
             if (access(path, F_OK) != 0) count_all--;
         }
         else
@@ -246,6 +249,8 @@ static int StorageClean(char * dir, int home)
         
     }
     closedir(dir_dp);
+    
+    // 检查是否应该删除目录本身（递归时删除空目录）
     if (home == 0)
     {
         if (count_all == 0)

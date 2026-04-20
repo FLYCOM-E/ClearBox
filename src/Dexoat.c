@@ -1,4 +1,10 @@
-// 此Code来自ClearBox模块，用于运行DexOat
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+      此 Code 来自 ClearBox 模块，用于运行 Dexoat 编译
+*/
+
 #include "INCLUDE/BashCore.h"
 
 static int dexoat_system(void);
@@ -6,6 +12,7 @@ static int dexoat_cust(char * mode);
 
 int dexoat(int mode, char * cust_mode)
 {
+    // 触发系统 Dexoat
     if (mode == 0)
     {
         return dexoat_system();
@@ -22,7 +29,6 @@ int dexoat(int mode, char * cust_mode)
 static int dexoat_system(void)
 {
     fprintf(stderr, L_DO_RUN_SYSTEM);
-    fflush(stdout);
     return system("cmd package bg-dexopt-job");
 }
 
@@ -30,7 +36,6 @@ static int dexoat_system(void)
 static int dexoat_cust(char * mode)
 {
     fprintf(stderr, L_DO_RUN_CUST, mode);
-    fflush(stdout);
     
     pid_t newPid = fork();
     if (newPid == -1)

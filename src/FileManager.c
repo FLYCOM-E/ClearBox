@@ -1,13 +1,19 @@
-// 此Code来自ClearBox模块，用于内部储存指定格式文件清理
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+     此 Code 来自 ClearBox 模块，用于内部储存指定格式文件清理
+*/
+
 #include "INCLUDE/BashCore.h"
 
-#define MAX_CONFIG_NAME 256 // 配置名称长度限制（不含.conf后缀)
-#define MAX_ARGS_SIZE 32 // 后缀名称长度限制
-#define CONFIG_MAX_ARGS 5000 // 单个文件格式配置最多允许的后缀数量
-#define F_DIR_NAME "Documents" // 归类目录名称（仅文件归类模式会用）
-#define CONFIG_DIR_NAME "文件格式配置" // 配置文件夹名称
-#define CARD_HOME "/mnt/media_rw" // 外置储存根目录
-#define STORAGES_DIR "/data/media/0" //Max Size 100
+#define MAX_CONFIG_NAME 256             // 配置名称长度限制（不含.conf后缀)
+#define MAX_ARGS_SIZE 32                // 后缀名称长度限制
+#define CONFIG_MAX_ARGS 5000            // 单个文件格式配置最多允许的后缀数量
+#define F_DIR_NAME "Documents"          // 归类目录名称（仅文件归类模式会用）
+#define CONFIG_DIR_NAME "文件格式配置"   // 配置文件夹名称
+#define CARD_HOME "/mnt/media_rw"      // 外置储存根目录
+#define STORAGES_DIR "/data/media/0"   //Max Size 100
 
 static int clear_service(char * work_dir, char * storage_dir, char * config_name);
 static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
@@ -26,20 +32,17 @@ int file_manager(char * work_dir, int mode, char * config_name)
         config_name = NULL;
     }
     
-    int file_clear_disk = 0, file_all_disk = 0;
-    char data_dir[128] = "",
-         sdcard_dir[128] = "",
-         settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
-    
+    int file_clear_disk = 0, // 是否清理拓展储存文件
+        file_all_disk = 0;   // 是否归类拓展储存文件
+    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
-    snprintf(data_dir, sizeof(data_dir), STORAGES_DIR);
     
     // 查找设置对应值
     file_all_disk = get_settings_prop(settings_file, "clearbox_file_all_disk");
     file_clear_disk = get_settings_prop(settings_file, "clearbox_file_clear_disk");
     
     // 调用函数（内部储存
-    if (clear_service(work_dir, data_dir, config_name) == 0)
+    if (clear_service(work_dir, STORAGES_DIR, config_name) == 0)
     {
         if (file_clear == 1)
         {
@@ -63,7 +66,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
     }
     fflush(stdout);
     
-    // 根据模式判断是否处理外置储存
+    // 根据模式判断是否处理拓展储存
     if (file_clear == 1)
     {
         if (file_clear_disk != 1)
@@ -94,6 +97,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
             continue;
         }
         
+        char sdcard_dir[sizeof(CARD_HOME) + strlen(entry -> d_name) + 2];
         snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
         if (access(sdcard_dir, F_OK) != 0)
         {
@@ -111,6 +115,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
             {
                 printf(L_FM_ALL_SUCCESSFUL_SD);
             }
+            fflush(stdout);
         }
         else
         {
@@ -123,7 +128,6 @@ int file_manager(char * work_dir, int mode, char * config_name)
                 fprintf(stderr, L_FM_ALL_FAILED_SD);
             }
         }
-        fflush(stdout);
     }
     closedir(sdcard_id_dp);
     
@@ -137,7 +141,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
     char * storage_dir 储存根目录
     char * config_name 配置名称（仅文件清理模式需要）
 返回：
-    int 成功返回0，失败返回1
+    int 成功返回 0，失败返回 1
 */
 static int clear_service(char * work_dir, char * storage_dir, char * config_name)
 {   
@@ -146,81 +150,30 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         return 1;
     }
     
-    int clean_done = 0;
-    char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2], f_dir[strlen(storage_dir) + strlen(F_DIR_NAME) + 8];
-    
+    char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
-    snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, F_DIR_NAME);
-    mkdir(f_dir, 0775); // 创建文件归类总目录
     
-    struct dirent * entry;
-    DIR * config_dir_dp = opendir(config_dir);
-    if (config_dir_dp == NULL)
+    // 文件清理模式
+    if (file_clear == 1)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
-        return 1;
-    }
-    
-    // 读取配置
-    while ((entry = readdir(config_dir_dp)))
-    {
-        if (strcmp(entry -> d_name, ".") == 0 ||
-           strcmp(entry -> d_name, "..") == 0)
+        char config_file[strlen(config_dir) + strlen(config_name) + 16];
+        snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
+        if (access(config_file, F_OK) != 0)
         {
-            continue;
-        }
-        if (file_clear == 1) // 如果是清理模式则会查找传入名称对应配置
-        {
-            char tmp[strlen(entry -> d_name) + strlen(config_name) + 2];
-            snprintf(tmp, sizeof(tmp), "%s.conf", config_name);
-            if (strcmp(tmp, entry -> d_name) != 0)
-            {
-                continue;
-            }
-            else
-            {
-                clean_done = 1;
-            }
+            fprintf(stderr, L_CONFIG_NOTFOUND, config_name);
+            return 1;
         }
         
-        char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2],
-             config_file_name[strlen(entry -> d_name) + 2];
+        // 这里仍然定义归类目录，用于清理时跳过避免被清理
+        char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_name) + 8];
+        snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_name);
         
-        // 一个是完整配置文件+路径，一个则是文件名称
-        snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
-        snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
-        
-        char * have_p = NULL;
-        char * config_file_name_p = strtok_r(config_file_name, ".", &have_p);
-        char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_file_name_p) + 8];
-        snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_file_name_p);
-        if (file_clear != 1) // 不是清理模式则创建最终归类目录
-        {
-            mkdir(file_dir, 0775);
-            if (access(file_dir, F_OK) != 0)
-            {
-                return 1;
-            }
-        }
-        
-        int all_count = 0;
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
             fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
-            continue;
+            return 1;
         }
-        
-        // 开始信息打印
-        if (file_clear == 1)
-        {
-            printf(L_FM_CR_START, config_file_name_p);
-        }
-        else
-        {
-            printf(L_FM_ALL_START, config_file_name_p);
-        }
-        fflush(stdout);
         
         // 循环读取文件格式配置每个后缀并放进数组
         int count = 0;
@@ -229,29 +182,91 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         {
             count++;
         }
-        
-        all_count += find_file(storage_dir, file_dir, file_args, count);
         fclose(config_file_fp);
-        if (file_clear == 1)
+        
+        printf(L_FM_CR_START, config_name);
+        fflush(stdout);
+        
+        // 文件清理
+        int all_count = find_file(storage_dir, file_dir, file_args, count);
+        
+        fprintf(stderr, L_FM_CR_END, all_count, config_name);
+    }
+    else
+    {
+        // 定义/创建文件归类根目录
+        char f_dir[strlen(storage_dir) + strlen(F_DIR_NAME) + 8];
+        snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, F_DIR_NAME);
+        if (access(f_dir, F_OK))
         {
-            fprintf(stderr, L_FM_CR_END, all_count, config_file_name_p);
+            if (mkdir(f_dir, 0775) != 0)
+            {
+                fprintf(stderr, L_MKDIR_ERROR, f_dir, strerror(errno));
+                return 1;
+            }
         }
-        else
+        
+        // 遍历配置目录
+        struct dirent * entry;
+        DIR * config_dir_dp = opendir(config_dir);
+        if (config_dir_dp == NULL)
         {
+            fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
+            return 1;
+        }
+        while ((entry = readdir(config_dir_dp)))
+        {
+            if (strcmp(entry -> d_name, ".") == 0 ||
+               strcmp(entry -> d_name, "..") == 0)
+            {
+                continue;
+            }
+            
+            char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2], // 完整路径文件
+                 config_file_name[strlen(entry -> d_name) + 2];                 // 文件名
+            snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
+            snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
+            
+            // 提取文件名用于创建最终归类目录
+            char * have_p = NULL;
+            char * config_file_name_p = strtok_r(config_file_name, ".", &have_p);
+            char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_file_name_p) + 8];
+            snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_file_name_p);
+            if (access(file_dir, F_OK) != 0)
+            {
+                if (mkdir(file_dir, 0775) != 0)
+                {
+                    fprintf(stderr, L_MKDIR_ERROR, f_dir, strerror(errno));
+                    closedir(config_dir_dp);
+                    return 1;
+                }
+            }
+            
+            FILE * config_file_fp = fopen(config_file, "r");
+            if (config_file_fp == NULL)
+            {
+                fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+                continue;
+            }
+            
+            // 循环读取文件格式配置每个后缀并放进数组
+            int count = 0;
+            char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
+            while (fscanf(config_file_fp, "%30s", file_args[count]) == 1)
+            {
+                count++;
+            }
+            fclose(config_file_fp);
+            
+            printf(L_FM_ALL_START, config_file_name_p);
+            fflush(stdout);
+            
+            int all_count = find_file(storage_dir, file_dir, file_args, count);
+            
             fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
         }
-        fflush(stdout);
+        closedir(config_dir_dp);
     }
-    closedir(config_dir_dp);
-    
-    if (file_clear == 1) // 处于清理模式
-    {
-        if (clean_done != 1) // 这等于没找到对应配置
-        {
-            fprintf(stderr, L_CONFIG_NOTFOUND, config_name);
-        }
-    }
-    
     return 0;
 }
 
@@ -263,7 +278,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     char args 文件后缀列表
     int count 文件后缀数量
 返回：
-    int 成功返回归类文件数量，失败返回0（不区分失败）
+    int 成功返回归类文件数量，失败返回 -1（不区分失败）
 另：
     自动根据全局 file_clear 值 1 判断是否为文件清理模式
 */
@@ -271,10 +286,10 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
 {
     if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)
     {
-        return 0;
+        return -1;
     }
     
-    // 打开传入目录开始遍历
+    // 打开传入目录开始递归遍历
     int file_count = 0;
     struct dirent * entry;
     struct stat file_stat;
@@ -282,9 +297,8 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
     if (storage_dp == NULL)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, storage, strerror(errno));
-        return 0;
+        return -1;
     }
-    
     while ((entry = readdir(storage_dp)))
     {
         if (strcmp(entry -> d_name, ".") == 0 ||
@@ -293,9 +307,9 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
             continue;
         }
         
-        char file_name[strlen(entry -> d_name) + 2]; // 读取到的文件/目录名称
-        char path[strlen(storage) + strlen(entry -> d_name) + 64]; // 读取到的文件/目录完整路径
-        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 128]; // 最终归类目录（仅处于归类模式会用
+        char file_name[strlen(entry -> d_name) + 2];                              // 读取到的文件/目录名称
+        char path[strlen(storage) + strlen(entry -> d_name) + 64];                // 读取到的文件/目录完整路径
+        char end_path[strlen(file_dir) + strlen(entry -> d_name) + 128];          // 最终归类目录 (仅处于归类模式会用)
         snprintf(file_name, sizeof(file_name), "%s", entry -> d_name);
         snprintf(path, sizeof(path), "%s/%s", storage, entry -> d_name);
         snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
@@ -336,7 +350,6 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
                                 fprintf(stderr, L_DELETE_ERROR, path, strerror(errno));
                             }
                             break;
-                            
                         }
                         
                         // 提取文件名称

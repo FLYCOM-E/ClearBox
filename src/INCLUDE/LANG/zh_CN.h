@@ -17,6 +17,7 @@
 #define L_ARG_BINPATH_ERR " » 未传入 Bin 目录！\n"
 #define L_OPEN_PATH_FAILED " » %s 目录打开失败: %s\n"
 #define L_OPEN_FILE_FAILED " » %s 文件打开失败: %s\n"
+#define L_MKDIR_ERROR " » %s 目录创建失败: %s\n"
 #define L_PATH_NOTISDIR " » %s 不是一个目录！\n"
 #define L_PATH_NOTISFILE " » %s 不是一个文件！\n"
 #define L_GET_APPLIST_ERROR " » 获取软件列表失败！\n"
@@ -26,6 +27,7 @@
 #define L_MOVE_ERROR " » %s 移动失败: %s\n"
 #define L_DELETE_ERROR " » 删除 %s 失败: %s\n"
 #define L_SERVER_START_ERR " » 进程启动失败: %s\n"
+#define L_PATH_FILE_ERROR " » PATH 配置错误，自动重写 ... 请您重新尝试，如失败请删除 %s 后更新配置再试\n"
 
 // For StopCached
 #define L_SCD_START_SUCCESS " » 缓存阻止已启动！#%u"

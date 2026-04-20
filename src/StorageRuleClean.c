@@ -1,4 +1,10 @@
-// 此Code来自ClearBox模块，用于自定义规则清理/干掉文件目录
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+  此 Code 来自 ClearBox 模块，用于自定义规则清理/干掉文件目录
+*/
+
 #include "INCLUDE/BashCore.h"
 
 #define CONFIG_DIR_NAME "清理配置" // 配置目录名称
@@ -17,7 +23,6 @@ int cust_rule_clean(char * work_dir)
         fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
         return 1;
     }
-    
     while ((config_file_name = readdir(config_dir_dp)))
     {
         if (strcmp(config_file_name -> d_name, ".") == 0 ||
@@ -45,18 +50,15 @@ int cust_rule_clean(char * work_dir)
         while (fgets(config_file_line, sizeof(config_file_line), config_file_fp))
         {
             config_file_line[strcspn(config_file_line, "\n")] = 0;
-            
             count++;
-            char * config_file_line_ptr = config_file_line;
-            while (isspace(* config_file_line_ptr)) config_file_line_ptr++;
             
             // 如果该行被注释则返回
-            if (* config_file_line_ptr == '#')
+            if (config_file_line[0] == '#')
             {
                 continue;
             }
             
-            if (* config_file_line_ptr == '@')
+            if (config_file_line[0] == '@')
             {
                 //初始目录
                 char * key_str = strchr(config_file_line, '@');
@@ -73,7 +75,7 @@ int cust_rule_clean(char * work_dir)
             
             // 判断line是否为绝对路径，否则根据初始目录拼接
             char path[strlen(config_file_line) + strlen(dir) + 16];
-            if (* config_file_line_ptr == '/')
+            if (config_file_line[0] == '/')
             {
                 snprintf(path, sizeof(path), "%s", config_file_line);
             }
@@ -99,7 +101,6 @@ int cust_rule_clean(char * work_dir)
                     fprintf(stderr, L_SR_CLEAR_FAILED, path);
                 }
             }
-            fflush(stdout);
         }
         fclose(config_file_fp);
     }

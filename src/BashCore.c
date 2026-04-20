@@ -1,11 +1,15 @@
-// 此Code来自ClearBox模块，用于根据传入参数调用清理脚本
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+     此 Code 来自 ClearBox 模块，用于根据传入参数调用清理脚本
+*/
+
 #include "INCLUDE/BashCore.h"
 
-#define PATH_ROM_FILE "/data/adb/wipe_cache/PATH"
-#define BASH_DIR "bin" // 模块二进制目录名
-#define SERVER_NAME "BashCore"
+#define PATH_ROM_FILE "/data/adb/wipe_cache/PATH" // PATH 储存文件
+#define SERVER_NAME "BashCore"                    // 进程名
 
-// 这里每个声明均是一个子功能函数
 static int running(char * args[]);
 static int module_config(char * home_dir, char * mode, char * config_file);
 static int file_all(char * work_dir, char * settings_file, int auto_);
@@ -30,22 +34,16 @@ int main(int argc, char * argv[])
         return 1;
     }
     
-    // Get PATH
-    if (access(PATH_ROM_FILE, F_OK) != 0)
-    {
-        fprintf(stderr, " » Error：Read PATH\n");
-        return 1;
-    }
-    
-    char home_dir[128] = "",
-         work_dir[128] = "",
-         bin_dir[128] = "",
+    char home_dir[128] = "",        // 模块根目录
+         work_dir[128] = "",        // 配置目录
+         bin_dir[128] = "",         // BIN 目录（TODO：未使用）
          path_file_line[256] = "";
+    
     char * path_file_key = NULL;
     char * path_file_value = NULL;
-    
-    // 读取模块 PATH
     int path_file_err = 0;
+    
+    // 读取 PATH
     FILE * path_file_fp = fopen(PATH_ROM_FILE, "r");
     if (path_file_fp == NULL)
     {
@@ -75,10 +73,11 @@ int main(int argc, char * argv[])
         }
         else
         {
-            path_file_err = 1; //如果有错误行则设置标识自动重写纠正
+            path_file_err = 1; // 如果有错误行则设置标识
         }
     }
     fclose(path_file_fp);
+    
     if (access(home_dir, F_OK) != 0)
     {
         fprintf(stderr, " » Error：HOME_PATH\n");
@@ -92,13 +91,13 @@ int main(int argc, char * argv[])
     // bin_dir 未使用这里不校验
     
     /* 
-    尝试重写纠正
-    如果PATH内容有误可能会重写成错误的
-    这里仅防止意外行，比如PATH=/xxx影响运行
+    PATH 错误时尝试重写纠正
+    如果原 PATH 内容有误可能会重写成错误的
+    这里仅防止意外行，比如 PATH=/xxx 影响后续可能的其它脚本运行
     */
     if (path_file_err == 1)
     {
-        fprintf(stderr, " » PATH file error, automatically retrying the rewrite... please try again.\n");
+        fprintf(stderr, L_PATH_FILE_ERROR, PATH_ROM_FILE);
         FILE * fp = fopen(PATH_ROM_FILE, "w");
         if (fp)
         {
@@ -343,11 +342,6 @@ static int running(char * args[])
     return 0;
 }
 
-/*
-接下来每个函数都是一个子功能
-传给 running 函数的相关参数由函数内部拼接
-*/
-
 // 配置备份 & 恢复
 static int module_config(char * home_dir, char * mode, char * config_file)
 {
@@ -371,7 +365,7 @@ static int file_all(char * work_dir, char * settings_file, int auto_)
     return file_manager(work_dir, 1, "null");
 }
 
-// 快速GC
+// 快速 GC
 static int fast_gc(char * settings_file, int auto_)
 {
     if (auto_ == 1)

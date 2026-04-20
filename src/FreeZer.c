@@ -1,4 +1,11 @@
-// 此Code来自ClearBox模块，用于打开原生安卓墓碑模式（其实Shell可能更适合？
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+     此 Code 来自 ClearBox 模块，用于打开原生安卓墓碑模式
+                （其实 Shell 可能更适合？）
+*/
+
 #include "INCLUDE/BashCore.h"
 
 #define PROP "ro.build.version.sdk"

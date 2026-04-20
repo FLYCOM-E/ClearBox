@@ -1,3 +1,10 @@
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+      此 Code 来自 ClearBox 模块，用于模块内部提供必要功能
+*/
+
 #include "BashCore.h"
 
 /*

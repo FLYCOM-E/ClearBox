@@ -1,4 +1,10 @@
-// 此 Code 来自ClearBox模块，是crond代替品哦～
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+ 此 Code 来自 ClearBox 模块，用于自动任务配置解析与执行（DAEMON）
+*/
+
 #include "../INCLUDE/BashCore.h"
 
 #define SERVER_NAME "ClearBox Timed"   // 进程名

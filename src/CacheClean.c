@@ -1,10 +1,16 @@
-// 此Code来自ClearBox模块，用于清空内部储存软件缓存
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+
+     此 Code 来自 ClearBox 模块，用于清空内部储存软件缓存
+*/
+
 #include "INCLUDE/BashCore.h"
 
-#define MAX_APPLIST 3000 // 软件列表最大数量
-#define DATA_DIR "/data/user" //Max Size 10
-#define WHITELIST_FILE "ClearWhitelist.prop" //Max Size 30
-#define CARD_HOME "/mnt/expand"
+#define MAX_APPLIST 3000                                    // 软件列表最大数量
+#define DATA_DIR "/data/user"                               // 软件数据根目录
+#define CARD_HOME "/mnt/expand"                             // 拓展储存根目录
+#define WHITELIST_FILE "ClearWhitelist.prop"                // 白名单文件名
 #define GET_APPLIST "cmd package list package -3 2>/dev/null"
 #define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
 
@@ -13,17 +19,17 @@ static int system_cache_clean(void);
 
 int app_cache_clean(char * work_dir, int mode)
 {
-    // Case The Mode
+    // 用户软件缓存清理
     if (mode == 0)
     {       
         // whiteList定义
-        char whitelist_file[strlen(work_dir) + 32];
+        char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_FILE) + 2];
         snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
          
         /* 
         读取：
-        clear_cache_size（缓存清理限制大小）
-        clear_disk（是否清理SD软件缓存）设置值
+        clear_cache_size 缓存清理限制大小
+        clear_disk 是否清理 SD 软件缓存
         */
         int clear_cache_size = 0, clear_disk = 0;
         char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
@@ -44,13 +50,13 @@ int app_cache_clean(char * work_dir, int mode)
             fprintf(stderr, L_CC_CLEAR_SUCCESSFUL, clear_size);
         }
         
-        // clear_disk = 1：允许清理拓展SD缓存
+        // 检查是否允许清理拓展储存 App 缓存
         if (clear_disk != 1)
         {
             return 0;
         }
         
-        // micro card
+        // 遍历并保存拓展储存
         struct dirent * entry;
         char micro_dir[512] = "";
         DIR * card_id_dp = opendir(CARD_HOME);
@@ -84,7 +90,7 @@ int app_cache_clean(char * work_dir, int mode)
         }
         closedir(card_id_dp);
     }
-    else if (mode == 1)
+    else if (mode == 1) // 系统缓存清理
     {
         return system_cache_clean();
     }
@@ -95,10 +101,8 @@ int app_cache_clean(char * work_dir, int mode)
 /* 
 此函数用于清理软件缓存，返回总清理大小
 接收：
-    char * work_dir
-        软件数据目录，这里统一使用xxx/user，自动处理可能的多用户情况，兼容拓展SD
-    int * clear_cache_size
-        缓存清理限制大小
+    char * work_dir 软件数据目录，自动处理多用户 ID，兼容拓展储存
+    int * clear_cache_size 缓存清理限制大小
 返回：
     int 清理垃圾大小（单位：兆M），失败返回-1
 */
@@ -127,7 +131,7 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
         pclose(package_list_fp);
     }
     
-    // 打开user目录
+    // 打开 User ID 目录
     struct dirent * uid_dir;
     DIR * uid_dir_dp = opendir(work_dir);
     if (uid_dir_dp == NULL)
@@ -136,7 +140,7 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
         return -1;
     }
     
-    // while遍历user目录（处理多用户
+    // 遍历处理多用户
     while ((uid_dir = readdir(uid_dir_dp)))
     {
         if (strcmp(uid_dir -> d_name, ".") == 0 ||
@@ -154,20 +158,18 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
                 continue;
             }
             
-            // 拼接软件缓存目录，避免完整遍历user下所有目录
+            // 拼接软件缓存目录
             snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", work_dir, uid_dir -> d_name, package_list[i] + 8);
-            // Check
             if (access(app_cache_dir, F_OK) != 0)
             {
                 continue;
             }
             
-            // 获取缓存大小（兆M）
+            // 获取/比较缓存大小（兆M）
             cache_size = (int)(get_path_size(app_cache_dir) / 1024 / 1024);
-            // 比较大小，如果值小于缓存清理限制大小则跳过
             if (cache_size > clear_cache_size)
             {
-                // 调用白名单检查函数，在清理白名单则跳过
+                // 白名单检查
                 if (whitelist_check(whitelist_file, package_list[i] + 8) == 1)
                 {
                     continue;
@@ -176,8 +178,11 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
                 {
                     count++;
                     clean_size += cache_size; 
-                    /* 记录清理大小，本来s_remove实现也会返回大小
-                    但上面的大小判断注定这个会浪费 */
+                    /* 
+                    TODO
+                    清理大小 s_remove 实现也会返回
+                    但上面的大小判断会导致无法合并检查一次
+                    */
                     printf(L_CC_CLEAR, package_list[i] + 8);
                 }
                 else
@@ -194,8 +199,8 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
         }
     }
     closedir(uid_dir_dp);
-    // 返回总清理大小
     fprintf(stderr, L_CC_CLEAR_APPCACHE_DONE, count, no_count);
+    
     return clean_size;
 }
 
@@ -206,7 +211,7 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
 */
 static int system_cache_clean(void)
 {
-    char app_cache_path[MAX_PACKAGE + 16],
+    char app_cache_path[sizeof(DATA_DIR) + MAX_PACKAGE + 16],
          package_list_line[MAX_PACKAGE] = "";
     
     struct dirent * uid_dir = NULL;
@@ -216,7 +221,6 @@ static int system_cache_clean(void)
         fprintf(stderr, L_OPEN_PATH_FAILED, DATA_DIR, strerror(errno));
         return -1;
     }
-    
     while ((uid_dir = readdir(uid_dir_dp)))
     {
         if (strcmp(uid_dir -> d_name, ".") == 0 ||
@@ -225,7 +229,7 @@ static int system_cache_clean(void)
             continue;
         }
         
-        // 遍历清空系统组件cache文件夹
+        // 遍历清空系统组件 cache 文件夹
         FILE * package_list = popen(GET_S_APPLIST, "r");
         if (package_list == NULL)
         {
@@ -233,7 +237,6 @@ static int system_cache_clean(void)
             closedir(uid_dir_dp);
             return -1;
         }
-        
         while (fgets(package_list_line, sizeof(package_list_line), package_list))
         {
             if (strlen(package_list_line) < 9)
@@ -241,8 +244,8 @@ static int system_cache_clean(void)
                 continue;
             }
             package_list_line[strcspn(package_list_line, "\n")] = 0;
-            snprintf(app_cache_path, sizeof(app_cache_path), "%s/%s/%s/cache", DATA_DIR, uid_dir -> d_name, package_list_line + 8);
             
+            snprintf(app_cache_path, sizeof(app_cache_path), "%s/%s/%s/cache", DATA_DIR, uid_dir -> d_name, package_list_line + 8);
             if (access(app_cache_path, F_OK) != 0)
             {
                 continue;
@@ -260,9 +263,8 @@ static int system_cache_clean(void)
     }
     closedir(uid_dir_dp);
     
-    // 清除“MTP主机”组件数据可解决MTP连接文件显示不全的问题
+    // 清除 “MTP主机” 系统组件数据可解决 MTP 连接文件显示不全的问题
     system("pm clear com.android.mtp >/dev/null 2>&1");
-    // 清空系统缓存
     s_remove("/cache", 0);
     s_remove("/data/resource-cache", 0);
     s_remove("/data/system/package_cache", 0);
