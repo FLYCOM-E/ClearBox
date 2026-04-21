@@ -165,7 +165,7 @@ post=Test Run/已執行「/system/bin/sync」
 
 以上配置會在每天凌晨 **0~5** 點之間執行一次 **/system/bin/sync** 指令，並發送一條通知。
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/timed_notification.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Pictures/timed_notification.png)
 
 填寫完後儲存，您需要手動執行 **立即生效當前配置** 或 **重新啟動** 後，該任務才會生效！
 

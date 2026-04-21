@@ -165,7 +165,7 @@ post=Test Run/Executed "/system/bin/sync"
 
 The above configuration will run the **/system/bin/sync** command once between **0:00** and **5:00** AM daily and send a notification.
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Images/timed_notification.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Pictures/timed_notification.png)
 
 After saving, you must manually run **Apply Current Configuration** or **Reboot** for the task to take effect!
 
