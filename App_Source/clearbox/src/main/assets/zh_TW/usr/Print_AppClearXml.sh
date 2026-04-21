@@ -19,7 +19,7 @@ echo '
 </text>
 '
 
-if [ -z "$(ls "$work_dir/清理规则/")" ]; then
+if [ -z "$(ls "$work_dir/AppCleanRules/")" ]; then
     echo '
     <text>
         <slices>
@@ -31,7 +31,7 @@ if [ -z "$(ls "$work_dir/清理规则/")" ]; then
     exit 0
 fi
 
-for FN in "$work_dir/清理规则"/*; do
+for FN in "$work_dir/AppCleanRules"/*; do
     Name=$(grep '@' "$FN" | head -n1 | cut -f2 -d '/')
     Package=$(grep '@' "$FN" | head -n1 | cut -f1 -d '/' | cut -f2 -d '@')
     echo "

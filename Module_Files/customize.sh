@@ -2,8 +2,8 @@
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1
-lang_dir="语言包"
-file_config_dir="文件格式配置"
+lang_dir="LANG"
+file_config_dir="FileConfigs"
 SHOUT_S="0.3"
 LONG_S="1"
 TIMEOUT_S="10"
@@ -152,7 +152,7 @@ if [ "$update" = 1 ]; then
     echo -e " » $TICKTITLE\n"
     case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
         *KEY_VOLUMEUP*)
-          cp -r "$MODPATH/ProFile/"* "$work_dir/$file_config_dir/"
+          cp -r "$MODPATH/FileConfigs/"* "$work_dir/$file_config_dir/"
           echo -e " » $SUCCESSFUL✅\n"
           ;;
         *)

@@ -27,7 +27,7 @@ else
     bin_dir="$home_dir"
 fi
 ######
-lang_dir="语言包"
+lang_dir="LANG"
 source "$work_dir/settings.prop"
 source "$home_dir/$lang_dir/Local.conf"
 exec 2>>/dev/null

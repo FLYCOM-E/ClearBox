@@ -11,7 +11,7 @@
 #define MAX_ARGS_SIZE 32                // 后缀名称长度限制
 #define CONFIG_MAX_ARGS 5000            // 单个文件格式配置最多允许的后缀数量
 #define F_DIR_NAME "Documents"          // 归类目录名称（仅文件归类模式会用）
-#define CONFIG_DIR_NAME "文件格式配置"   // 配置文件夹名称
+#define CONFIG_DIR_NAME "FileConfigs"   // 配置文件夹名称
 #define CARD_HOME "/mnt/media_rw"      // 外置储存根目录
 #define STORAGES_DIR "/data/media/0"   //Max Size 100
 

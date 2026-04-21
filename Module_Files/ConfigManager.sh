@@ -11,7 +11,7 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
-lang_dir="语言包"
+lang_dir="LANG"
 backupDir="/sdcard/Android/ClearBox"
 tempDir="/data/local/ClearBox_temp"
 source "$work_dir/settings.prop"

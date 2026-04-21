@@ -67,7 +67,7 @@ bash build.sh
 
 ## **2**：清理/干掉自定义目录
 
-这项功能是规则清理功能，可在 **`/data/adb/wipe_cache/清理配置/`** 目录下自行添加清理规则。
+这项功能是规则清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs/`** 目录下自行添加清理规则。
 
 配置方法：
 
@@ -95,7 +95,7 @@ bash build.sh
 
 配置方法：
 
-配置目录： **`/data/adb/wipe-cache/文件格式配置`**
+配置目录： **`/data/adb/wipe-cache/FileConfigs`**
 
 配置方式：在配置文件目录新建 **conf** 文档文件，该文件名称会显示在清理页面当作对应清理项名称，将自定义文件后缀填入该文件，使用空格 分隔文件后缀。
 
@@ -111,7 +111,7 @@ bash build.sh
 
 配置方法：
 
-配置目录： **`/data/adb/wipe-cache/清理规则`**
+配置目录： **`/data/adb/wipe-cache/AppCleanRules`**
 
 配置方式：在配置文件目录新建 **conf** 文件，文件名称随意但不得包含特殊符号、空格等。
 第一行开头填写 **`@<软件包名>/<软件名称>`** 来指定该规则对应软件；

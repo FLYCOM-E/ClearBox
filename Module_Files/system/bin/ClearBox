@@ -15,8 +15,8 @@ fi
 Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
 Str_1=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d '=' | cut -f1 -d "|")
 Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
-file_config_dir="文件格式配置"
-app_config_dir="清理规则"
+app_config_dir="AppCleanRules"
+file_config_dir="FileConfigs"
 ######
 # 菜单函数
 md_menu()

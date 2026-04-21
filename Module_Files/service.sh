@@ -3,9 +3,9 @@
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
 export home_dir="${0%/*}"
-app_config_dir="清理规则"
-storage_config_dir="清理配置"
-file_config_dir="文件格式配置"
+app_config_dir="AppCleanRules"
+storage_config_dir="CleanConfigs"
+file_config_dir="FileConfigs"
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
 set=0
@@ -54,14 +54,14 @@ StartSettings()
     [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
     ######
     if [ "$(ls "$work_dir/$file_config_dir/")" = "" ]; then
-        if [ -d "$home_dir/ProFile" ]; then
-            cp -r "$home_dir/ProFile/"* "$work_dir/$file_config_dir/"
+        if [ -d "$home_dir/FileConfigs" ]; then
+            cp -r "$home_dir/FileConfigs/"* "$work_dir/$file_config_dir/"
         fi
     fi
     if [ "$(ls "$work_dir/$app_config_dir/")" = "" ]; then
-        if [ -d "$home_dir/AppConfig" ]; then
+        if [ -d "$home_dir/AppConfigs" ]; then
             cmd package list package | cut -f2 -d ':' >"$work_dir/$app_config_dir/AppList.txt"
-            for file in "$home_dir/AppConfig/"*; do
+            for file in "$home_dir/AppConfigs/"*; do
                 name="$(basename $file | sed 's/\.[^.]*$//')"
                 if grep "$name" "$work_dir/$app_config_dir/AppList.txt" >/dev/null 2>&1; then
                     cp "$file" "$work_dir/$app_config_dir/"

@@ -67,7 +67,7 @@ Perform fast one-click optimization/cleanup, the effect is equivalent to periodi
 
 ## **2**：Clean/Kill custom directories
 
-This function is rule-based cleanup. You can add cleanup rules yourself in the **`/data/adb/wipe_cache/清理配置/`** directory.
+This function is rule-based cleanup. You can add cleanup rules yourself in the **`/data/adb/wipe_cache/CleanConfigs/`** directory.
 
 Configuration method:
 
@@ -95,7 +95,7 @@ File cleaning function, comes with some cleaning configurations, supports custom
 
 Configuration method:
 
-Configuration directory： **`/data/adb/wipe-cache/文件格式配置`**
+Configuration directory： **`/data/adb/wipe-cache/FileConfigs`**
 
 Configuration way：Create a **conf** document file in the configuration directory. The file name will be displayed in the cleanup page as the corresponding cleanup item name. Fill in the custom file suffixes in this file, separated by spaces.
 
@@ -111,7 +111,7 @@ One of the rule cleanup functions, used to clean the internal private directory 
 
 Configuration method：
 
-Configuration directory： **`/data/adb/wipe-cache/清理规则`**
+Configuration directory： **`/data/adb/wipe-cache/AppCleanRules`**
 
 Configuration way：Create a **conf** file in the configuration directory. The file name is arbitrary but must not contain special symbols, spaces, etc.
 Fill in **`@<package_name>/<app_name>`** at the beginning of the first line to specify the software corresponding to this rule;

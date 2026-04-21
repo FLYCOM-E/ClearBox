@@ -7,7 +7,7 @@
 
 #include "INCLUDE/BashCore.h"
 
-#define CONFIG_DIR_NAME "清理配置" // 配置目录名称
+#define CONFIG_DIR_NAME "CleanConfigs" // 配置目录名称
 
 int cust_rule_clean(char * work_dir)
 {

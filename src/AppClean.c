@@ -9,7 +9,7 @@
 
 #define MAX_APP_NAME 128            // 软件名称最大长度
 #define DATA_DIR "/data/data"       // 软件数据根目录
-#define CONFIG_DIR_NAME "清理规则"   // 配置目录名称
+#define CONFIG_DIR_NAME "AppCleanRules"   // 配置目录名称
 
 static int read_clear(char * config_file, int * success_config, int * failed_config, int * total_clear_size);
 

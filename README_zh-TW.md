@@ -67,7 +67,7 @@ bash build.sh
 
 ## **2**：清理/幹掉自訂目錄
 
-這項功能是規則清理功能，可在 **`/data/adb/wipe_cache/清理配置/`** 目錄下自行新增清理規則。
+這項功能是規則清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs/`** 目錄下自行新增清理規則。
 
 配置方法：
 
@@ -95,7 +95,7 @@ bash build.sh
 
 配置方法：
 
-配置目錄： **`/data/adb/wipe-cache/文件格式配置`**
+配置目錄： **`/data/adb/wipe-cache/FileConfigs`**
 
 配置方式：在配置檔案目錄新建 **conf** 文件文件，該檔案名稱會顯示在清理頁面當作對應清理項名稱，將自訂檔案副檔名填入該檔案，使用空格 分隔檔案副檔名。
 
@@ -111,7 +111,7 @@ bash build.sh
 
 配置方法：
 
-配置目錄： **`/data/adb/wipe-cache/清理規則`**
+配置目錄： **`/data/adb/wipe-cache/AppCleanRules`**
 
 配置方式：在配置檔案目錄新建 **conf** 檔案，檔案名稱隨意但不得包含特殊符號、空格等。
 第一行開頭填寫 **`@<軟體包名>/<軟體名稱>`** 來指定該規則對應軟體；

@@ -19,19 +19,19 @@ echo '
 </text>
 '
 
-if [ -z "$(ls "$work_dir/文件格式配置/")" ]; then
+if [ -z "$(ls "$work_dir/FileConfigs/")" ]; then
     echo '
     <text>
         <slices>
             <title> </title>
-            <slice size="30" color="#FF3E00">无文件格式配置！</slice>
+            <slice size="30" color="#FF3E00">无文件配置！</slice>
         </slices>
     </text>
     '
     exit 0
 fi
 
-for FN in "$work_dir/文件格式配置"/*; do
+for FN in "$work_dir/FileConfigs"/*; do
     Name=$(echo "$FN" | cut -f6 -d '/' | cut -f1 -d ".")
     echo "
     <group title=\" \">

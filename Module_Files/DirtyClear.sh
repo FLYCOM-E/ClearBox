@@ -12,7 +12,9 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
-file_config_dir="文件格式配置"
+app_config_dir="AppCleanRules"
+storage_config_dir="CleanConfigs"
+file_config_dir="FileConfigs"
 source "$work_dir/settings.prop"
 exec 2>>/dev/null
 ######
@@ -32,6 +34,10 @@ fi
 if [ -f "$work_dir/TimedConfig/ClearCache.conf" ]; then
     grep -q "in=" "$work_dir/TimedConfig/ClearCache.conf" || echo "in=0/5" >> "$work_dir/TimedConfig/ClearCache.conf"
 fi
+
+mv "$work_dir/文件格式配置" "$work_dir/$file_config_dir"
+mv "$work_dir/清理规则" "$work_dir/$app_config_dir"
+mv "$work_dir/清理配置" "$work_dir/$storage_config_dir"
 
 rm -f "$work_dir/$file_config_dir/安装包.conf"
 rm -f "$work_dir/$file_config_dir/压缩包.conf"

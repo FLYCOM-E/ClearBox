@@ -44,13 +44,15 @@ $(CORE_ELF): $(BIN_C)
 clean: 
 	@rm $(CORE_ELF)
 	@rm -f $(home_dir)/ClearBox.apk
-	@rm -r $(home_dir)/语言包
-	@rm -r $(home_dir)/AppConfig
+	@rm -r $(home_dir)/LANG
+	@rm -r $(home_dir)/AppConfigs
+	@rm -r $(home_dir)/FileConfigs
 
 module_tar: 
 	@find App_Source -name "*.apk" -exec cp {} $(home_dir)/ClearBox.apk \;
-	@mkdir -p $(home_dir)/语言包 && cp LANG_Configs/$(M_LANG).conf $(home_dir)/语言包/Local.conf
-	@mkdir -p $(home_dir)/AppConfig && cp AppConfigs/* $(home_dir)/AppConfig/
+	@mkdir -p $(home_dir)/LANG && cp LANG_Configs/$(M_LANG).conf $(home_dir)/LANG/Local.conf
+	@cp -r AppConfigs $(home_dir)/AppConfigs
+	@cp -r FileConfigs $(home_dir)/FileConfigs
 	@cp $(home_dir)/module.prop ./module.prop.bak
 	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/$(M_LANG)/update_$(M_TARGET).json" >> $(home_dir)/module.prop
 	@cd $(home_dir) && zip -r ../ClearBox_$(M_TARGET)_$(M_API)_$(M_LANG).zip *
