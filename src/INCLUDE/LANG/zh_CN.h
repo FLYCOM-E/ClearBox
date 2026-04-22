@@ -105,6 +105,11 @@
 #define L_FM_CR_START " » 正在清理 %s ...\n"
 #define L_FM_CR_END " » 已清理 %d 个 %s\n"
 
+#define L_FM_MIN_SIZE_ERROR " » 警告：%s 配置 MIN 大小大于 MAX，MIN 已忽略！\n"
+#define L_FM_SIZE_MAX_ERROR " » 警告：%s 配置 MAX 声明填写错误！已忽略\n"
+#define L_FM_SIZE_MIN_ERROR " » 警告：%s 配置 MIN 声明填写错误！已忽略\n"
+#define L_FM_SIZE_ERROR " » 警告：%s 配置大小范围单位填写错误！已忽略对应值\n"
+
 // For FreeZer.c
 #define L_OPEN_FREEZER_SUCCESSFUL " » 已打开安卓原生墓碑 (^^)\n"
 

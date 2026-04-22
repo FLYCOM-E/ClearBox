@@ -9,16 +9,21 @@
 
 #define MAX_CONFIG_NAME 256             // 配置名称长度限制（不含.conf后缀)
 #define MAX_ARGS_SIZE 32                // 后缀名称长度限制
+#define MAX_CONFIG_LINE 512             // 最大配置行长（仅用于识别大小声明行）
 #define CONFIG_MAX_ARGS 5000            // 单个文件格式配置最多允许的后缀数量
 #define F_DIR_NAME "Documents"          // 归类目录名称（仅文件归类模式会用）
 #define CONFIG_DIR_NAME "FileConfigs"   // 配置文件夹名称
-#define CARD_HOME "/mnt/media_rw"      // 外置储存根目录
-#define STORAGES_DIR "/data/media/0"   //Max Size 100
+#define CARD_HOME "/mnt/media_rw"       // 外置储存根目录
+#define STORAGES_DIR "/data/media/0"    // 内置储存根目录
+
+static int file_clear = 0;              // 全局 mode
+static char * now_config_name = NULL;       // 配置文件名（为避免配置名跨多函数传）
 
 static int clear_service(char * work_dir, char * storage_dir, char * config_name);
-static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count);
-
-int file_clear = 0;
+static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
+                     int count, long max_size, long min_size);
+static int find_size(FILE * fp, long * max_size, long * min_size);
+static long get_size(char * value, char * unit);
 
 int file_manager(char * work_dir, int mode, char * config_name)
 {
@@ -156,8 +161,11 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     // 文件清理模式
     if (file_clear == 1)
     {
-        char config_file[strlen(config_dir) + strlen(config_name) + 16];
+        char config_file[strlen(config_dir) + strlen(config_name) + 16]; // 配置文件
         snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
+        
+        now_config_name = config_name; // 设置全局变量
+        
         if (access(config_file, F_OK) != 0)
         {
             fprintf(stderr, L_CONFIG_NOTFOUND, config_name);
@@ -175,6 +183,9 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
             return 1;
         }
         
+        long max_size = 0, min_size = 0;
+        find_size(config_file_fp, &max_size, &min_size);
+        
         // 循环读取文件格式配置每个后缀并放进数组
         int count = 0;
         char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
@@ -188,7 +199,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         fflush(stdout);
         
         // 文件清理
-        int all_count = find_file(storage_dir, file_dir, file_args, count);
+        int all_count = find_file(storage_dir, file_dir, file_args, count, max_size, min_size);
         
         fprintf(stderr, L_FM_CR_END, all_count, config_name);
     }
@@ -222,10 +233,12 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
                 continue;
             }
             
-            char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2], // 完整路径文件
-                 config_file_name[strlen(entry -> d_name) + 2];                 // 文件名
-            snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
+            char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2],  // 配置文件
+                 config_file_name[strlen(entry -> d_name) + 16];                 // 配置文件名
             snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
+            snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
+            
+            now_config_name = config_file_name; // 设置全局变量
             
             // 提取文件名用于创建最终归类目录
             char * have_p = NULL;
@@ -249,6 +262,9 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
                 continue;
             }
             
+            long max_size = 0, min_size = 0;
+            find_size(config_file_fp, &max_size, &min_size);
+            
             // 循环读取文件格式配置每个后缀并放进数组
             int count = 0;
             char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
@@ -261,7 +277,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
             printf(L_FM_ALL_START, config_file_name_p);
             fflush(stdout);
             
-            int all_count = find_file(storage_dir, file_dir, file_args, count);
+            int all_count = find_file(storage_dir, file_dir, file_args, count, max_size, min_size);
             
             fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
         }
@@ -282,7 +298,8 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
 另：
     自动根据全局 file_clear 值 1 判断是否为文件清理模式
 */
-static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE], int count)
+static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
+                     int count, long max_size, long min_size)
 {
     if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)
     {
@@ -320,65 +337,264 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
             continue;
         }
         
-        // 链接？跳过
-        if (S_ISLNK(file_stat.st_mode))
-        {
-            continue;
-        }
         if (S_ISDIR(file_stat.st_mode)) // 目录继续自调用递归
         {
-            file_count += find_file(path, file_dir, args, count);
+            file_count += find_file(path, file_dir, args, count, max_size, min_size);
         }
-        else // File
+        else if (S_ISREG(file_stat.st_mode)) // File
         {
+            if (max_size != -1)
+            {
+                if (file_stat.st_size > max_size)
+                {
+                    continue;
+                }
+            }
+            if (min_size != -1)
+            {
+                if (file_stat.st_size < min_size)
+                {
+                    continue;
+                }
+            }
+            
             // 提取文件后缀进行匹配，这个会比较慢，视后缀数量
             char * str_p = strrchr(file_name, '.');
-            if (str_p != NULL)
+            if (str_p == NULL)
             {
-                for (int i = 0; i < count; i++)
+                // 无后缀文件
+                continue;
+            }
+            
+            for (int i = 0; i < count; i++)
+            {
+                if (strcasecmp(args[i], str_p + 1) != 0)
                 {
-                    if (strcasecmp(args[i], str_p + 1) == 0) // 这里匹配
-                    {
-                        if (file_clear == 1) // 清理模式直接清理并返回
-                        {
-                            if (remove(path) == 0)
-                            {
-                                file_count++;
-                            }
-                            else
-                            {
-                                fprintf(stderr, L_DELETE_ERROR, path, strerror(errno));
-                            }
-                            break;
-                        }
-                        
-                        // 提取文件名称
-                        char f_name[strlen(entry -> d_name) + 2];
-                        snprintf(f_name, strlen(entry -> d_name) - strlen(str_p) + 1, "%s", entry -> d_name);
-                        
-                        // 如果文件名有重复则循环直到找到一个可用名称
-                        int name_i = 1;
-                        while (access(end_path, F_OK) == 0)
-                        {
-                            snprintf(end_path, sizeof(end_path), "%s/%s (%d).%s", file_dir, f_name, name_i, str_p + 1);
-                            name_i++;
-                        }
-                        
-                        // 移动文件
-                        if (rename(path, end_path) == 0)
-                        {
-                            file_count++;
-                        }
-                        else
-                        {
-                            fprintf(stderr, L_MOVE_ERROR, path, strerror(errno));
-                        }
-                        break;
-                    }
+                    continue;
                 }
+                
+                // === === 清理模式直接清理并返回 === ===
+                
+                if (file_clear == 1)
+                {
+                    if (remove(path) == 0)
+                    {
+                        file_count++;
+                    }
+                    else
+                    {
+                        fprintf(stderr, L_DELETE_ERROR, path, strerror(errno));
+                    }
+                    break;
+                }
+                
+                // === === === 文件归类 === === ===
+                
+                /*
+                提取文件名称
+                如果文件名有重复则循环直到找到一个可用名称
+                */
+                int name_i = 1;
+                char f_name[strlen(entry -> d_name) + 2];
+                snprintf(f_name, strlen(entry -> d_name) - strlen(str_p) + 1, "%s", entry -> d_name);
+                while (access(end_path, F_OK) == 0)
+                {
+                    snprintf(end_path, sizeof(end_path), "%s/%s (%d).%s", file_dir, f_name, name_i, str_p + 1);
+                    name_i++;
+                }
+                if (rename(path, end_path) == 0) // Move
+                {
+                    file_count++;
+                }
+                else
+                {
+                    fprintf(stderr, L_MOVE_ERROR, path, strerror(errno));
+                }
+                
+                break;
             }
         }
     }
     closedir(storage_dp);
     return file_count;
+}
+
+/*
+文件配置 MAX MIN 声明识别函数
+接收：
+    FILE * fp 文件流指针
+    long * max_size 最大大小
+    long * min_size 最小大小
+返回：
+    成功返回 0，失败自动检查填写错误/未填写
+    如未填写导致则重置文件指针位置，返回 1
+    并置 max_size、min_size -1
+*/
+static int find_size(FILE * fp, long * max_size, long * min_size)
+{
+    char line[MAX_CONFIG_LINE] = "";
+    if (fgets(line, sizeof(line), fp))
+    {
+        if (line[0] != '@')
+        {
+            rewind(fp);
+            goto error;
+        }
+        
+        /*
+        格式：
+        @MAX=<size/B/K/M/G>|MIN=<size/B/K/M/G>
+        MIN 不得大于 MAX，否则 MIN 自动失效
+        */
+        
+        char * have = NULL,
+             * key = NULL,
+             * value = NULL,
+             * unit = NULL,
+             * value_size = NULL,
+             * max_size_p = NULL,
+             * min_size_p = NULL;
+        
+        max_size_p = strtok_r(line, "|", &have);
+        min_size_p = strtok_r(NULL, "|", &have);
+        
+        // 允许仅 MAX 或 MIN
+        
+        if (max_size_p)
+        {
+            // === MAX ===
+            have = NULL;
+            key = strtok_r(max_size_p + 1, "=", &have);
+            value = strtok_r(NULL, "=", &have);
+            
+            if (key && value &&
+                strcasecmp(key, "MAX") == 0)
+            {
+                have = NULL;
+                value_size = strtok_r(value, "/", &have);
+                unit = strtok_r(NULL, "/", &have);
+                
+                if (value_size && unit)
+                {
+                    (* max_size) = get_size(value_size, unit);
+                }
+                else
+                {
+                    fprintf(stderr, L_FM_SIZE_MAX_ERROR, now_config_name);
+                    (* max_size) = -1;
+                }
+            }
+            else
+            {
+                fprintf(stderr, L_FM_SIZE_MAX_ERROR, now_config_name);
+                goto error;
+            }
+        }
+        else
+        {
+            (* max_size) = -1;
+        }
+        
+        if (min_size_p)
+        {
+            // === MIN ===
+            have = NULL;
+            key = strtok_r(min_size_p, "=", &have);
+            value = strtok_r(NULL, "=", &have);
+            
+            if (key && value &&
+                strcasecmp(key, "MIN") == 0)
+            {
+                have = NULL;
+                value_size = strtok_r(value, "/", &have);
+                unit = strtok_r(NULL, "/", &have);
+                
+                if (value_size && unit)
+                {
+                    (* min_size) = get_size(value_size, unit);
+                }
+                else
+                {
+                    fprintf(stderr, L_FM_SIZE_MIN_ERROR, now_config_name);
+                    (* min_size) = -1;
+                }
+            }
+            else
+            {
+                fprintf(stderr, L_FM_SIZE_MIN_ERROR, now_config_name);
+                goto error;
+            }
+        }
+        else
+        {
+            (* min_size) = -1;
+        }
+        
+        if ((* min_size) > (* max_size))
+        {
+            fprintf(stderr, L_FM_MIN_SIZE_ERROR, now_config_name);
+            (* min_size) = -1;
+        }
+        return 0;
+    }
+    else
+    {
+        rewind(fp);
+        goto error;
+    }
+    
+    error:
+        {
+            (* max_size) = -1;
+            (* min_size) = -1;
+            return 1;
+        }
+    
+    return 0;
+}
+
+/*
+此函数为 find_size() 辅助函数，用于根据单位转换并返回对应值
+接收：
+    char * value 值字符串
+    char * unit 单位字符串
+返回：
+    long 对应值，单位错误则默认 Byte 返回
+*/
+static long get_size(char * value, char * unit)
+{
+    if (* unit == 'B' ||
+        * unit == 'b' ||
+        strcmp(unit, "BYTE") == 0 ||
+        strcmp(unit, "byte") == 0)
+    {
+        return strtol(value, NULL, 10);
+    }
+    else if (* unit == 'K' ||
+             * unit == 'k' ||
+             strcmp(unit, "KB") == 0 ||
+             strcmp(unit, "kb") == 0)
+    {
+        return (1024 * strtol(value, NULL, 10));
+    }
+    else if (* unit == 'M' ||
+             * unit == 'm' ||
+             strcmp(unit, "MB") == 0 ||
+             strcmp(unit, "mb") == 0)
+    {
+        return (1024 * 1024 * strtol(value, NULL, 10));
+    }
+    else if (* unit == 'G' ||
+             * unit == 'g' ||
+             strcmp(unit, "GB") == 0 ||
+             strcmp(unit, "gb") == 0)
+    {
+        return (1024 * 1024 * 1024 * strtol(value, NULL, 10));
+    }
+    else
+    {
+        fprintf(stderr, L_FM_SIZE_ERROR, now_config_name);
+    }
+    
+    return strtol(value, NULL, 10);
 }

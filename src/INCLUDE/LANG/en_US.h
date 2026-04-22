@@ -105,6 +105,11 @@
 #define L_FM_CR_START " » Cleaning %s ...\n"
 #define L_FM_CR_END " » Cleaned %d %s(s)\n"
 
+#define L_FM_MIN_SIZE_ERROR " » Warning: MIN size in %s configuration is greater than MAX, MIN has been automatically invalidated！\n"
+#define L_FM_SIZE_MAX_ERROR " » Warning: MAX declaration in %s configuration is incorrectly filled！Ignored\n"
+#define L_FM_SIZE_MIN_ERROR " » Warning: MIN declaration in %s configuration is incorrectly filled！Ignored\n"
+#define L_FM_SIZE_ERROR " » Warning: Size range unit in %s configuration is incorrectly filled！Corresponding value ignored\n"
+
 // For FreeZer.c
 #define L_OPEN_FREEZER_SUCCESSFUL " » Android native tombstone has been opened (^^)\n"
 

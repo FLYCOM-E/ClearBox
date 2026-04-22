@@ -89,19 +89,33 @@ Clears third-party application caches, excluding system application caches. If y
 
 
 
-## **5**：Deep file cleanup
+## **5**：Deep File Cleaning
 
-File cleaning function, comes with some cleaning configurations, supports custom file format configurations, and supports external storage.
+File cleaning function, comes with some built-in cleaning configurations, supports custom file format configurations, and supports external storage.
 
-Configuration method:
+Configuration Method：
 
-Configuration directory： **`/data/adb/wipe-cache/FileConfigs`**
+Configuration Directory： **`/data/adb/wipe-cache/FileConfigs`**
 
-Configuration way：Create a **conf** document file in the configuration directory. The file name will be displayed in the cleanup page as the corresponding cleanup item name. Fill in the custom file suffixes in this file, separated by spaces.
+Configuration Approach： Create a **conf** document file in the configuration file directory. The file name will be displayed as the corresponding cleaning item name on the cleaning page. Fill in custom file extensions into this file, separated by spaces or line breaks. Comments are not supported.
 
-The software/terminal cleanup page will be dynamically built according to the configuration file
+Add **`@MAX=<size/B/K/M/G>|MIN=<size/B/K/M/G>`** on the first line of the file to specify the target file size range
 
-Scope：file cleanup, and the file classification mentioned later
+Example：
+
+```
+@MAX=1/G|MIN=10/M
+```
+
+This declaration specifies the target file size range as：**Maximum 1 G**，**Minimum 10 M**
+
+MIN cannot be greater than MAX, otherwise MIN will be automatically invalidated
+
+Note：**MAX**、**MIN** and size units are **case-insensitive**，**Floating point numbers (decimals) are currently not supported**
+
+The software/terminal cleaning page will be dynamically built based on the configuration files
+
+Scope： File cleaning, as well as file organization which will be covered later
 
 
 
