@@ -45,7 +45,7 @@ export M_TARGET=aarch64 #(可选aarch64、armv7a、x86_64、i686)
 
 bash build.sh
 ```
-刷入 **ClearBox_*_zh_CN.zip**
+刷入 **ClearBox_aarch64_21_zh_CN.zip**
 
 
 
