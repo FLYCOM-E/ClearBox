@@ -22,7 +22,7 @@ static char * now_config_name = NULL;       // 配置文件名（为避免配置
 static int clear_service(char * work_dir, char * storage_dir, char * config_name);
 static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                      int count, long max_size, long min_size);
-static int find_size(FILE * fp, long * max_size, long * min_size);
+static int find_size(char * str, long * max_size, long * min_size);
 static long get_size(char * value, char * unit);
 
 int file_manager(char * work_dir, int mode, char * config_name)
@@ -173,16 +173,25 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
             return 1;
         }
         
-        long max_size = 0, min_size = 0;
-        find_size(config_file_fp, &max_size, &min_size);
+        long max_size = -1, min_size = -1;
         
         // 循环读取文件格式配置每个后缀并放进数组
         int count = 0;
         char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
         while (fscanf(config_file_fp, "%30s", file_args[count]) == 1)
         {
+            if (file_args[count][0] == '@')
+            {
+                find_size(file_args[count], &max_size, &min_size);
+                continue;
+            }
+            if (count == CONFIG_MAX_ARGS)
+            {
+                break;
+            }
             count++;
         }
+        
         fclose(config_file_fp);
         
         printf(L_FM_CR_START, config_name);
@@ -252,16 +261,25 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
                 continue;
             }
             
-            long max_size = 0, min_size = 0;
-            find_size(config_file_fp, &max_size, &min_size);
+            long max_size = -1, min_size = -1;
             
             // 循环读取文件格式配置每个后缀并放进数组
             int count = 0;
             char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
             while (fscanf(config_file_fp, "%30s", file_args[count]) == 1)
             {
+                if (file_args[count][0] == '@')
+                {
+                    find_size(file_args[count], &max_size, &min_size);
+                    continue;
+                }
+                if (count == CONFIG_MAX_ARGS)
+                {
+                    break;
+                }
                 count++;
             }
+            
             fclose(config_file_fp);
             
             printf(L_FM_ALL_START, config_file_name_p);
@@ -421,125 +439,69 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
     如未填写导致则重置文件指针位置，返回 1
     并置 max_size、min_size -1
 */
-static int find_size(FILE * fp, long * max_size, long * min_size)
+static int find_size(char * str, long * max_size, long * min_size)
 {
-    char line[MAX_CONFIG_LINE] = "";
-    if (fgets(line, sizeof(line), fp))
+    /*
+    格式：
+    @MAX=<size/B/K/M/G>
+    @MIN=<size/B/K/M/G>
+    允许仅 MAX 或 MIN
+    MIN 不得大于 MAX，否则 MIN 自动失效
+    */
+    
+    char * have = NULL,
+         * key = NULL,
+         * value = NULL,
+         * unit = NULL,
+         * value_size = NULL;
+    
+    // === MAX ===
+    key = strtok_r(str + 1, "=", &have);
+    value = strtok_r(NULL, "=", &have);
+    if (key && value &&
+        strcasecmp(key, "MAX") == 0)
     {
-        if (line[0] != '@')
+        have = NULL;
+        value_size = strtok_r(value, "/", &have);
+        unit = strtok_r(NULL, "/", &have);
+        
+        if (value_size && unit)
         {
-            rewind(fp);
-            goto error;
-        }
-        
-        /*
-        格式：
-        @MAX=<size/B/K/M/G>|MIN=<size/B/K/M/G>
-        MIN 不得大于 MAX，否则 MIN 自动失效
-        */
-        
-        char * have = NULL,
-             * key = NULL,
-             * value = NULL,
-             * unit = NULL,
-             * value_size = NULL,
-             * max_size_p = NULL,
-             * min_size_p = NULL;
-        
-        max_size_p = strtok_r(line, "|", &have);
-        min_size_p = strtok_r(NULL, "|", &have);
-        
-        // 允许仅 MAX 或 MIN
-        
-        if (max_size_p)
-        {
-            // === MAX ===
-            have = NULL;
-            key = strtok_r(max_size_p + 1, "=", &have);
-            value = strtok_r(NULL, "=", &have);
-            
-            if (key && value &&
-                strcasecmp(key, "MAX") == 0)
-            {
-                have = NULL;
-                value_size = strtok_r(value, "/", &have);
-                unit = strtok_r(NULL, "/", &have);
-                
-                if (value_size && unit)
-                {
-                    (* max_size) = get_size(value_size, unit);
-                }
-                else
-                {
-                    fprintf(stderr, L_FM_SIZE_MAX_ERROR, now_config_name);
-                    (* max_size) = -1;
-                }
-            }
-            else
-            {
-                fprintf(stderr, L_FM_SIZE_MAX_ERROR, now_config_name);
-                goto error;
-            }
+            (* max_size) = get_size(value_size, unit);
         }
         else
         {
-            (* max_size) = -1;
+            fprintf(stderr, L_FM_SIZE_MAX_ERROR, now_config_name);
         }
-        
-        if (min_size_p)
-        {
-            // === MIN ===
-            have = NULL;
-            key = strtok_r(min_size_p, "=", &have);
-            value = strtok_r(NULL, "=", &have);
-            
-            if (key && value &&
-                strcasecmp(key, "MIN") == 0)
-            {
-                have = NULL;
-                value_size = strtok_r(value, "/", &have);
-                unit = strtok_r(NULL, "/", &have);
-                
-                if (value_size && unit)
-                {
-                    (* min_size) = get_size(value_size, unit);
-                }
-                else
-                {
-                    fprintf(stderr, L_FM_SIZE_MIN_ERROR, now_config_name);
-                    (* min_size) = -1;
-                }
-            }
-            else
-            {
-                fprintf(stderr, L_FM_SIZE_MIN_ERROR, now_config_name);
-                goto error;
-            }
-        }
-        else
-        {
-            (* min_size) = -1;
-        }
-        
-        if ((* min_size) > (* max_size))
-        {
-            fprintf(stderr, L_FM_MIN_SIZE_ERROR, now_config_name);
-            (* min_size) = -1;
-        }
-        return 0;
-    }
-    else
-    {
-        rewind(fp);
-        goto error;
     }
     
-    error:
+    have = NULL;
+    
+    // === MIN ===
+    key = strtok_r(str, "=", &have);
+    value = strtok_r(NULL, "=", &have);
+    if (key && value &&
+        strcasecmp(key, "MIN") == 0)
+    {
+        have = NULL;
+        value_size = strtok_r(value, "/", &have);
+        unit = strtok_r(NULL, "/", &have);
+        
+        if (value_size && unit)
         {
-            (* max_size) = -1;
-            (* min_size) = -1;
-            return 1;
+            (* min_size) = get_size(value_size, unit);
         }
+        else
+        {
+            fprintf(stderr, L_FM_SIZE_MIN_ERROR, now_config_name);
+        }
+    }
+    
+    if ((* min_size) > (* max_size))
+    {
+        fprintf(stderr, L_FM_MIN_SIZE_ERROR, now_config_name);
+        (* min_size) = -1;
+    }
     
     return 0;
 }
