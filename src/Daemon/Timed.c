@@ -19,7 +19,7 @@
 
 static int running(char * command);
 
-struct config_file
+struct config_struct
 {
     // For time
     char time_unit;
@@ -49,31 +49,12 @@ int time_daemon(char * argv[], char * work_dir)
         return 1;
     }
     
+    int read_config = 0;
+    struct config_struct config[MAX_CONFIG]; // 创建结构体
+    
     // 拼接及检查配置目录
     char config_dir[strlen(work_dir) + sizeof(CONFIG_PATH_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_PATH_NAME);
-    if (access(config_dir, F_OK) != 0)
-    {
-        fprintf(stderr, L_CONFIG_PATH_NOTFOUND);
-        return 1;
-    }
-    
-    // 获取传入 PATH 类型
-    struct stat path_stat;
-    if (lstat(config_dir, &path_stat) == -1)
-    {
-        fprintf(stderr, L_PATH_STAT_FAILED, config_dir);
-        return 1;
-    }
-    
-    int read_config = 0;
-    struct config_file config[MAX_CONFIG]; // 创建结构体
-    // 目录类型继续解析，否则报错退出
-    if (S_ISDIR(path_stat.st_mode) == 0)
-    {
-        fprintf(stderr, L_PATH_NOTISDIR, config_dir);
-        return 1;
-    }
     
     struct dirent * entry;
     DIR * config_dir_dp = opendir(config_dir);
@@ -91,22 +72,16 @@ int time_daemon(char * argv[], char * work_dir)
             continue;
         }
         
-        // 拼接完整路径
-        size_t path_len = (strlen(config_dir) + strlen(entry -> d_name) + 2);
-        if (path_len > MAX_PATH)
-        {
-            fprintf(stderr, L_CONFIG_PATH_TOOLONG);
-            continue;
-        }
-        char path[path_len];
-        snprintf(path, sizeof(path), "%s/%s", config_dir, entry -> d_name);
-        
         int line_count = 0; // 行计数
         int time_ = 0, date_ = 0, run_ = 0; // 记录是否解析标志位
         char line[CONFIG_LINE_MAX_LEN] = {0};
         
-        // 这里有检查作用，非普通文件即失败，同时提示这里有非文件
-        FILE * config_fp = fopen(path, "r");
+        // 拼接完整路径
+        char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2];
+        snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
+        
+        // 非普通文件即失败，同时提示这里有非文件
+        FILE * config_fp = fopen(config_file, "r");
         if (config_fp == NULL)
         {
             fprintf(stderr, L_OPEN_FILE_FAILED, entry -> d_name, strerror(errno));

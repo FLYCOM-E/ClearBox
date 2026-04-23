@@ -331,12 +331,13 @@ int s_sed(char * file, char * target_line, char * text, int mode)
     if (file_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, file, strerror(errno));
+        if (tmp_fp) fclose(tmp_fp);
         return 1;
     }
     if (tmp_fp == NULL)
     {
-        fclose(file_fp);
         fprintf(stderr, L_OPEN_FILE_FAILED, tmp_file, strerror(errno));
+        fclose(file_fp);
         return 1;
     }
     

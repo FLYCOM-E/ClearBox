@@ -18,7 +18,7 @@ int freezer_open(void)
     
     if (getprop(PROP, sdk_str) <= 0)
     {
-        fprintf(stderr, L_GET_SYSTEM_VERSION_ERR);
+        fprintf(stderr, L_GET_SYS_VERSION_ERR);
         return 1;
     }
     else

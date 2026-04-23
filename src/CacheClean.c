@@ -74,10 +74,7 @@ int app_cache_clean(char * work_dir, int mode)
             }
             
             snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", entry -> d_name);
-            if (access(micro_dir, F_OK) != 0)
-            {
-                continue;
-            }
+            
             clear_size = user_cache_clean(micro_dir, whitelist_file, clear_cache_size);
             if (clear_size == -1)
             {

@@ -59,10 +59,6 @@ int storage_clean(char * work_dir)
         
         char sdcard_dir[sizeof(CARD_HOME) + strlen(entry -> d_name) + 2];
         snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
-        if (access(sdcard_dir, F_OK) != 0)
-        {
-            continue;
-        }
         
         // 调用函数（外部储存
         storage_cache_clear(sdcard_dir, work_dir);

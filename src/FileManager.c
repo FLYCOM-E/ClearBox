@@ -104,10 +104,6 @@ int file_manager(char * work_dir, int mode, char * config_name)
         
         char sdcard_dir[sizeof(CARD_HOME) + strlen(entry -> d_name) + 2];
         snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
-        if (access(sdcard_dir, F_OK) != 0)
-        {
-            continue;
-        }
         
         // 调用函数（外部储存
         if (clear_service(work_dir, sdcard_dir, config_name) == 0)
@@ -161,20 +157,14 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     // 文件清理模式
     if (file_clear == 1)
     {
-        char config_file[strlen(config_dir) + strlen(config_name) + 16]; // 配置文件
-        snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
-        
         now_config_name = config_name; // 设置全局变量
-        
-        if (access(config_file, F_OK) != 0)
-        {
-            fprintf(stderr, L_CONFIG_NOTFOUND, config_name);
-            return 1;
-        }
         
         // 这里仍然定义归类目录，用于清理时跳过避免被清理
         char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_name) + 8];
         snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_name);
+        
+        char config_file[strlen(config_dir) + strlen(config_name) + 16]; // 配置文件
+        snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
         
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
@@ -208,7 +198,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         // 定义/创建文件归类根目录
         char f_dir[strlen(storage_dir) + strlen(F_DIR_NAME) + 8];
         snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, F_DIR_NAME);
-        if (access(f_dir, F_OK))
+        if (access(f_dir, F_OK) != 0)
         {
             if (mkdir(f_dir, 0775) != 0)
             {
@@ -301,15 +291,15 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
 static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                      int count, long max_size, long min_size)
 {
-    if (access(storage, F_OK) != 0 || access(file_dir, F_OK) != 0)
+    if (access(file_dir, F_OK) != 0)
     {
+        fprintf(stderr, L_OPEN_PATH_FAILED, file_dir, strerror(errno));
         return -1;
     }
     
     // 打开传入目录开始递归遍历
     int file_count = 0;
     struct dirent * entry;
-    struct stat file_stat;
     DIR * storage_dp = opendir(storage);
     if (storage_dp == NULL)
     {
@@ -331,6 +321,7 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
         snprintf(path, sizeof(path), "%s/%s", storage, entry -> d_name);
         snprintf(end_path, sizeof(end_path), "%s/%s", file_dir, entry -> d_name);
         
+        struct stat file_stat;
         if (strcmp(path, file_dir) == 0 ||
            lstat(path, &file_stat) == -1)
         {

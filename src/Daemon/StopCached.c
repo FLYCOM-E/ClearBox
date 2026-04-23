@@ -57,10 +57,6 @@ int stop_cache_daemon(char * argv[], char * work_dir)
             closedir(micro_card_dp);
         }
     }
-    else
-    {
-        fprintf(stderr, L_OPEN_PATH_FAILED, MICRO_CARD_PATH, strerror(errno));
-    }
     
     // 定义储存文件
     char rom_file[strlen(work_dir) + sizeof(ROM_NAME) + 2];

@@ -190,7 +190,7 @@ int main(int argc, char * argv[])
     {
         if (argc < 3)
         {
-            fprintf(stderr, L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED);
         }
         else if (file_manager(work_dir, 0, argv[2]) != 0)
         {
@@ -201,7 +201,7 @@ int main(int argc, char * argv[])
     {
         if (argc < 3)
         {
-            fprintf(stderr, L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED);
         }
         else if (app_cust_rule_clean(work_dir, argv[2], 0) != 0)
         {
@@ -226,7 +226,7 @@ int main(int argc, char * argv[])
     {
         if (argc < 3)
         {
-            fprintf(stderr, L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED);
         }
         else if (set_install(work_dir, argv[2]) != 0)
         {
@@ -237,7 +237,7 @@ int main(int argc, char * argv[])
     {
         if (argc < 3)
         {
-            fprintf(stderr, L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED);
         }
         else if (set_storage(work_dir, argv[2]) != 0)
         {
@@ -269,7 +269,7 @@ int main(int argc, char * argv[])
     {
         if (argc < 3)
         {
-            fprintf(stderr, L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED);
         }
         else if (dexoat(1, argv[2]) != 0)
         {
@@ -291,7 +291,7 @@ int main(int argc, char * argv[])
     {
         if (argc < 3)
         {
-            fprintf(stderr, L_ARGS_FAILED_2);
+            fprintf(stderr, L_ARGS_FAILED);
         }
         else
         {
@@ -308,7 +308,7 @@ int main(int argc, char * argv[])
     }
     else
     {
-        fprintf(stderr, L_ARGS_FAILED_2);
+        fprintf(stderr, L_MODE_ERR, argv[1]);
     }
     
     return 0;

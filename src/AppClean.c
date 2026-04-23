@@ -18,11 +18,6 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     // 拼接工作目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
-    if (access(config_dir, F_OK) != 0)
-    {
-        fprintf(stderr, L_AC_CONFIG_NOTFOUND);
-        return 1;
-    }
     
     int success_config = 0,   // 成功处理配置数量
         failed_config = 0,    // 处理失败配置数量
@@ -31,6 +26,7 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     // mode 1 为全部清理模式
     if (mode == 1)
     {
+        int read_config = 0;
         struct dirent * config_name;
         DIR * config_dir_fp = opendir(config_dir);
         if (config_dir_fp == NULL)
@@ -50,19 +46,26 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
             snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_name -> d_name);
             
             // Cleaning
-            read_clear(config_file, &success_config, &failed_config, &total_clear_size);
+            if (read_clear(config_file, &success_config, &failed_config, &total_clear_size) == 0)
+            {
+                read_config++;
+            }
         }
         closedir(config_dir_fp);
+        
+        if (read_config == 0)
+        {
+            fprintf(stderr, L_NOCONFIG);
+        }
     }
     else
     {
         // 清理指定配置
         char config_file[strlen(config_dir) + strlen(app_package) + 10];
         snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, app_package);
-        if (access(config_file, F_OK) == 0)
-        {
-            read_clear(config_file, &success_config, &failed_config, &total_clear_size);
-        }
+        
+        // Cleaning
+        read_clear(config_file, &success_config, &failed_config, &total_clear_size);
     }
     fflush(stdout);
     
@@ -172,6 +175,10 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         
         char app_cf_dir[strlen(app_dir) + strlen(line) + 2];
         snprintf(app_cf_dir, sizeof(app_cf_dir), "%s/%s", app_dir, line);
+        if (access(app_cf_dir, F_OK) != 0)
+        {
+            continue;
+        }
         
         // 不允许绝对路径
         if (line[0] == '/')
@@ -183,11 +190,6 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         if (strstr(line, "/../"))
         {
             fprintf(stderr, L_AC_CONFIG_ERR_2, config_file, count);
-            continue;
-        }
-        // 这可以避免很多报错
-        if (access(app_cf_dir, F_OK) != 0)
-        {
             continue;
         }
         
