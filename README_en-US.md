@@ -99,19 +99,21 @@ Configuration Directory： **`/data/adb/wipe-cache/FileConfigs`**
 
 Configuration Approach： Create a **conf** document file in the configuration file directory. The file name will be displayed as the corresponding cleaning item name on the cleaning page. Fill in custom file extensions into this file, separated by spaces or line breaks. Comments are not supported.
 
-Add **`@MAX=<size/B/K/M/G>|MIN=<size/B/K/M/G>`** on the first line of the file to specify the target file size range
+Add **`@MAX=<size/B/K/M/G>`**、**`MIN=<size/B/K/M/G>`** within the file to specify the target file size range. Parsing is overwritable — later declarations will override previous ones, allowing you to leverage this feature to create custom rules
 
 Example：
 
 ```
-@MAX=1/G|MIN=10/M
+@MAX=1/G @MIN=10/M
+zip 7z
+@max=-1
+iso img
+@MIN=10/KB exe
 ```
 
-This declaration specifies the target file size range as：**Maximum 1 G**，**Minimum 10 M**
+This declaration specifies to only organize **zip**、**7z** files with a maximum size of **1 G** and a minimum size of **10 MB**, while **iso**、**img** files have no maximum size restriction
 
-MIN cannot be greater than MAX, otherwise MIN will be automatically invalidated
-
-Note：**MAX**、**MIN** and size units are **case-insensitive**，**Floating point numbers (decimals) are currently not supported**
+Note：**MIN** cannot be greater than **MAX**, otherwise **MIN** will be automatically invalidated. **MAX**、**MIN** and size units are **case-insensitive** (you may have already noticed :⁠-⁠)），**Floating point numbers (decimals) are currently not supported**
 
 The software/terminal cleaning page will be dynamically built based on the configuration files
 

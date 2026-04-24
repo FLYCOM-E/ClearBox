@@ -461,6 +461,11 @@ static int find_size(char * str, long * max_size, long * min_size)
     if (key && value &&
         strcasecmp(key, "MAX") == 0)
     {
+        if (strtol(value, NULL, 10) == -1)
+        {
+            (* max_size) = -1;
+            return 0;
+        }
         have = NULL;
         value_size = strtok_r(value, "/", &have);
         unit = strtok_r(NULL, "/", &have);
@@ -483,6 +488,11 @@ static int find_size(char * str, long * max_size, long * min_size)
     if (key && value &&
         strcasecmp(key, "MIN") == 0)
     {
+        if (strtol(value, NULL, 10) == -1)
+        {
+            (* min_size) = -1;
+            return 0;
+        }
         have = NULL;
         value_size = strtok_r(value, "/", &have);
         unit = strtok_r(NULL, "/", &have);
