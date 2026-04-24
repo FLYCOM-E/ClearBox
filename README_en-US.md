@@ -113,7 +113,7 @@ iso img
 
 This declaration specifies to only organize **zip**、**7z** files with a maximum size of **1 G** and a minimum size of **10 MB**, while **iso**、**img** files have no maximum size restriction
 
-Note：**MIN** cannot be greater than **MAX**, otherwise **MIN** will be automatically invalidated. **MAX**、**MIN** and size units are **case-insensitive** (you may have already noticed :⁠-⁠)），**Floating point numbers (decimals) are currently not supported**
+Note: **-1** means unlimited. **MIN** cannot be greater than **MAX**, otherwise **MIN** will be automatically invalidated. **MAX**, **MIN**, and size units are **case-insensitive** (you may have already noticed :⁠-⁠)），**Floating point numbers (decimals) are currently not supported**
 
 The software/terminal cleaning page will be dynamically built based on the configuration files
 
