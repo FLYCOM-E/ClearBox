@@ -47,13 +47,13 @@ static int f2fs_gc(void)
         return 1;
     }
     
-    char f2fs_sysfs_path[strlen(SYSFS_PATH) + strlen(sysfs_name) + 2],
-         f2fs_sysfs_file[strlen(f2fs_sysfs_path) + sizeof(SYSFS_FILE_NAME) + 2],
-         f2fs_sysfs_dirty_file[strlen(f2fs_sysfs_path) + sizeof(SYSFS_DIRTY_FILE) + 2],
-         f2fs_sysfs_free_file[strlen(f2fs_sysfs_path) + sizeof(SYSFS_FREE_FILE) + 2];
+    char f2fs_sysfs_path[strlen(SYSFS_PATH) + strlen(sysfs_name) + 2];
     snprintf(f2fs_sysfs_path, sizeof(f2fs_sysfs_path), "%s/%s", SYSFS_PATH, sysfs_name);
+    char f2fs_sysfs_file[strlen(f2fs_sysfs_path) + sizeof(SYSFS_FILE_NAME) + 2];
     snprintf(f2fs_sysfs_file, sizeof(f2fs_sysfs_file), "%s/%s", f2fs_sysfs_path, SYSFS_FILE_NAME);
+    char f2fs_sysfs_dirty_file[strlen(f2fs_sysfs_path) + sizeof(SYSFS_DIRTY_FILE) + 2];
     snprintf(f2fs_sysfs_dirty_file, sizeof(f2fs_sysfs_dirty_file), "%s/%s", f2fs_sysfs_path, SYSFS_DIRTY_FILE);
+    char f2fs_sysfs_free_file[strlen(f2fs_sysfs_path) + sizeof(SYSFS_FREE_FILE) + 2];
     snprintf(f2fs_sysfs_free_file, sizeof(f2fs_sysfs_free_file), "%s/%s", f2fs_sysfs_path, SYSFS_FREE_FILE);
     
     // 检测是否为 f2fs 文件系统
