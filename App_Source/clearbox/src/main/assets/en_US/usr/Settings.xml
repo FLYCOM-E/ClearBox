@@ -59,7 +59,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" warning="Are you sure you want to completely uninstall this module and clean up the leftovers 😉?" interruptible="false" auto-off="false" auto-finish="false" >
+    <action shell="default" warning="Are you sure you want to completely uninstall this module and clean up the leftovers🤯?" interruptible="false" auto-off="false" auto-finish="false" >
         <title>Uninstall module (!</title>
             <set>
             sh "$home_dir/uninstall.sh"

@@ -59,7 +59,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" warning="确定完全卸载此模块并清理残留😉？" interruptible="false" auto-off="false" auto-finish="false" >
+    <action shell="default" warning="确定完全卸载此模块并清理残留🤯？" interruptible="false" auto-off="false" auto-finish="false" >
         <title>卸载模块（！</title>
             <set>
             sh "$home_dir/uninstall.sh"

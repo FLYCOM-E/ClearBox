@@ -59,7 +59,7 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
-    <action shell="default" interruptible="false" warning="確定完全卸載此模組並清理殘留😉？" auto-off="false" auto-finish="false" >
+    <action shell="default" interruptible="false" warning="確定完全卸載此模組並清理殘留🤯？" auto-off="false" auto-finish="false" >
         <title>卸載模組（！</title>
             <set>
             sh "$home_dir/uninstall.sh"

@@ -6,7 +6,7 @@ else
     exec 2>>/dev/null
 fi
 if [ "$clearbox_debug_mode" = 1 ]; then
-    DebugTitle="調試模式已打開"
+    DebugTitle="DEBUG MODE"
     DebugMode=1
 fi
 ######
@@ -43,14 +43,14 @@ echo '
 echo '
 <group>
     <text>
-        <slice break="break" link="https://yhfx.jwznb.com/share?key=yigOTedUjh62&amp;ts=1747355950" size="20">模組內測 - YHChat</slice>
+        <slice break="break" link="https://yhfx.jwznb.com/share?key=yigOTedUjh62&amp;ts=1747355950" size="20">YHChat</slice>
     </text>
 </group>
 '
 echo '
 <group>
     <text>
-        <slice break="break" link="https://t.me/clearboxmodule" size="20">模組內測 - Telegram</slice>
+        <slice break="break" link="https://t.me/clearboxmodule" size="20">Telegram</slice>
     </text>
 </group>
 '
