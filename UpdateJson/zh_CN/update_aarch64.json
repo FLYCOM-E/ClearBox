@@ -1,6 +1,6 @@
 {
-    "version": "V5.0.4",
-    "versionCode": 89,
-    "zipUrl": "https://nightly.link/FLYCOM-E/ClearBox/actions/runs/24885427142/ClearBox-V5.0.4-89-zh_CN-aarch64.zip",
+    "version": "V5.0.5",
+    "versionCode": 90,
+    "zipUrl": "https://nightly.link/FLYCOM-E/ClearBox/actions/runs/24991691642/ClearBox-V5.0.5-90-zh_CN-aarch64.zip",
     "changelog": "https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/zh_CN/ChargeLog.md"
 }
