@@ -26,7 +26,7 @@ case "$1" in
       cp -r "$work_dir"/* "$tempDir/"
       rm "$tempDir/LOG.log" "$tempDir/LOG.log.bak" "$tempDir/RunStart" "$tempDir/PATH"
       
-      if "$bin_dir/busybox" tar -cjf "ClearBox_Config_$Version.tar.bz2" * >/dev/null 2>&1; then
+      if tar -cjf "ClearBox_Config_$Version.tar.bz2" * >/dev/null 2>&1; then
           if mv "ClearBox_Config_$Version.tar.bz2" "$backupDir"; then
               echo " » $BACKUP_SUCCESSFUL"
               echo " » 路径PATH“$backupDir/ClearBox_Config_$Version.tar.bz2”"
@@ -43,7 +43,7 @@ case "$1" in
           echo " » $RECOVERYERR_FILECHECK"
           exit 1
       fi
-      if "$bin_dir/busybox" tar -xjf "$2" -C "$work_dir/" >/dev/null 2>&1; then
+      if tar -xjf "$2" -C "$work_dir/" >/dev/null 2>&1; then
           echo " » $RECOVERY_SUCCESSFUL"
       else
           echo " » $RECOVERY_FAILED"
