@@ -12,7 +12,7 @@ else
 fi
 ######
 lang_dir="LANG"
-backupDir="/sdcard/Android/ClearBox"
+backupDir="/sdcard/Documents/ClearBox"
 tempDir="/data/local/ClearBox_temp"
 source "$work_dir/settings.prop"
 source "$home_dir/$lang_dir/Local.conf"
