@@ -33,6 +33,7 @@
     
     <string name="power_poweroff">Shutdown</string>
     <string name="power_reboot">Reboot</string>
+    <string name="power_launcher">Restart Launcher</string>
     <string name="power_systemui">Restart System UI</string>
     <string name="power_hot_reboot">Hot Reboot</string>
     <string name="power_safemode">Reboot to Safe Mode</string>
@@ -42,6 +43,7 @@
     
     <string name="power_shutdown_cmd">sync; svc power shutdown || reboot -p;</string>
     <string name="power_reboot_cmd">sync; svc power reboot || reboot;</string>
+    <string name="power_launcher_cmd">sync; kill -9 $(pgrep -f $(cmd shortcut get-default-launcher | head -n1 | cut -f2 -d '{' | cut -f1 -d '/'));</string>
     <string name="power_systemui_cmd">sync; kill -9 $(pgrep -f com.android.systemui) || killall com.android.systemui;</string>
     <string name="power_hot_reboot_cmd">sync; am restart || kill $(pgrep system_server);</string>
     <string name="power_safemode_cmd">sync; setprop persist.sys.safemode 1; svc power reboot || reboot;</string>

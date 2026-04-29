@@ -17,6 +17,10 @@ class DialogPower(var context: Activity) {
             dialog.dismiss()
             KeepShellPublic.doCmdSync(context.getString(R.string.power_reboot_cmd))
         }
+        view.findViewById<View>(R.id.power_launcher).setOnClickListener {
+            dialog.dismiss()
+            KeepShellPublic.doCmdSync(context.getString(R.string.power_launcher_cmd))
+        }
         view.findViewById<View>(R.id.power_systemui).setOnClickListener {
             dialog.dismiss()
             KeepShellPublic.doCmdSync(context.getString(R.string.power_systemui_cmd))

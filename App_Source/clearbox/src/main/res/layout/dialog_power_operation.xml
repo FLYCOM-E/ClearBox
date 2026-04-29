@@ -99,6 +99,43 @@
             android:layout_weight="1"
             android:layout_height="65dp"
             android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/power_launcher"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/power_launcher"
+                android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="#CC00FFA2"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#FFFFFFFF" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/power_launcher" />
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/power_systemui"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">
