@@ -33,6 +33,7 @@
     
     <string name="power_poweroff">關機</string>
     <string name="power_reboot">重啟</string>
+    <string name="power_hot_reboot">重啟系統介面</string>
     <string name="power_hot_reboot">熱重啟</string>
     <string name="power_safemode">重啟至安全模式</string>
     <string name="power_recovery">重啟至 Recovery</string>
@@ -41,6 +42,7 @@
     
     <string name="power_shutdown_cmd">sync; svc power shutdown || reboot -p;</string>
     <string name="power_reboot_cmd">sync; svc power reboot || reboot;</string>
+    <string name="power_sysyemui_cmd">sync; kill -9 $(pgrep -f com.android.systemui) || killall com.android.systemui;</string>
     <string name="power_hot_reboot_cmd">sync; am restart || kill $(pgrep system_server);</string>
     <string name="power_safemode_cmd">sync; setprop persist.sys.safemode 1; svc power reboot || reboot;</string>
     <string name="power_fastboot_cmd">sync; reboot bootloader;</string>

@@ -73,7 +73,7 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/power_reboot"
                     android:background="@drawable/action_menu_icon_bg"
-                    android:backgroundTint="#FFFFCD11"
+                    android:backgroundTint="#CBFF7900"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     app:tint="#FFFFFFFF" />
 
@@ -94,6 +94,43 @@
 
             </LinearLayout>
         </LinearLayout>
+        
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/power_systemui"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/power_systemui"
+                android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="#CC5C00FF"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#FFFFFFFF" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/power_systemui" />
+            </LinearLayout>
+            
+        </LinearLayout>
 
         <LinearLayout
             android:layout_weight="1"
@@ -111,7 +148,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/power_hot_reboot"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#FFFFDF00"
+                android:backgroundTint="#CCFFD900"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#FFFFFFFF" />
 
@@ -148,7 +185,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/power_safemode"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#00FF28"
+                android:backgroundTint="#CB00FF28"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#FFFFFFFF" />
 
@@ -185,7 +222,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/power_recovery"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#FF002EFF"
+                android:backgroundTint="#CB0057FF"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#FFFFFFFF" />
 
@@ -222,7 +259,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/power_fastboot"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#FFF0A14C"
+                android:backgroundTint="#CDFF8E00"
                 android:padding="10dp"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#FFFFFFFF" />
@@ -260,7 +297,7 @@
                 android:src="@drawable/power_emergency"
                 android:padding="11dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#FFE43939"
+                android:backgroundTint="#CDFF0000"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#FFFFFFFF" />
 
