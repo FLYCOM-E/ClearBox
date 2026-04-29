@@ -33,7 +33,7 @@
     
     <string name="power_poweroff">Shutdown</string>
     <string name="power_reboot">Reboot</string>
-    <string name="power_hot_reboot">Restart System UI</string>
+    <string name="power_systemui">Restart System UI</string>
     <string name="power_hot_reboot">Hot Reboot</string>
     <string name="power_safemode">Reboot to Safe Mode</string>
     <string name="power_recovery">Reboot to Recovery</string>

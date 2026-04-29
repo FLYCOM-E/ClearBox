@@ -33,7 +33,7 @@
     
     <string name="power_poweroff">關機</string>
     <string name="power_reboot">重啟</string>
-    <string name="power_hot_reboot">重啟系統介面</string>
+    <string name="power_systemui">重啟系統介面</string>
     <string name="power_hot_reboot">熱重啟</string>
     <string name="power_safemode">重啟至安全模式</string>
     <string name="power_recovery">重啟至 Recovery</string>
