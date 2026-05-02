@@ -13,6 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.content.PermissionChecker
 import com.omarea.common.ui.ThemeMode
+import com.google.android.material.color.MaterialColors
 
 object ThemeModeState {
     private var themeMode: ThemeMode = ThemeMode()
@@ -107,31 +108,31 @@ object ThemeModeState {
             applySystemBars(activity, nightMode)
         }
     }
-
+    
     private fun applySystemBars(activity: Activity, nightMode: Boolean) {
+        val colorSurface = MaterialColors.getColor(activity, com.google.android.material.R.attr.colorSurface, Color.WHITE)
+        
         activity.window.run {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_System_BAR_BACKGROUNDS)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            
-            if (nightMode) {
-                statusBarColor = Color.BLACK
-                navigationBarColor = Color.BLACK
-            } else {
-                statusBarColor = Color.WHITE
-                navigationBarColor = Color.WHITE
+    
+            statusBarColor = colorSurface
+            navigationBarColor = colorSurface
+    
+            if (!nightMode) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    decorView.systemUiVisibility = decorView.systemUiVisibility or 
-                                                   View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or 
-                                                   View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                    decorView.systemUiVisibility = decorView.systemUiVisibility or
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
+                            View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    decorView.systemUiVisibility = decorView.systemUiVisibility or 
-                                                   View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    decorView.systemUiVisibility = decorView.systemUiVisibility or
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 }
             }
         }
     }
-
+    
     @Suppress("unused")
     private fun isDarkColor(wallPaper: Drawable): Boolean {
         val bitmap = (wallPaper as BitmapDrawable).bitmap
