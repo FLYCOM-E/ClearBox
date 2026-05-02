@@ -17,7 +17,7 @@
         <item name="colorPrimaryContainer">@android:color/system_accent1_200</item>
         <item name="colorSecondary">@android:color/system_accent2_500</item>
         <item name="colorSecondaryContainer">@android:color/system_accent2_200</item>
-
+        <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
     <style name="AppTheme" parent="Theme.KrScript" />
