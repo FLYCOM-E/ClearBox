@@ -11,5 +11,4 @@ krscript/build
 common/build
 captures
 release
-release_mini
-
+keystore.properties
