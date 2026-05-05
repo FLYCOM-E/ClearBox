@@ -306,6 +306,12 @@ int main(int argc, char * argv[])
     {
         time_daemon(argv, work_dir);
     }
+    else if (strcasecmp(argv[1], "help") == 0 ||
+            strcasecmp(argv[1], "-help") == 0 ||
+            strcasecmp(argv[1], "--help") == 0)
+    {
+        help(argv);
+    }
     else
     {
         fprintf(stderr, L_MODE_ERR, argv[1]);
