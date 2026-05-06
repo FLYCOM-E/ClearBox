@@ -31,17 +31,6 @@
 #define getprop __system_property_get
 #define print_log __android_log_print
 
-// Lang
-#ifdef zh_CN
-    #include "LANG/zh_CN.h"
-#elif defined(en_US)
-    #include "LANG/en_US.h"
-#elif defined(zh_TW)
-    #include "LANG/zh_TW.h"
-#else
-    #include "LANG/zh_CN.h"
-#endif
-
 long s_remove(char * path, int all);
 int whitelist_check(char * whitelist_file, char * package);
 long get_path_size(char * path);
