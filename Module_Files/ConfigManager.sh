@@ -24,7 +24,7 @@ case "$1" in
       mkdir -p "$backupDir"
       cd "$tempDir"
       cp -r "$work_dir"/* "$tempDir/"
-      rm "$tempDir/LOG.log" "$tempDir/LOG.log.bak" "$tempDir/RunStart" "$tempDir/PATH"
+      rm -f "$tempDir/LOG.log" "$tempDir/LOG.log.bak" "$tempDir/RunStart" "$tempDir/PATH"
       
       if tar -cjf "ClearBox_Config_$Version.tar.bz2" * >/dev/null 2>&1; then
           if mv "ClearBox_Config_$Version.tar.bz2" "$backupDir"; then
