@@ -31,29 +31,37 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
         }
     }
 
-    // TODO:处理 ../ 、 ./
     private fun pathConcat(parent: String, target: String): String {
         val isAssets = parent.startsWith(ASSETS_FILE)
-        val parentDir = if (isAssets) parent.substring(ASSETS_FILE.length) else parent
-        val parentSlices = ArrayList(parentDir.split("/"))
-        if (target.startsWith("../") && parentSlices.size > 0) {
-            val targetSlices = ArrayList(target.split("/"))
-            while (true) {
-                val step = targetSlices.firstOrNull()
-                if (step != null && step == ".." && parentSlices.size > 0) {
-                    parentSlices.removeAt(parentSlices.size - 1)
-                    targetSlices.removeAt(0)
-                } else {
-                    break
-                }
+        val pureParent = if (isAssets) parent.substring(ASSETS_FILE.length) else parent
+        try {
+            val parentFile = java.io.File(pureParent)
+            val targetFile = java.io.File(target)
+            val combinedFile = if (targetFile.isAbsolute) {
+                targetFile
+            } else {
+                java.io.File(parentFile, target)
             }
-            return pathConcat((if (isAssets) ASSETS_FILE  else "" )+ parentSlices.joinToString("/"), targetSlices.joinToString("/"))
-        }
+            val canonicalPath = combinedFile.canonicalPath
+            val parentCanonical = parentFile.canonicalPath
+            if (!canonicalPath.startsWith(parentCanonical)) {
+                android.util.Log.w("PathAnalysis", "Path traversal attempt blocked: $parent + $target")
+            }
+            return if (isAssets) {
+                ASSETS_FILE + canonicalPath
+            } else {
+                canonicalPath
+            }
 
-        return (if (isAssets) ASSETS_FILE  else "" )+ ( when {
-            !(parentDir.isEmpty() || parentDir.endsWith("/")) -> parentDir + "/"
-            else -> parentDir
-        } + (if (target.startsWith("./")) target.substring(2) else target))
+        } catch (e: Exception) {
+            android.util.Log.e("PathAnalysis", "Path concat failed", e)
+            val separator = if (pureParent.endsWith("/")) "" else "/"
+            return if (isAssets) {
+                ASSETS_FILE + pureParent + separator + target
+            } else {
+                pureParent + separator + target
+            }
+        }
     }
 
     private fun useRootOpenFile(filePath: String): InputStream? {

@@ -175,11 +175,6 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
                 {
                     count++;
                     clean_size += cache_size; 
-                    /* 
-                    TODO
-                    清理大小 s_remove 实现也会返回
-                    但上面的大小判断会导致无法合并检查一次
-                    */
                     printf(L_CC_CLEAR, package_list[i] + 8);
                 }
                 else

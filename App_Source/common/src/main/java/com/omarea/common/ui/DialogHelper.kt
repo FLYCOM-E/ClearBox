@@ -287,7 +287,6 @@ class DialogHelper {
                         val rect = Rect()
                         view.getGlobalVisibleRect(rect)
                         if (!rect.contains(x, y)) {
-                            // TODO: 从何获取呢...
                             val mCancelable = dialogWrap.isCancelable // false
                             if (mCancelable) {
                                 dialogWrap.dismiss()
@@ -434,14 +433,6 @@ class DialogHelper {
             val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
 
             window.run {
-                // TODO:处理模糊背景
-                // BlurBackground(activity).setScreenBgLight(dialog)
-
-                // val attrs = attributes
-                // attrs.alpha = 0.1f
-                // attributes =attrs
-                // decorView.setPadding(0, 0, 0, 0)
-
                 val blurBitmap = if (disableBlurBg || wallpaperMode) {
                     null
                 } else {

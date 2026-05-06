@@ -18,30 +18,18 @@ class ActionParamsLayoutRender(private var linearLayout: LinearLayout, activity:
          * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
          */
         fun getParamOptionsCurrentIndex(actionParamInfo: ActionParamInfo, options: ArrayList<SelectItem>): Int {
-            var selectedIndex = -1
-
-            val valList = ArrayList<String>()
-            if (actionParamInfo.valueFromShell != null)
-                valList.add(actionParamInfo.valueFromShell!!)
-            // TODO:这里可能有点争议
-            if (actionParamInfo.value != null) {
-                valList.add(actionParamInfo.value!!)
-            }
-            if (valList.size > 0) {
-                for (j in valList.indices) {
-                    var index = 0
-                    for (option in options) {
-                        if (option.value == valList[j]) {
-                            selectedIndex = index
-                            break
-                        }
-                        index++
+            // 优先级
+            // valueFromShell (动态获取的实时状态) 
+            // value (静态配置/缓存值) 备选
+            val targetValue = actionParamInfo.valueFromShell ?: actionParamInfo.value
+            if (targetValue != null) {
+                for ((index, option) in options.withIndex()) {
+                    if (option.value == targetValue) {
+                        return index
                     }
-                    if (selectedIndex > -1)
-                        break
                 }
             }
-            return selectedIndex
+            return -1
         }
 
         /**

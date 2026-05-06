@@ -483,9 +483,7 @@ class PageConfigReader {
         }
         return nodeInfoBase
     }
-
-    // TODO: 整理Title和Desc
-    // TODO: 整理ReloadPage
+    
     private fun pageNode(page: PageNode, parser: XmlPullParser): PageNode {
         for (attrIndex in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(attrIndex)

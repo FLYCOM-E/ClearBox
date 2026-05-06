@@ -36,7 +36,6 @@ int main(int argc, char * argv[])
     
     char home_dir[128] = "",        // 模块根目录
          work_dir[128] = "",        // 配置目录
-         bin_dir[128] = "",         // BIN 目录（TODO：未使用）
          path_file_line[256] = "";
     
     char * path_file_key = NULL;
@@ -66,11 +65,6 @@ int main(int argc, char * argv[])
             snprintf(work_dir, sizeof(work_dir), "%s", path_file_value);
             work_dir[strcspn(work_dir, "\n")] = 0;
         }
-        else if (strcmp(path_file_key, "bin_dir") == 0)
-        {
-            snprintf(bin_dir, sizeof(bin_dir), "%s", path_file_value);
-            bin_dir[strcspn(bin_dir, "\n")] = 0;
-        }
         else
         {
             path_file_err = 1; // 如果有错误行则设置标识
@@ -88,7 +82,6 @@ int main(int argc, char * argv[])
         fprintf(stderr, " » Error：WORK_PATH\n");
         return 1;
     }
-    // bin_dir 未使用这里不校验
     
     /* 
     PATH 错误时尝试重写纠正
@@ -101,7 +94,7 @@ int main(int argc, char * argv[])
         FILE * fp = fopen(PATH_ROM_FILE, "w");
         if (fp)
         {
-            fprintf(fp, "home_dir=%s\nwork_dir=%s\nbin_dir=%s", home_dir, work_dir, bin_dir);
+            fprintf(fp, "home_dir=%s\nwork_dir=%s", home_dir, work_dir);
             fclose(fp);
         }
         else

@@ -40,8 +40,6 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
 
     private fun openAppChooser() {
         setSelectStatus()
-
-        // TODO:深色模式、浅色模式
         DialogAppChooser(darkMode, packages, actionParamInfo.multiple, this).show(context.supportFragmentManager, "app-chooser")
     }
 
@@ -121,22 +119,20 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
 
                 onConfirm((packages.filter { it.selected }))
             } else {
-                // TODO: 这里有过多的数据包装盒解包，需要进行优化
-                val validOptions = ArrayList(packages.map {
-                    SelectItem().apply {
-                        title = it.appName
-                        value = it.packageName
+                val targetValue = actionParamInfo.valueFromShell ?: actionParamInfo.value
+                
+                if (targetValue != null) {
+                    val selectedApp = packages.find { it.packageName == targetValue }
+                    
+                    if (selectedApp != null) {
+                        valueView.text = selectedApp.packageName
+                        nameView.text = selectedApp.appName
+                        return
                     }
-                }.toList())
-
-                val currentIndex = ActionParamsLayoutRender.getParamOptionsCurrentIndex(actionParamInfo, validOptions)
-                if (currentIndex > -1) {
-                    valueView.text = values[currentIndex]
-                    nameView.text = labels[currentIndex]
-                } else {
-                    valueView.text = ""
-                    nameView.text = ""
                 }
+                
+                valueView.text = ""
+                nameView.text = ""
             }
         }
     }

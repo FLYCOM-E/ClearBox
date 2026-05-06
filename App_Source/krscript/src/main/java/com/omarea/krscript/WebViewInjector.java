@@ -182,19 +182,19 @@ public class WebViewInjector {
                 return fileChooser.openFileChooser(new ParamsFileChooserRender.FileSelectedInterface() {
                     @Override
                     public int type() {
-                        return ParamsFileChooserRender.FileSelectedInterface.Companion.getTYPE_FILE(); // TODO
+                        return ParamsFileChooserRender.FileSelectedInterface.Companion.getTYPE_FILE();
                     }
 
                     @Nullable
                     @Override
                     public String suffix() {
-                        return null; // TODO
+                        return null;
                     }
 
                     @NotNull
                     @Override
                     public String mimeType() {
-                        return "*/*"; // TODO
+                        return "*/*";
                     }
 
                     @Override

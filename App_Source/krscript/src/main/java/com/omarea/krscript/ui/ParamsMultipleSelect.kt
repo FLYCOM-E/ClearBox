@@ -71,7 +71,6 @@ class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private
                     selected = status[i]
                 })
             }
-            // TODO:深色模式、浅色模式
             DialogItemChooser(true, ArrayList(items), true, object : DialogItemChooser.Callback {
                 override fun onConfirm(selected: List<SelectItem>, result: BooleanArray) {
                     result.forEachIndexed { index, value ->
@@ -81,18 +80,5 @@ class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private
                 }
             }).show(context.supportFragmentManager, "params-multi-select")
         }
-        /*
-        options?.run {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle(context.getString(R.string.kr_please_select))
-                    .setMultiChoiceItems(labels, status) { _, index, isChecked ->
-                        status[index] = isChecked
-                    }
-                    .setNeutralButton(R.string.btn_cancel) { _, _ -> }
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        setView(textView, valueView, countView)
-                    })
-        }
-        */
     }
 }
