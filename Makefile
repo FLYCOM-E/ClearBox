@@ -1,4 +1,4 @@
-CFLAGS = -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wformat=2 -Wunused -Wcast-qual -Wstrict-prototypes -Werror -D_GNU_SOURCE -D_FORTIFY_SOURCE=2
+CFLAGS = -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wformat=2 -Wunused -Wcast-qual -Wstrict-prototypes -Werror -Wno-format-nonliteral -Wno-format-security -D_GNU_SOURCE -D_FORTIFY_SOURCE=2
 LDFLAGS = -llog -s
 
 ifeq ($(strip $(CC)),)

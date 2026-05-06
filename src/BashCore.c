@@ -15,6 +15,8 @@ static int module_config(char * home_dir, char * mode, char * config_file);
 static int file_all(char * work_dir, char * settings_file, int auto_);
 static int fast_gc(char * settings_file, int auto_);
 
+LangType current_lang = LANG_zh_CN;
+
 int main(int argc, char * argv[])
 {
     if (getuid() != 0)

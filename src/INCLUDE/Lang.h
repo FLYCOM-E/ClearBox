@@ -2,9 +2,9 @@
 
 typedef enum
 {
-    zh_CN = 0,
-    zh_TW = 1,
-    en_US = 2,
+    LANG_zh_CN = 0,
+    LANG_zh_TW = 1,
+    LANG_en_US = 2,
 } LangType;
 
 typedef struct
@@ -128,9 +128,9 @@ typedef struct
     const char * l_sr_end;
 } LangPack;
 
-static const LangPack lang_packs[]
+static const LangPack lang_packs[] =
 {
-    [zh_CN] =
+    [LANG_zh_CN] =
     {
         .l_not_use_root = " » 请使用 Root 权限！#%u\n",
         .l_args_failed = " » 传入参数不足！\n",
@@ -249,8 +249,8 @@ static const LangPack lang_packs[]
         .l_sr_clear_failed = " » 清理 %s 失败\n",
         .l_sr_line_failed_path_err = " » %d 行错误：路径错误/无法访问\n",
         .l_sr_end = " » 自定义目录处理完成！\n",
-    }
-    [zh_TW] =
+    },
+    [LANG_zh_TW] =
     {
         .l_not_use_root = " » 請使用 Root 權限！#%u\n",
         .l_args_failed = " » 傳入參數不足！\n",
@@ -369,8 +369,8 @@ static const LangPack lang_packs[]
         .l_sr_clear_failed = " » 清理 %s 失敗\n",
         .l_sr_line_failed_path_err = " » %d 行錯誤：路徑錯誤/無法存取\n",
         .l_sr_end = " » 自訂目錄處理完成！\n",
-    }
-    [en_US] =
+    },
+    [LANG_en_US] =
     {
         .l_not_use_root = " » Please use Root permissions! #%u\n",
         .l_args_failed = " » Insufficient arguments provided!\n",
@@ -489,8 +489,8 @@ static const LangPack lang_packs[]
         .l_sr_clear_failed = " » Failed to clean %s\n",
         .l_sr_line_failed_path_err = " » Line %d error: Path error/inaccessible\n",
         .l_sr_end = " » Custom directory processing completed!\n",
-    }
-}
+    },
+};
 
 extern LangType current_lang;
 
@@ -543,7 +543,8 @@ extern LangType current_lang;
 #define L_AC_CONFIG_PACKAGE_ERR lang_packs[current_lang].l_ac_config_package_err
 #define L_AC_CONFIG_APPNAME_ERR lang_packs[current_lang].l_ac_config_appname_err
 #define L_AC_CONFIG_ERR lang_packs[current_lang].l_ac_config_err
-#define L_AC_CONFIG_ERR_1 lang_packs[current_lang].l_ac_config_err_1#define L_AC_CONFIG_ERR_2 lang_packs[current_lang].l_ac_config_err_2
+#define L_AC_CONFIG_ERR_1 lang_packs[current_lang].l_ac_config_err_1
+#define L_AC_CONFIG_ERR_2 lang_packs[current_lang].l_ac_config_err_2
 #define L_AC_CLEAR_PATH_ERR lang_packs[current_lang].l_ac_clear_path_err
 #define L_AC_CLEAR_PATH_SUCCESS lang_packs[current_lang].l_ac_clear_path_success
 #define L_AC_CLEAN_SUCCESSFUL lang_packs[current_lang].l_ac_clean_successful
@@ -592,7 +593,8 @@ extern LangType current_lang;
 #define L_OPEN_FREEZER_SUCCESSFUL lang_packs[current_lang].l_open_freezer_successful
 #define L_SI_OPEN_FAILED_STORAGE lang_packs[current_lang].l_si_open_failed_storage
 #define L_SI_OPEN_SUCCESSFUL_STORAGE lang_packs[current_lang].l_si_open_successful_storage
-#define L_SI_OFF_FAILED_STORAGE lang_packs[current_lang].l_si_off_failed_storage#define L_SI_OFF_SUCCESSFUL_STORAGE lang_packs[current_lang].l_si_off_successful_storage
+#define L_SI_OFF_FAILED_STORAGE lang_packs[current_lang].l_si_off_failed_storage
+#define L_SI_OFF_SUCCESSFUL_STORAGE lang_packs[current_lang].l_si_off_successful_storage
 #define L_SS_OPEN_STOP_STORAGE_SUCCESSFUL lang_packs[current_lang].l_ss_open_stop_storage_successful
 #define L_SS_OPEN_STOP_STORAGE_FAILED lang_packs[current_lang].l_ss_open_stop_storage_failed
 #define L_SS_OFF_STOP_STORAGE_SUCCESSFUL lang_packs[current_lang].l_ss_off_stop_storage_successful
