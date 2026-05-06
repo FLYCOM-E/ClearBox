@@ -18,6 +18,9 @@
 #include <sys/system_properties.h>
 #include <linux/fs.h>
 
+// 多语言
+#include "Lang.h"
+
 #define MAX_PACKAGE 256 // 软件包名最大长度
 #define MAX_PATH 4096 // 文件路径最大长度
 #define MAX_WORK_DIR_LEN 512 // 工作目录最大长度
