@@ -27,10 +27,16 @@ else
     bin_dir="$home_dir"
 fi
 ######
-lang_dir="LANG"
-source "$work_dir/settings.prop"
-source "$home_dir/$lang_dir/Local.conf"
 exec 2>>/dev/null
+source "$work_dir/settings.prop"
+lang_dir="LANG"
+if getprop persist.sys.locale | grep "Hans" 2>/dev/null; then
+    source "$home_dir/$lang_dir/zh_CN.conf"
+elif getprop persist.sys.locale | grep "Hant" 2>/dev/null; then
+    source "$home_dir/$lang_dir/zh_TW.conf"
+else
+    source "$home_dir/$lang_dir/en_US.conf"
+fi
 ######
 # 还原模块设置并执行卸载
 uninstall_md()

@@ -159,12 +159,12 @@ long get_path_size(char * path)
 /*
 通知发送函数，通过切换用户至shell并使用Shell发送通知
 接收：
-    char * title 通知标题
-    char * message 消息内容
+    const char * title 通知标题
+    const char * message 消息内容
 返回：
     int 成功返回 0，失败返回 1
 */
-int post(char * title, char * message)
+int post(const char * title, const char * message)
 {
     //生成一个随机ID
     srand((unsigned int)time(NULL));

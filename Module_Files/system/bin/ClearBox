@@ -18,10 +18,16 @@ Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 app_config_dir="AppCleanRules"
 file_config_dir="FileConfigs"
 timed_config_dir="TimedConfig"
-lang_dir="LANG"
 core="BashCore"
 ######
-source "$home_dir/$lang_dir/Local.conf"
+lang_dir="LANG"
+if getprop persist.sys.locale | grep "Hans" 2>/dev/null; then
+    source "$home_dir/$lang_dir/zh_CN.conf"
+elif getprop persist.sys.locale | grep "Hant" 2>/dev/null; then
+    source "$home_dir/$lang_dir/zh_TW.conf"
+else
+    source "$home_dir/$lang_dir/en_US.conf"
+fi
 ######
 # 菜单函数
 md_menu()
