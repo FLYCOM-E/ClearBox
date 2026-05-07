@@ -95,7 +95,7 @@ bash build.sh
 
 配置方法：
 
-配置目录： **`/data/adb/wipe-cache/FileConfigs`**
+配置目录： **`/data/adb/wipe_cache/FileConfigs`**
 
 配置方式：在配置文件目录新建 **conf** 文档文件，该文件名称会显示在清理页面当作对应清理项名称，将自定义文件后缀填入该文件，使用空格或换行分隔，不支持注释。
 
@@ -127,7 +127,7 @@ iso img
 
 配置方法：
 
-配置目录： **`/data/adb/wipe-cache/AppCleanRules`**
+配置目录： **`/data/adb/wipe_cache/AppCleanRules`**
 
 配置方式：在配置文件目录新建 **conf** 文件，文件名称随意但不得包含特殊符号、空格等。
 第一行开头填写 **`@<软件包名>/<软件名称>`** 来指定该规则对应软件；

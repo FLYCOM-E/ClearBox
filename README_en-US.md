@@ -95,7 +95,7 @@ File cleaning function, comes with some built-in cleaning configurations, suppor
 
 Configuration Method：
 
-Configuration Directory： **`/data/adb/wipe-cache/FileConfigs`**
+Configuration Directory： **`/data/adb/wipe_cache/FileConfigs`**
 
 Configuration Approach： Create a **conf** document file in the configuration file directory. The file name will be displayed as the corresponding cleaning item name on the cleaning page. Fill in custom file extensions into this file, separated by spaces or line breaks. Comments are not supported.
 
@@ -127,7 +127,7 @@ One of the rule cleanup functions, used to clean the internal private directory 
 
 Configuration method：
 
-Configuration directory： **`/data/adb/wipe-cache/AppCleanRules`**
+Configuration directory： **`/data/adb/wipe_cache/AppCleanRules`**
 
 Configuration way：Create a **conf** file in the configuration directory. The file name is arbitrary but must not contain special symbols, spaces, etc.
 Fill in **`@<package_name>/<app_name>`** at the beginning of the first line to specify the software corresponding to this rule;
