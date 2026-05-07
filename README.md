@@ -40,12 +40,11 @@ git clone https://github.com/FLYCOM-E/ClearBox
 cd ClearBox && chmod +x *
 
 export M_API=21 #(可以自行根据需要调整目标api版本)
-export M_LANG=zh_CN
 export M_TARGET=aarch64 #(可选aarch64、armv7a、x86_64、i686)
 
 bash build.sh
 ```
-刷入 **ClearBox_aarch64_21_zh_CN.zip**
+刷入 **ClearBox_aarch64_21.zip**
 
 
 

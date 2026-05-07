@@ -15,10 +15,28 @@ static int module_config(char * home_dir, char * mode, char * config_file);
 static int file_all(char * work_dir, char * settings_file, int auto_);
 static int fast_gc(char * settings_file, int auto_);
 
-LangType current_lang = LANG_zh_CN;
+LangType current_lang;
 
 int main(int argc, char * argv[])
 {
+    // 多语言
+    char lang[PROP_VALUE_MAX] = "";
+    getprop("persist.sys.locale", lang); // 不检查是否失败
+    if (strcmp(lang, "zh-CN") == 0 ||
+        strstr(lang, "Hans"))
+    {
+        current_lang = LANG_zh_CN;
+    }
+    else if (strcmp(lang, "zh-TW") == 0 ||
+             strstr(lang, "Hant"))
+    {
+        current_lang = LANG_zh_TW;
+    }
+    else
+    {
+        current_lang = LANG_en_US;
+    }
+
     if (getuid() != 0)
     {
         fprintf(stderr, L_NOT_USE_ROOT, getuid());

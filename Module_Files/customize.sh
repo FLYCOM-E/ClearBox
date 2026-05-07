@@ -2,7 +2,6 @@
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1
-lang_dir="LANG"
 file_config_dir="FileConfigs"
 SHOUT_S="0.3"
 LONG_S="1"
@@ -36,7 +35,14 @@ else
     exit 1
 fi
 ######
-source "$MODPATH/$lang_dir/Local.conf"
+lang_dir="LANG"
+if getprop persist.sys.locale | grep "Hans" 2>/dev/null; then
+    source "$MODPATH/$lang_dir/zh_CN.conf"
+elif getprop persist.sys.locale | grep "Hant" 2>/dev/null; then
+    source "$MODPATH/$lang_dir/zh_TW.conf"
+else
+    source "$MODPATH/$lang_dir/en_US.conf"
+fi
 ######
 echo -e "=====================================================\n"
 if [ -d "/data/adb/magisk" ]; then
