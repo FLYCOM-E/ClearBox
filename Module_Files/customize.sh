@@ -35,14 +35,20 @@ else
     exit 1
 fi
 ######
+lang=""
 lang_dir="LANG"
 if getprop persist.sys.locale | grep -E "zh-CN|Hans" 2>/dev/null; then
     source "$MODPATH/$lang_dir/zh_CN.conf"
+    lang="zh_CN"
 elif getprop persist.sys.locale | grep -E "zh-TW|Hant" 2>/dev/null; then
     source "$MODPATH/$lang_dir/zh_TW.conf"
+    lang="zh_TW"
 else
     source "$MODPATH/$lang_dir/en_US.conf"
+    lang="en_US"
 fi
+######
+sed -i "s|@LANG|$lang|g" "$MODPATH/module.prop"
 ######
 echo -e "=====================================================\n"
 if [ -d "/data/adb/magisk" ]; then
