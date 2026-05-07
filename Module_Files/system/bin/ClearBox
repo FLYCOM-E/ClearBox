@@ -21,9 +21,9 @@ timed_config_dir="TimedConfig"
 core="BashCore"
 ######
 lang_dir="LANG"
-if getprop persist.sys.locale | grep "Hans" 2>/dev/null; then
+if getprop persist.sys.locale | grep -E "zh-CN|Hans" 2>/dev/null; then
     source "$home_dir/$lang_dir/zh_CN.conf"
-elif getprop persist.sys.locale | grep "Hant" 2>/dev/null; then
+elif getprop persist.sys.locale | grep -E "zh-TW|Hant" 2>/dev/null; then
     source "$home_dir/$lang_dir/zh_TW.conf"
 else
     source "$home_dir/$lang_dir/en_US.conf"

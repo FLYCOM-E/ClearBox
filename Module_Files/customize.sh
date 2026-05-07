@@ -36,9 +36,9 @@ else
 fi
 ######
 lang_dir="LANG"
-if getprop persist.sys.locale | grep "Hans" 2>/dev/null; then
+if getprop persist.sys.locale | grep -E "zh-CN|Hans" 2>/dev/null; then
     source "$MODPATH/$lang_dir/zh_CN.conf"
-elif getprop persist.sys.locale | grep "Hant" 2>/dev/null; then
+elif getprop persist.sys.locale | grep -E "zh-TW|Hant" 2>/dev/null; then
     source "$MODPATH/$lang_dir/zh_TW.conf"
 else
     source "$MODPATH/$lang_dir/en_US.conf"
