@@ -17,6 +17,7 @@
 #include <android/log.h>
 #include <sys/system_properties.h>
 #include <linux/fs.h>
+#include <signal.h>
 
 // 多语言
 #include "Lang.h"
@@ -30,6 +31,7 @@
 #define SETTINGS_FILE_MAX_LINE 256      // 设置信息文件最大行长
 #define getprop __system_property_get
 #define print_log __android_log_print
+extern volatile sig_atomic_t sig_flag;
 
 long s_remove(char * path, int all);
 int whitelist_check(char * whitelist_file, char * package);
@@ -42,6 +44,8 @@ int set_server_name(char * argv[], char * new_name);
 int s_sed(char * file, char * target_line, char * text, int mode);
 int s_chattr(char * path, int mode, int dir);
 int help(char * argv[]);
+int s_daemon(void);
+int s_signed(void);
 
 int app_cache_clean(char * work_dir, int mode);
 int cust_rule_clean(char * work_dir);

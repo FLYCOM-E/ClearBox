@@ -477,3 +477,35 @@ int help(char * argv[])
     
     return 0;
 }
+
+/*
+守护进程化
+返回：
+    成功返回 0，失败返回 1
+*/
+int s_daemon(void)
+{
+    // Fork
+    pid_t new_pid = fork();
+    if (new_pid == -1)
+    {
+        return 1;
+    }
+    if (new_pid != 0)
+    {
+        exit(0);
+    }
+    
+    // BIND STD*
+    int fd = open("/dev/null", O_RDWR);
+    dup2(fd, STDIN_FILENO);
+    dup2(fd, STDOUT_FILENO);
+    dup2(fd, STDERR_FILENO);
+    close(fd);
+    
+    // OTHER
+    chdir("/");
+    setsid();
+    
+    return 0;
+}

@@ -244,31 +244,28 @@ int time_daemon(char * argv[], char * work_dir)
     
     // Daemon
     char log_text[sizeof(L_SERVER_START_ERR) + sizeof(L_TD_START_SUCCESS) + 128] = "";
-    pid_t new_pid = fork();
-    if (new_pid == -1)
+    if (s_daemon() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);
         return 1;
     }
-    if (new_pid != 0)
+    if (s_signed() != 0)
     {
-        exit(0);
+        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
+        write_log(work_dir, SERVER_NAME, log_text);
+        return 1;
     }
-    int fd = open("/dev/null", O_RDWR);
-    dup2(fd, STDIN_FILENO);
-    dup2(fd, STDOUT_FILENO);
-    dup2(fd, STDERR_FILENO);
-    close(fd);
-    setsid();
-    chdir("/");
-    set_server_name(argv, SERVER_NAME);
-    
+    else
+    {
+        sig_flag = 1;
+    }
     snprintf(log_text, sizeof(log_text), L_TD_START_SUCCESS, read_config, getpid());
     post(SERVER_NAME, log_text);
     write_log(work_dir, SERVER_NAME, log_text);
+    set_server_name(argv, SERVER_NAME);
     
-    for ( ; ; )
+    while (sig_flag)
     {
         time_t now_time = time(NULL);
         struct tm now_time_local;
@@ -372,6 +369,8 @@ int time_daemon(char * argv[], char * work_dir)
         while (waitpid(-1, NULL, WNOHANG) > 0);
         sleep((unsigned int)(60 - (time(NULL) % 60)));
     }
+    
+    return 0;
 }
 
 static int running(char * command)

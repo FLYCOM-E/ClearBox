@@ -124,31 +124,28 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         return 1;
     }
     
-    // 创建子进程脱离终端
+    // 脱离终端
     char log_text[sizeof(L_SERVER_START_ERR) + sizeof(L_SCD_START_SUCCESS) + 128] = "";
-    pid_t new_pid = fork();
-    if (new_pid == -1)
+    if (s_daemon() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);
         return 1;
     }
-    else if (new_pid != 0)
+    if (s_signed() != 0)
     {
-        exit(0);
+        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
+        write_log(work_dir, SERVER_NAME, log_text);
+        return 1;
     }
-    int std = open("/dev/null", O_RDWR);
-    dup2(std, STDIN_FILENO);
-    dup2(std, STDOUT_FILENO);
-    dup2(std, STDERR_FILENO);
-    close(std);
-    setsid();
-    chdir("/");
-    set_server_name(argv, SERVER_NAME);
-    
+    else
+    {
+        sig_flag = 1;
+    }
     snprintf(log_text, sizeof(log_text), L_SCD_START_SUCCESS, getpid());
     post(SERVER_NAME, log_text);
     write_log(work_dir, SERVER_NAME, log_text);
+    set_server_name(argv, SERVER_NAME);
     
     /* 
     等待时间
@@ -166,7 +163,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
                  max_empty_count = 30;
     
     // Start
-    for ( ; ; )
+    while (sig_flag)
     {
         // 检查获取前台失败次数
         if (get_error == max_get_error)
@@ -281,7 +278,8 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         }
         // 循环返回 ===
     }
-    return 1;
+    
+    return 0;
 }
 
 /*
