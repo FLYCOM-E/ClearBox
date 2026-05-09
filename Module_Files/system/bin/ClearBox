@@ -176,6 +176,7 @@ case "$input" in
       echo -e "\033[93m \t3：$L_AUTO_RUN $L_STORAGE_CLEAR\033[0m\n"
       echo -e "\033[93m \t4：$L_AUTO_RUN $L_CLEAR_ALL_APP_CACHE\033[0m\n"
       echo -e "\033[93m \t5：$L_AUTO_RUN $L_FILE_ALL\033[0m\n"
+      echo -e "\033[93m \t6：$L_AUTO_RUN $L_DISK_GC\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read at_input
@@ -353,6 +354,42 @@ case "$input" in
                 0)
                   clear
                   rm "$work_dir/$timed_config_dir/FileAll.conf"
+                  echo " » $L_CLOSED!"
+                  ;;
+                *)
+                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  ;;
+            esac
+            ;;
+          6)
+            clear
+            NowTime=$(grep "time=" "$work_dir/$timed_config_dir/F2fsGc.conf" | cut -f2 -d "=")
+            echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -e "\033[93m \t1：$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
+            echo -e "\033[93m \t0：$L_CLOSE_FUNCTION\033[0m\n"
+            echo -e "\033[96m ==============================================\033[0m\n"
+            echo -n " $L_PLEASE_INPUT:"
+            read at_fast_input
+            case "$at_fast_input" in
+                1)
+                  clear
+                  echo -en " » $L_AR_PLEASE_INPUT 1～30 $L_TIME_D："
+                  read day_input
+                  if ! echo "$day_input" | grep [0-9] >>/dev/null; then
+                      echo -e "\033[1;92m » $L_INPUT_NOTIS_NUM\033[0m"
+                  elif [ "$day_input" -lt 1 ]; then
+                      echo -e "\033[1;92m » $L_AR_TIME_MIN_ERR 1 $L_TIME_D!\033[0m"
+                  elif [ "$day_input" -gt 30 ]; then
+                      echo -e "\033[1;92m » $L_AR_TIME_MAX_ERR 30 $L_TIME_D!\033[0m"
+                  else
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/$core F2fs_GC\nin=0/5" > "$work_dir/$timed_config_dir/F2fsGc.conf"
+                      echo " » $L_OPEND!"
+                  fi
+                  ;;
+                0)
+                  clear
+                  rm "$work_dir/$timed_config_dir/F2fsGc.conf"
                   echo " » $L_CLOSED!"
                   ;;
                 *)

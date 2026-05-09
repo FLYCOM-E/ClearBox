@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <action interruptible="false">
+        <title>Custom Interval Selection (Unit: Days)</title>
+        <summary sh="echo -n 'Current setting time：'; grep 'time=' $work_dir/TimedConfig/F2fsGc.conf | cut -f2 -d '='" />
+        <param name="day_num" max="30" min="1" title="Slide to select time (Unit: Days)" type="seekbar" value="15" />
+            <set>
+            echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/BashCore F2fs_GC\nin=0/5" > "$work_dir/TimedConfig/F2fsGc.conf"
+            echo " » Setting successful!"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false" auto-off="false" >
+        <title>Disable this function</title>
+            <set>
+            rm "$work_dir/TimedConfig/F2fsGc.conf"
+            echo " » Disabled!"
+            </set>
+    </action>
+</group>
+<!-- END -->

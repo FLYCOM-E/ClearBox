@@ -34,3 +34,10 @@
     </pages>
 </group>
 <!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="定期執行 F2FS GC" config-sh="cat Timed_xml/Time_F2fsGc.xml"/>
+    </pages>
+</group>
+<!-- END -->
