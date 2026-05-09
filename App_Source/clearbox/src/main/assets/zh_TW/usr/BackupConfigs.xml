@@ -4,7 +4,7 @@
     <action interruptible="false" auto-off="false">
         <title>備份</title>
             <set>
-            "$home_dir/BashCore" configManager backup
+            "$home_dir/$core" configManager backup
             </set>
     </action>
 </group>
@@ -15,7 +15,7 @@
         <title>恢復</title>
         <param name="config" label="文件選擇" type="file" editable="true" />
             <set>
-            "$home_dir/BashCore" configManager recovery "$config"
+            "$home_dir/$core" configManager recovery "$config"
             </set>
     </action>
 </group>

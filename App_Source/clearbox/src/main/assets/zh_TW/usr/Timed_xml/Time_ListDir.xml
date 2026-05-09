@@ -3,10 +3,10 @@
 <group title=" ">
     <action interruptible="false">
         <title>自訂選擇間隔時間（單位：小時）</title>
-        <summary sh="echo -n '目前設定時間：'; grep 'time=' $work_dir/TimedConfig/ListDir.conf | cut -f2 -d '='" />
+        <summary sh="echo -n '目前設定時間：'; grep 'time=' $work_dir/$timed_config_dir/ListDir.conf | cut -f2 -d '='" />
         <param name="hour_num" max="23" min="1" title="滑動滑塊選擇時間（單位：小時）" type="seekbar" value="12" />
             <set>
-            echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/BashCore List_Dir" > "$work_dir/TimedConfig/ListDir.conf"
+            echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/$core List_Dir" > "$work_dir/$timed_config_dir/ListDir.conf"
             echo " » 設定成功！"
             </set>
     </action>
@@ -17,7 +17,7 @@
     <action interruptible="false" auto-off="false" >
         <title>關閉此功能</title>
             <set>
-            rm "$work_dir/TimedConfig/ListDir.conf"
+            rm "$work_dir/$timed_config_dir/ListDir.conf"
             echo " » 已關閉！"
             </set>
     </action>

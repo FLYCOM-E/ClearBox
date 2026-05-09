@@ -4,7 +4,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>触发系统默认 Dexoat</title>
             <set>
-            "$home_dir/BashCore" Dexoat_1
+            "$home_dir/$core" Dexoat_1
             </set>
     </action>
 </group>
@@ -21,7 +21,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>恢复（RESET）</title>
             <set>
-            "$home_dir/BashCore" Dexoat_3
+            "$home_dir/$core" Dexoat_3
             </set>
     </action>
 </group>

@@ -12,31 +12,31 @@ cat <<w
     <action interruptible="false" auto-off="false" id="001">
         <title>One-Click Optimization and Cleanup</title>
             <set>
-            "$home_dir/BashCore" ClearAll
+            "$home_dir/$core" ClearAll
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="002">
         <title>Clean up/remove custom directory</title>
             <set>
-            "$home_dir/BashCore" List_Dir
+            "$home_dir/$core" List_Dir
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="003">
         <title>Clear junk files and empty folders</title>
             <set>
-            "$home_dir/BashCore" All_Dir
+            "$home_dir/$core" All_Dir
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="004">
         <title>Clear all app cache</title>
             <set>
-            "$home_dir/BashCore" ClearCache
+            "$home_dir/$core" ClearCache
             </set>
     </action>
     <action warning="Classify internal/external storage files according to the rules, storage directory: under the Document folder in the corresponding directory" shell="default" auto-off="false" auto-finish="false" id="005">
         <title>Magnet (One-Click File Organization)</title>
             <set>
-            "$home_dir/BashCore" File_All
+            "$home_dir/$core" File_All
             </set>
     </action>
     <page
@@ -50,7 +50,7 @@ cat <<w
         <action shell="default" warning="Clears the caches necessary for the system to run, suitable for use when the system encounters strange bugs or undergoes major changes. After clearing, the system will automatically rebuild these caches. This operation does not improve performance or significantly reduce storage usage, so it is not recommended to use it casually if you are not familiar with it. A restart is recommended after clearing." interruptible="false" auto-off="false" auto-finish="false" id="006">
             <title>Clear system cache</title>
                 <set>
-                "$home_dir/BashCore" Clear_SCache
+                "$home_dir/$core" Clear_SCache
                 </set>
         </action>
 </group>
@@ -75,9 +75,9 @@ cat <<w
             </get>
             <set>
             if grep "clearbox_stop_install=0" "$work_dir/settings.prop" >/dev/null; then
-                "$home_dir/BashCore" StopInstall STOP
+                "$home_dir/$core" StopInstall STOP
             else
-                "$home_dir/BashCore" StopInstall RESET
+                "$home_dir/$core" StopInstall RESET
             fi
             </set>
     </switch>
@@ -96,9 +96,9 @@ cat <<w
             </get>
             <set>
             if grep "clearbox_stop_storage=0" "$work_dir/settings.prop" >/dev/null; then
-                "$home_dir/BashCore" StopStorage STOP
+                "$home_dir/$core" StopStorage STOP
             else
-                "$home_dir/BashCore" StopStorage RESET
+                "$home_dir/$core" StopStorage RESET
             fi
             </set>
     </switch>

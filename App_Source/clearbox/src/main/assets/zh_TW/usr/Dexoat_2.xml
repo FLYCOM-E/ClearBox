@@ -4,7 +4,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>Speed 模式</title>
             <set>
-            "$home_dir/BashCore" Dexoat_2 speed
+            "$home_dir/$core" Dexoat_2 speed
             </set>
     </action>
 </group>
@@ -14,7 +14,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="002" >
         <title>Speed-Profile 模式</title>
             <set>
-            "$home_dir/BashCore" Dexoat_2 speed-profile
+            "$home_dir/$core" Dexoat_2 speed-profile
             </set>
     </action>
 </group>
@@ -24,7 +24,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="003" >
         <title>Everything 模式</title>
             <set>
-            "$home_dir/BashCore" Dexoat_2 everything
+            "$home_dir/$core" Dexoat_2 everything
             </set>
     </action>
 </group>

@@ -4,7 +4,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>磁盘 GC</title>
             <set>
-            "$home_dir/BashCore" F2fs_GC
+            "$home_dir/$core" F2fs_GC
             </set>
     </action>
 </group>
@@ -14,7 +14,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="002" >
         <title>快速磁盘优化</title>
             <set>
-            "$home_dir/BashCore" Fast_GC
+            "$home_dir/$core" Fast_GC
             </set>
     </action>
 </group>

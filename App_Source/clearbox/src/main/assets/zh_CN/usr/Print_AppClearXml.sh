@@ -19,7 +19,7 @@ echo '
 </text>
 '
 
-if [ -z "$(ls "$work_dir/AppCleanRules/")" ]; then
+if [ -z "$(ls "$work_dir/$app_config_dir/")" ]; then
     echo '
     <text>
         <slices>
@@ -31,7 +31,7 @@ if [ -z "$(ls "$work_dir/AppCleanRules/")" ]; then
     exit 0
 fi
 
-for FN in "$work_dir/AppCleanRules"/*; do
+for FN in "$work_dir/$app_config_dir"/*; do
     Name=$(grep '@' "$FN" | head -n1 | cut -f2 -d '/')
     Package=$(grep '@' "$FN" | head -n1 | cut -f1 -d '/' | cut -f2 -d '@')
     echo "
@@ -39,7 +39,7 @@ for FN in "$work_dir/AppCleanRules"/*; do
         <action interruptible=\"false\" auto-off=\"false\" confirm=\"false\">
         <title>清理 $Name</title>
             <set>
-            \"$home_dir/BashCore\" Clear_App \"$Package\"
+            \"$home_dir/$core\" Clear_App \"$Package\"
             </set>
         </action>
     </group>

@@ -12,31 +12,31 @@ cat <<w
     <action interruptible="false" auto-off="false" id="001">
         <title>一键优化清理</title>
             <set>
-            "$home_dir/BashCore" ClearAll
+            "$home_dir/$core" ClearAll
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="002">
         <title>清理/干掉自定义目录</title>
             <set>
-            "$home_dir/BashCore" List_Dir
+            "$home_dir/$core" List_Dir
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="003">
         <title>清除垃圾文件及空文件夹</title>
             <set>
-            "$home_dir/BashCore" All_Dir
+            "$home_dir/$core" All_Dir
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="004">
         <title>清空所有软件缓存</title>
             <set>
-            "$home_dir/BashCore" ClearCache
+            "$home_dir/$core" ClearCache
             </set>
     </action>
     <action warning="根据规则深度归类内/外部储存文件，储存目录：对应目录下 Document 文件夹下" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
         <title>磁铁（一键归类文件</title>
             <set>
-            "$home_dir/BashCore" File_All
+            "$home_dir/$core" File_All
             </set>
     </action>
     <page
@@ -50,7 +50,7 @@ cat <<w
         <action shell="default" warning="清理系统运行时必要的缓存，适合在系统出现奇怪bug或大更改时使用，清理后系统会自动重建这些缓存，此操作并不能提升性能或有效降低储存占用，如果您不了解不建议随意使用。清理后建议重启" interruptible="false" auto-off="false" auto-finish="false" id="006">
             <title>清空系统缓存</title>
                 <set>
-                "$home_dir/BashCore" Clear_SCache
+                "$home_dir/$core" Clear_SCache
                 </set>
         </action>
 </group>
@@ -75,9 +75,9 @@ cat <<w
             </get>
             <set>
             if grep "clearbox_stop_install=0" "$work_dir/settings.prop" >/dev/null; then
-                "$home_dir/BashCore" StopInstall STOP
+                "$home_dir/$core" StopInstall STOP
             else
-                "$home_dir/BashCore" StopInstall RESET
+                "$home_dir/$core" StopInstall RESET
             fi
             </set>
     </switch>
@@ -96,9 +96,9 @@ cat <<w
             </get>
             <set>
             if grep "clearbox_stop_storage=0" "$work_dir/settings.prop" >/dev/null; then
-                "$home_dir/BashCore" StopStorage STOP
+                "$home_dir/$core" StopStorage STOP
             else
-                "$home_dir/BashCore" StopStorage RESET
+                "$home_dir/$core" StopStorage RESET
             fi
             </set>
     </switch>
