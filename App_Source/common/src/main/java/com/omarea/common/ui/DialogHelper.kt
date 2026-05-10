@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import com.omarea.common.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import androidx.appcompat.app.AlertDialog
 
 class DialogHelper {
     class DialogButton(public val text: String, public val onClick: Runnable? = null, public val dismiss: Boolean = true) {
