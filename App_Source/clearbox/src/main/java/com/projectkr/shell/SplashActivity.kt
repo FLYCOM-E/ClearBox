@@ -1,7 +1,7 @@
 package com.projectkr.shell
 
 import android.Manifest
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -20,7 +20,7 @@ import com.projectkr.shell.permissions.CheckRootStatus
 import java.io.BufferedReader
 import java.io.DataOutputStream
 
-class SplashActivity : Activity() {
+class SplashActivity : AppCompatActivity() {
     private lateinit var startLogo: View
     private lateinit var startStateText: TextView
 
@@ -43,7 +43,6 @@ class SplashActivity : Activity() {
     }
 
     private fun updateThemeStyle() {
-        getWindow().setNavigationBarColor(getColorAccent())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.setNavigationBarColor(getColor(R.color.splash_bg_color))
         } else {
