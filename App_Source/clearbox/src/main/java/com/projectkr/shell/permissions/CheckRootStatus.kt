@@ -2,7 +2,6 @@ package com.projectkr.shell.permissions
 import wipe.cache.module.R as KR
 import android.content.DialogInterface
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.os.Handler
@@ -12,6 +11,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.projectkr.shell.R
 import kotlin.system.exitProcess
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
  * 检查获取root权限
@@ -45,7 +45,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                 } else {
                     myHandler.post {
                         KeepShellPublic.tryExit()
-                        val builder = AlertDialog.Builder(context)
+                        val builder = MaterialAlertDialogBuilder(context)
                                 .setTitle(R.string.error_root)
                                 .setPositiveButton(R.string.btn_retry) { _: DialogInterface, _: Int ->
                                     KeepShellPublic.tryExit()

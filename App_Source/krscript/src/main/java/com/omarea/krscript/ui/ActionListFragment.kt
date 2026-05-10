@@ -1,6 +1,5 @@
 package wipe.cache.module.ui
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -26,6 +25,7 @@ import wipe.cache.module.config.IconPathAnalysis
 import wipe.cache.module.executor.ScriptEnvironmen
 import wipe.cache.module.model.*
 import wipe.cache.module.shortcut.ActionShortcutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
@@ -384,7 +384,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                             val darkMode = themeMode != null && themeMode!!.isDarkMode
 
                             val dialog = (if (isLongList) {
-                                val builder = AlertDialog.Builder(this.context, if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light)
+                                val builder = MaterialAlertDialogBuilder(this.context, if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light)
                                 builder.setView(dialogView).create().apply {
                                     show()
                                     val window = this.window
@@ -394,7 +394,6 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                     }
                                 }
                             } else {
-                                // AlertDialog.Builder(this.context).create()
                                 DialogHelper.customDialog(activity!!, dialogView).dialog
                             })
 

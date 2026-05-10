@@ -3,7 +3,6 @@ package wipe.cache.module;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -14,6 +13,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.ShellExecutor;
@@ -71,7 +71,7 @@ public class WebViewInjector {
                 @Override
                 public void onDownloadStart(final String url, String userAgent, final String contentDisposition, final String mimetype, long contentLength) {
                     Runnable showDownloadDialog = () -> {
-                        DialogHelper.Companion.animDialog(new AlertDialog.Builder(context)
+                        DialogHelper.Companion.animDialog(new MaterialAlertDialogBuilder(context)
                                 .setTitle(R.string.kr_download_confirm)
                                 .setMessage("" + url + "\n\n" + mimetype + "\n" + contentLength + "Bytes")
                                 .setPositiveButton(R.string.btn_confirm, (dialog, which) -> 

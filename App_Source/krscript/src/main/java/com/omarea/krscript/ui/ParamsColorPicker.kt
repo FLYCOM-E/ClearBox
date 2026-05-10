@@ -1,6 +1,5 @@
 package wipe.cache.module.ui
 
-import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -12,6 +11,7 @@ import android.widget.*
 import com.omarea.common.ui.DialogHelper
 import wipe.cache.module.R
 import wipe.cache.module.model.ActionParamInfo
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ParamsColorPicker(private val actionParamInfo: ActionParamInfo, private val context: Context) {
     fun render(): View {
@@ -104,7 +104,7 @@ class ParamsColorPicker(private val actionParamInfo: ActionParamInfo, private va
         greenBar.setOnSeekBarChangeListener(listener)
         blueBar.setOnSeekBarChangeListener(listener)
 
-        DialogHelper.animDialog(AlertDialog.Builder(context)
+        DialogHelper.animDialog(MaterialAlertDialogBuilder(context)
                 .setTitle(context.getString(R.string.kr_color_picker))
                 .setView(view)
                 .setPositiveButton(context.getString(R.string.btn_confirm)) { _, which ->

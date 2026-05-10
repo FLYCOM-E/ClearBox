@@ -1,7 +1,6 @@
 package com.omarea.common.ui
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.UiModeManager
 import android.content.Context
 import android.content.DialogInterface
@@ -15,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import com.omarea.common.R
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DialogHelper {
     class DialogButton(public val text: String, public val onClick: Runnable? = null, public val dismiss: Boolean = true) {
@@ -80,7 +80,7 @@ class DialogHelper {
             return if (dialog != null) DialogWrap(dialog) else null
         }
 
-        fun animDialog(builder: AlertDialog.Builder): DialogWrap {
+        fun animDialog(builder: MaterialAlertDialogBuilder): DialogWrap {
             val dialog = builder.create()
             animDialog(dialog)
             return DialogWrap(dialog)
@@ -369,9 +369,9 @@ class DialogHelper {
                     )
 
             val dialog = (if (useBlur) {
-                AlertDialog.Builder(context, R.style.custom_alert_dialog)
+                MaterialAlertDialogBuilder(context, R.style.custom_alert_dialog)
             } else {
-                AlertDialog.Builder(context)
+                MaterialAlertDialogBuilder(context)
             }).setView(view).setCancelable(cancelable).create()
 
             if (context is Activity) {

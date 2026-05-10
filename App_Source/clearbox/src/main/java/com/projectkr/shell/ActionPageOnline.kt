@@ -3,7 +3,6 @@ import wipe.cache.module.R as KR
 import android.content.DialogInterface
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -35,6 +34,7 @@ import wipe.cache.module.downloader.Downloader
 import wipe.cache.module.ui.ParamsFileChooserRender
 import java.util.*
 import androidx.activity.OnBackPressedCallback
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ActionPageOnline : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -166,7 +166,7 @@ class ActionPageOnline : AppCompatActivity() {
         krOnlineWebview.webChromeClient = object : WebChromeClient() {
             override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
                 DialogHelper.animDialog(
-                        AlertDialog.Builder(this@ActionPageOnline)
+                        MaterialAlertDialogBuilder(this@ActionPageOnline)
                                 .setMessage(message)
                                 .setPositiveButton(KR.string.btn_confirm) { _: DialogInterface, _: Int -> }
                                 .setOnDismissListener { result?.confirm() }
@@ -177,7 +177,7 @@ class ActionPageOnline : AppCompatActivity() {
 
             override fun onJsConfirm(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
                 DialogHelper.animDialog(
-                        AlertDialog.Builder(this@ActionPageOnline)
+                        MaterialAlertDialogBuilder(this@ActionPageOnline)
                                 .setMessage(message)
                                 .setPositiveButton(KR.string.btn_confirm) { _: DialogInterface, _: Int -> result?.confirm() }
                                 .setNeutralButton(KR.string.btn_cancel) { _: DialogInterface, _: Int -> result?.cancel() }
