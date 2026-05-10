@@ -41,7 +41,7 @@ class SplashActivity : AppCompatActivity() {
 
         checkPermissions()
     }
-
+    
     private fun updateThemeStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.setNavigationBarColor(getColor(R.color.splash_bg_color))

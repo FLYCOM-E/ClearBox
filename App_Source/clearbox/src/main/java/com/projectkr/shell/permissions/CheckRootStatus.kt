@@ -10,7 +10,7 @@ import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.projectkr.shell.R
-import kotlin.system.exitProcess
+import android.app.Activity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
@@ -56,7 +56,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                                     forceGetRoot()
                                 }
                                 .setNegativeButton(R.string.btn_exit) { _: DialogInterface, _: Int ->
-                                    exitProcess(0)
+                                    (context as? Activity)?.finish()
                                 }
                         if (context.resources.getBoolean(R.bool.force_root) != true) {
                             builder.setNeutralButton(KR.string.btn_skip) { _: DialogInterface, _: Int ->
@@ -89,7 +89,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                                     forceGetRoot()
                                 }),
                                 DialogHelper.DialogButton(context.getString(R.string.btn_exit), {
-                                    exitProcess(0)
+                                    (context as? Activity)?.finish()
                                 }))
                     }
                 }

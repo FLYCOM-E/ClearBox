@@ -384,7 +384,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                             val darkMode = themeMode != null && themeMode!!.isDarkMode
 
                             val dialog = (if (isLongList) {
-                                val builder = MaterialAlertDialogBuilder(this.context, if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light)
+                                val builder = MaterialAlertDialogBuilder(requireContext(), if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light)
                                 builder.setView(dialogView).create().apply {
                                     show()
                                     val window = this.window
