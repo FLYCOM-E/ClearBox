@@ -431,13 +431,13 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
 /*
 文件配置 MAX MIN 声明识别函数
 接收：
-    FILE * fp 文件流指针
+    char * str 后缀字符串
     long * max_size 最大大小
     long * min_size 最小大小
 返回：
     成功返回 0，失败自动检查填写错误/未填写
     如未填写导致则重置文件指针位置，返回 1
-    并置 max_size、min_size -1
+    并置 max_size / min_size -1
 */
 static int find_size(char * str, long * max_size, long * min_size)
 {
