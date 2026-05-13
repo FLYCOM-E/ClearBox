@@ -9,7 +9,7 @@
 
 #define WHITELIST "ClearWhitelist.prop"     // 白名单文件名
 #define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录
-#define STORAGES_DIR "/data/media/0"        // 储存目录
+#define STORAGES_DIR "/storage/emulated/0"        // 储存目录
 
 static int storage_cache_clear(char * data_path, char * work_dir);
 static int storage_clear(char * storage_dir, int home);

@@ -14,7 +14,7 @@
 #define F_DIR_NAME "Documents"          // 归类目录名称（仅文件归类模式会用）
 #define CONFIG_DIR_NAME "FileConfigs"   // 配置文件夹名称
 #define CARD_HOME "/mnt/media_rw"       // 外置储存根目录
-#define STORAGES_DIR "/data/media/0"    // 内置储存根目录
+#define STORAGES_DIR "/storage/emulated/0"    // 内置储存根目录
 
 static int file_clear = 0;              // 全局 mode
 static char * now_config_name = NULL;       // 配置文件名（为避免配置名跨多函数传）
