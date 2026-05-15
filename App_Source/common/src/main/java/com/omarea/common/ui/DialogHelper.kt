@@ -77,6 +77,15 @@ class DialogHelper {
                     setWindowAnimations(R.style.windowAnim)
                 }
                 dialog.show()
+                dialog.findViewById<View>(android.R.id.content)?.layoutParams?.apply {
+                    width = minOf(
+                       (dialog.context.resources.displayMetrics.widthPixels * 0.85).toInt(),
+                       dialog.context.resources.getDimensionPixelSize(R.dimen.dialog_max_width)
+                    )
+                    if (this is FrameLayout.LayoutParams) {
+                        gravity = Gravity.CENTER_HORIZONTAL
+                    }
+                }
             }
             return if (dialog != null) DialogWrap(dialog) else null
         }
@@ -378,6 +387,15 @@ class DialogHelper {
             if (context is Activity) {
                 dialog.show()
                 dialog.window?.run {
+                    dialog.findViewById<View>(android.R.id.content)?.layoutParams?.apply {
+                        width = minOf(
+                            (dialog.context.resources.displayMetrics.widthPixels * 0.85).toInt(),
+                            dialog.context.resources.getDimensionPixelSize(R.dimen.dialog_max_width)
+                        )
+                        if (this is FrameLayout.LayoutParams) {
+                            gravity = Gravity.CENTER_HORIZONTAL
+                        }
+                    }
                     setWindowBlurBg(this, context)
                     decorView.run {
                         systemUiVisibility = context.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -407,6 +425,15 @@ class DialogHelper {
                 }
                 dialog.show()
                 dialog.window?.run {
+                    dialog.findViewById<View>(android.R.id.content)?.layoutParams?.apply {
+                        width = minOf(
+                            (dialog.context.resources.displayMetrics.widthPixels * 0.85).toInt(),
+                            dialog.context.resources.getDimensionPixelSize(R.dimen.dialog_max_width)
+                        )
+                        if (this is FrameLayout.LayoutParams) {
+                            gravity = Gravity.CENTER_HORIZONTAL
+                        }
+                    }
                     setBackgroundDrawableResource(android.R.color.transparent)
                 }
             }
