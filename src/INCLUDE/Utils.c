@@ -161,15 +161,23 @@ long get_path_size(char * path)
 接收：
     const char * title 通知标题
     const char * message 消息内容
+    const char * id 消息 ID，为空则随机生成
 返回：
     int 成功返回 0，失败返回 1
 */
-int post(const char * title, const char * message)
+int post(const char * title, const char * message, const char * id)
 {
     //生成一个随机ID
-    srand((unsigned int)time(NULL));
     char rand_str[24] = {0};
-    snprintf(rand_str, sizeof(rand_str), "%s-%d", title, rand());
+    if (strcmp(id, "") == 0)
+    {
+        srand((unsigned int)time(NULL));
+        snprintf(rand_str, sizeof(rand_str), "%d", rand());
+    }
+    else
+    {
+        snprintf(rand_str, sizeof(rand_str), "%s", id);
+    }
     
     pid_t new_pid = fork();
     if (new_pid == -1)

@@ -6,8 +6,9 @@
              原理来自 Coolapk@Amktiao，感谢大佬
 */
 
-#include "INCLUDE/BashCore.h"
+#include "../INCLUDE/BashCore.h"
 
+#define SERVER_NAME "F2FS-GC"            // 进程名（MAX 15）
 #define PROP "dev.mnt.dev.data"             // 路径名称属性
 #define TIMEOUT 9                           // 超时时间（单位 M）
 #define SYSFS_PATH "/sys/fs/f2fs"           // F2FS sysfs 路径
@@ -15,16 +16,16 @@
 #define SYSFS_DIRTY_FILE "dirty_segments"   // 脏段节点名
 #define SYSFS_FREE_FILE "free_segments"     // 自由段节点名
 
-static int f2fs_gc(void);
+static int f2fs_gc(char * argv[]);
 static int fast_gc(void);
 static long get_f2fs_dirty(char * dirty_file);
 static long get_f2fs_free(char * free_file);
 
-int disk_gc(int mode)
+int disk_gc(char * argv[], int mode)
 {
     if (mode == 0)
     {
-        return f2fs_gc();
+        return f2fs_gc(argv);
     }
     else if (mode == 1)
     {
@@ -39,7 +40,7 @@ int disk_gc(int mode)
 返回：
     int 成功返回 0，失败返回 1
 */
-static int f2fs_gc(void)
+static int f2fs_gc(char * argv[])
 {
     char sysfs_name[PROP_VALUE_MAX] = {0};
     if (getprop(PROP, sysfs_name) <= 0)
@@ -95,8 +96,25 @@ static int f2fs_gc(void)
         return 1;
     }
     
+    // Daemon
+    if (s_daemon() != 0)
+    {
+        return 1;
+    }
+    if (s_signed() != 0)
+    {
+        return 1;
+    }
+    else
+    {
+        sig_flag = 1;
+    }
+    set_server_name(argv, SERVER_NAME);
+    post(SERVER_NAME, L_FG_START, SERVER_NAME);
+    
     // 等待循环
-    char cache[16] = "";
+    char cache[16] = "",
+         post_str[128] = "";;
     int time_s = 0, time_m = 0;
     
     for ( ; ; )
@@ -111,7 +129,7 @@ static int f2fs_gc(void)
         }
         if (time_m == TIMEOUT)
         {
-            fprintf(stderr, L_FG_ERR_TIMEOUT);
+            post(SERVER_NAME, L_FG_ERR_TIMEOUT, SERVER_NAME);
             break; // 超时退出
         }
         
@@ -122,49 +140,43 @@ static int f2fs_gc(void)
             fclose(sysfs_file_fp);
             if (strtol(cache, NULL, 10) == 0)
             {
-                fprintf(stderr, L_FG_END);
+                post(SERVER_NAME, L_FG_END, SERVER_NAME);
                 break; // GC 完成
             }
-        }
-        else
-        {
-            fprintf(stderr, L_OPEN_FILE_FAILED, f2fs_sysfs_file, strerror(errno));
         }
         
         // 这是一个时间打印逻辑
         if (time_m == 0)
         {
-            printf(L_FG_RUN_S, time_s);
+            snprintf(post_str, sizeof(post_str), L_FG_RUN_S, time_s);
         }
         else if (time_s == 0)
         {
-            printf(L_FG_RUN_M, time_m);
+            snprintf(post_str, sizeof(post_str), L_FG_RUN_M, time_m);
         }
         else
         {
-            printf(L_FG_RUN_MS, time_m, time_s);
+            snprintf(post_str, sizeof(post_str), L_FG_RUN_MS, time_m, time_s);
         }
-        fflush(stdout);
+        post(SERVER_NAME, post_str, SERVER_NAME);
     }
     
     // 读取最新脏段/空闲段
     long old_f2fs_dirty = f2fs_dirty;
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
-    fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
-    fprintf(stderr, L_FG_FREE, f2fs_free);
     
     // 如果脏段反增说明可能此设备不支持或 GC 未完全完成
     if (old_f2fs_dirty > f2fs_dirty)
     {
-        fprintf(stderr, L_FG_END_DIRTY, old_f2fs_dirty - f2fs_dirty);
+        snprintf(post_str, sizeof(post_str), L_FG_END_DIRTY, old_f2fs_dirty - f2fs_dirty);
     }
     else
     {
-        fprintf(stderr, L_FG_END_DIRTY_2, f2fs_dirty - old_f2fs_dirty);
+        snprintf(post_str, sizeof(post_str), L_FG_END_DIRTY_2, f2fs_dirty - old_f2fs_dirty);
     }
+    post(SERVER_NAME, post_str, SERVER_NAME);
     
-    fprintf(stderr, L_FG_DONE);
     return 0;
 }
 

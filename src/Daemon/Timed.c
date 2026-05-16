@@ -261,7 +261,7 @@ int time_daemon(char * argv[], char * work_dir)
         sig_flag = 1;
     }
     snprintf(log_text, sizeof(log_text), L_TD_START_SUCCESS, read_config, getpid());
-    post(SERVER_NAME, log_text);
+    post(SERVER_NAME, log_text, SERVER_NAME);
     write_log(work_dir, SERVER_NAME, log_text);
     set_server_name(argv, SERVER_NAME);
     
@@ -323,7 +323,7 @@ int time_daemon(char * argv[], char * work_dir)
                 // 如果有设置通知则发送
                 if (config[i].post == 1)
                 {
-                    post(config[i].title, config[i].message);
+                    post(config[i].title, config[i].message, SERVER_NAME);
                 }
                 
                 // 配置文件
@@ -350,7 +350,7 @@ int time_daemon(char * argv[], char * work_dir)
                         char error_text[512] = {0};
                         snprintf(error_text, sizeof(error_text), L_TD_CONFIG_WRITE_ERROR,
                                  config[i].config_name);
-                        post(SERVER_NAME, error_text);
+                        post(SERVER_NAME, error_text, SERVER_NAME);
                         config[i].last_error_notify = now_time; // 记录上次通知时间，避免短时间多次通知
                     }
                 }

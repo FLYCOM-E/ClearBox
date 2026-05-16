@@ -16,11 +16,11 @@ BIN_C = src/BashCore.c \
 		src/FreeZer.c \
 		src/StorageRuleClean.c \
 		src/StorageClean.c \
-		src/F2fs_GC.c \
 		src/SetInstall.c \
 		src/SetStorage.c \
 		src/FileManager.c \
 		src/Daemon/StopCached.c \
+		src/Daemon/F2fsGcd.c \
 		src/Daemon/Timed.c
 
 CORE_ELF = $(home_dir)/BashCore

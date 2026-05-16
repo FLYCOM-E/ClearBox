@@ -13,7 +13,7 @@
 static int running(char * args[]);
 static int module_config(char * home_dir, char * mode, char * config_file);
 static int file_all(char * work_dir, char * settings_file, int auto_);
-static int fast_gc(char * settings_file, int auto_);
+static int fast_gc(char * argv[], char * settings_file, int auto_);
 
 LangType current_lang;
 
@@ -143,7 +143,7 @@ int main(int argc, char * argv[])
                         app_cust_rule_clean(work_dir, "null", 1);
                         break;
                     case 1: 
-                        fast_gc(settings_file, 1);
+                        fast_gc(argv, settings_file, 1);
                         break;
                     case 2: 
                         app_cache_clean(work_dir, 0);
@@ -259,14 +259,14 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "Fast_GC") == 0)
     {
-        if (fast_gc(settings_file, 0) != 0)
+        if (fast_gc(argv, settings_file, 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "FAST GC 失败");
         }
     }
     else if (strcasecmp(argv[1], "F2fs_GC") == 0)
     {
-        if (disk_gc(0) != 0)
+        if (disk_gc(argv, 0) != 0)
         {
             write_log(work_dir, SERVER_NAME, "F2FS GC 失败");
         }
@@ -385,7 +385,7 @@ static int file_all(char * work_dir, char * settings_file, int auto_)
 }
 
 // 快速 GC
-static int fast_gc(char * settings_file, int auto_)
+static int fast_gc(char * argv[], char * settings_file, int auto_)
 {
     if (auto_ == 1)
     {
@@ -395,5 +395,5 @@ static int fast_gc(char * settings_file, int auto_)
             return 0;
         }
     }
-    return disk_gc(1);
+    return disk_gc(argv, 1);
 }

@@ -143,7 +143,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         sig_flag = 1;
     }
     snprintf(log_text, sizeof(log_text), L_SCD_START_SUCCESS, getpid());
-    post(SERVER_NAME, log_text);
+    post(SERVER_NAME, log_text, SERVER_NAME);
     write_log(work_dir, SERVER_NAME, log_text);
     set_server_name(argv, SERVER_NAME);
     
@@ -168,7 +168,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         // 检查获取前台失败次数
         if (get_error == max_get_error)
         {
-            post(SERVER_NAME, L_SCD_GETAPP_ERR_EXIT);
+            post(SERVER_NAME, L_SCD_GETAPP_ERR_EXIT, SERVER_NAME);
             break;
         }
         if (empty_count >= max_empty_count)
