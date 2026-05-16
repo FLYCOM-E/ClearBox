@@ -39,12 +39,6 @@ cat <<w
             "$home_dir/$core" File_All
             </set>
     </action>
-    <action interruptible="false" auto-off="false" id="bindpath">
-        <title>规则目录绑定（重定向）</title>
-            <set>
-            "$home_dir/$core" BindPath
-            </set>
-    </action>
     <page
         config-sh="Print_FileClearXml.sh"
         desc="此页面通过读取清理配置文件动态构建"
@@ -69,7 +63,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="阻止所有软件更新 / 安装">
+<group title="">
     <switch>
         <title>阻止所有软件更新 / 安装</title>
             <get>
@@ -90,7 +84,30 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="内部储存固定功能">
+<group title="">
+    <switch>
+        <title>规则目录绑定（重定向</title>
+            <get>
+            if grep "clearbox_bind_path=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_bind_path=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
+                echo " » 已开启，重启生效 ~"
+            else
+                sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
+                echo " » 已关闭，重启生效 ~"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
     <switch>
         <title>内部储存固定功能</title>
             <get>

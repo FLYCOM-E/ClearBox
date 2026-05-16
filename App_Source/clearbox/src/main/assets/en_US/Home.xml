@@ -39,12 +39,6 @@ cat <<w
             "$home_dir/$core" File_All
             </set>
     </action>
-    <action interruptible="false" auto-off="false" id="bindpath">
-        <title>Rule Directory Binding (Redirect)</title>
-            <set>
-            "$home_dir/$core" BindPath
-            </set>
-    </action>
     <page
         config-sh="Print_FileClearXml.sh"
         desc="This page is dynamically constructed by reading the cleanup configuration file."
@@ -69,7 +63,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="Block all software updates/installations">
+<group title="">
     <switch>
         <title>Block all software updates/installations</title>
             <get>
@@ -90,7 +84,30 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="Internal storage fixed function">
+<group title="">
+    <switch>
+        <title>Rule Directory Binding (Redirect</title>
+            <get>
+            if grep "clearbox_bind_path=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_bind_path=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
+                echo " » Enabled, reboot to take effect ~"
+            else
+                sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
+                echo " » Disabled, reboot to take effect ~"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
     <switch>
         <title>Internal storage fixed function</title>
             <get>

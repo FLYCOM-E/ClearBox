@@ -37,6 +37,7 @@ StartSettings()
         [ -z "$clearbox_auto_fast_gc" ] && echo "clearbox_auto_fast_gc=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_clear_disk" ] && echo "clearbox_clear_disk=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_file_all_disk" ] && echo "clearbox_file_all_disk=0" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_bind_path" ] && echo "clearbox_bind_path=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_file_clear_disk" ] && echo "clearbox_file_clear_disk=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_debug_mode" ] && echo "clearbox_debug_mode=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_clear_cache_size" ] && echo "clearbox_clear_cache_size=5" >> "$work_dir/settings.prop"
@@ -107,6 +108,10 @@ while [ ! -d "/storage/emulated/0/" ]; do
 done
 if [ "$first_stage" = 1 ]; then
     sleep 30
+fi
+######
+if [ "$clearbox_bind_path" = 1 ]; then
+    "$home_dir/$core" BindPath 2> "$work_dir/LOG.log"
 fi
 ######
 if [ "$clearbox_stop_cache" = 1 ]; then
