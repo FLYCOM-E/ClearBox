@@ -8,7 +8,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="清理功能">
+<group title=" ">
     <action interruptible="false" auto-off="false" id="001">
         <title>一鍵優化清理</title>
             <set>
@@ -56,14 +56,14 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group>
+<group title=" ">
     <pages>
         <page title="自動清理" config-sh="cat Timed_ProSettings.xml" />
     </pages>
 </group>
 <!-- END -->
 <!-- START -->
-<group title="">
+<group title=" ">
     <switch>
         <title>阻止所有軟體更新 / 安裝</title>
             <get>
@@ -84,7 +84,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="">
+<group title=" ">
     <switch>
         <title>規則目錄綁定（重新導向</title>
             <get>
@@ -107,7 +107,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="">
+<group title=" ">
     <switch>
         <title>內部儲存固定功能</title>
             <get>
@@ -128,7 +128,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="阻止快取功能">
+<group title=" ">
     <switch>
         <title>阻止快取功能</title>
         <get>
@@ -165,7 +165,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="其它功能 (new">
+<group title=" ">
     <pages>
         <page title="磁碟 &amp; 軟體優化" config-sh="cat GC_Dexoat.xml" />
     </pages>

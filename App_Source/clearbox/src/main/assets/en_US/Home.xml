@@ -8,7 +8,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="Cleaning Function">
+<group title=" ">
     <action interruptible="false" auto-off="false" id="001">
         <title>One-Click Optimization and Cleanup</title>
             <set>
@@ -56,14 +56,14 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group>
+<group title=" ">
     <pages>
         <page title="Auto Clean" config-sh="cat Timed_ProSettings.xml" />
     </pages>
 </group>
 <!-- END -->
 <!-- START -->
-<group title="">
+<group title=" ">
     <switch>
         <title>Block all software updates/installations</title>
             <get>
@@ -84,7 +84,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="">
+<group title=" ">
     <switch>
         <title>Rule Directory Binding (Redirect</title>
             <get>
@@ -107,7 +107,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="">
+<group title=" ">
     <switch>
         <title>Internal storage fixed function</title>
             <get>
@@ -128,7 +128,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="Disable caching">
+<group title=" ">
     <switch>
         <title>Disable caching</title>
         <get>
@@ -165,7 +165,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title="Other functions (new">
+<group title=" ">
     <pages>
         <page title="Disk &amp; Software Optimization" config-sh="cat GC_Dexoat.xml" />
     </pages>
