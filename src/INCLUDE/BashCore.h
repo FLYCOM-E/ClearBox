@@ -18,6 +18,7 @@
 #include <sys/system_properties.h>
 #include <linux/fs.h>
 #include <signal.h>
+#include <sys/mount.h>
 
 // 多语言
 #include "Lang.h"
@@ -59,3 +60,4 @@ int dexoat(int mode, char * cust_mode);
 int freezer_open(void);
 int stop_cache_daemon(char * argv[], char * work_dir);
 int time_daemon(char * argv[], char * work_dir);
+int bmount(char * work_dir);

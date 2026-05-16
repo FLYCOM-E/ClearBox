@@ -19,6 +19,7 @@ BIN_C = src/BashCore.c \
 		src/SetInstall.c \
 		src/SetStorage.c \
 		src/FileManager.c \
+		src/Bmount.c \
 		src/Daemon/StopCached.c \
 		src/Daemon/F2fsGcd.c \
 		src/Daemon/Timed.c

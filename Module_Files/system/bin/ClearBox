@@ -40,14 +40,15 @@ echo -e "\033[93m  2：$L_CUST_CLEAR\033[0m\n"
 echo -e "\033[93m  3：$L_STORAGE_CLEAR\033[0m\n"
 echo -e "\033[93m  4：$L_CLEAR_ALL_APP_CACHE\033[0m\n"
 echo -e "\033[93m  5：$L_FILE_ALL\033[0m\n"
-echo -e "\033[93m  6：$L_FILE_CLEAR\033[0m\n"
-echo -e "\033[93m  7：$L_CUST_APP_CLEAR\033[0m\n"
-echo -e "\033[93m  8：$L_CLEAR_SYS_CACHE\033[0m\n"
-echo -e "\033[93m  9：$L_AUTO_CLEAR\033[0m\n"
-echo -e "\033[93m  10：$L_STOP_INSTALL\033[0m\n"
-echo -e "\033[93m  11：$L_STOP_STORAGE\033[0m\n"
-echo -e "\033[93m  12：$L_STOP_APP_CACHE\033[0m\n"
-echo -e "\033[93m  13：$L_DISK_APP_PLUS\033[0m\n"
+echo -e "\033[93m  6：$L_PATH_BIND\033[0m\n"
+echo -e "\033[93m  7：$L_FILE_CLEAR\033[0m\n"
+echo -e "\033[93m  8：$L_CUST_APP_CLEAR\033[0m\n"
+echo -e "\033[93m  9：$L_CLEAR_SYS_CACHE\033[0m\n"
+echo -e "\033[93m  10：$L_AUTO_CLEAR\033[0m\n"
+echo -e "\033[93m  11：$L_STOP_INSTALL\033[0m\n"
+echo -e "\033[93m  12：$L_STOP_STORAGE\033[0m\n"
+echo -e "\033[93m  13：$L_STOP_APP_CACHE\033[0m\n"
+echo -e "\033[93m  14：$L_DISK_APP_PLUS\033[0m\n"
 echo -e "\033[93m  00：$L_SETTINGS\033[0m\n"
 echo -e "\033[96m ==============================================\033[0m"
 echo -e "\t\t   --- $L_HOME_EXIT_TITLE ---"
@@ -84,6 +85,10 @@ case "$input" in
       esac
       ;;
     6)
+      clear
+      "$home_dir/$core" BindPath
+      ;;
+    7)
       clear
       if [ -z "$(ls "$work_dir/$file_config_dir/")" ]; then
           echo -e "\033[91m » $L_FILE_CONFIG_NOT_FOUND\033[0m"
@@ -123,7 +128,7 @@ case "$input" in
          [ "$count_2" = "$count" ] && echo -e "\033[91m » $L_INPUT_ERROR\033[0m" && break
       done
       ;;
-    7)
+    8)
       clear
       if [ -z "$(ls "$work_dir/$app_config_dir/")" ]; then
           echo -e "\033[91m » $L_APP_CONFIG_NOT_FOUND\033[0m"
@@ -154,7 +159,7 @@ case "$input" in
          [ "$count_2" = "$count" ] && echo -e "\033[91m » $L_INPUT_ERROR\033[0m" && break
       done
       ;;
-    8)
+    9)
       echo -en " » $L_CONFIRM？(y): "
       read sc_input
       case "$sc_input" in
@@ -167,7 +172,7 @@ case "$input" in
             ;;
       esac
       ;;
-    9)
+    10)
       clear
       echo -e "\033[104m [$L_AUTO_CLEAR]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
@@ -402,7 +407,7 @@ case "$input" in
             ;;
       esac
       ;;
-    10)
+    11)
       clear
       if [ "$clearbox_stop_install" = 1 ]; then
           text_1="$L_CLOSE"
@@ -439,7 +444,7 @@ case "$input" in
             ;;
       esac
       ;;
-    11)
+    12)
       clear
       if [ "$clearbox_stop_storage" = 1 ]; then
           text_1="$L_CLOSE"
@@ -476,7 +481,7 @@ case "$input" in
             ;;
       esac
       ;;
-    12)
+    13)
       clear
       if [ "$clearbox_stop_cache" = 1 ]; then
           text_1="$L_CLOSE"
@@ -550,7 +555,7 @@ case "$input" in
             ;;
       esac
       ;;
-    13)
+    14)
       clear
       echo -e "\033[104m [$L_DISK_APP_PLUS]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"

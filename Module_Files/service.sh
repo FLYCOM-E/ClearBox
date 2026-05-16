@@ -6,6 +6,7 @@ export home_dir="${0%/*}"
 app_config_dir="AppCleanRules"
 storage_config_dir="CleanConfigs"
 file_config_dir="FileConfigs"
+bind_config_dir="BindConfigs"
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
 set=0
@@ -48,14 +49,15 @@ StartSettings()
     mkdir -p "$work_dir/$app_config_dir"
     mkdir -p "$work_dir/$storage_config_dir"
     mkdir -p "$work_dir/$file_config_dir"
-    mkdir -p "$work_dir/TimedConfig"
+    mkdir -p "$work_dir/$file_config_dir"
+    mkdir -p "$work_dir/$bind_config_dir"
     ######
     [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
     [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
     ######
     if [ "$(ls "$work_dir/$file_config_dir/")" = "" ]; then
-        if [ -d "$home_dir/FileConfigs" ]; then
-            cp -r "$home_dir/FileConfigs/"* "$work_dir/$file_config_dir/"
+        if [ -d "$home_dir/$file_config_dir" ]; then
+            cp -r "$home_dir/$file_config_dir/"* "$work_dir/$file_config_dir/"
         fi
     fi
     if [ "$(ls "$work_dir/$app_config_dir/")" = "" ]; then

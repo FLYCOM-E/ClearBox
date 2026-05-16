@@ -16,6 +16,7 @@ typedef struct
     const char * l_open_path_failed;
     const char * l_open_file_failed;
     const char * l_mkdir_error;
+    const char * l_mount_error;
     const char * l_get_applist_error;
     const char * l_get_sys_version_err;
     const char * l_w_setprop_err;
@@ -125,6 +126,7 @@ typedef struct
     const char * l_sr_clear_failed;
     const char * l_sr_line_failed_path_err;
     const char * l_sr_end;
+    const char * l_bm_mount_success;
 } LangPack;
 
 static const LangPack lang_packs[] =
@@ -138,6 +140,7 @@ static const LangPack lang_packs[] =
         .l_open_path_failed = " » %s 目录打开失败: %s\n",
         .l_open_file_failed = " » %s 文件打开失败: %s\n",
         .l_mkdir_error = " » %s 目录创建失败: %s\n",
+        .l_mount_error = " » %s 目录挂载失败: %s\n",
         .l_get_applist_error = " » 获取软件列表失败！\n",
         .l_get_sys_version_err = " » 获取系统版本失败！\n",
         .l_w_setprop_err = " » 警告：PROP设置失败！\n",
@@ -247,6 +250,7 @@ static const LangPack lang_packs[] =
         .l_sr_clear_failed = " » 清理 %s 失败\n",
         .l_sr_line_failed_path_err = " » %d 行错误：路径错误/无法访问\n",
         .l_sr_end = " » 自定义目录处理完成！\n",
+        .l_bm_mount_success = " » 已成功绑定目录 %s 至 %s\n",
     },
     [LANG_zh_TW] =
     {
@@ -257,6 +261,7 @@ static const LangPack lang_packs[] =
         .l_open_path_failed = " » %s 目錄開啟失敗: %s\n",
         .l_open_file_failed = " » %s 檔案開啟失敗: %s\n",
         .l_mkdir_error = " » %s 目錄建立失敗: %s\n",
+        .l_mount_error = " » %s 目錄掛載失敗: %s\n",
         .l_get_applist_error = " » 獲取軟體列表失敗！\n",
         .l_get_sys_version_err = " » 獲取系統版本失敗！\n",
         .l_w_setprop_err = " » 警告：PROP設定失敗！\n",
@@ -366,6 +371,7 @@ static const LangPack lang_packs[] =
         .l_sr_clear_failed = " » 清理 %s 失敗\n",
         .l_sr_line_failed_path_err = " » %d 行錯誤：路徑錯誤/無法存取\n",
         .l_sr_end = " » 自訂目錄處理完成！\n",
+        .l_bm_mount_success = " » 已成功綁定目錄 %s 至 %s\n",
     },
     [LANG_en_US] =
     {
@@ -376,6 +382,7 @@ static const LangPack lang_packs[] =
         .l_open_path_failed = " » Failed to open directory %s: %s\n",
         .l_open_file_failed = " » Failed to open file %s: %s\n",
         .l_mkdir_error = " » Failed to create directory %s: %s\n",
+        .l_mount_error = " » Failed to mount directory %s: %s\n",
         .l_get_applist_error = " » Failed to get application list!\n",
         .l_get_sys_version_err = " » Failed to get system version!\n",
         .l_w_setprop_err = " » Warning: PROP setting failed!\n",
@@ -485,6 +492,7 @@ static const LangPack lang_packs[] =
         .l_sr_clear_failed = " » Failed to clean %s\n",
         .l_sr_line_failed_path_err = " » Line %d error: Path error/inaccessible\n",
         .l_sr_end = " » Custom directory processing completed!\n",
+        .l_bm_mount_success = " » Successfully bound directory %s to %s\n",
     },
 };
 
@@ -497,6 +505,7 @@ extern LangType current_lang;
 #define L_OPEN_PATH_FAILED lang_packs[current_lang].l_open_path_failed
 #define L_OPEN_FILE_FAILED lang_packs[current_lang].l_open_file_failed
 #define L_MKDIR_ERROR lang_packs[current_lang].l_mkdir_error
+#define L_MOUNT_ERROR lang_packs[current_lang].l_mount_error
 #define L_GET_APPLIST_ERROR lang_packs[current_lang].l_get_applist_error
 #define L_GET_SYS_VERSION_ERR lang_packs[current_lang].l_get_sys_version_err
 #define L_W_SETPROP_ERR lang_packs[current_lang].l_w_setprop_err
@@ -606,3 +615,4 @@ extern LangType current_lang;
 #define L_SR_CLEAR_FAILED lang_packs[current_lang].l_sr_clear_failed
 #define L_SR_LINE_FAILED_PATH_ERR lang_packs[current_lang].l_sr_line_failed_path_err
 #define L_SR_END lang_packs[current_lang].l_sr_end
+#define L_BM_MOUNT_SUCCESS lang_packs[current_lang].l_bm_mount_success

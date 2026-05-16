@@ -39,6 +39,12 @@ cat <<w
             "$home_dir/$core" File_All
             </set>
     </action>
+    <action interruptible="false" auto-off="false" id="bindpath">
+        <title>规则目录绑定（重定向）</title>
+            <set>
+            "$home_dir/$core" BindPath
+            </set>
+    </action>
     <page
         config-sh="Print_FileClearXml.sh"
         desc="此页面通过读取清理配置文件动态构建"

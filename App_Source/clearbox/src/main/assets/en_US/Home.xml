@@ -39,6 +39,12 @@ cat <<w
             "$home_dir/$core" File_All
             </set>
     </action>
+    <action interruptible="false" auto-off="false" id="bindpath">
+        <title>Rule Directory Binding (Redirect)</title>
+            <set>
+            "$home_dir/$core" BindPath
+            </set>
+    </action>
     <page
         config-sh="Print_FileClearXml.sh"
         desc="This page is dynamically constructed by reading the cleanup configuration file."

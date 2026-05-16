@@ -319,6 +319,10 @@ int main(int argc, char * argv[])
     {
         time_daemon(argv, work_dir);
     }
+    else if (strcasecmp(argv[1], "BindPath") == 0)
+    {
+        bmount(work_dir);
+    }
     else if (strcasecmp(argv[1], "help") == 0 ||
             strcasecmp(argv[1], "-help") == 0 ||
             strcasecmp(argv[1], "--help") == 0)
