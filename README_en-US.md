@@ -224,7 +224,23 @@ One-click classify internal/multi-external storage files, rules shared with file
 
 
 
-## **13**：Disk & software optimization
+## **13**：[Beta] Rule Directory Binding (Redirect)
+
+Configuration Directory：**`/data/adb/wipe_cache/BindConfigs`**
+
+Create a custom name **.conf** file in this directory and fill in custom mount rules：
+
+```
+<Bind Directory> <Target Directory>
+```
+
+Note: Please do not enter **absolute paths**, but rather **relative internal storage paths**, otherwise mounting will fail
+
+When writing/creating directories/files into **<Bind Directory>**, they will be redirected to **<Target Directory>**
+
+
+
+## **14**：Disk & software optimization
 
 This is an optimization function set, including disk optimization ( **f2fs-GC** ) and **Dexoat** (software pre-compilation) functions
 
