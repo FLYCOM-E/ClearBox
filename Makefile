@@ -9,6 +9,7 @@ home_dir = Module_Files
 
 UTILS_C = src/INCLUDE/Utils.c
 SIGNED_C = src/INCLUDE/Signed.c
+CHATTR_C = src/INCLUDE/Chattr.c
 BIN_C = src/BashCore.c \
 		src/AppClean.c \
 		src/CacheClean.c \
@@ -30,7 +31,7 @@ all: $(CORE_ELF)
 .PHONY: all
 
 $(CORE_ELF): $(BIN_C)
-	$(CC) $(CFLAGS) $(BIN_C) $(UTILS_C) $(SIGNED_C) $(LDFLAGS) -o $(CORE_ELF)
+	$(CC) $(CFLAGS) $(BIN_C) $(UTILS_C) $(SIGNED_C) $(CHATTR_C) $(LDFLAGS) -o $(CORE_ELF)
 
 clean: 
 	@rm $(CORE_ELF)
