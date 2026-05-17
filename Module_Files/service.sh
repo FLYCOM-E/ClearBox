@@ -102,7 +102,7 @@ chmod -R 700 "$home_dir/"
 chmod -R 700 "$work_dir/"
 ###### The second stage. wait for storaged up
 set=0
-while [ ! -d "/storage/emulated/0" ]; do
+while [ ! -d "/storage/emulated/0/Android/data" ]; do
     [ "$set" = 60 ] && break
     set=$((set + 1))
     sleep 5
