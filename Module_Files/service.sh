@@ -94,24 +94,20 @@ fi
 # Start Log
 echo "====== Boot Time $(date) ======" > "$work_dir/LOG.log"
 if [ "$first_stage" = 1 ]; then
-    exec 2>>"$work_dir/LOG.log"
+    exec >>"$work_dir/LOG.log" 2>&1
 fi
-# Chmod 700
+# Chmod
 chmod -R 700 "$home_dir/"
 chmod -R 700 "$work_dir/"
 ###### The second stage. wait for storaged up
 set=0
-while [ ! -d "/storage/emulated/0/" ]; do
+while [ ! -d "/storage/emulated/0" ]; do
     [ "$set" = 60 ] && break
     set=$((set + 1))
     sleep 5
 done
 if [ "$first_stage" = 1 ]; then
     sleep 30
-fi
-######
-if [ "$clearbox_bind_path" = 1 ]; then
-    "$home_dir/$core" BindPath 2> "$work_dir/LOG.log"
 fi
 ######
 if [ "$clearbox_stop_cache" = 1 ]; then
@@ -123,5 +119,9 @@ if pgrep "ClearBox Timed" >/dev/null 2>&1; then
     kill $(pgrep "ClearBox Timed")
 fi
 "$home_dir/BashCore" "Timed"
+######
+if [ "$clearbox_bind_path" = 1 ]; then
+    "$home_dir/$core" BindPath
+fi
 ######
 exit 0
