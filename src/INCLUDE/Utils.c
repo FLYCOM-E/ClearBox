@@ -67,34 +67,49 @@ long s_remove(char * path, int all)
 }
 
 /* 
-白名单检查函数
+内容匹配/查找函数
 接收：
-    char * whitelist_file白名单文件
-    char * App 软件包名
+    char * file 查找文件
+    char * text 查找字符串
+    int mode 是否精确匹配
 返回：
-    int 找到返回1，未找到返回0，失败返回-1
+    找到返回 1，未找到返回 0，失败返回 -1
 */
-int whitelist_check(char * whitelist_file, char * package)
+int s_grep(char * file, char * text, int mode)
 {
-    // 打开白名单文件并遍历查找包名
+    // 打开文件遍历查找
     int end = 0;
-    char package_line[MAX_PACKAGE] = "";
-    FILE * whitelist_file_fp = fopen(whitelist_file, "r");
-    if (whitelist_file_fp)
+    char line[MAX_PATH] = "";
+    FILE * file_fp = fopen(file, "r");
+    if (file_fp)
     {
-        while (fgets(package_line, sizeof(package_line), whitelist_file_fp))
+        if (mode == 1)
         {
-            package_line[strcspn(package_line, "\n")] = 0;
-            if (strcmp(package_line, package) == 0)
+            while (fgets(line, sizeof(line), file_fp))
             {
-                end = 1;
+                line[strcspn(line, "\n")] = 0;
+                if (strcmp(line, text) == 0)
+                {
+                    end = 1;
+                }
             }
         }
-        fclose(whitelist_file_fp);
+        else
+        {
+            while (fgets(line, sizeof(line), file_fp))
+            {
+                line[strcspn(line, "\n")] = 0;
+                if (strstr(line, text))
+                {
+                    end = 1;
+                }
+            }
+        }
+        fclose(file_fp);
     }
     else
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
+        fprintf(stderr, L_OPEN_FILE_FAILED, file, strerror(errno));
         end = -1;
     }
     return end;

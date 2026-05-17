@@ -35,7 +35,7 @@
 extern volatile sig_atomic_t sig_flag;
 
 long s_remove(char * path, int all);
-int whitelist_check(char * whitelist_file, char * package);
+int s_grep(char * file, char * text, int mode);
 long get_path_size(char * path);
 int post(const char * title, const char * message, const char * id);
 int write_log(char * config_dir, char * name_id, char * text);

@@ -128,7 +128,7 @@ static int storage_cache_clear(char * data_path, char * work_dir)
         }
         
         // 白名单检查
-        if (whitelist_check(whitelist_file, entry -> d_name) == 1)
+        if (s_grep(whitelist_file, entry -> d_name, 1) == 1)
         {
             continue;
         }

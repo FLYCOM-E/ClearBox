@@ -167,7 +167,7 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
             if (cache_size > clear_cache_size)
             {
                 // 白名单检查
-                if (whitelist_check(whitelist_file, package_list[i] + 8) == 1)
+                if (s_grep(whitelist_file, package_list[i] + 8, 1) == 1)
                 {
                     continue;
                 }

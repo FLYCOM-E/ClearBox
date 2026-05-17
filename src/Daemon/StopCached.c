@@ -305,7 +305,7 @@ static int set_app_cache(char * dir, char * top_app,
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);   //定义WhiteList
     
     //检查缓存目录是否真实存在并过滤路径逃逸
-    if (whitelist_check(whitelist_file, top_app) != 1)
+    if (s_grep(whitelist_file, top_app, 1) != 1)
     {
         if (access(top_app_dir, F_OK) == 0 &&
             strstr(top_app_dir, "/../") == NULL)
