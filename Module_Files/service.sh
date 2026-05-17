@@ -7,6 +7,7 @@ app_config_dir="AppCleanRules"
 storage_config_dir="CleanConfigs"
 file_config_dir="FileConfigs"
 bind_config_dir="BindConfigs"
+core="BashCore"
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
 set=0
@@ -112,16 +113,16 @@ fi
 ######
 if [ "$clearbox_stop_cache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
-        "$home_dir/BashCore" "StopCached"
+        "$home_dir/$core" "StopCached"
     fi
 fi
 if pgrep "ClearBox Timed" >/dev/null 2>&1; then
     kill $(pgrep "ClearBox Timed")
 fi
-"$home_dir/BashCore" "Timed"
+"$home_dir/$core" "Timed"
 ######
 if [ "$clearbox_bind_path" = 1 ]; then
-    "$home_dir/$core" BindPath
+    "$home_dir/$core" "BindPath"
 fi
 ######
 exit 0
