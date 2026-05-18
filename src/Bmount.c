@@ -91,8 +91,9 @@ static int bind_mount(char * config_file)
         
         if (root_dir_p && bind_dir_p)
         {
-            char root_dir[sizeof(DATA_DIR) + strlen(root_dir_p) + 2],
-                 bind_dir[sizeof(DATA_DIR) + strlen(bind_dir_p) + 2];
+            // 这里始终使用 STORAGE_DIR 分配大小（大于 DATA_DIR）
+            char root_dir[sizeof(STORAGE_DIR) + strlen(root_dir_p) + 2],
+                 bind_dir[sizeof(STORAGE_DIR) + strlen(bind_dir_p) + 2];
             
             if (s_grep(MOUNTS, "sdcardfs", 0) == 1)
             {
