@@ -252,7 +252,7 @@ static const LangPack lang_packs[] =
         .l_sr_line_failed_path_err = " » %d 行错误：路径错误/无法访问\n",
         .l_sr_end = " » 自定义目录处理完成！\n",
         .l_bm_mount_success = " » 已成功绑定目录 %s 至 %s\n",
-        .l_bm_error_is_sdcardfs = " » 您的设备使用 sdcardfs 方案，此功能无法正常使用！",
+        .l_bm_error_is_sdcardfs = " » 您的设备使用 sdcardfs 方案，此功能无法正常使用！\n",
     },
     [LANG_zh_TW] =
     {
@@ -374,7 +374,7 @@ static const LangPack lang_packs[] =
         .l_sr_line_failed_path_err = " » %d 行錯誤：路徑錯誤/無法存取\n",
         .l_sr_end = " » 自訂目錄處理完成！\n",
         .l_bm_mount_success = " » 已成功綁定目錄 %s 至 %s\n",
-        .l_bm_error_is_sdcardfs = " » 您的裝置使用 sdcardfs 方案，此功能無法正常使用！",
+        .l_bm_error_is_sdcardfs = " » 您的裝置使用 sdcardfs 方案，此功能無法正常使用！\n",
     },
     [LANG_en_US] =
     {
@@ -496,7 +496,7 @@ static const LangPack lang_packs[] =
         .l_sr_line_failed_path_err = " » Line %d error: Path error/inaccessible\n",
         .l_sr_end = " » Custom directory processing completed!\n",
         .l_bm_mount_success = " » Successfully bound directory %s to %s\n",
-        .l_bm_error_is_sdcardfs = " » Your device uses the sdcardfs solution, this feature cannot function properly！",
+        .l_bm_error_is_sdcardfs = " » Your device uses the sdcardfs solution, this feature cannot function properly！\n",
     },
 };
 
