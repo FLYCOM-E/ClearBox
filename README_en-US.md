@@ -238,6 +238,8 @@ Note: Please do not enter **absolute paths**, but rather **relative internal sto
 
 When writing/creating directories/files into **<Bind Directory>**, they will be redirected to **<Target Directory>**
 
+This feature cannot currently run on devices using **sdcardfs**, but don't worry, **Android 12+** devices have basically stopped using **sdcardfs**
+
 
 
 ## **14**：Disk & software optimization
