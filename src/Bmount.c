@@ -9,8 +9,7 @@
 
 #define CONFIG_DIR_NAME "BindConfigs"         // 配置目录名
 #define DATA_DIR "/data/media/0"                // 内部储存根目录
-#define STORAGE_DIR "/storage/emulated/0"     // 内部储存挂载目录
-#define MOUNTS "/proc/mounts"
+#define MOUNTS "/proc/mounts"                  // 系统挂载列表
 
 static int bind_mount(char * config_file);
 
@@ -19,6 +18,19 @@ int bmount(char * work_dir)
     if (access(work_dir, F_OK) != 0)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, work_dir, strerror(errno));
+        return 1;
+    }
+    
+    if (s_grep(MOUNTS, "sdcardfs", 0) == 1)
+    {
+        // sdcardfs 不兼容
+        fprintf(stderr, L_BM_ERROR_IS_SDCARDFS);
+        return 1;
+    }
+    
+    // 设置命名空间
+    if (set_name_space() != 0)
+    {
         return 1;
     }
     
@@ -91,20 +103,11 @@ static int bind_mount(char * config_file)
         
         if (root_dir_p && bind_dir_p)
         {
-            // 这里始终使用 STORAGE_DIR 分配大小（大于 DATA_DIR）
-            char root_dir[sizeof(STORAGE_DIR) + strlen(root_dir_p) + 2],
-                 bind_dir[sizeof(STORAGE_DIR) + strlen(bind_dir_p) + 2];
+            char root_dir[sizeof(DATA_DIR) + strlen(root_dir_p) + 2],
+                 bind_dir[sizeof(DATA_DIR) + strlen(bind_dir_p) + 2];
             
-            if (s_grep(MOUNTS, "sdcardfs", 0) == 1)
-            {
-                snprintf(root_dir, sizeof(root_dir), "%s/%s", STORAGE_DIR, root_dir_p);
-                snprintf(bind_dir, sizeof(bind_dir), "%s/%s", STORAGE_DIR, bind_dir_p);
-            }
-            else
-            {
-                snprintf(root_dir, sizeof(root_dir), "%s/%s", DATA_DIR, root_dir_p);
-                snprintf(bind_dir, sizeof(bind_dir), "%s/%s", DATA_DIR, bind_dir_p);
-            }
+            snprintf(root_dir, sizeof(root_dir), "%s/%s", DATA_DIR, root_dir_p);
+            snprintf(bind_dir, sizeof(bind_dir), "%s/%s", DATA_DIR, bind_dir_p);
             
             if (mount(root_dir, bind_dir, NULL, MS_BIND, NULL) == -1)
             {
