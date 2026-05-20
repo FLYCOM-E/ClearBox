@@ -82,6 +82,8 @@ static int bind_mount(char * config_file)
     char line[PATH_MAX] = "";
     while (fgets(line, sizeof(line), config_file_fp))
     {
+        line[strcspn(line, "\n")] = 0;
+        
         if (strlen(line) < 1 ||
            line[0] == '#')
         {
@@ -111,7 +113,7 @@ static int bind_mount(char * config_file)
             
             if (mount(root_dir, bind_dir, NULL, MS_BIND, NULL) == -1)
             {
-                fprintf(stderr, L_MOUNT_ERROR, root_dir, strerror(errno));
+                fprintf(stderr, L_MOUNT_ERROR, root_dir, bind_dir, strerror(errno));
             }
             else
             {
