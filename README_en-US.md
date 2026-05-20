@@ -32,7 +32,7 @@ __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**
 
    ## [**Release Version**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI Build**](https://github.com/FLYCOM-E/ClearBox/actions) or Manual Build：
 ``` shell
-#(Please configure the NDK and set the variable $NDK to the NDK root directory path)
+#(Please configure the NDK and set the variable $ANDROID_NDK_HOME to the NDK root directory path)
 
 sudo apt install zip make
 

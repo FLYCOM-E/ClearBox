@@ -32,7 +32,7 @@ __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
    ## [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手动构建：
 ``` shell
-#(请配置 NDK 并设置变量 $NDK 为 NDK 根目录路径)
+#(请配置 NDK 并设置变量 $ANDROID_NDK_HOME 为 NDK 根目录路径)
 
 sudo apt install zip make
 

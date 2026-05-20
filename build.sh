@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ ! -d "$NDK" ]; then
-    echo "Failed: \$NDK is space."
+if [ ! -d "$ANDROID_NDK_HOME" ]; then
+    echo "Failed: \$ANDROID_NDK_HOME is space."
     exit 1
 fi
 if [ "$M_API" = "" ]; then
@@ -8,7 +8,7 @@ if [ "$M_API" = "" ]; then
     exit 1
 fi
 if [ "$M_TARGET" = "" ]; then
-    echo "Failed: \$TARGET is space."
+    echo "Failed: \$M_TARGET is space."
     exit 1
 elif [ "$M_TARGET" = "aarch64" ]; then
     export TARGET=aarch64-linux-android
@@ -25,7 +25,7 @@ else
     exit 1
 fi
 
-export NDKTOOL="$NDK/toolchains/llvm/prebuilt/linux-x86_64"
+export NDKTOOL="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
 export CC="$NDKTOOL/bin/${TARGET}${M_API}-clang"
 export AR="$NDKTOOL/bin/llvm-ar"
 export STRIP="$NDKTOOL/bin/llvm-strip"
