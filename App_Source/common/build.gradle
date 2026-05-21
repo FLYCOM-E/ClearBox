@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk 36
+    compileSdk 37
     namespace 'com.omarea.common'
 
     compileOptions {
@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -27,9 +27,9 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     api files('libs/overscroll-release-v1.1-20160904.jar')
 }

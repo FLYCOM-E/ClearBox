@@ -6,7 +6,7 @@ on:
       api_level:
         description: 'Android API Level'
         required: false
-        default: '21'
+        default: '23'
       ndk_version:
         description: 'NDK Version'
         required: false

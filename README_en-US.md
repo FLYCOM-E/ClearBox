@@ -39,7 +39,7 @@ sudo apt install zip make
 git clone https://github.com/FLYCOM-E/ClearBox
 cd ClearBox && chmod +x *
 
-export M_API=21 #(Can be adjusted according to the required target API version)
+export M_API=23 #(Can be adjusted according to the required target API version)
 export M_TARGET=aarch64 #(Options: aarch64, armv7a, x86_64, i686)
 
 bash build.sh 

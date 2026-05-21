@@ -10,7 +10,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdk 36
+    compileSdk 37
     namespace 'com.projectkr.shell'
 
     compileOptions {
@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId "wipe.cache.module"
-        minSdk 21
+        minSdk 23
         versionCode 91
         versionName "V5.0.6"
     }
@@ -50,11 +50,11 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation project(':common') // 添加依赖模块

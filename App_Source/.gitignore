@@ -12,3 +12,4 @@ common/build
 captures
 release
 keystore.properties
+gradle/gradle-daemon-jvm.properties
