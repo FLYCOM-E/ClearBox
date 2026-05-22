@@ -14,6 +14,7 @@ import android.view.WindowManager
 import androidx.core.content.PermissionChecker
 import com.omarea.common.ui.ThemeMode
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.color.DynamicColors
 
 object ThemeModeState {
     private var themeMode: ThemeMode = ThemeMode()
@@ -45,6 +46,7 @@ object ThemeModeState {
                 } else {
                     activity.setTheme(R.style.AppTheme)
                 }
+                DynamicColors.applyToActivity(activity)
             }
             
             themeMode.isDarkMode = nightMode
