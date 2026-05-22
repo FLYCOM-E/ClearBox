@@ -29,6 +29,7 @@ import wipe.cache.module.ui.ParamsFileChooserRender
 import java.util.*
 import androidx.activity.OnBackPressedCallback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.omarea.common.shared.FilePathResolver
 
 class ActionPageOnline : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
