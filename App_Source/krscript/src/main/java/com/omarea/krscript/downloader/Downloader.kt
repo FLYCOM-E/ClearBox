@@ -21,13 +21,6 @@ class Downloader(private var context: Context, private var activity: Activity? =
         private val HISTORY_CONFIG = "kr_downloader"
     }
 
-    fun downloadByBrowser(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW);
-        intent.addCategory(Intent.CATEGORY_BROWSABLE);
-        intent.setData(Uri.parse(url));
-        activity?.startActivity(intent);
-    }
-
     fun downloadBySystem(
             url: String,
             contentDisposition: String?,

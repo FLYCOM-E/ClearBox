@@ -38,8 +38,8 @@ open class ObjectStorage<T : Serializable>(private val context: Context) {
     public open fun save(obj: T?, configFile: String): Boolean {
         val file = File(getSaveDir(configFile))
         val parentFile = file.parentFile
-        if (!parentFile.exists()) {
-            parentFile.mkdirs()
+        if (parentFile?.exists() == false) {
+            parentFile?.mkdirs()
         }
         if (obj != null) {
             var fileOutputStream: FileOutputStream? = null

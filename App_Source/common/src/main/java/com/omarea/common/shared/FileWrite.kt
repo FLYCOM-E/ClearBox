@@ -85,8 +85,8 @@ object FileWrite {
                 dir.mkdirs()
             val filePath = getPrivateFilePath(context, outName)
             val fileDir = File(filePath).parentFile
-            if (!fileDir.exists())
-                fileDir.mkdirs()
+            if (fileDir?.exists() == false)
+                fileDir?.mkdirs()
 
             val fileOutputStream = FileOutputStream(filePath)
 
@@ -122,8 +122,8 @@ object FileWrite {
                 dir.mkdirs()
             val filePath = getPrivateFilePath(context, outName)
             val fileDir = File(filePath).parentFile
-            if (!fileDir.exists())
-                fileDir.mkdirs()
+            if (fileDir?.exists() == false)
+                fileDir?.mkdirs()
 
             val fileOutputStream = FileOutputStream(filePath)
             fileOutputStream.write(bytes, 0, bytes.size)
