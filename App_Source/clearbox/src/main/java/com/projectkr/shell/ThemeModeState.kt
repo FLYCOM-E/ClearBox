@@ -46,8 +46,8 @@ object ThemeModeState {
                 } else {
                     activity.setTheme(R.style.AppTheme)
                 }
-                DynamicColors.applyToActivity(activity)
             }
+            DynamicColors.applyToActivityIfAvailable(activity)
             
             themeMode.isDarkMode = nightMode
 
