@@ -10,10 +10,11 @@ import com.omarea.common.ui.AdapterAppChooser
 import com.omarea.common.ui.DialogAppChooser
 import wipe.cache.module.R
 import wipe.cache.module.model.ActionParamInfo
+import android.content.res.Configuration
+import android.os.Build
 
 class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, private var context: FragmentActivity) : DialogAppChooser.Callback {
-    private val systemUiVisibility = context.window?.decorView?.systemUiVisibility
-    private var darkMode = systemUiVisibility != null && (systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0
+    private val darkMode = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
     private lateinit var valueView: TextView
     private lateinit var nameView: TextView
@@ -49,7 +50,12 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
             it.value
         }
 
-        val packages = pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES).filter {
+        val packages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            pm.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES)
+        } else {
+            @Suppress("DEPRECATION")
+            pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)
+        }.filter {
             filter == null || filter.contains(it.packageName)
         }
 

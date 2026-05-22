@@ -22,7 +22,7 @@ import wipe.cache.module.R
 import wipe.cache.module.executor.ShellExecutor
 import wipe.cache.module.model.RunnableNode
 import wipe.cache.module.model.ShellHandlerBase
-
+import androidx.core.content.ContextCompat
 
 class DialogLogFragment : androidx.fragment.app.DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,7 +41,7 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return Dialog(activity!!, if (themeResId != 0) themeResId else R.style.kr_full_screen_dialog_light)
     }
-
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -51,10 +51,7 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
                 DialogHelper.setWindowBlurBg(this, activity)
             }
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        
         if (nodeInfo != null) {
             nodeInfo?.run {
                 if (reloadPage) {
@@ -71,7 +68,7 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
             dismiss()
         }
     }
-
+    
     private fun openExecutor(nodeInfo: RunnableNode): ShellHandlerBase? {
         var forceStopRunnable: Runnable? = null
 
@@ -170,11 +167,7 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
             private var shellProgress: ProgressBar) : ShellHandlerBase() {
 
         private fun getColor(resId: Int): Int {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                context!!.getColor(resId)
-            } else {
-                context!!.resources.getColor(resId)
-            }
+            return ContextCompat.getColor(context!!, resId)
         }
 
         private val context = logView.context

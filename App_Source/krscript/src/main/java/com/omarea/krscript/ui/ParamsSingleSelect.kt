@@ -10,15 +10,14 @@ import com.omarea.common.model.SelectItem
 import com.omarea.common.ui.DialogItemChooser
 import wipe.cache.module.R
 import wipe.cache.module.model.ActionParamInfo
+import android.content.res.Configuration
 
 class ParamsSingleSelect(
         private var actionParamInfo: ActionParamInfo,
         private var context: FragmentActivity
 ) {
 
-    private val systemUiVisibility = context.window?.decorView?.systemUiVisibility
-    private var darkMode = systemUiVisibility != null && (systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0
-
+    val darkMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
     val options = actionParamInfo.optionsFromShell!!
     var selectedIndex = ActionParamsLayoutRender.getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
 

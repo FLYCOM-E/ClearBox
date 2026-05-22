@@ -25,6 +25,7 @@ import wipe.cache.module.executor.ScriptEnvironmen
 import wipe.cache.module.model.*
 import wipe.cache.module.shortcut.ActionShortcutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.content.res.Configuration
 
 class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
@@ -237,7 +238,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         paramInfo.optionsSh = item.optionsSh
         paramInfo.separator = item.separator
 
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
 
         progressBarDialog.showDialog(getString(R.string.kr_param_options_load))
         Thread {
@@ -259,7 +260,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
                 if (optionsSorted != null) {
                     val systemUiVisibility = activity!!.window?.decorView?.systemUiVisibility
-                    val darkMode = systemUiVisibility != null && (systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0
+                    val darkMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
                     DialogItemChooser(darkMode, optionsSorted, item.multiple, object : DialogItemChooser.Callback {
                         override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
                             if (item.multiple) {
@@ -329,7 +330,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                 val layoutInflater = LayoutInflater.from(this.context!!)
                 val linearLayout = layoutInflater.inflate(R.layout.kr_params_list, null) as LinearLayout
 
-                val handler = Handler()
+                val handler = Handler(Looper.getMainLooper())
                 progressBarDialog.showDialog(this.context!!.getString(R.string.onloading))
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
@@ -410,7 +411,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
                             dialogView.findViewById<View>(R.id.btn_cancel).setOnClickListener {
                                 try {
-                                    dialog!!.dismiss()
+                                    dialog.dismiss()
                                 } catch (ex: java.lang.Exception) {
                                 }
                             }
@@ -418,7 +419,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                 try {
                                     val params = render.readParamsValue(actionParamInfos)
                                     actionExecute(action, script, onExit, params)
-                                    dialog!!.dismiss()
+                                    dialog.dismiss()
                                 } catch (ex: Exception) {
                                     Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
                                 }
@@ -507,7 +508,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
             val dialog = DialogLogFragment.create(nodeInfo, onExit, onDismiss, script, params, darkMode)
             dialog.isCancelable = false
-            dialog.show(fragmentManager!!, "")
+            dialog.show(childFragmentManager, "")
         }
     }
 }

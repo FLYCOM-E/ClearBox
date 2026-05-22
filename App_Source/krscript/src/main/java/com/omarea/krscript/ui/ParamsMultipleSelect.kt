@@ -72,9 +72,9 @@ class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private
                 })
             }
             DialogItemChooser(true, ArrayList(items), true, object : DialogItemChooser.Callback {
-                override fun onConfirm(selected: List<SelectItem>, result: BooleanArray) {
-                    result.forEachIndexed { index, value ->
-                        status[index] = value
+                override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
+                    status.forEachIndexed { index, value ->
+                        this@Run.status[index] = value
                     }
                     setView(textView, valueView, countView)
                 }
