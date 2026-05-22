@@ -3,9 +3,6 @@ import wipe.cache.module.R as KR
 import android.content.DialogInterface
 import android.Manifest
 import android.app.Activity
-import android.app.DownloadManager
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,15 +19,12 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import wipe.cache.module.WebViewInjector
-import wipe.cache.module.downloader.Downloader
 import wipe.cache.module.ui.ParamsFileChooserRender
 import java.util.*
 import androidx.activity.OnBackPressedCallback
@@ -42,12 +36,6 @@ class ActionPageOnline : AppCompatActivity() {
 
     private lateinit var krOnlineRoot: View
     private lateinit var krOnlineWebview: WebView
-    private lateinit var krDownloadUrl: TextView
-    private lateinit var krDownloadState: View
-    private lateinit var krDownloadName: TextView
-    private lateinit var krDownloadNameCopy: View
-    private lateinit var krDownloadUrlCopy: View
-    private lateinit var krDownloadProgress: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +52,6 @@ class ActionPageOnline : AppCompatActivity() {
 
         krOnlineRoot = findViewById(R.id.kr_online_root)
         krOnlineWebview = findViewById(R.id.kr_online_webview)
-        krDownloadUrl = findViewById(R.id.kr_download_url)
-        krDownloadState = findViewById(R.id.kr_download_state)
-        krDownloadName = findViewById(R.id.kr_download_name)
-        krDownloadNameCopy = findViewById(R.id.kr_download_name_copy)
-        krDownloadUrlCopy = findViewById(R.id.kr_download_url_copy)
-        krDownloadProgress = findViewById(R.id.kr_download_progress)
         
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -130,32 +112,6 @@ class ActionPageOnline : AppCompatActivity() {
                 when {
                     extras.containsKey("config") -> initWebview(extras.getString("config"))
                     extras.containsKey("url") -> initWebview(extras.getString("url"))
-                }
-
-                if (extras.containsKey("downloadUrl")) {
-                    val downloader = Downloader(this)
-                    val url = extras.getString("downloadUrl") ?: return
-                    val taskAliasId = if (extras.containsKey("taskId")) extras.getString("taskId") ?: UUID.randomUUID().toString() else UUID.randomUUID().toString()
-
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            downloader.saveTaskStatus(taskAliasId, 0)
-                            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
-                            DialogHelper.helpInfo(this, "", getString(KR.string.kr_write_external_storage))
-                            return
-                        }
-                    }
-
-                    val downloadId = downloader.downloadBySystem(url, null, null, taskAliasId)
-                    if (downloadId != null) {
-                        krDownloadUrl.text = url
-                        val autoClose = extras.containsKey("autoClose") && extras.getBoolean("autoClose")
-                        downloader.saveTaskStatus(taskAliasId, 0)
-                        watchDownloadProgress(downloadId, autoClose, taskAliasId)
-                    } else {
-                        downloader.saveTaskStatus(taskAliasId, -1)
-                    }
                 }
             }
         }
@@ -275,79 +231,6 @@ class ActionPageOnline : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        stopWatchDownloadProgress()
         super.onDestroy()
-    }
-
-    private fun stopWatchDownloadProgress() {
-        progressPolling?.cancel()
-        progressPolling = null
-    }
-
-    var progressPolling: Timer? = null
-
-    private fun watchDownloadProgress(downloadId: Long, autoClose: Boolean, taskAliasId: String) {
-        krDownloadState.visibility = View.VISIBLE
-
-        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val query = DownloadManager.Query().setFilterById(downloadId)
-
-        krDownloadNameCopy.setOnClickListener {
-            val myClipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            myClipboard.setPrimaryClip(ClipData.newPlainText("text", krDownloadName.text.toString()))
-            Toast.makeText(this@ActionPageOnline, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
-        }
-        krDownloadUrlCopy.setOnClickListener {
-            val myClipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            myClipboard.setPrimaryClip(ClipData.newPlainText("text", krDownloadUrl.text.toString()))
-            Toast.makeText(this@ActionPageOnline, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
-        }
-
-        val handler = Handler()
-        val downloader = Downloader(this)
-        progressPolling = Timer()
-        progressPolling?.schedule(object : TimerTask() {
-            override fun run() {
-                val cursor = downloadManager.query(query)
-                var fileName = ""
-                var absPath = ""
-                if (cursor.moveToFirst()) {
-                    val downloadBytesIdx = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
-                    val totalBytesIdx = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
-                    val totalBytes = cursor.getLong(totalBytesIdx)
-                    val downloadBytes = cursor.getLong(downloadBytesIdx)
-                    val ratio = (downloadBytes * 100 / totalBytes).toInt()
-                    if (fileName.isEmpty()) {
-                        try {
-                            val nameColumn = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
-                            fileName = cursor.getString(nameColumn)
-                            absPath = FilePathResolver().getPath(this@ActionPageOnline, Uri.parse(fileName)) ?: ""
-                            if (absPath.isNotEmpty()) fileName = absPath
-                        } catch (ex: java.lang.Exception) {}
-                    }
-
-                    handler.post {
-                        krDownloadName.text = fileName
-                        krDownloadProgress.progress = ratio
-                        krDownloadProgress.isIndeterminate = false
-                        setTitle(KR.string.kr_download_downloading)
-                        downloader.saveTaskStatus(taskAliasId, ratio)
-                    }
-
-                    if (ratio >= 100) {
-                        downloader.saveTaskCompleted(downloadId, absPath)
-                        handler.post {
-                            setTitle(KR.string.kr_download_completed)
-                            krDownloadProgress.visibility = View.GONE
-                            stopWatchDownloadProgress()
-                            val result = Intent()
-                            result.putExtra("absPath", absPath)
-                            setResult(0, result)
-                            if (autoClose) finish()
-                        }
-                    }
-                }
-            }
-        }, 200, 500)
     }
 }

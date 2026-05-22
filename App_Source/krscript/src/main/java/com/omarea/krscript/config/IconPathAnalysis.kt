@@ -20,13 +20,13 @@ class IconPathAnalysis {
         if (!clickableNode.logoPath.isEmpty()) {
             val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.logoPath)
             inputStream?.run {
-                return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
+                return bitmap2Drawable(context, BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
             }
         }
         if (!clickableNode.iconPath.isEmpty()) {
             val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.iconPath)
             inputStream?.run {
-                return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
+                return bitmap2Drawable(context, BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
             }
         }
         return if (useDefault) context.getDrawable(CommonR.drawable.function)!! else null
@@ -36,14 +36,14 @@ class IconPathAnalysis {
         if (!clickableNode.iconPath.isEmpty()) {
             val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.iconPath)
             inputStream?.run {
-                return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
+                return bitmap2Drawable(context, BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
             }
         }
         return null
     }
 
     // Bitmap转换成Drawable
-    fun bitmap2Drawable(bitmap: Bitmap): Drawable {
-        return BitmapDrawable(bitmap)
+    fun bitmap2Drawable(context: Context, bitmap: Bitmap): Drawable {
+        return BitmapDrawable(context.resources, bitmap)
     }
 }

@@ -8,8 +8,8 @@ open class NodeInfoBase(public val currentPageConfigPath: String) : Serializable
     public val pageConfigDir = (
         if (currentPageConfigPath.isNotEmpty()) {
             val dir = File(currentPageConfigPath).parent
-            if (dir.startsWith("file:/android_asset/")) {
-                "file:///android_asset/" + dir.substring("file:/android_asset/".length)
+            if (dir?.startsWith("file:/android_asset/") == true) {
+                "file:///android_asset/" + dir?.substring("file:/android_asset/".length)
             } else {
                 dir
             }

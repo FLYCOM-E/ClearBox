@@ -21,7 +21,12 @@ class ActionShortcutManager(private var context: Context) {
     public fun addShortcut(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         // 因为添加快捷方式时无法处理SerializableExtra，所以不得不通过应用本身存储pageNode信息
         if (intent.hasExtra("page")) {
-            val pageNode = intent.getSerializableExtra("page") as PageNode
+            val pageNode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getSerializableExtra("page", PageNode::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getSerializableExtra("page") as? PageNode
+            } ?: return false
             intent.putExtra("shortcutId", saveShortcutTarget(pageNode))
             intent.removeExtra("page")
         }
@@ -77,14 +82,15 @@ class ActionShortcutManager(private var context: Context) {
     public fun createShortcutOreo(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         try {
             val shortcutManager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
-
             if (shortcutManager.isRequestPinShortcutSupported) {
                 val id = "addin_" + config.index
                 val shortcutIntent = Intent(Intent.ACTION_MAIN)
                 shortcutIntent.setClassName(context.getApplicationContext(), intent.component!!.className)
                 shortcutIntent.putExtras(intent)
-                shortcutIntent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-
+                shortcutIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                shortcutIntent.action = Intent.ACTION_MAIN
+                shortcutIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+                
                 val info = ShortcutInfo.Builder(context, id)
                         .setIcon(Icon.createWithBitmap((drawable as BitmapDrawable).bitmap))
                         .setShortLabel(config.title)
@@ -92,7 +98,10 @@ class ActionShortcutManager(private var context: Context) {
                         .setActivity(intent.component!!) // 只有“主要”活动 - 定义过滤器Intent#ACTION_MAIN 和Intent#CATEGORY_LAUNCHER意图过滤器的活动 - 才能成为目标活动
                         .build()
 
-                val shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT)
+                val shortcutCallbackIntent = PendingIntent.getBroadcast(
+                    context, 0, Intent(), 
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
                 if (shortcutManager.isRequestPinShortcutSupported) {
                     val items = shortcutManager.pinnedShortcuts
                     for (item in items) {
