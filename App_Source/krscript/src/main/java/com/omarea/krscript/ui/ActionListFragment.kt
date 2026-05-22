@@ -26,6 +26,7 @@ import wipe.cache.module.model.*
 import wipe.cache.module.shortcut.ActionShortcutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.content.res.Configuration
+import android.os.Looper
 
 class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
