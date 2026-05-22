@@ -15,6 +15,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.omarea.common.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.appcompat.app.AlertDialog
+import android.view.View
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.Window
+import android.view.WindowManager
+import android.view.MotionEvent
+import android.view.WindowInsetsController
+import android.os.Build
 
 class DialogHelper {
     class DialogButton(public val text: String, public val onClick: Runnable? = null, public val dismiss: Boolean = true) {
@@ -128,7 +136,7 @@ class DialogHelper {
                         onDismiss.run()
                     }
                 }
-                setOnClickListener {
+                it.setOnClickListener {
                     d.dismiss()
                 }
             }

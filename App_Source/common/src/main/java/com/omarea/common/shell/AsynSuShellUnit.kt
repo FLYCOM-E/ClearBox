@@ -20,7 +20,7 @@ class AsynSuShellUnit(var handler: Handler) {
                     var line: String
                     val reader = process!!.inputStream.bufferedReader()
                     while (true) {
-                        line = reader.readLine() ?: return destroy()
+                        line = reader.readLine() ?: return@Runnable destroy()
                         line = line.trim()
                         if (line.isNotEmpty())
                             handler.sendMessage(handler.obtainMessage(1, line))
