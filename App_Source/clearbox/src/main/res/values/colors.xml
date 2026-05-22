@@ -17,12 +17,9 @@
     <color name="colorAccent">@color/md_primary</color>
     <color name="colorPrimary">#80B4DD</color>
     <color name="colorPrimaryDark">#3D9AE6</color>
-    <color name="splash_bg_color">#FEF7FF</color>
     
     <color name="md_primary">#00D2C4</color>
     <color name="md_primary_container">#00D2C4</color>
     <color name="md_secondary">#00D2C4</color>
     <color name="md_secondary_container">#00D2C4</color>
-    <color name="md_surface">#FEF7FF</color>
-    <color name="md_background">#FEF7FF</color>
 </resources>

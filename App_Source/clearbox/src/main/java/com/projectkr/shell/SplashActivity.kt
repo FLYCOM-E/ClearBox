@@ -37,24 +37,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         startLogo = findViewById(R.id.start_logo)
         startStateText = findViewById(R.id.start_state_text)
-        updateThemeStyle()
-
         checkPermissions()
-    }
-    
-    private fun updateThemeStyle() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.setNavigationBarColor(getColor(R.color.splash_bg_color))
-        } else {
-            window.setNavigationBarColor(resources.getColor(R.color.splash_bg_color))
-        }
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            val decorView = getWindow().getDecorView()
-            val option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            decorView.setSystemUiVisibility(option)
-            getWindow().setStatusBarColor(Color.TRANSPARENT)
-        }
     }
 
     private fun getColorAccent(): Int {
