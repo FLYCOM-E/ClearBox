@@ -95,7 +95,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private var hasRoot = false
-    private var myHandler = Handler()
+    private var myHandler = Handler(Looper.getMainLooper())
 
     private fun checkRoot(next: Runnable) {
         CheckRootStatus(this, next).forceGetRoot()

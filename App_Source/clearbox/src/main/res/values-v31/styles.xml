@@ -13,10 +13,6 @@
         <item name="switchStyle">@style/Widget.Material3.CompoundButton.Switch</item>
         <item name="checkboxStyle">@style/Widget.Material3.CompoundButton.CheckBox</item>
         <item name="radioButtonStyle">@style/Widget.Material3.CompoundButton.RadioButton</item>
-        <item name="colorPrimary">@android:color/system_accent1_500</item>
-        <item name="colorPrimaryContainer">@android:color/system_accent1_200</item>
-        <item name="colorSecondary">@android:color/system_accent2_500</item>
-        <item name="colorSecondaryContainer">@android:color/system_accent2_200</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
