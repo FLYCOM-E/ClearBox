@@ -14,6 +14,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 
+@Suppress("DEPRECATION") // TODO: 目前效果很好。Google 强推系统级模糊，但不同设备实现不一致，有些设备甚至砍掉导致效果异常，不如保留现有实现
 class BlurBackground(private val activity: Activity) {
     private var dialogBg: ImageView? = null
     private var originalW = 0

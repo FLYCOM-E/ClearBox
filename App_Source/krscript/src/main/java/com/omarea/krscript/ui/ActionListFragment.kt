@@ -17,7 +17,6 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.DialogItemChooser
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
-import wipe.cache.module.BgTaskThread
 import wipe.cache.module.HiddenTaskThread
 import wipe.cache.module.R
 import wipe.cache.module.TryOpenActivity
@@ -488,7 +487,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             val onDismiss = Runnable {
                 krScriptActionHandler?.onActionCompleted(nodeInfo)
             }
-            BgTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss)
+            // TODO: 没删完 BgTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss) 
         } else if (nodeInfo.shell == RunnableNode.shellModeHidden) {
             if (hiddenTaskRunning) {
                 Toast.makeText(context, getString(R.string.kr_hidden_task_running), Toast.LENGTH_SHORT).show()

@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
-import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
@@ -104,26 +103,26 @@ class DialogHelper {
             val layoutInflater = LayoutInflater.from(context)
             val dialog = layoutInflater.inflate(R.layout.dialog_help_info, null)
 
-            (dialog.findViewById(R.id.confirm_title) as TextView).run {
+            dialog.findViewById<TextView>(R.id.confirm_title)?.let {
                 if (title.isNotEmpty()) {
-                    text = title
-                    visibility = View.VISIBLE
+                    it.text = title
+                    it.visibility = View.VISIBLE
                 } else {
-                    visibility = View.GONE
+                    it.visibility = View.GONE
                 }
             }
 
-            (dialog.findViewById(R.id.confirm_message) as TextView).run {
+            dialog.findViewById<TextView>(R.id.confirm_message)?.let {
                 if (message.isNotEmpty()) {
-                    text = message
-                    visibility = View.VISIBLE
+                    it.text = message
+                    it.visibility = View.VISIBLE
                 } else {
-                    visibility = View.GONE
+                    it.visibility = View.GONE
                 }
             }
 
             val d = customDialog(context, dialog, onDismiss == null)
-            (dialog.findViewById(R.id.btn_confirm) as View).run {
+            dialog.findViewById<View>(R.id.btn_confirm)?.let {
                 if (onDismiss != null) {
                     d.setOnDismissListener {
                         onDismiss.run()
@@ -258,7 +257,7 @@ class DialogHelper {
             if (onCancel != null) {
                 btnCancel?.text = onCancel.text
             }
-            btnCancel.setOnClickListener {
+            btnCancel?.setOnClickListener {
                 if (onCancel != null) {
                     if (onCancel.dismiss) {
                         dialog.dismiss()
@@ -398,7 +397,17 @@ class DialogHelper {
                     }
                     setWindowBlurBg(this, context)
                     decorView.run {
-                        systemUiVisibility = context.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            val sourceInsets = context.window.decorView.windowInsetsController
+                            val targetInsets = this.windowInsetsController
+                            targetInsets?.setSystemBarsAppearance(
+                                sourceInsets?.systemBarsAppearance ?: 0,
+                                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                            )
+                        } else {
+                            @Suppress("DEPRECATION")
+                            systemUiVisibility = context.window.decorView.systemUiVisibility
+                        }
                     }
 
                     /*
