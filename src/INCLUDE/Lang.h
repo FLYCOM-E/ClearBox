@@ -24,6 +24,7 @@ typedef struct
     const char * l_delete_error;
     const char * l_server_start_err;
     const char * l_path_file_error;
+    
     const char * l_clear_all;
     const char * l_clear_cache;
     const char * l_clear_sys_cache;
@@ -43,6 +44,8 @@ typedef struct
     const char * l_config_mg;
     const char * l_stop_cache_daemon;
     const char * l_time_daemon;
+    const char * l_path_bind;
+    
     const char * l_scd_start_success;
     const char * l_scd_getapp_err_exit;
     const char * l_td_config_error;
@@ -149,6 +152,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » 删除 %s 失败: %s\n",
         .l_server_start_err = " » 进程启动失败: %s\n",
         .l_path_file_error = " » PATH 配置错误，自动重写 ... 请您重新尝试，如失败请删除 %s 后更新配置再试\n",
+        
         .l_clear_all = "一键优化清理\n",
         .l_clear_cache = "清理软件缓存\n",
         .l_clear_sys_cache = "清理系统缓存\n",
@@ -168,6 +172,8 @@ static const LangPack lang_packs[] =
         .l_config_mg = "配置备份/恢复\n",
         .l_stop_cache_daemon = "阻止缓存 (Daemon)\n",
         .l_time_daemon = "自动任务 (Daemon)\n",
+        .l_path_bind = "规则目录绑定（重定向）\n",
+        
         .l_scd_start_success = " » 缓存阻止已启动！#%u",
         .l_scd_getapp_err_exit = " » 进程已退出，原因：GETTOPAPP ERROR\n",
         .l_td_config_error = " » %s 配置错误，Skip.\n",
@@ -204,7 +210,7 @@ static const LangPack lang_packs[] =
         .l_fg_err_check = " » 您的设备不支持当前GC功能\n",
         .l_fg_dirty = " » 目前脏段: %ld\n",
         .l_fg_free = " » 目前空闲段: %ld\n\n",
-        .l_fg_start = " » GC已开始, 请您耐心等待，建议挂后台！\n",
+        .l_fg_start = " » 后台 GC 已开始, 请您耐心等待\n",
         .l_fg_err_writesysfs = " » GC启动失败! 节点写入失败！\n",
         .l_fg_err_timeout = " » GC等待超时，已结束等待！\n",
         .l_fg_end = " » GC运行完成，已结束运行！\n",
@@ -271,6 +277,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » 刪除 %s 失敗: %s\n",
         .l_server_start_err = " » 進程啟動失敗: %s\n",
         .l_path_file_error = " » PATH 配置錯誤，自動重寫 ... 請您重新嘗試，如失敗請刪除 %s 後更新配置再試\n",
+        
         .l_clear_all = "一鍵優化清理\n",
         .l_clear_cache = "清理軟體快取\n",
         .l_clear_sys_cache = "清理系統快取\n",
@@ -290,6 +297,8 @@ static const LangPack lang_packs[] =
         .l_config_mg = "配置備份/恢復\n",
         .l_stop_cache_daemon = "阻止快取 (Daemon)\n",
         .l_time_daemon = "自動任務 (Daemon)\n",
+        .l_path_bind = "規則目錄綁定（重新導向）\n",
+        
         .l_scd_start_success = " » 快取阻止已啟動！#%u",
         .l_scd_getapp_err_exit = " » 進程已退出，原因：GETTOPAPP ERROR\n",
         .l_td_config_error = " » %s 配置錯誤，Skip.\n",
@@ -326,7 +335,7 @@ static const LangPack lang_packs[] =
         .l_fg_err_check = " » 您的裝置不支援當前GC功能\n",
         .l_fg_dirty = " » 目前髒段: %ld\n",
         .l_fg_free = " » 目前空閒段: %ld\n\n",
-        .l_fg_start = " » GC已開始, 請您耐心等待，建議掛後台！\n",
+        .l_fg_start = " » 後台 GC 已開始，請您耐心等待\n",
         .l_fg_err_writesysfs = " » GC啟動失敗! 節點寫入失敗！\n",
         .l_fg_err_timeout = " » GC等待逾時，已結束等待！\n",
         .l_fg_end = " » GC執行完成，已結束執行！\n",
@@ -393,6 +402,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » Failed to delete %s: %s\n",
         .l_server_start_err = " » Process startup failed: %s\n",
         .l_path_file_error = " » PATH configuration error, automatically rewriting ... Please try again. If it fails, please delete %s and update the configuration before retrying\n",
+        
         .l_clear_all = "One-click optimize & cleanup\n",
         .l_clear_cache = "Clear app cache\n",
         .l_clear_sys_cache = "Clear system cache\n",
@@ -412,6 +422,8 @@ static const LangPack lang_packs[] =
         .l_config_mg = "Config backup/restore\n",
         .l_stop_cache_daemon = "Cache blocking (Daemon)\n",
         .l_time_daemon = "Scheduled tasks (Daemon)\n",
+        .l_path_bind = "Rule Directory Binding (Redirect)\n",
+        
         .l_scd_start_success = " » Cache blocking has been started! #%u",
         .l_scd_getapp_err_exit = " » Process has exited, reason: GETTOPAPP ERROR\n",
         .l_td_config_error = " » %s configuration error, Skip.\n",
@@ -448,7 +460,7 @@ static const LangPack lang_packs[] =
         .l_fg_err_check = " » Your device does not support the current GC function\n",
         .l_fg_dirty = " » Current dirty segments: %ld\n",
         .l_fg_free = " » Current free segments: %ld\n\n",
-        .l_fg_start = " » GC has started, please wait patiently. It is recommended to run in the background!\n",
+        .l_fg_start = " » Background GC has started, please be patient\n",
         .l_fg_err_writesysfs = " » GC startup failed! Failed to write to node!\n",
         .l_fg_err_timeout = " » GC wait timeout, waiting has been terminated!\n",
         .l_fg_end = " » GC run completed, operation has ended!\n",
@@ -517,6 +529,7 @@ extern LangType current_lang;
 #define L_DELETE_ERROR lang_packs[current_lang].l_delete_error
 #define L_SERVER_START_ERR lang_packs[current_lang].l_server_start_err
 #define L_PATH_FILE_ERROR lang_packs[current_lang].l_path_file_error
+
 #define L_CLEAR_ALL lang_packs[current_lang].l_clear_all
 #define L_CLEAR_CACHE lang_packs[current_lang].l_clear_cache
 #define L_CLEAR_SYS_CACHE lang_packs[current_lang].l_clear_sys_cache
@@ -536,6 +549,8 @@ extern LangType current_lang;
 #define L_CONFIG_MG lang_packs[current_lang].l_config_mg
 #define L_STOP_CACHE_DAEMON lang_packs[current_lang].l_stop_cache_daemon
 #define L_TIME_DAEMON lang_packs[current_lang].l_time_daemon
+#define L_PATH_BIND lang_packs[current_lang].l_path_bind
+
 #define L_SCD_START_SUCCESS lang_packs[current_lang].l_scd_start_success
 #define L_SCD_GETAPP_ERR_EXIT lang_packs[current_lang].l_scd_getapp_err_exit
 #define L_TD_CONFIG_ERROR lang_packs[current_lang].l_td_config_error
