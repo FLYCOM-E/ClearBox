@@ -11,7 +11,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,11 +32,13 @@ import wipe.cache.module.ui.ActionListFragment
 import wipe.cache.module.ui.DialogLogFragment
 import wipe.cache.module.ui.ParamsFileChooserRender
 import wipe.cache.module.ui.PageMenuLoader
+import android.os.Looper
+import android.os.Handler
 
 class ActionPage : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
     private var actionsLoaded = false
-    private var handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
     private lateinit var currentPageConfig: PageNode
     private var autoRunItemId = ""
 
@@ -76,7 +77,12 @@ class ActionPage : AppCompatActivity() {
             val extras = intent.extras
             if (extras != null && (extras.containsKey("page") || extras.containsKey("shortcutId"))) {
                 val page = if (extras.containsKey("page")) {
-                    extras.getSerializable("page") as PageNode?
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        extras.getSerializable("page", PageNode::class.java)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        extras.getSerializable("page") as? PageNode
+                    }
                 } else {
                     ActionShortcutManager(this@ActionPage).getShortcutTarget("" + extras.getString("shortcutId"))
                 }
@@ -404,13 +410,13 @@ class ActionPage : AppCompatActivity() {
         setExcludeFromRecents()
         super.onDestroy()
     }
-
+    
     private fun setExcludeFromRecents() {
         if (isTaskRoot) {
             try {
                 val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
                 for (task in service.appTasks) {
-                    if (task.taskInfo?.id == this.taskId) task.setExcludeFromRecents(true)
+                    if (task.taskInfo?.taskId == this.taskId) task.setExcludeFromRecents(true)
                 }
             } catch (ex: Exception) {}
         }

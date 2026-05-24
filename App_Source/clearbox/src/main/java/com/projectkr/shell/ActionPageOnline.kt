@@ -30,6 +30,8 @@ import java.util.*
 import androidx.activity.OnBackPressedCallback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.omarea.common.shared.FilePathResolver
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 class ActionPageOnline : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -67,36 +69,34 @@ class ActionPageOnline : AppCompatActivity() {
         
         loadIntentData()
     }
-
+    
     private fun hideWindowTitle() {
         if (Build.VERSION.SDK_INT >= 21) {
-            val decorView = window.decorView
-            val option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            decorView.systemUiVisibility = option
+            WindowCompat.setDecorFitsSystemWindows(window, false)
             window.statusBarColor = Color.TRANSPARENT
         }
-        val actionBar = supportActionBar
-        actionBar!!.hide()
+        supportActionBar?.hide()
     }
-
+    
     private fun setWindowTitleBar() {
         val window = window
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-
-        var flags = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
+    
         if (!themeMode.isDarkMode) {
+            @Suppress("DEPRECATION")
             window.statusBarColor = Color.WHITE
+            @Suppress("DEPRECATION")
             window.navigationBarColor = Color.WHITE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            
+            WindowInsetsControllerCompat(window, window.decorView).apply {
+                isAppearanceLightStatusBars = true
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    isAppearanceLightNavigationBars = true
+                }
             }
         }
-        getWindow().decorView.systemUiVisibility = flags
         krOnlineRoot.fitsSystemWindows = true
     }
 

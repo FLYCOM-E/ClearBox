@@ -31,12 +31,15 @@ import wipe.cache.module.model.*
 import wipe.cache.module.ui.ActionListFragment
 import wipe.cache.module.ui.ParamsFileChooserRender
 import com.projectkr.shell.ui.TabIconHelper
+import android.os.Handler
 
 class MainActivity : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
-    private var handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
     private var krScriptConfig = KrScriptConfig()
-
+    
+    // TODO 这个底栏目前只是显示固定图标，实际未在使用
+    @Suppress("DEPRECATION")
     private lateinit var mainTabhost: android.widget.TabHost
     private lateinit var mainTabhost2: View
     private lateinit var mainTabhost3: View
