@@ -38,8 +38,8 @@ jobs:
       - name: Get version info from module.prop
         id: get_version
         run: |
-          VERSION=$(grep '^version=' Module_Files/module.prop | cut -d'=' -f2)
-          VERSION_CODE=$(grep '^versionCode=' Module_Files/module.prop | cut -d'=' -f2)
+          VERSION=$(grep '^version=' Module_Files/module.prop | cut -f2 -d '=')
+          VERSION_CODE=$(grep '^versionCode=' Module_Files/module.prop | cut -f2 -d '=')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "versionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
       
@@ -72,7 +72,7 @@ jobs:
           rm -f release.keystore keystore.properties
           cd ..
           export NDK=${{ steps.setup-ndk.outputs.ndk-path }}
-          export M_API=${{ github.event.inputs.api_level || '21' }}
+          export M_API=${{ github.event.inputs.api_level || '23' }}
           export M_TARGET=${{ matrix.target }}
           bash build.sh
       
@@ -138,7 +138,7 @@ jobs:
             echo "No changes to JSON files."
           else
             git add UpdateJson/
-            git commit -m "Update: Version Code $VERSION_CODE update.json's"
+            git commit -m "Update: Version $VERSION ($VERSION_CODE) Updatejson"
             git push
           fi
         env:
