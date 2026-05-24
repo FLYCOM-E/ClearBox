@@ -31,7 +31,7 @@ import wipe.cache.module.model.*
 import wipe.cache.module.ui.ActionListFragment
 import wipe.cache.module.ui.ParamsFileChooserRender
 import com.projectkr.shell.ui.TabIconHelper
-import android.os.Handler
+import android.os.Looper
 
 class MainActivity : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -60,7 +60,8 @@ class MainActivity : AppCompatActivity() {
         mainTabhost3 = findViewById(R.id.main_tabhost_3)
 
         krScriptConfig = KrScriptConfig()
-
+        
+        @Suppress("DEPRECATION")
         mainTabhost.setup()
         val tabIconHelper = TabIconHelper(mainTabhost, this)
         
