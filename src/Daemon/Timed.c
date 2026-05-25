@@ -211,7 +211,7 @@ int time_daemon(char * argv[], char * work_dir)
                 // 如果有设置通知则发送
                 if (config[i].post == 1)
                 {
-                    post(config[i].title, config[i].message, SERVER_NAME);
+                    post(config[i].title, config[i].message, config[i].config_name);
                 }
                 
                 // 配置文件
