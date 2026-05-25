@@ -57,6 +57,7 @@ typedef struct
     const char * l_td_w_post_title_toolong;
     const char * l_td_w_post_message_toolong;
     const char * l_td_config_write_error;
+    const char * l_td_watch_config_dir_error;
     const char * l_ac_clear;
     const char * l_ac_config_app_notfound;
     const char * l_ac_config_package_err;
@@ -185,6 +186,7 @@ static const LangPack lang_packs[] =
         .l_td_w_post_title_toolong = " » 警告：%s 配置通知标题长度超过限制！已截断\n",
         .l_td_w_post_message_toolong = " » 警告：%s 配置通知内容长度超过限制！已截断\n",
         .l_td_config_write_error = " » %s 配置回写失败.\n",
+        .l_td_watch_config_dir_error = " » 热更新配置初始化失败: %s\n",
         .l_ac_clear = " » 清理 %s &\n",
         .l_ac_config_app_notfound = " » %s 配置指定软件未找到！\n",
         .l_ac_config_package_err = " » %s 配置声明错误，未正确填写包名！\n",
@@ -310,6 +312,7 @@ static const LangPack lang_packs[] =
         .l_td_w_post_title_toolong = " » 警告：%s 配置通知標題長度超過限制！已截斷\n",
         .l_td_w_post_message_toolong = " » 警告：%s 配置通知內容長度超過限制！已截斷\n",
         .l_td_config_write_error = " » %s 配置回寫失敗.\n",
+        .l_td_watch_config_dir_error = " » 熱更新配置初始化失敗: %s\n",
         .l_ac_clear = " » 清理 %s &\n",
         .l_ac_config_app_notfound = " » %s 配置指定軟體未找到！\n",
         .l_ac_config_package_err = " » %s 配置宣告錯誤，未正確填寫套件名稱！\n",
@@ -435,6 +438,7 @@ static const LangPack lang_packs[] =
         .l_td_w_post_title_toolong = " » Warning: %s configuration notification title length exceeds limit！Truncated\n",
         .l_td_w_post_message_toolong = " » Warning: %s configuration notification message length exceeds limit！Truncated\n",
         .l_td_config_write_error = " » %s configuration write-back failed.\n",
+        .l_td_watch_config_dir_error = " » Hot-reload config initialization failed: %s\n",
         .l_ac_clear = " » Cleaning %s &\n",
         .l_ac_config_app_notfound = " » Application specified in %s configuration not found!\n",
         .l_ac_config_package_err = " » Declaration error in %s configuration, package name not correctly filled!\n",
@@ -562,6 +566,7 @@ extern LangType current_lang;
 #define L_TD_W_POST_TITLE_TOOLONG lang_packs[current_lang].l_td_w_post_title_toolong
 #define L_TD_W_POST_MESSAGE_TOOLONG lang_packs[current_lang].l_td_w_post_message_toolong
 #define L_TD_CONFIG_WRITE_ERROR lang_packs[current_lang].l_td_config_write_error
+#define L_TD_WATCH_CONFIG_DIR_ERROR lang_packs[current_lang].l_td_watch_config_dir_error
 #define L_AC_CLEAR lang_packs[current_lang].l_ac_clear
 #define L_AC_CONFIG_APP_NOTFOUND lang_packs[current_lang].l_ac_config_app_notfound
 #define L_AC_CONFIG_PACKAGE_ERR lang_packs[current_lang].l_ac_config_package_err

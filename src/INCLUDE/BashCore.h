@@ -19,6 +19,7 @@
 #include <linux/fs.h>
 #include <signal.h>
 #include <sys/mount.h>
+#include <sys/inotify.h>
 
 // 多语言
 #include "Lang.h"

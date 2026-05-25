@@ -39,7 +39,7 @@ struct config_struct
     int enable;
 };
 
-static int read_config(char * config_dir, int * read_config_count, struct config_struct config[], char * config_file_name);
+static int read_config(char * config_dir, volatile int * read_config_count, struct config_struct config[], char * config_file_name);
 static int get_config(char * config_file, char * config_file_name, struct config_struct config[], int count);
 static int running(char * command);
 
@@ -55,20 +55,34 @@ int time_daemon(char * argv[], char * work_dir)
     char config_dir[strlen(work_dir) + sizeof(CONFIG_PATH_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_PATH_NAME);
     
-    int read_config_count = 0;
+    volatile int read_config_count = 0;
     struct config_struct config[MAX_CONFIG] = {0}; // 创建结构体
-    
     if (read_config(config_dir, &read_config_count, config, "") != 0)
     {
         // 错误信息由 read_config 函数报告
         return 1;
     }
-    
     if (read_config_count == 0)
     {
         fprintf(stderr, L_NOCONFIG);
         return 1;
     }
+    
+    // INOTIFY
+    int inotify_fd = inotify_init1(IN_NONBLOCK);
+    if (inotify_fd == -1)
+    {
+        fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
+        return 1;
+    }
+    int inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
+    if (inotify_wd == -1)
+    {
+        fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
+        return 1;
+    }
+    int watch = 1;
+    char inotify_buffer[PATH_MAX] = "";
     
     // Daemon
     char log_text[sizeof(L_SERVER_START_ERR) + sizeof(L_TD_START_SUCCESS) + 128] = "";
@@ -95,6 +109,52 @@ int time_daemon(char * argv[], char * work_dir)
     
     while (sig_flag)
     {
+        if (watch == 1)
+        {
+            ssize_t inotify_len = read(inotify_fd, inotify_buffer, sizeof(inotify_buffer));
+            if (inotify_len != -1)
+            {
+                char * inotify_buffer_p = inotify_buffer;
+                char * inotify_len_p = inotify_buffer + inotify_len;
+                
+                while (inotify_buffer_p < inotify_len_p)
+                {
+                    int file_edited = 0;
+                    struct inotify_event * event = (struct inotify_event *)inotify_buffer_p;
+                    if (event -> mask & IN_DELETE_SELF)
+                    {
+                        inotify_rm_watch(inotify_fd, (uint32_t)inotify_wd);
+                        watch = 0;
+                        break;
+                    }
+                    if (event -> mask & IN_CLOSE_WRITE)
+                    {
+                        file_edited = 1;
+                    }
+                    if (event -> mask & IN_CREATE)
+                    {
+                        file_edited = 1;
+                    }
+                    
+                    if (file_edited == 1 && (!(event -> mask & IN_ISDIR)))
+                    {
+                        read_config(config_dir, &read_config_count, config, event -> name);
+                    }
+                    
+                    inotify_buffer_p += sizeof(struct inotify_event) + event -> len;
+                }
+            }
+        }
+        else
+        {
+            if (access(config_dir, F_OK) == 0)
+            {
+                inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
+                watch = 1;
+                continue;
+            }
+        }
+        
         time_t now_time = time(NULL);
         struct tm now_time_local;
         localtime_r(&now_time, &now_time_local);
@@ -169,7 +229,9 @@ int time_daemon(char * argv[], char * work_dir)
                     snprintf(line, sizeof(line), "date=%ld", now_time);
                     
                     // 更新 DATE
+                    inotify_rm_watch(inotify_fd, (uint32_t)inotify_wd);
                     int success = s_sed(config_file, "date=", line, 1);
+                    inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
                     
                     // Check Errno
                     if (success != 0 &&
@@ -211,21 +273,39 @@ int time_daemon(char * argv[], char * work_dir)
 返回：
     成功返回 0，失败返回 1
 */
-static int read_config(char * config_dir, int * read_config_count, struct config_struct config[], char * config_file_name)
+static int read_config(char * config_dir, volatile int * read_config_count, struct config_struct config[], char * config_file_name)
 {
     if (strcmp(config_file_name, "") != 0)
     {
-        // 针对热重载场景 enable 为 0 则允许覆盖
-        int index = 0;
-        while (config[index].enable == 1)
+        // 热重载场景处理，搜索可用槽位，优先寻找已解析槽位
+        int index = -1, last_index = -1;
+        for (int i = 0; i < MAX_CONFIG; i++)
         {
-            index += 1;
-            if (index == MAX_CONFIG)
+            if (strcmp(config[i].config_name, config_file_name) == 0)
+            {
+                index = i;
+                break;
+            }
+            if (config[i].enable == 0 && last_index == -1)
+            {
+                last_index = i;
+            }
+            if (i > * read_config_count && last_index != -1)
+            {
+                break;
+            }
+        }
+        if (index == -1)
+        {
+            if (last_index == -1)
             {
                 printf(L_TD_MAX_CONFIG, MAX_CONFIG);
                 return 1;
             }
-            continue;
+            else
+            {
+                index = last_index;
+            }
         }
         
         char config_file[strlen(config_dir) + strlen(config_file_name) + 2];
@@ -240,7 +320,7 @@ static int read_config(char * config_dir, int * read_config_count, struct config
         snprintf(config[index].config_name, sizeof(config[index].config_name), "%s", config_file_name);
         printf(L_TD_CONFIG_SUCCESS, config_file_name);
         
-        if (index > * read_config_count)
+        if (index >= * read_config_count)
         {
             * read_config_count += 1;
         }
@@ -263,18 +343,35 @@ static int read_config(char * config_dir, int * read_config_count, struct config
             continue;
         }
                 
-        // 针对热重载场景 enable 为 0 则允许覆盖
-        int index = 0;
-        while (config[index].enable == 1)
+        // 热重载场景处理，搜索可用槽位，优先寻找已解析槽位
+        int index = -1, last_index = -1;
+        for (int i = 0; i < MAX_CONFIG; i++)
         {
-            index += 1;
-            if (index == MAX_CONFIG)
+            if (strcmp(config[i].config_name, entry -> d_name) == 0)
+            {
+                index = i;
+                break;
+            }
+            if (config[i].enable == 0 && last_index == -1)
+            {
+                last_index = i;
+            }
+            if (i > * read_config_count && last_index != -1)
+            {
+                break;
+            }
+        }
+        if (index == -1)
+        {
+            if (last_index == -1)
             {
                 printf(L_TD_MAX_CONFIG, MAX_CONFIG);
-                closedir(config_dir_dp);
                 return 1;
             }
-            continue;
+            else
+            {
+                index = last_index;
+            }
         }
                 
         char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2];
@@ -289,7 +386,7 @@ static int read_config(char * config_dir, int * read_config_count, struct config
         snprintf(config[index].config_name, sizeof(config[index].config_name), "%s", entry -> d_name);
         printf(L_TD_CONFIG_SUCCESS, entry -> d_name);
         
-        if (index > * read_config_count)
+        if (index >= * read_config_count)
         {
             * read_config_count += 1;
         }
