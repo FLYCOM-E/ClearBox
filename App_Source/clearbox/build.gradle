@@ -25,8 +25,8 @@ android {
     defaultConfig {
         applicationId "wipe.cache.module"
         minSdk 23
-        versionCode 91
-        versionName "V5.0.6"
+        versionCode 92
+        versionName "V5.1.0"
     }
     
     signingConfigs {

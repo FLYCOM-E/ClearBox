@@ -35,6 +35,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Setup JDK and dependencies 
+        id: setup-jdk
+        run: |
+          JDK_VER="${{ github.event.inputs.jdk_version || '17' }}"
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends zip make curl openjdk-$JDK_VER-jdk
+          
+          echo "JAVA_HOME=/usr/lib/jvm/java-${JDK_VER}-openjdk-amd64" >> $GITHUB_ENV
+          echo "/usr/lib/jvm/java-${JDK_VER}-openjdk-amd64/bin" >> $GITHUB_PATH
+      
+      - name: Setup NDK
+        id: setup-ndk
+        run: |
+          NDK_VER="${{ github.event.inputs.ndk_version || 'r28b' }}"
+          curl -fOL https://dl.google.com/android/repository/android-ndk-${NDK_VER}-linux.zip
+          unzip -q android-ndk-${NDK_VER}-linux.zip
+          NDK_PATH=$(pwd)/android-ndk-${NDK_VER}
+          echo "ndk-path=$NDK_PATH" >> $GITHUB_OUTPUT
+          echo "$NDK_PATH" >> $GITHUB_PATH
+          rm android-ndk-${NDK_VER}-linux.zip
+      
       - name: Get version info from module.prop
         id: get_version
         run: |
@@ -42,25 +63,6 @@ jobs:
           VERSION_CODE=$(grep '^versionCode=' Module_Files/module.prop | cut -f2 -d '=')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "versionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
-      
-      - name: Setup NDK
-        uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: ${{ github.event.inputs.ndk_version || 'r28b' }}
-          add-to-path: true
-      
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        id: setup-jdk
-        with:
-          java-version: ${{ github.event.inputs.jdk_version || '17' }}
-          distribution: "temurin"
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y zip make
       
       - name: Build ${{ matrix.target }}
         run: |
@@ -71,7 +73,7 @@ jobs:
           ./gradlew assembleRelease --no-daemon
           rm -f release.keystore keystore.properties
           cd ..
-          export NDK=${{ steps.setup-ndk.outputs.ndk-path }}
+          export ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}
           export M_API=${{ github.event.inputs.api_level || '23' }}
           export M_TARGET=${{ matrix.target }}
           bash build.sh
