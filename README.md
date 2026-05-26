@@ -14,93 +14,93 @@
 
 
    # 🌍 ？
-> **|** **简体中文** **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
+> **|** **English** **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
 
 
 
-   # 什么是 **ClearBox** ？
+# What is **ClearBox**?
 
-**ClearBox** 是一个多功能、深度、快速的清理盒子，可为您的设备一键腾空空间、储存整理、锁定，软件缓存、安装包、压缩包、垃圾、空文件夹，压制缓存、文件归类、清空，阻止软件更新/安装一网打尽，自动优化/清理、文件归类功能，支持添加自定义清理规则和文件清理/整理归类、白名单等各种规则，支持利用模块自动化系统添加自定义任务
+**ClearBox** is a multi-functional, deep, and fast cleaning tool that can quickly free up space on your device, organize storage, lock, clear software caches, installation packages, compressed files, junk files, empty folders, suppress cache, classify files, clear data, and prevent software updates/installs all in one go. It also supports automatic optimization/cleaning, file categorization features, and allows you to add custom cleaning rules, file cleaning/organization categorization, whitelists, and other rules. Additionally, it supports adding custom tasks via an automation system using modules.
 
-执行所用时间相对市面上普通清理软件来说快如✈️，自动化功能仅由一个极低占用 **Timed** 负责，开销可直接无视，无软件后台进程，不强制绑定 App，支持完整功能终端 **TUI**
+The execution time is much faster than regular cleaning software on the market, comparable to ✈️ speed. The automation function is only handled by a very low-usage **Timed**, so the overhead is negligible. No software background process is required, no forced app binding, and it supports full functionality through a terminal **TUI**.
 
-__兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其各种分支__
+__Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**](https://github.com/bmax121/APatch), [**KernelSU**](https://github.com/tiann/KernelSU), and their various forks__
 
 
 
-   # 安装？
+   # Installation?
 
-   ## [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手动构建：
+   ## [**Release Version**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI Build**](https://github.com/FLYCOM-E/ClearBox/actions) or Manual Build：
 ``` shell
-#(请配置 NDK 并设置变量 $ANDROID_NDK_HOME 为 NDK 根目录路径)
+#(Please configure the NDK and set the variable $ANDROID_NDK_HOME to the NDK root directory path)
 
 sudo apt install zip make
 
 git clone https://github.com/FLYCOM-E/ClearBox
 cd ClearBox && chmod +x *
 
-export M_API=23 #(可以自行根据需要调整目标api版本)
-export M_TARGET=aarch64 #(可选aarch64、armv7a、x86_64、i686)
+export M_API=23 #(Can be adjusted according to the required target API version)
+export M_TARGET=aarch64 #(Options: aarch64, armv7a, x86_64, i686)
 
-bash build.sh
+bash build.sh 
 ```
-刷入 **ClearBox_aarch64_21.zip**
+Flash **ClearBox_aarch64_21.zip**
 
 
 
-   # 操作方式：
+   # How to use:
 
-> ：安装使用模块 **ClearBox** 软件（会在模块安装时询问
+> ：Install and use the module **ClearBox** app (asked during module installation
 
-> ：打开终端 **UI** 功能在任意终端键入 **`ClearBox`** 使用
+> ：Enable the terminal **UI** feature by typing **`ClearBox`** in any terminal
 
 
 
-   # 简介功能：
+   # Brief functions:
    
-## **1**：一键优化清理
+## **1**：One-click optimization & cleanup
 
-进行快速一键优化/清理，效果等同于定期优化。包括缓存清理、垃圾清理，快速磁盘 **GC** 等，另外根据模块设置还可运行文件清理/归类
-
-
-
-## **2**：清理/干掉自定义目录
-
-这项功能是规则清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs/`** 目录下自行添加清理规则。
-
-配置方法：
-
-规则使用文本格式，可选在规则文件开头第一行填写 **`@/xxx`** (以根目录开始) 指定初始目录，不同规则文件独立。
-
-一行一个文件/目录路径，如您已指定初始路径可以不填写完整路径仅填写相对（初始目录）路径即可
+Perform fast one-click optimization/cleanup, the effect is equivalent to periodic optimization. Including cache cleanup, junk cleanup, fast disk **GC**, etc. According to module settings, file cleanup/organization can also be run
 
 
 
-## **3**：清除垃圾文件及空文件夹
+## **2**：Clean/Kill custom directories
 
-清理内/外部储存空文件夹、多媒体缓存、软件缓存等
+This function is rule-based cleanup. You can add cleanup rules yourself in the **`/data/adb/wipe_cache/CleanConfigs/`** directory.
+
+Configuration method:
+
+Rules use text format. Optionally fill in **`@/xxx`** (starting from the root directory) on the first line of the rule file to specify the initial directory. Different rule files are independent.
+
+One file/directory path per line. If you have specified the initial path, you can fill in only the relative (initial directory) path instead of the full path.
 
 
 
-## **4**：清空所有软件缓存
+## **3**：Clear junk files & empty folders
 
-清理第三方软件缓存，不包括系统软件缓存，如果您打开了外部储存缓存清理还会清理外部储存
+Clean internal/external storage empty folders, multimedia cache, software cache, etc.
 
 
 
-## **5**：深度文件清理
+## **4**：Clear all software cache
 
-文件清理功能，自带部分清理配置，支持自定义文件格式配置，支持外部储存。
+Clears third-party application caches, excluding system application caches. If you have enabled external storage cache cleaning, it will also clean external storage.
 
-配置方法：
 
-配置目录： **`/data/adb/wipe_cache/FileConfigs`**
 
-配置方式：在配置文件目录新建 **conf** 文档文件，该文件名称会显示在清理页面当作对应清理项名称，将自定义文件后缀填入该文件，使用空格或换行分隔，不支持注释。
+## **5**：Deep File Cleaning
 
-在文件内填写 **`@MAX=<size/B/K/M/G>`**、**`MIN=<size/B/K/M/G>`** 可以指定目标文件大小区间，覆盖解析，后面的会覆盖前面的设定，因此您可以利用此特性写出您想要的规则
+File cleaning function, comes with some built-in cleaning configurations, supports custom file format configurations, and supports external storage.
 
-栗：
+Configuration Method：
+
+Configuration Directory： **`/data/adb/wipe_cache/FileConfigs`**
+
+Configuration Approach： Create a **conf** document file in the configuration file directory. The file name will be displayed as the corresponding cleaning item name on the cleaning page. Fill in custom file extensions into this file, separated by spaces or line breaks. Comments are not supported.
+
+Add **`@MAX=<size/B/K/M/G>`**、**`MIN=<size/B/K/M/G>`** within the file to specify the target file size range. Parsing is overwritable — later declarations will override previous ones, allowing you to leverage this feature to create custom rules
+
+Example：
 
 ```
 @MAX=1/G @MIN=10/M
@@ -110,156 +110,156 @@ iso img
 @MIN=10/KB exe
 ```
 
-此声明指明仅归类最大 **1 G**，最小 **10 MB** 的 **zip**、**7z**，但 **iso**、**img** 则不限制最大大小
+This declaration specifies to only organize **zip**、**7z** files with a maximum size of **1 G** and a minimum size of **10 MB**, while **iso**、**img** files have no maximum size restriction
 
-另：**-1** 表示无限制。**MIN** 不得大于 **MAX**，否则 **MIN** 自动失效。**MAX**、**MIN** 及大小单位是 **非大小写敏感** 的（您可能已经看出来了:⁠-⁠)），**暂不支持浮点（小数）**
+Note: **-1** means unlimited. **MIN** cannot be greater than **MAX**, otherwise **MIN** will be automatically invalidated. **MAX**, **MIN**, and size units are **case-insensitive** (you may have already noticed :⁠-⁠)），**Floating point numbers (decimals) are currently not supported**
 
-软件/终端清理页面会根据配置文件动态构建
+The software/terminal cleaning page will be dynamically built based on the configuration files
 
-范围：文件清理，及后面会讲到的文件归类
-
-
-
-## **6**：软件规则清理
-
-规则清理功能之一，用于根据规则对软件内部私有目录进行清理
-
-配置方法：
-
-配置目录： **`/data/adb/wipe_cache/AppCleanRules`**
-
-配置方式：在配置文件目录新建 **conf** 文件，文件名称随意但不得包含特殊符号、空格等。
-第一行开头填写 **`@<软件包名>/<软件名称>`** 来指定该规则对应软件；
-之后每行一个文件夹路径或文件路径，初始目录为该 **App** 的数据目录。
-
-模块会自动查找该包名对应应用数据目录，软件名称将显示在清理界面
-
-软件/终端清理页面会根据配置文件动态构建
-
-请不要在规则中以根目录 **`/xxx`** 硬编码编写清理规则，否则将导致清理报错并跳过此规则文件。
-
-模块会自动检查部分配置错误
+Scope： File cleaning, as well as file organization which will be covered later
 
 
 
-## **7**：清空系统缓存
+## **6**：Software rule cleanup
 
-清理系统软件缓存、系统缓存、附带清空 **MTP** 主机数据（可解决 **MTP** 文件传输文件列表显示异常问题
+One of the rule cleanup functions, used to clean the internal private directory of software according to rules
+
+Configuration method：
+
+Configuration directory： **`/data/adb/wipe_cache/AppCleanRules`**
+
+Configuration way：Create a **conf** file in the configuration directory. The file name is arbitrary but must not contain special symbols, spaces, etc.
+Fill in **`@<package_name>/<app_name>`** at the beginning of the first line to specify the software corresponding to this rule;
+After that, one folder path or file path per line. The initial directory is the **App** data directory.
+
+The module will automatically find the data directory corresponding to the package name. The software name will be displayed in the cleanup interface
+
+The software/terminal cleanup page will be dynamically built according to the configuration file
+
+Please do not hard-code cleanup rules with root directory **`/xxx`** in the rules, otherwise cleanup will report an error and skip this rule file.
+
+The module will automatically check some configuration errors
 
 
 
-## **8**：自动清理
+## **7**：Clear system cache
 
-功能自动化，由 **Timed** 组件驱动执行（超低开销）。
+Clear system software cache, system cache, and also clear **MTP** host data (can solve **MTP** file transfer file list display abnormality)
 
-### **•  您知道吗？**
 
-您可以利用此模块 **Timed** 运行自定义任务！请按照以下配置：
 
-配置目录：**`/data/adb/wipe_cache/TimedConfig`**
+## 8: Auto Cleanup
 
-在此目录下创建一个自定义名称 **.conf** 文件，填入并修改以下行（部分可选）：
+Feature automation, driven by the **Timed** component (ultra-low overhead).
+
+### **•  Did you know?**
+
+You can use the **Timed** module to run custom tasks! Follow the configuration below:
+
+Config Directory: **`/data/adb/wipe_cache/TimedConfig`**
+
+In this directory, create a **.conf** file with a custom name, then add and modify the following lines (some are optional):
 
 ```conf
-time=间隔时间/时间单位（目前支持M/分、H/时、D/天）
+time=Interval/Unit (Currently supports M/min, H/hour, D/day)
 date=0
-run=要运行的程序及参数，支持 Shell 语法（交由 Shell 解析）
-in=开始时间/结束时间（在X点到X点之间运行。这是一个可选参数，填写值请不要超过23，注意非天级任务会在此时段内多次运行）
-post=通知标题/通知内容（发送通知。这是一个可选参数，不建议在分钟级任务加这个）
+run=Program and arguments to execute; supports Shell syntax (parsed by Shell)
+in=Start Hour/End Hour (Runs between Hour X and Hour X. Optional; do not exceed 23. Note: non-daily tasks will run multiple times within this window)
+post=Notification Title/Content (Sends a notification. Optional; not recommended for minute-level tasks)
 ```
 
-实例：
+Example:
 
-```conf
+```
 time=1/D
 date=0
 run=sync
 in=0/5
-post=Test Run/已运行 Sync
+post=Test Run/Executed Sync
 ```
 
-以上配置会在每天凌晨 **0~5** 点之间运行一次 **`/system/bin/sync`** 命令，并发送一条通知
+The above configuration will run the **/system/bin/sync** command once between **0:00** and **5:00** AM daily and send a notification.
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Pictures/timed_notification.png)
 
 
 
-## **9**：阻止所有软件更新安装
+## **9**：Block All Software Update Installations
 
-如名，文件系统级强制阻止软件安装，不处理拓展储存，因此如果软件是安装在外部储存则此项无效
-
-
-
-## **10**：内部储存固定功能
-
-如名，锁定内部储存根目录布局防止各种软件乱创建文件/文件夹，不处理拓展储存
+As the name implies, file system-level forced blocking of software installations, does not handle expanded storage, therefore if the software is installed on external storage, this item is invalid
 
 
 
-## **11**：阻止缓存功能
+## **10**：Internal Storage Fix Function
 
-这是模块的一个重要功能，用于动态阻止前台软件生成缓存。
-
-打开该功能后重启激活，自动缓存前台最近5款软件并阻止缓存，可自定义添加白名单。
-
-名单位置： **`/data/adb/wipe_cache/whitelist.prop`** 或在模块 **ClearBox** 软件中添加。
-
-**Other**：模块采取动态等待更新的方式（10s ＆ 30s），一方面避免持续资源占用，一方面部分软件在阻止缓存状态下启动会异常，进入软件后延迟启动阻止缓存是最优解。
-
-阻止缓存不会清空该软件缓存，因此软件缓存不会为 **0**，而是缓慢增长，此举避免不断进行小文件擦除而仅仅限制大缓存生成
-
-极低开销，屏幕关闭自动延迟运行
-
-外部储存拓展仅支持单卡，如果您拓展了多张卡则不会处理拓展储存
-
-部分软件出现异常请自行添加白名单！
+As the name implies, locks the internal storage root directory layout to prevent various applications from randomly creating files/folders, does not handle expanded storage
 
 
 
-## **12**：磁铁（一键归类文件
+## **11**：Block cache function
 
-一键归类内/多外部储存文件，规则与文件清理共用
+This is an important function of the module, used to dynamically block foreground software from generating cache.
+
+After turning on this function and restarting to activate, it will automatically cache the latest 5 foreground software and block cache. You can customize and add a whitelist.
+
+Whitelist location： **`/data/adb/wipe_cache/whitelist.prop`** or add it in the module **ClearBox** app.
+
+**Other**：The module adopts a dynamic wait update method (10s & 30s), on the one hand to avoid continuous resource occupation, on the other hand, some software will be abnormal when launched under the cache block state. Delayed activation of cache blocking after entering the software is the optimal solution.
+
+Blocking cache will not clear the software cache, so the software cache will not be **0**, but will grow slowly. This avoids continuous small file erasure and only limits large cache generation
+
+Extremely low overhead, automatically delays execution when the screen is off
+
+External storage expansion only supports single card. If you have expanded multiple cards, expanded storage will not be processed
+
+If some software is abnormal, please add it to the whitelist yourself!
 
 
 
-## **13**：[Beta] 规则目录绑定（重定向
+## **12**：Magnet (one-click file classification
 
-配置目录：**`/data/adb/wipe_cache/BindConfigs`**
+One-click classify internal/multi-external storage files, rules shared with file cleanup
 
-在此目录下创建一个自定义名称 **.conf** 文件，填入自定义挂载规则：
+
+
+## **13**：[Beta] Rule Directory Binding (Redirect)
+
+Configuration Directory：**`/data/adb/wipe_cache/BindConfigs`**
+
+Create a custom name **.conf** file in this directory and fill in custom mount rules：
 
 ```
-<绑定目录> <目标目录>
+<Bind Directory> <Target Directory>
 ```
 
-注：请不要填写 **绝对路径**，而是 **相对内部储存路径**，否则会导致挂载失败
+Note: Please do not enter **absolute paths**, but rather **relative internal storage paths**, otherwise mounting will fail
 
-当往 **<绑定目录>** 内写入/创建目录/文件时将被重定向至 **<目标目录>**
+When writing/creating directories/files into **<Bind Directory>**, they will be redirected to **<Target Directory>**
 
-此功能暂无法在使用 **sdcardfs** 设备上运行，但您无需担心，**Android 12+** 基本已无设备使用 **sdcardfs**
-
-
-
-## **14**：磁盘 & 软件优化
-
-这是一个优化功能集，包含磁盘优化（ **f2fs-GC** ）及 **Dexoat** （软件预编译）功能
-
-
-**F2fs** 磁盘 **GC**，此功能属于紧急 **GC**，因此不需要经常使用，定期运行即可。
-方案来自 **Coolapk@Amktiao** 大佬，已得到同意，感谢大佬！
-
-
-**Dexoat** 软件预编译，即提前编译软件加速运行时速度，缺点是占用储存空间，属于以空间电量换流畅操作（）
-模块预提供了三个模式：系统默认 **Dexoat** 、自定义编译模式、**RESET**：
-
-系统默认 **Dexoat** ： **Android** 系统（特别是较新系统）也会在空闲时自动编译部分热点函数以提高整体运行速度，因此模块提供了系统 **Dexoat** 模式，此模式等于手动触发系统 **Dexoat**，模式及编译项由系统决定。
-
-自定义编译模式：此模式支持手动指定编译模式，目前支持 **Speed**、**Speed-profile**、**Everything** 三个模式
-
-**RESET**：恢复编译
+This feature cannot currently run on devices using **sdcardfs**, but don't worry, **Android 12+** devices have basically stopped using **sdcardfs**
 
 
 
-## 欢迎以任何形式参与开发、贡献！
+## **14**：Disk & software optimization
 
-模块 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目
+This is an optimization function set, including disk optimization ( **f2fs-GC** ) and **Dexoat** (software pre-compilation) functions
+
+
+**F2fs** disk **GC**, this function belongs to emergency **GC**, so it does not need to be used frequently, just run it regularly.
+The solution comes from the big guy **Coolapk@Amktiao**, and has been agreed, thanks to the big guy!
+
+
+**Dexoat** software pre-compilation, that is, pre-compile software to accelerate runtime speed, the disadvantage is that it takes up storage space, which belongs to the space-electricity-for-smooth operation ()
+The module provides three modes in advance: system default **Dexoat**, custom compilation mode, **RESET**:
+
+System default **Dexoat**： **Android** system (especially newer systems) will also automatically compile some hotspot functions when idle to improve overall running speed, so the module provides system **Dexoat** mode, this mode is equivalent to manually triggering system **Dexoat**, the mode and compilation items are determined by the system.
+
+Custom compilation mode：This mode supports manually specifying the compilation mode, currently supports **Speed**, **Speed-profile**, **Everything** three modes
+
+**RESET**：Restore compilation
+
+
+
+## Welcome to contribute and participate in development in any form!
+
+The module **ClearBox App** is made using the [**Kr-Script**](https://github.com/helloklf/kr-scripts) project. Thanks to the project.

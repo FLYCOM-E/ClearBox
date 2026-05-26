@@ -1,0 +1,265 @@
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/ClearBox.png)
+
+<div align="center">
+
+![✨Clean✨](https://img.shields.io/badge/MagiskModule-blue.svg?logo=android)
+[![License](https://img.shields.io/badge/License-GPL--3.0-red.svg?logo=opensourceinitiative)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4&logo=github)](https://github.com/FLYCOM-E/ClearBox/releases)
+
+[![Telegram](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/clearboxmodule)
+[![THChat](https://img.shields.io/badge/YHchat-8068E2.svg?logo=icloud&logoColor=white)](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
+
+</div>
+
+
+
+   # 🌍 ？
+> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) **|** **简体中文** **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
+
+
+
+   # 什么是 **ClearBox** ？
+
+**ClearBox** 是一个多功能、深度、快速的清理盒子，可为您的设备一键腾空空间、储存整理、锁定，软件缓存、安装包、压缩包、垃圾、空文件夹，压制缓存、文件归类、清空，阻止软件更新/安装一网打尽，自动优化/清理、文件归类功能，支持添加自定义清理规则和文件清理/整理归类、白名单等各种规则，支持利用模块自动化系统添加自定义任务
+
+执行所用时间相对市面上普通清理软件来说快如✈️，自动化功能仅由一个极低占用 **Timed** 负责，开销可直接无视，无软件后台进程，不强制绑定 App，支持完整功能终端 **TUI**
+
+__兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其各种分支__
+
+
+
+   # 安装？
+
+   ## [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手动构建：
+``` shell
+#(请配置 NDK 并设置变量 $ANDROID_NDK_HOME 为 NDK 根目录路径)
+
+sudo apt install zip make
+
+git clone https://github.com/FLYCOM-E/ClearBox
+cd ClearBox && chmod +x *
+
+export M_API=23 #(可以自行根据需要调整目标api版本)
+export M_TARGET=aarch64 #(可选aarch64、armv7a、x86_64、i686)
+
+bash build.sh
+```
+刷入 **ClearBox_aarch64_21.zip**
+
+
+
+   # 操作方式：
+
+> ：安装使用模块 **ClearBox** 软件（会在模块安装时询问
+
+> ：打开终端 **UI** 功能在任意终端键入 **`ClearBox`** 使用
+
+
+
+   # 简介功能：
+   
+## **1**：一键优化清理
+
+进行快速一键优化/清理，效果等同于定期优化。包括缓存清理、垃圾清理，快速磁盘 **GC** 等，另外根据模块设置还可运行文件清理/归类
+
+
+
+## **2**：清理/干掉自定义目录
+
+这项功能是规则清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs/`** 目录下自行添加清理规则。
+
+配置方法：
+
+规则使用文本格式，可选在规则文件开头第一行填写 **`@/xxx`** (以根目录开始) 指定初始目录，不同规则文件独立。
+
+一行一个文件/目录路径，如您已指定初始路径可以不填写完整路径仅填写相对（初始目录）路径即可
+
+
+
+## **3**：清除垃圾文件及空文件夹
+
+清理内/外部储存空文件夹、多媒体缓存、软件缓存等
+
+
+
+## **4**：清空所有软件缓存
+
+清理第三方软件缓存，不包括系统软件缓存，如果您打开了外部储存缓存清理还会清理外部储存
+
+
+
+## **5**：深度文件清理
+
+文件清理功能，自带部分清理配置，支持自定义文件格式配置，支持外部储存。
+
+配置方法：
+
+配置目录： **`/data/adb/wipe_cache/FileConfigs`**
+
+配置方式：在配置文件目录新建 **conf** 文档文件，该文件名称会显示在清理页面当作对应清理项名称，将自定义文件后缀填入该文件，使用空格或换行分隔，不支持注释。
+
+在文件内填写 **`@MAX=<size/B/K/M/G>`**、**`MIN=<size/B/K/M/G>`** 可以指定目标文件大小区间，覆盖解析，后面的会覆盖前面的设定，因此您可以利用此特性写出您想要的规则
+
+栗：
+
+```
+@MAX=1/G @MIN=10/M
+zip 7z
+@max=-1
+iso img
+@MIN=10/KB exe
+```
+
+此声明指明仅归类最大 **1 G**，最小 **10 MB** 的 **zip**、**7z**，但 **iso**、**img** 则不限制最大大小
+
+另：**-1** 表示无限制。**MIN** 不得大于 **MAX**，否则 **MIN** 自动失效。**MAX**、**MIN** 及大小单位是 **非大小写敏感** 的（您可能已经看出来了:⁠-⁠)），**暂不支持浮点（小数）**
+
+软件/终端清理页面会根据配置文件动态构建
+
+范围：文件清理，及后面会讲到的文件归类
+
+
+
+## **6**：软件规则清理
+
+规则清理功能之一，用于根据规则对软件内部私有目录进行清理
+
+配置方法：
+
+配置目录： **`/data/adb/wipe_cache/AppCleanRules`**
+
+配置方式：在配置文件目录新建 **conf** 文件，文件名称随意但不得包含特殊符号、空格等。
+第一行开头填写 **`@<软件包名>/<软件名称>`** 来指定该规则对应软件；
+之后每行一个文件夹路径或文件路径，初始目录为该 **App** 的数据目录。
+
+模块会自动查找该包名对应应用数据目录，软件名称将显示在清理界面
+
+软件/终端清理页面会根据配置文件动态构建
+
+请不要在规则中以根目录 **`/xxx`** 硬编码编写清理规则，否则将导致清理报错并跳过此规则文件。
+
+模块会自动检查部分配置错误
+
+
+
+## **7**：清空系统缓存
+
+清理系统软件缓存、系统缓存、附带清空 **MTP** 主机数据（可解决 **MTP** 文件传输文件列表显示异常问题
+
+
+
+## **8**：自动清理
+
+功能自动化，由 **Timed** 组件驱动执行（超低开销）。
+
+### **•  您知道吗？**
+
+您可以利用此模块 **Timed** 运行自定义任务！请按照以下配置：
+
+配置目录：**`/data/adb/wipe_cache/TimedConfig`**
+
+在此目录下创建一个自定义名称 **.conf** 文件，填入并修改以下行（部分可选）：
+
+```conf
+time=间隔时间/时间单位（目前支持M/分、H/时、D/天）
+date=0
+run=要运行的程序及参数，支持 Shell 语法（交由 Shell 解析）
+in=开始时间/结束时间（在X点到X点之间运行。这是一个可选参数，填写值请不要超过23，注意非天级任务会在此时段内多次运行）
+post=通知标题/通知内容（发送通知。这是一个可选参数，不建议在分钟级任务加这个）
+```
+
+实例：
+
+```conf
+time=1/D
+date=0
+run=sync
+in=0/5
+post=Test Run/已运行 Sync
+```
+
+以上配置会在每天凌晨 **0~5** 点之间运行一次 **`/system/bin/sync`** 命令，并发送一条通知
+
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Pictures/timed_notification.png)
+
+
+
+## **9**：阻止所有软件更新安装
+
+如名，文件系统级强制阻止软件安装，不处理拓展储存，因此如果软件是安装在外部储存则此项无效
+
+
+
+## **10**：内部储存固定功能
+
+如名，锁定内部储存根目录布局防止各种软件乱创建文件/文件夹，不处理拓展储存
+
+
+
+## **11**：阻止缓存功能
+
+这是模块的一个重要功能，用于动态阻止前台软件生成缓存。
+
+打开该功能后重启激活，自动缓存前台最近5款软件并阻止缓存，可自定义添加白名单。
+
+名单位置： **`/data/adb/wipe_cache/whitelist.prop`** 或在模块 **ClearBox** 软件中添加。
+
+**Other**：模块采取动态等待更新的方式（10s ＆ 30s），一方面避免持续资源占用，一方面部分软件在阻止缓存状态下启动会异常，进入软件后延迟启动阻止缓存是最优解。
+
+阻止缓存不会清空该软件缓存，因此软件缓存不会为 **0**，而是缓慢增长，此举避免不断进行小文件擦除而仅仅限制大缓存生成
+
+极低开销，屏幕关闭自动延迟运行
+
+外部储存拓展仅支持单卡，如果您拓展了多张卡则不会处理拓展储存
+
+部分软件出现异常请自行添加白名单！
+
+
+
+## **12**：磁铁（一键归类文件
+
+一键归类内/多外部储存文件，规则与文件清理共用
+
+
+
+## **13**：[Beta] 规则目录绑定（重定向
+
+配置目录：**`/data/adb/wipe_cache/BindConfigs`**
+
+在此目录下创建一个自定义名称 **.conf** 文件，填入自定义挂载规则：
+
+```
+<绑定目录> <目标目录>
+```
+
+注：请不要填写 **绝对路径**，而是 **相对内部储存路径**，否则会导致挂载失败
+
+当往 **<绑定目录>** 内写入/创建目录/文件时将被重定向至 **<目标目录>**
+
+此功能暂无法在使用 **sdcardfs** 设备上运行，但您无需担心，**Android 12+** 基本已无设备使用 **sdcardfs**
+
+
+
+## **14**：磁盘 & 软件优化
+
+这是一个优化功能集，包含磁盘优化（ **f2fs-GC** ）及 **Dexoat** （软件预编译）功能
+
+
+**F2fs** 磁盘 **GC**，此功能属于紧急 **GC**，因此不需要经常使用，定期运行即可。
+方案来自 **Coolapk@Amktiao** 大佬，已得到同意，感谢大佬！
+
+
+**Dexoat** 软件预编译，即提前编译软件加速运行时速度，缺点是占用储存空间，属于以空间电量换流畅操作（）
+模块预提供了三个模式：系统默认 **Dexoat** 、自定义编译模式、**RESET**：
+
+系统默认 **Dexoat** ： **Android** 系统（特别是较新系统）也会在空闲时自动编译部分热点函数以提高整体运行速度，因此模块提供了系统 **Dexoat** 模式，此模式等于手动触发系统 **Dexoat**，模式及编译项由系统决定。
+
+自定义编译模式：此模式支持手动指定编译模式，目前支持 **Speed**、**Speed-profile**、**Everything** 三个模式
+
+**RESET**：恢复编译
+
+
+
+## 欢迎以任何形式参与开发、贡献！
+
+模块 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目
