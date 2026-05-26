@@ -20,12 +20,12 @@
 #include <signal.h>
 #include <sys/mount.h>
 #include <sys/inotify.h>
+#include <limits.h>
 
 // 多语言
 #include "Lang.h"
 
 #define MAX_PACKAGE 256                 // 软件包名最大长度
-#define MAX_PATH 4096                   // 文件路径最大长度
 #define MAX_WORK_DIR_LEN 512            // 工作目录最大长度
 #define MAX_BIN_DIR_LEN 512             // 二进制目录最大长度
 #define LOG_FILE_NAME "LOG.log"         // 日志文件名 Max Size 30

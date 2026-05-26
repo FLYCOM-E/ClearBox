@@ -41,7 +41,7 @@ long s_remove(char * path, int all)
                 {
                     continue;
                 }
-                char paths[MAX_PATH] = "";
+                char paths[PATH_MAX] = "";
                 snprintf(paths, sizeof(paths), "%s/%s", path, entry -> d_name);
                 size_byte += s_remove(paths, 1);
             }
@@ -79,7 +79,7 @@ int s_grep(char * file, char * text, int mode)
 {
     // 打开文件遍历查找
     int end = 0;
-    char line[MAX_PATH] = "";
+    char line[PATH_MAX] = "";
     FILE * file_fp = fopen(file, "r");
     if (file_fp)
     {
@@ -345,7 +345,7 @@ int set_server_name(char * argv[], char * new_name)
 int s_sed(char * file, char * target_line, char * text, int mode)
 {
     int found = 0;
-    char line[MAX_PATH] = "";
+    char line[PATH_MAX] = "";
     char tmp_file[strlen(file) + 128];
     snprintf(tmp_file, sizeof(tmp_file), "%s_%ld", file, (time(NULL) + getpid()));
     
