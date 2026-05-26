@@ -125,7 +125,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     }
     
     // 脱离终端
-    char log_text[sizeof(L_SERVER_START_ERR) + sizeof(L_SCD_START_SUCCESS) + 128] = "";
+    char log_text[strlen(L_SERVER_START_ERR) + strlen(L_SCD_START_SUCCESS) + 128];
     if (s_daemon() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));

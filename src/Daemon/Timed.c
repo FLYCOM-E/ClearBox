@@ -85,7 +85,7 @@ int time_daemon(char * argv[], char * work_dir)
     char inotify_buffer[PATH_MAX] = "";
     
     // Daemon
-    char log_text[sizeof(L_SERVER_START_ERR) + sizeof(L_TD_START_SUCCESS) + 128] = "";
+    char log_text[strlen(L_SERVER_START_ERR) + strlen(L_TD_START_SUCCESS) + 128];
     if (s_daemon() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
