@@ -20,16 +20,7 @@ uninstall()
     rm -r "$MODPATH"
 }
 ######
-use_cmd()
-{
-    echo -e '#!/system/bin/sh\nshift 1\npm "$@"' > "$MODPATH/system/bin/cmd"
-}
-######
-if unzip -oq "$ZIPFILE" -d "$MODPATH"; then
-    if ! which cmd >/dev/null 2>&1; then
-        use_cmd
-    fi
-else
+if ! unzip -oq "$ZIPFILE" -d "$MODPATH"; then
     uninstall
     echo -e " » 模块解压发生错误！An error occurred while extracting the module!\n"
     exit 1
