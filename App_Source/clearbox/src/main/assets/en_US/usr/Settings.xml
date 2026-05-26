@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
-<group title="Module Management">
-    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
-        <title>Apply the current configuration immediately (no restart required)</title>
-            <set>
-            sh "$home_dir/service.sh"
-            </set>
-    </action>
-</group>
-<!-- END -->
-<!-- START -->
 <group title=" ">
     <pages>
         <page title="Clear Settings" config-sh="cat ClearSettings.xml"/>

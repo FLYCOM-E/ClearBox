@@ -423,6 +423,10 @@ static int get_config(char * config_file, char * config_file_name, struct config
     int time_ = 0, date_ = 0, run_ = 0; // 记录是否解析标志位
     char line[CONFIG_LINE_MAX_LEN] = {0};
     
+    // 热更新 & 重置部分字段
+    config[count].post = 0;
+    config[count].in = 0;
+    
     // 非普通文件即失败，同时提示这里有非文件
     FILE * config_fp = fopen(config_file, "r");
     if (config_fp == NULL)
@@ -478,7 +482,14 @@ static int get_config(char * config_file, char * config_file_name, struct config
             config[count].old_time = (time_t)strtol(value, NULL, 10);
             if (config[count].old_time <= 0)
             {
-                config[count].old_time = time(NULL);
+                if (config[count].old_time == -1)
+                {
+                    config[count].old_time = 0;
+                }
+                else
+                {
+                    config[count].old_time = time(NULL);
+                }
             }
             date_ = 1; // 已读取 DATE
         }

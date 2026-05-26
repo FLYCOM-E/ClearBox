@@ -173,16 +173,14 @@ Example:
 ```
 time=1/D
 date=0
-run=/system/bin/sync
+run=sync
 in=0/5
-post=Test Run/Executed "/system/bin/sync"
+post=Test Run/Executed Sync
 ```
 
 The above configuration will run the **/system/bin/sync** command once between **0:00** and **5:00** AM daily and send a notification.
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Pictures/timed_notification.png)
-
-After saving, you must manually run **Apply Current Configuration** or **Reboot** for the task to take effect!
 
 
 

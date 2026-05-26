@@ -116,10 +116,9 @@ if [ "$clearbox_stop_cache" = 1 ]; then
         "$home_dir/$core" "StopCached"
     fi
 fi
-if pgrep "ClearBox Timed" >/dev/null 2>&1; then
-    kill $(pgrep "ClearBox Timed")
+if ! pgrep "ClearBox Timed" >/dev/null 2>&1; then
+    "$home_dir/$core" "Timed"
 fi
-"$home_dir/$core" "Timed"
 ######
 if [ "$clearbox_bind_path" = 1 ]; then
     "$home_dir/$core" "BindPath"

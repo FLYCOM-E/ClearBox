@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
-<group title="模組管理">
-    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
-        <title>立即生效當前配置（免重啟）</title>
-            <set>
-            sh "$home_dir/service.sh"
-            </set>
-    </action>
-</group>
-<!-- END -->
-<!-- START -->
 <group title=" ">
     <pages>
         <page title="清理設定" config-sh="cat ClearSettings.xml"/>

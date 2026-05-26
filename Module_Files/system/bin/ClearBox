@@ -666,7 +666,6 @@ case "$input" in
       clear
       echo -e "\033[104m [$L_SETTINGS]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t0：$L_NOW_UPDATE_PROFILE\033[0m\n"
       echo -e "\033[93m \t1：$L_CLEAN_SETTINGS\033[0m\n"
       echo -e "\033[93m \t2：$L_TUI_SWITCH\033[0m\n"
       echo -e "\033[93m \t00：$L_ABOUT\033[0m\n"
@@ -677,10 +676,6 @@ case "$input" in
       echo -n " $L_PLEASE_INPUT:"
       read settings_option_input
       case "$settings_option_input" in
-          0)
-            clear
-            sh "$home_dir/service.sh"
-            ;;
           1)
             clear
             if [ "$clearbox_auto_file_all" = 1 ]; then
