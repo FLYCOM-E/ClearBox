@@ -138,7 +138,12 @@ int time_daemon(char * argv[], char * work_dir)
                     
                     if (file_edited == 1 && (!(event -> mask & IN_ISDIR)))
                     {
-                        read_config(config_dir, &read_config_count, config, event -> name);
+                        if (read_config(config_dir, &read_config_count, config, event -> name) == 0)
+                        {
+                            char message[strlen(L_TD_LOAD_CONFIG_SUCCESS) + strlen(event -> name) + 2];
+                            snprintf(message, sizeof(message), L_TD_LOAD_CONFIG_SUCCESS, event -> name);
+                            post(SERVER_NAME, message, event -> name);
+                        }
                     }
                     
                     inotify_buffer_p += sizeof(struct inotify_event) + event -> len;
