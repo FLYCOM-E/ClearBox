@@ -97,10 +97,11 @@ cat <<w
             <set>
             if grep "clearbox_bind_path=0" "$work_dir/settings.prop" >/dev/null; then
                 sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
-                echo " » Enabled, reboot to take effect ~"
+                "$home_dir/$core" "BindPath"
+                echo " » Enabled ~"
             else
                 sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
-                echo " » Disabled, reboot to take effect ~"
+                echo " » Disabled ~"
             fi
             </set>
     </switch>
@@ -141,7 +142,10 @@ cat <<w
         <set>
         if grep "clearbox_stop_cache=0" "$work_dir/settings.prop" >/dev/null; then
             sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
-            echo " » Enabled, effective after restarting ~"
+            if ! pgrep "StopCached" >/dev/null 2>&amp;1; then
+                "$home_dir/$core" "StopCached"
+            fi
+            echo " » Enabled ~"
         else
             sed -i 's/clearbox_stop_cache=1/clearbox_stop_cache=0/g' "$work_dir/settings.prop"
             echo " » Closed, effective after restarting ~"

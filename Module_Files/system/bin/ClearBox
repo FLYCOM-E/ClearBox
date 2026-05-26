@@ -462,6 +462,7 @@ case "$input" in
                     y | Y)
                       clear
                       sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
+                      "$home_dir/$core" "BindPath"
                       ;;
                     *)
                       echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -538,6 +539,9 @@ case "$input" in
                     y | Y)
                       clear
                       sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
+                      if ! pgrep "StopCached" >/dev/null 2>&1; then
+                          "$home_dir/$core" "StopCached"
+                      fi
                       echo " » $L_OPEND!"
                       ;;
                     *)
