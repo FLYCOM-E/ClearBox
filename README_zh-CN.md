@@ -14,7 +14,7 @@
 
 
    # 🌍 ？
-> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_en-US.md) **|** **简体中文** **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
+> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** **简体中文** **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|**
 
 
 
