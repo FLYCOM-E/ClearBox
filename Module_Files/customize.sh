@@ -67,7 +67,7 @@ fi
 ######
 sleep "$SHOUT_S"
 echo -e "=====================================================\n"
-if cmd package list package -3 | grep "wipe.cache.module" >/dev/null 2>&1; then
+if pm list package -3 | grep "wipe.cache.module" >/dev/null 2>&1; then
     sleep "$SHOUT_S"
     echo -e " » $TICKUPDATEAPP\n"
     sleep "$LONG_S"
@@ -91,7 +91,7 @@ case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
       echo -e " » $INSTALLAPP❤\n"
       cp "$MODPATH/ClearBox.apk" "$TMPDIR/"
       chmod +x "$TMPDIR/ClearBox.apk"
-      if cmd package install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
+      if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
           sleep "$SHOUT_S"
           echo -e " » $SUCCESSFUL✅\n"
       else
@@ -111,8 +111,8 @@ case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
                 [ ! -f "$TMPDIR/ClearBox.apk" ] && echo -e " » $APKGETERR\n"; uninstall; exit 1
           fi
           chmod +x "$TMPDIR/ClearBox.apk"
-          cmd package uninstall "wipe.cache.module" >/dev/null
-          if cmd package install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
+          pm uninstall "wipe.cache.module" >/dev/null
+          if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
               sleep "$SHOUT_S"
               echo -e " » $SUCCESSFUL✅\n"
           else

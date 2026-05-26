@@ -29,7 +29,7 @@ int dexoat(int mode, char * cust_mode)
 static int dexoat_system(void)
 {
     fprintf(stderr, L_DO_RUN_SYSTEM);
-    return system("cmd package bg-dexopt-job");
+    return system("pm bg-dexopt-job");
 }
 
 // 自定义模式Dexoat
@@ -44,7 +44,7 @@ static int dexoat_cust(char * mode)
     }
     if (newPid == 0)
     {
-        execlp("cmd", "cmd", "package", "compile", "-m", mode, "-f", "-a", NULL);
+        execlp("pm", "pm", "compile", "-m", mode, "-f", "-a", NULL);
         _exit(127);
     }
     else

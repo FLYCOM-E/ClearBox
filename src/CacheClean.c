@@ -11,8 +11,8 @@
 #define DATA_DIR "/data/user"                               // 软件数据根目录
 #define CARD_HOME "/mnt/expand"                             // 拓展储存根目录
 #define WHITELIST_FILE "ClearWhitelist.prop"                // 白名单文件名
-#define GET_APPLIST "cmd package list package -3 2>/dev/null"
-#define GET_S_APPLIST "cmd package list package -s 2>/dev/null"
+#define GET_APPLIST "pm list package -3 2>/dev/null"
+#define GET_S_APPLIST "pm list package -s 2>/dev/null"
 
 static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
 static int system_cache_clean(void);

@@ -64,7 +64,7 @@ StartSettings()
     fi
     if [ "$(ls "$work_dir/$app_config_dir/")" = "" ]; then
         if [ -d "$home_dir/AppConfigs" ]; then
-            cmd package list package | cut -f2 -d ':' >"$work_dir/$app_config_dir/AppList.txt"
+            pm list package -a | cut -f2 -d ':' >"$work_dir/$app_config_dir/AppList.txt"
             for file in "$home_dir/AppConfigs/"*; do
                 name="$(basename $file | sed 's/\.[^.]*$//')"
                 if grep "$name" "$work_dir/$app_config_dir/AppList.txt" >/dev/null 2>&1; then

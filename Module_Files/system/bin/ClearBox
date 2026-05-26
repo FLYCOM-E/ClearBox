@@ -564,7 +564,7 @@ case "$input" in
                 if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
                     echo " » $package $L_ISIN_WHITELIST"
                     continue
-                elif ! cmd package list package | grep "package:$package\$" >> /dev/null; then
+                elif ! pm list package -3 | grep "package:$package\$" >> /dev/null; then
                     echo " » $package $L_NOTIN_PACKAGE_LIST!"
                     continue
                 else
@@ -844,7 +844,7 @@ case "$input" in
                       if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
                           echo " » $package $L_ISIN_WHITELIST"
                           continue
-                      elif ! cmd package list package | grep "package:$package\$" >> /dev/null; then
+                      elif ! pm list package -3 | grep "package:$package\$" >> /dev/null; then
                           echo " » $package $L_NOTIN_PACKAGE_LIST!"
                           continue
                       fi
