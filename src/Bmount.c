@@ -100,13 +100,39 @@ static int bind_mount(char * config_file)
         char * strtok_p = NULL,
              * root_dir_p = NULL,
              * bind_dir_p = NULL;
+        
+        if (line[0] == '"')
+        {
+            bind_dir_p = strchr(line + 1, '"');
+            if (bind_dir_p)
+            {
+                * bind_dir_p = '\0';
+                bind_dir_p = bind_dir_p + 2;
+                root_dir_p = line + 1;
+                goto skip_cut_str;
+            }
+        }
+        
         root_dir_p = strtok_r(line, " ", &strtok_p);
         bind_dir_p = strtok_r(NULL, " ", &strtok_p);
         
+        // 如果解析到引号，那么跳过 strtok
+        skip_cut_str:
+        
+        if (bind_dir_p && * bind_dir_p == '"')
+        {
+            char * p = strchr(bind_dir_p + 1, '"');
+            if (p)
+            {
+                * p = '\0';
+            }
+            bind_dir_p = bind_dir_p + 1;
+        }
+        
         if (root_dir_p && bind_dir_p)
         {
-            char root_dir[sizeof(DATA_DIR) + strlen(root_dir_p) + 2],
-                 bind_dir[sizeof(DATA_DIR) + strlen(bind_dir_p) + 2];
+            char root_dir[sizeof(DATA_DIR) + strlen(root_dir_p) + 8],
+                 bind_dir[sizeof(DATA_DIR) + strlen(bind_dir_p) + 8];
             
             snprintf(root_dir, sizeof(root_dir), "%s/%s", DATA_DIR, root_dir_p);
             snprintf(bind_dir, sizeof(bind_dir), "%s/%s", DATA_DIR, bind_dir_p);
