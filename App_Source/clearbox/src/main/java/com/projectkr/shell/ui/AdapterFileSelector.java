@@ -194,7 +194,7 @@ public class AdapterFileSelector extends BaseAdapter {
                     view.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            DialogHelper.Companion.confirm(view.getContext(), R.string.pick_dir, file.getAbsolutePath(), new Runnable() {
+                            DialogHelper.Companion.confirm(view.getContext(), view.getContext().getString(R.string.pick_dir), file.getAbsolutePath(), new Runnable() {
                                 @Override
                                 public void run() {
                                     if (!file.exists()) {

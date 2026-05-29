@@ -158,7 +158,7 @@ public class KeepShellAsync(private var context: Context?, private var rootMode:
                 if (out == null) {
                     error?.run()
                 } else {
-                    showMsg(R.string.error_root)
+                    showMsg("Get Root error.")
                 }
             } finally {
                 threadStarted = false
@@ -173,7 +173,7 @@ public class KeepShellAsync(private var context: Context?, private var rootMode:
                 if (error != null) {
                     error.run()
                 } else {
-                    showMsg(R.string.error_su_timeout)
+                    showMsg("Get Root timeout.")
                 }
                 threadStarted = false
             }
