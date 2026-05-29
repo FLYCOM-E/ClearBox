@@ -30,6 +30,11 @@
     <string name="transparent_ui">Transparent UI</string>
     <string name="title_activity_file_selector">Please select file</string>
     <string name="title_activity_folder_selector">Long press to select directory</string>
+    <string name="page_info_error">Invalid page info</string>
+    <string name="pick_dir">Select directory？</string>
+    <string name="not_file_in_dir">There are no files in this directory!</string>
+    <string name="get_file_list_error">Failed to get file list!</string>
+    <string name="start_file_manager_error">Failed to start built-in file picker!</string>
     
     <string name="power_poweroff">Shutdown</string>
     <string name="power_reboot">Reboot</string>

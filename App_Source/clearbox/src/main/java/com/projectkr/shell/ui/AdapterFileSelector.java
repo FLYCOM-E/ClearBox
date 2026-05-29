@@ -179,14 +179,14 @@ public class AdapterFileSelector extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
                         if (!file.exists()) {
-                            Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), "File is deleted, please repick", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         File[] files = file.listFiles();
                         if (files != null && files.length > 0) {
                             loadDir(file);
                         } else {
-                            Snackbar.make(view, "该目录下没有文件！", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(view, R.string.not_file_in_dir, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -194,11 +194,11 @@ public class AdapterFileSelector extends BaseAdapter {
                     view.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            DialogHelper.Companion.confirm(view.getContext(), "选定目录？", file.getAbsolutePath(), new Runnable() {
+                            DialogHelper.Companion.confirm(view.getContext(), R.string.pick_dir, file.getAbsolutePath(), new Runnable() {
                                 @Override
                                 public void run() {
                                     if (!file.exists()) {
-                                        Toast.makeText(view.getContext(), "所选的目录已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(view.getContext(), "Dir is deleted, please repick", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                     selectedFile = file;

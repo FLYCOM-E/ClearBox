@@ -30,6 +30,11 @@
     <string name="transparent_ui">透明介面</string>
     <string name="title_activity_file_selector">請選擇檔案</string>
     <string name="title_activity_folder_selector">請長按選擇目錄</string>
+    <string name="page_info_error">頁面資訊無效</string>
+    <string name="pick_dir">選定目錄？</string>
+    <string name="not_file_in_dir">該目錄下沒有檔案！</string>
+    <string name="get_file_list_error">取得檔案列表失敗！</string>
+    <string name="start_file_manager_error">啟動內建檔案選擇器失敗！</string>
     
     <string name="power_poweroff">關機</string>
     <string name="power_reboot">重啟</string>

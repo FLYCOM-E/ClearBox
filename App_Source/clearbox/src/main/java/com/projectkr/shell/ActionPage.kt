@@ -109,7 +109,7 @@ class ActionPage : AppCompatActivity() {
                     if (page.title.isNotEmpty()) title = page.title
                     currentPageConfig = page
                 } else {
-                    Toast.makeText(this, "页面信息无效", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.page_info_error, Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
@@ -159,7 +159,7 @@ class ActionPage : AppCompatActivity() {
             intent.putExtra("mode", ActivityFileSelector.MODE_FILE)
             startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER_INNER)
         } catch (ex: Exception) {
-            Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.start_file_manager_error, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -169,7 +169,7 @@ class ActionPage : AppCompatActivity() {
             intent.putExtra("mode", ActivityFileSelector.MODE_FOLDER)
             startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER_INNER)
         } catch (ex: Exception) {
-            Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.start_file_manager_error, Toast.LENGTH_SHORT).show()
         }
     }
 

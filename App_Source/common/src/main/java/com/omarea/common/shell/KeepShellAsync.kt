@@ -158,7 +158,7 @@ public class KeepShellAsync(private var context: Context?, private var rootMode:
                 if (out == null) {
                     error?.run()
                 } else {
-                    showMsg("获取ROOT权限失败！")
+                    showMsg(R.string.error_root)
                 }
             } finally {
                 threadStarted = false
@@ -173,7 +173,7 @@ public class KeepShellAsync(private var context: Context?, private var rootMode:
                 if (error != null) {
                     error.run()
                 } else {
-                    showMsg("获取Root权限超时！")
+                    showMsg(R.string.error_su_timeout)
                 }
                 threadStarted = false
             }

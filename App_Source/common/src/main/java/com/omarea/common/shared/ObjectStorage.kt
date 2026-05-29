@@ -50,7 +50,7 @@ open class ObjectStorage<T : Serializable>(private val context: Context) {
                 objectOutputStream.writeObject(obj)
                 return true
             } catch (ex: Exception) {
-                Toast.makeText(context, "存储配置失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Storage set error", Toast.LENGTH_SHORT).show()
                 return false
             } finally {
                 try {

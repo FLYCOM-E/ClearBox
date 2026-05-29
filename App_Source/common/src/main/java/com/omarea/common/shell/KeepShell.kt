@@ -137,7 +137,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
     public fun doCmdSync(cmd: String): String {
         if (mLock.isLocked && enterLockTime > 0 && System.currentTimeMillis() - enterLockTime > LOCK_TIMEOUT) {
             tryExit()
-            Log.e("doCmdSync-Lock", "线程等待超时${System.currentTimeMillis()} - $enterLockTime > $LOCK_TIMEOUT")
+            Log.e("doCmdSync-Lock", "Timeout: ${System.currentTimeMillis()} - $enterLockTime > $LOCK_TIMEOUT")
         }
         getRuntimeShell()
 
