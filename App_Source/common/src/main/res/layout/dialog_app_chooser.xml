@@ -56,7 +56,7 @@
             android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <com.omarea.common.ui.OverScrollListView
+    <wipe.cache.common.ui.OverScrollListView
         android:id="@+id/app_list"
         android:scrollbars="none"
         android:layout_weight="1"

@@ -14,7 +14,7 @@
         android:background="@drawable/confirm_dialog_bg"
         android:padding="26dp">
 
-        <com.omarea.common.ui.ProgressCircle
+        <wipe.cache.common.ui.ProgressCircle
             app:total="100"
             app:current="50"
             android:layout_gravity="center_horizontal"

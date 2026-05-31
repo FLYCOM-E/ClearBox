@@ -24,7 +24,7 @@
         android:max="100"
         android:progress="0" />
 
-    <com.omarea.common.ui.OverScrollView
+    <wipe.cache.common.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -42,7 +42,7 @@
             android:textSize="10dp"
             android:typeface="monospace"
             android:breakStrategy="simple" />
-    </com.omarea.common.ui.OverScrollView>
+    </wipe.cache.common.ui.OverScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

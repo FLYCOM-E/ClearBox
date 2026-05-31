@@ -11,7 +11,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdk 37
-    namespace 'com.projectkr.shell'
+    namespace 'wipe.cache.main'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

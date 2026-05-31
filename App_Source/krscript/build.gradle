@@ -5,7 +5,7 @@ plugins {
 
 android {
     compileSdk 37
-    namespace 'wipe.cache.module'
+    namespace 'wipe.cache.krscript'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

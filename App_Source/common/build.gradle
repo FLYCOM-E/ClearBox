@@ -5,7 +5,7 @@ plugins {
 
 android {
     compileSdk 37
-    namespace 'com.omarea.common'
+    namespace 'wipe.cache.common'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

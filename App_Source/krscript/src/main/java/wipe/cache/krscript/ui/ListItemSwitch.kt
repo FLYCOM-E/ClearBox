@@ -1,0 +1,34 @@
+package wipe.cache.krscript.ui
+
+import android.content.Context
+import android.widget.Switch
+import wipe.cache.krscript.R
+import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.model.SwitchNode
+
+class ListItemSwitch(private val context: Context,
+                     private val config: SwitchNode) : ListItemClickable(context, R.layout.kr_switch_list_item, config) {
+    protected var switchView = layout.findViewById<Switch?>(R.id.kr_switch)
+
+    var checked: Boolean
+        get() {
+            return if (switchView != null) switchView!!.isChecked else false
+        }
+        set(value) {
+            switchView?.isChecked = value
+        }
+
+    override fun updateViewByShell() {
+        super.updateViewByShell()
+
+        if (config.getState.isNotEmpty()) {
+            val shellResult = ScriptEnvironmen.executeResultRoot(context, config.getState, config)
+            config.checked = shellResult == "1" || shellResult.lowercase() == "true"
+        }
+        checked = config.checked
+    }
+
+    init {
+        checked = config.checked
+    }
+}

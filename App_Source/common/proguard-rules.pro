@@ -20,5 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontwarn java.lang.invoke.StringConcatFactory
--keep class wipe.cache.module.** { * ; }
--keep class com.omarea.common.** { * ; }
+-keep class wipe.cache.krscript.** { * ; }
+-keep class wipe.cache.common.** { * ; }
