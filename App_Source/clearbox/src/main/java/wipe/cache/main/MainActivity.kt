@@ -68,11 +68,11 @@ class MainActivity : AppCompatActivity() {
         
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val page2Config = krScriptConfig.pageListConfig
-            val favoritesConfig = krScriptConfig.favoriteConfig
+            val page2Config = krScriptConfig.getPageListConfig()
+            val favoritesConfig = krScriptConfig.getFavoriteConfig()
 
-            val pages = getItems(page2Config)
-            val favorites = getItems(favoritesConfig)
+            val pages = getItems(page2Config!!)
+            val favorites = getItems(favoritesConfig!!)
             handler.post {
                 progressBarDialog.hideDialog()
 
@@ -120,8 +120,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun reloadFavoritesTab() {
         Thread(Runnable {
-            val favoritesConfig = krScriptConfig.favoriteConfig
-            val favorites = getItems(favoritesConfig)
+            val favoritesConfig = krScriptConfig.getFavoriteConfig()
+            val favorites = getItems(favoritesConfig!!)
             favorites?.run {
                 handler.post { updateFavoritesTab(this, favoritesConfig) }
             }
@@ -130,8 +130,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun reloadMoreTab() {
         Thread(Runnable {
-            val page2Config = krScriptConfig.pageListConfig
-            val pages = getItems(page2Config)
+            val page2Config = krScriptConfig.getPageListConfig()
+            val pages = getItems(page2Config!!)
             pages?.run {
                 handler.post { updateMoreTab(this, page2Config) }
             }

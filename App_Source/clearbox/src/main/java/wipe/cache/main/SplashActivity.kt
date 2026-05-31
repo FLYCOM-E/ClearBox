@@ -105,7 +105,7 @@ class SplashActivity : AppCompatActivity() {
         startStateText.text = getString(R.string.pop_started)
 
         val config = KrScriptConfig().init(this)
-        if (config.beforeStartSh.isNotEmpty()) {
+        if (config.getBeforeStartSh()!!.isNotEmpty()) {
             BeforeStartThread(this, config, UpdateLogViewHandler(startStateText, Runnable {
                 gotoHome()
             })).start()
@@ -157,7 +157,7 @@ class SplashActivity : AppCompatActivity() {
                 val process = if (CheckRootStatus.lastCheckResult) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
                 if (process != null) {
                     val outputStream = DataOutputStream(process.outputStream)
-                    ScriptEnvironmen.executeShell(context, outputStream, config.beforeStartSh, params, null, "splash")
+                    ScriptEnvironmen.executeShell(context, outputStream, config.getBeforeStartSh(), params, null, "splash")
                     StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
                     StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()
                     process.waitFor()
