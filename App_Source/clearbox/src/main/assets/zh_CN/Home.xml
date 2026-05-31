@@ -158,14 +158,14 @@ cat <<w
             <set>
             sh add_StopCacheWhitelist.sh
             </set>
-        <param name="Package" type="app" options-sh="pm list package -3 | cut -f2 -d ':' | grep -vxFf $work_dir/whitelist.prop" />
+        <param name="Package" type="app" multiple="true" separator=" " options-sh="pm list package -3 | cut -f2 -d ':' | grep -vxFf $work_dir/whitelist.prop" />
     </action>
     <action interruptible="false" auto-off="false" >
         <title>取消白名单软件</title>
             <set>
             sh rm_StopCacheWhitelist.sh
             </set>
-        <param name="Package" type="app" options-sh="cat $work_dir/whitelist.prop" />
+        <param name="Package" type="app" multiple="true" separator=" " options-sh="cat $work_dir/whitelist.prop" />
     </action>
 </group>
 <!-- END -->
