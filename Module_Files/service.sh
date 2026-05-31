@@ -121,7 +121,7 @@ if ! pgrep "ClearBox Timed" >/dev/null 2>&1; then
 fi
 ######
 if [ "$clearbox_bind_path" = 1 ]; then
-    "$home_dir/$core" "BindPath"
+    "$home_dir/$core" "BindPath" "MOUNT"
 fi
 ######
 exit 0

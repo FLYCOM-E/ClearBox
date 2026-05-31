@@ -97,10 +97,11 @@ cat <<w
             <set>
             if grep "clearbox_bind_path=0" "$work_dir/settings.prop" >/dev/null; then
                 sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
-                "$home_dir/$core" "BindPath"
+                "$home_dir/$core" "BindPath" "MOUNT"
                 echo " » Enabled ~"
             else
                 sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
+                "$home_dir/$core" "BindPath" "UMOUNT"
                 echo " » Disabled ~"
             fi
             </set>

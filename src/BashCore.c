@@ -302,7 +302,7 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "configManager") == 0)
     {
-        if (argc < 3)
+        if (argc < 4)
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
@@ -321,7 +321,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "BindPath") == 0)
     {
-        bmount(work_dir);
+        if (argc < 3)
+        {
+            fprintf(stderr, L_ARGS_FAILED);
+        }
+        bmount(work_dir, argv[2]);
     }
     else if (strcasecmp(argv[1], "help") == 0 ||
             strcasecmp(argv[1], "-help") == 0 ||

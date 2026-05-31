@@ -11,9 +11,9 @@
 #define DATA_DIR "/data/media/0"                // 内部储存根目录
 #define MOUNTS "/proc/mounts"                  // 系统挂载列表
 
-static int bind_mount(char * config_file);
+static int bind_mount(char * config_file, int mode);
 
-int bmount(char * work_dir)
+int bmount(char * work_dir, char * mode_str)
 {
     if (access(work_dir, F_OK) != 0)
     {
@@ -31,6 +31,21 @@ int bmount(char * work_dir)
     // 设置命名空间
     if (set_name_space() != 0)
     {
+        return 1;
+    }
+    
+    int mode = 0;
+    if (strcasecmp(mode_str, "MOUNT") == 0)
+    {
+        mode = 1;
+    }
+    else if (strcasecmp(mode_str, "UMOUNT") == 0)
+    {
+        mode = 0;
+    }
+    else
+    {
+        fprintf(stderr, L_MODE_ERR, mode_str);
         return 1;
     }
     
@@ -56,7 +71,7 @@ int bmount(char * work_dir)
         char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2];
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
         
-        bind_mount(config_file);
+        bind_mount(config_file, mode);
     }
     closedir(config_dir_dp);
     
@@ -67,10 +82,11 @@ int bmount(char * work_dir)
 配置解析与挂载
 接收：
     char * config_file 配置文件
+    int mode 模式 为 1 挂载，0 卸载
 返回：
     成功返回 0，失败返回 1
 */
-static int bind_mount(char * config_file)
+static int bind_mount(char * config_file, int mode)
 {
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
@@ -137,7 +153,11 @@ static int bind_mount(char * config_file)
             snprintf(root_dir, sizeof(root_dir), "%s/%s", DATA_DIR, root_dir_p);
             snprintf(bind_dir, sizeof(bind_dir), "%s/%s", DATA_DIR, bind_dir_p);
             
-            if (mount(root_dir, bind_dir, NULL, MS_BIND, NULL) == -1)
+            if (mode == 0)
+            {
+                umount(bind_dir);
+            }
+            else if (mount(root_dir, bind_dir, NULL, MS_BIND, NULL) == -1)
             {
                 fprintf(stderr, L_MOUNT_ERROR, root_dir, bind_dir, strerror(errno));
             }

@@ -462,7 +462,7 @@ case "$input" in
                     y | Y)
                       clear
                       sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
-                      "$home_dir/$core" "BindPath"
+                      "$home_dir/$core" "BindPath" "MOUNT"
                       ;;
                     *)
                       echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -471,6 +471,7 @@ case "$input" in
             else
                 clear
                 sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
+                "$home_dir/$core" "BindPath" "UMOUNT"
             fi
             ;;
           *)
