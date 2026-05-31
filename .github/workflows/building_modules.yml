@@ -17,10 +17,8 @@ on:
         default: '17'
     
   push:
-    branches:
-      - main
-    paths:
-      - 'Module_Files/module.prop'
+    tags:
+      - 'V*'
 
 jobs:
   build:
