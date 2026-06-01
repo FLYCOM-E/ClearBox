@@ -255,12 +255,12 @@ object ScriptEnvironmen {
         params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath())
 
         val fileOwner = FileOwner(context)
-        val androidUid = fileOwner.getUserId()
+        val androidUid = fileOwner.userId
         params.put("ANDROID_UID", "" + androidUid)
 
         try {
             // @ https://blog.csdn.net/Gaugamela/article/details/78689580
-            params.put("APP_USER_ID", fileOwner.getFileOwner())
+            params.put("APP_USER_ID", fileOwner.fileOwner)
             // params.put("APP_UID", "" + android.os.Process.myPid());
             // params.put("APP_PID", "" + android.os.Process.myPid());
             // params.put("APP_TID", "" + android.os.Process.myTid());
