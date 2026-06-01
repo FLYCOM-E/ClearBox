@@ -83,7 +83,7 @@ class HiddenTaskThread(private var process: Process) : Thread() {
                         } catch (ex: Exception) {
                         }
                     },
-                    params,
+                    params as HashMap<String?, String?>?,
                     handler)
 
             val bundle = Bundle()
