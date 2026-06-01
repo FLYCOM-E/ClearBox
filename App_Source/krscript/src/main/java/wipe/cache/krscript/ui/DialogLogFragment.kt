@@ -192,15 +192,15 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
             }
         }
 
-        override fun onReader(msg: Any) {
+        override fun onReader(msg: Any?) {
             updateLog(msg, basicColor)
         }
 
-        override fun onWrite(msg: Any) {
+        override fun onWrite(msg: Any?) {
             updateLog(msg, scriptColor)
         }
 
-        override fun onError(msg: Any) {
+        override fun onError(msg: Any?) {
             hasError = true
             updateLog(msg, errorColor)
         }
