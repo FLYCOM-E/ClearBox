@@ -19,7 +19,7 @@ import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-object ScriptEnvironmen {
+object ScriptEnvironment {
     private const val ASSETS_FILE = "file:///android_asset/"
     var isInited: Boolean = false
         private set
@@ -34,7 +34,7 @@ object ScriptEnvironmen {
     private fun init(context: Context): Boolean {
         val configSpf = context.getSharedPreferences("kr-script-config", Context.MODE_PRIVATE)
 
-        return ScriptEnvironmen.init(
+        return ScriptEnvironment.init(
             context,
             configSpf.getString("executor", "kr-script/executor.sh")!!,
             configSpf.getString("toolkitDir", "kr-script/toolkit")

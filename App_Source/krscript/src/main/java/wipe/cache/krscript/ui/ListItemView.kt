@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import wipe.cache.krscript.R
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.krscript.model.NodeInfoBase
 
 open class ListItemView(private val context: Context,
@@ -69,12 +69,12 @@ open class ListItemView(private val context: Context,
 
     open fun updateViewByShell() {
         if (config.descSh.isNotEmpty()) {
-            config.desc = ScriptEnvironmen.executeResultRoot(context, config.descSh, config)
+            config.desc = ScriptEnvironment.executeResultRoot(context, config.descSh, config)
             desc = config.desc
         }
 
         if (config.summarySh.isNotEmpty()) {
-            config.summary = ScriptEnvironmen.executeResultRoot(context, config.summarySh, config)
+            config.summary = ScriptEnvironment.executeResultRoot(context, config.summarySh, config)
             summary = config.summary
         }
     }

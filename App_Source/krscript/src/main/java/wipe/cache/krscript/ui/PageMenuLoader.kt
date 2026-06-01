@@ -1,7 +1,7 @@
 package wipe.cache.krscript.ui
 
 import android.content.Context
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.krscript.model.PageMenuOption
 import wipe.cache.krscript.model.PageNode
 
@@ -13,7 +13,7 @@ class PageMenuLoader(private val applicationContext: Context, private val pageNo
             if (menuOptions == null) {
                 pageNode.run {
                     if (pageMenuOptionsSh.isNotEmpty()) {
-                        val result = ScriptEnvironmen.executeResultRoot(applicationContext, pageMenuOptionsSh, this)
+                        val result = ScriptEnvironment.executeResultRoot(applicationContext, pageMenuOptionsSh, this)
                         if (result != "error") {
                             val items = result.split("\n")
                             for (item in items) {

@@ -3,7 +3,7 @@ package wipe.cache.krscript.ui
 import android.content.Context
 import android.widget.Switch
 import wipe.cache.krscript.R
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.krscript.model.SwitchNode
 
 class ListItemSwitch(private val context: Context,
@@ -22,7 +22,7 @@ class ListItemSwitch(private val context: Context,
         super.updateViewByShell()
 
         if (config.getState.isNotEmpty()) {
-            val shellResult = ScriptEnvironmen.executeResultRoot(context, config.getState, config)
+            val shellResult = ScriptEnvironment.executeResultRoot(context, config.getState, config)
             config.checked = shellResult == "1" || shellResult.lowercase() == "true"
         }
         checked = config.checked

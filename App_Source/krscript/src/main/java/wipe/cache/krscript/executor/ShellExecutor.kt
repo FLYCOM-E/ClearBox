@@ -4,9 +4,9 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import wipe.cache.krscript.executor.ScriptEnvironmen.executeResultRoot
-import wipe.cache.krscript.executor.ScriptEnvironmen.executeShell
-import wipe.cache.krscript.executor.ScriptEnvironmen.runtime
+import wipe.cache.krscript.executor.ScriptEnvironment.executeResultRoot
+import wipe.cache.krscript.executor.ScriptEnvironment.executeShell
+import wipe.cache.krscript.executor.ScriptEnvironment.runtime
 import wipe.cache.krscript.model.RunnableNode
 import wipe.cache.krscript.model.RunnableNode.Companion.shellModeBgTask
 import wipe.cache.krscript.model.ShellHandlerBase

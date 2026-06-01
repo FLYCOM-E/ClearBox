@@ -26,7 +26,7 @@ import wipe.cache.krscript.TryOpenActivity
 import wipe.cache.krscript.config.IconPathAnalysis
 import wipe.cache.krscript.config.PageConfigReader
 import wipe.cache.krscript.config.PageConfigSh
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.krscript.model.*
 import wipe.cache.krscript.shortcut.ActionShortcutManager
 import wipe.cache.krscript.ui.ActionListFragment
@@ -49,7 +49,7 @@ class ActionPage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!ScriptEnvironmen.isInited) {
+        if (!ScriptEnvironment.isInited) {
             val initIntent = Intent(this.applicationContext, SplashActivity::class.java)
             initIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             initIntent.putExtras(this.intent)
@@ -349,7 +349,7 @@ class ActionPage : AppCompatActivity() {
             currentPageConfig.run {
                 if (beforeRead.isNotEmpty()) {
                     showDialog(getString(KR.string.kr_page_before_load))
-                    ScriptEnvironmen.executeResultRoot(activity, beforeRead, this)
+                    ScriptEnvironment.executeResultRoot(activity, beforeRead, this)
                 }
 
                 showDialog(getString(KR.string.kr_page_loading))
@@ -365,13 +365,13 @@ class ActionPage : AppCompatActivity() {
 
                 if (afterRead.isNotEmpty()) {
                     showDialog(getString(KR.string.kr_page_after_load))
-                    ScriptEnvironmen.executeResultRoot(activity, afterRead, this)
+                    ScriptEnvironment.executeResultRoot(activity, afterRead, this)
                 }
 
                 if (items != null && items.size != 0) {
                     if (loadSuccess.isNotEmpty()) {
                         showDialog(getString(KR.string.kr_page_load_success))
-                        ScriptEnvironmen.executeResultRoot(activity, loadSuccess, this)
+                        ScriptEnvironment.executeResultRoot(activity, loadSuccess, this)
                     }
 
                     handler.post {
@@ -392,7 +392,7 @@ class ActionPage : AppCompatActivity() {
                 } else {
                     if (loadFail.isNotEmpty()) {
                         showDialog(getString(KR.string.kr_page_load_fail))
-                        ScriptEnvironmen.executeResultRoot(activity, loadFail, this)
+                        ScriptEnvironment.executeResultRoot(activity, loadFail, this)
                         hideDialog()
                     }
                     handler.post {

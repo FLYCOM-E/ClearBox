@@ -11,8 +11,8 @@ import org.json.JSONObject
 import wipe.cache.common.shell.KeepShellPublic.checkRoot
 import wipe.cache.common.shell.ShellExecutor.getSuperUserRuntime
 import wipe.cache.krscript.executor.ExtractAssets
-import wipe.cache.krscript.executor.ScriptEnvironmen.executeResultRoot
-import wipe.cache.krscript.executor.ScriptEnvironmen.executeShell
+import wipe.cache.krscript.executor.ScriptEnvironment.executeResultRoot
+import wipe.cache.krscript.executor.ScriptEnvironment.executeShell
 import wipe.cache.krscript.model.NodeInfoBase
 import wipe.cache.krscript.model.ShellHandlerBase
 import wipe.cache.krscript.ui.ParamsFileChooserRender.FileChooserInterface

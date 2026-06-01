@@ -21,7 +21,7 @@ import wipe.cache.krscript.HiddenTaskThread
 import wipe.cache.krscript.R
 import wipe.cache.krscript.TryOpenActivity
 import wipe.cache.krscript.config.IconPathAnalysis
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.krscript.model.*
 import wipe.cache.krscript.shortcut.ActionShortcutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -117,7 +117,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
         var message = ""
         val unlocked = (if (clickableNode.lockShell.isNotEmpty()) {
-            message = ScriptEnvironmen.executeResultRoot(requireContext(), clickableNode.lockShell, clickableNode)
+            message = ScriptEnvironment.executeResultRoot(requireContext(), clickableNode.lockShell, clickableNode)
             message == "unlock" || message == "unlocked" || message == "false" || message == "0"
         } else {
             !clickableNode.locked
@@ -476,7 +476,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     }
 
     private fun executeScriptGetResult(shellScript: String, nodeInfoBase: NodeInfoBase): String {
-        return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript, nodeInfoBase)
+        return ScriptEnvironment.executeResultRoot(this.context!!, shellScript, nodeInfoBase)
     }
 
 

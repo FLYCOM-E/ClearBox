@@ -11,7 +11,7 @@ import android.util.Xml
 import android.widget.Toast
 import wipe.cache.common.model.SelectItem
 import wipe.cache.krscript.executor.ExtractAssets
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.krscript.model.*
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
@@ -689,6 +689,6 @@ class PageConfigReader {
             vitualRootNode = NodeInfoBase(pageConfigAbsPath)
         }
 
-        return ScriptEnvironmen.executeResultRoot(context, scriptIn, vitualRootNode);
+        return ScriptEnvironment.executeResultRoot(context, scriptIn, vitualRootNode);
     }
 }

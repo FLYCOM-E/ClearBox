@@ -1,7 +1,7 @@
 package wipe.cache.main
 
 import android.content.Context
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.krscript.model.PageNode
 import java.io.InputStream
 import java.nio.charset.Charset
@@ -45,7 +45,7 @@ class KrScriptConfig {
             } catch (_: Exception) {
             }
 
-            ScriptEnvironmen.init(context, getExecutorCore(), getToolkitDir())
+            ScriptEnvironment.init(context, getExecutorCore(), getToolkitDir())
         }
 
         return this

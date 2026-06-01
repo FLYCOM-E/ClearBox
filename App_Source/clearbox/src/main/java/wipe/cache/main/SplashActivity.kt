@@ -15,7 +15,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import wipe.cache.common.shell.ShellExecutor
-import wipe.cache.krscript.executor.ScriptEnvironmen
+import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.main.permissions.CheckRootStatus
 import java.io.BufferedReader
 import java.io.DataOutputStream
@@ -27,7 +27,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (ScriptEnvironmen.isInited) {
+        if (ScriptEnvironment.isInited) {
             if (isTaskRoot) {
                 gotoHome()
             }
@@ -157,7 +157,7 @@ class SplashActivity : AppCompatActivity() {
                 val process = if (CheckRootStatus.lastCheckResult) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
                 if (process != null) {
                     val outputStream = DataOutputStream(process.outputStream)
-                    ScriptEnvironmen.executeShell(
+                    ScriptEnvironment.executeShell(
                         context,
                         outputStream,
                         config.getBeforeStartSh(),
