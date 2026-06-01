@@ -27,7 +27,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (ScriptEnvironmen.isInited()) {
+        if (ScriptEnvironmen.isInited) {
             if (isTaskRoot) {
                 gotoHome()
             }
@@ -157,7 +157,14 @@ class SplashActivity : AppCompatActivity() {
                 val process = if (CheckRootStatus.lastCheckResult) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
                 if (process != null) {
                     val outputStream = DataOutputStream(process.outputStream)
-                    ScriptEnvironmen.executeShell(context, outputStream, config.getBeforeStartSh(), params, null, "splash")
+                    ScriptEnvironmen.executeShell(
+                        context,
+                        outputStream,
+                        config.getBeforeStartSh(),
+                        params as HashMap<String?, String?>?,
+                        null,
+                        "splash"
+                    )
                     StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
                     StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()
                     process.waitFor()

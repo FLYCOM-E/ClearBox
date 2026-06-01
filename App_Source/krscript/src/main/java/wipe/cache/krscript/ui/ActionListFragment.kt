@@ -117,7 +117,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
         var message = ""
         val unlocked = (if (clickableNode.lockShell.isNotEmpty()) {
-            message = ScriptEnvironmen.executeResultRoot(context, clickableNode.lockShell, clickableNode)
+            message = ScriptEnvironmen.executeResultRoot(requireContext(), clickableNode.lockShell, clickableNode)
             message == "unlock" || message == "unlocked" || message == "false" || message == "0"
         } else {
             !clickableNode.locked

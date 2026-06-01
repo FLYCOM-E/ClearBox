@@ -49,7 +49,7 @@ class ActionPage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!ScriptEnvironmen.isInited()) {
+        if (!ScriptEnvironmen.isInited) {
             val initIntent = Intent(this.applicationContext, SplashActivity::class.java)
             initIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             initIntent.putExtras(this.intent)
