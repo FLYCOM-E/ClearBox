@@ -4,34 +4,36 @@ plugins {
 }
 
 android {
-    compileSdk 37
     namespace 'wipe.cache.common'
-
+    
+    compileSdk rootProject.ext.compileSdk
+    minSdk rootProject.ext.minSdk
+    targetSdk rootProject.ext.targetSdk
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
+    
     defaultConfig {
-        minSdkVersion 23
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    
     buildTypes {
         release {
             minifyEnabled = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.14.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.ext.kotlinx_coroutines_android}"
+    implementation "androidx.appcompat:appcompat:${rootProject.ext.appcompat}"
+    implementation "com.google.android.material:material:${rootProject.ext.material}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${rootProject.ext.kotlin_version}"
 }
+
 repositories {
     mavenCentral()
 }
