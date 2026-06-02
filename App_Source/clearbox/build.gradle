@@ -13,8 +13,6 @@ android {
     namespace 'wipe.cache.main'
     
     compileSdk rootProject.ext.compileSdk
-    minSdk rootProject.ext.minSdk
-    targetSdk rootProject.ext.targetSdk
     
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -26,6 +24,9 @@ android {
     }
     
     defaultConfig {
+        minSdk rootProject.ext.minSdk
+        targetSdk rootProject.ext.targetSdk
+        
         applicationId rootProject.ext.applicationId
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName

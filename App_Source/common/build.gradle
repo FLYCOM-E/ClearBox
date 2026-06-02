@@ -7,8 +7,6 @@ android {
     namespace 'wipe.cache.common'
     
     compileSdk rootProject.ext.compileSdk
-    minSdk rootProject.ext.minSdk
-    targetSdk rootProject.ext.targetSdk
     
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -16,6 +14,9 @@ android {
     }
     
     defaultConfig {
+        minSdk rootProject.ext.minSdk
+        targetSdk rootProject.ext.targetSdk
+        
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     
