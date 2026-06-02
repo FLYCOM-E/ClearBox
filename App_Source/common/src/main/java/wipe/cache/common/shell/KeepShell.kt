@@ -155,7 +155,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
                     currentOut.flush()
                 } catch (e: Exception) {
                     tryExit()
-                    Log.e("KeepShellAsync", "write failed: ${e.message}")
+                    Log.e("KeepShell", "write failed: ${e.message}")
                     return "error"
                 }
             }
@@ -186,7 +186,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
         }
         catch (e: Exception) {
             tryExit()
-            Log.e("KeepShellAsync", "" + e.message)
+            Log.e("KeepShell", "" + e.message)
             return "error"
         } finally {
             enterLockTime = 0L
