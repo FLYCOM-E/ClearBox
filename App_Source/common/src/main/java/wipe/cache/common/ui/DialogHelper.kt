@@ -23,6 +23,7 @@ import android.view.WindowManager
 import android.view.MotionEvent
 import android.view.WindowInsetsController
 import android.os.Build
+import com.google.android.material.color.MaterialColors
 
 class DialogHelper {
     class DialogButton(public val text: String, public val onClick: Runnable? = null, public val dismiss: Boolean = true) {
@@ -499,13 +500,8 @@ class DialogHelper {
                                 setDimAmount(0.9f)
                                 return
                             } else {
-                                if (wallpaperMode || isNightMode(context)) {
-                                    val d = ColorDrawable(Color.argb(255, 18, 18, 18))
-                                    setBackgroundDrawable(d)
-                                } else {
-                                    val d = ColorDrawable(Color.argb(255, 245, 245, 245))
-                                    setBackgroundDrawable(d)
-                                }
+                                val color = MaterialColors.getColor(activity, com.google.android.material.R.attr.colorSurface, Color.WHITE)
+                                setBackgroundDrawable(ColorDrawable(color))
                             }
 
                         } else {

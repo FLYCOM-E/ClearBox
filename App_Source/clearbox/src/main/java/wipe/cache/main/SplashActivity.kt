@@ -26,7 +26,9 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        ThemeModeState.switchTheme(this)
+        setContentView(R.layout.activity_splash)
+        
         if (ScriptEnvironment.isInited) {
             if (isTaskRoot) {
                 gotoHome()
@@ -39,13 +41,7 @@ class SplashActivity : AppCompatActivity() {
         startStateText = findViewById(R.id.start_state_text)
         checkPermissions()
     }
-
-    private fun getColorAccent(): Int {
-        val typedValue = TypedValue()
-        this.theme.resolveAttribute(android.R.attr.colorAccent, typedValue, true)
-        return typedValue.data
-    }
-
+    
     private fun checkPermissions() {
         startLogo.visibility = View.VISIBLE
         checkRoot(Runnable {
