@@ -9,7 +9,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="actionBarTheme">@style/Theme.KrScript.AppBarOverlay</item>
-        <item name="cardBg">?attr/colorSurfaceContainer</item>
+        <item name="cardBg">?attr/colorSurfaceContainerHigh</item>
         <item name="switchStyle">@style/Widget.Material3.CompoundButton.Switch</item>
         <item name="checkboxStyle">@style/Widget.Material3.CompoundButton.CheckBox</item>
         <item name="radioButtonStyle">@style/Widget.Material3.CompoundButton.RadioButton</item>
