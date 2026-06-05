@@ -19,6 +19,36 @@ uninstall()
     rm "$ZIPFILE"
     rm -r "$MODPATH"
 }
+###
+reinstall()
+{
+    sleep "$SHOUT_S"
+    echo -e " » $INSTALL_APP_FAILED❌\n"
+    sleep "$SHOUT_S"
+    echo -e " » $INSTALL_APP_TRY\n"
+    sleep "$SHOUT_S"
+    if [ ! -f "$MODPATH/ClearBox.apk" ]; then
+        echo -e " » $APKNOTFIND\n"
+        uninstall; exit 1
+    elif [ ! -f "$TMPDIR/ClearBox.apk" ]; then
+        echo -e " » $APKUNUP\n"
+        rm -r "$TMPDIR"
+        mkdir -p "$TMPDIR"
+        cp "$MODPATH/ClearBox.apk" "$TMPDIR"
+        chmod +x "$TMPDIR/ClearBox.apk"
+        [ ! -f "$TMPDIR/ClearBox.apk" ] && echo -e " » $APKGETERR\n"; uninstall; exit 1
+    fi
+    pm uninstall "wipe.cache.module" >/dev/null
+    if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
+        sleep "$SHOUT_S"
+        echo -e " » $SUCCESSFUL✅\n"
+    else
+        sleep "$SHOUT_S"
+        echo -e " » $INSTALL_APP_FAILED❌\n"
+        sleep "$SHOUT_S"
+        echo -e " » $INSTALLERROR\n"
+    fi
+}
 ######
 if ! unzip -oq "$ZIPFILE" -d "$MODPATH"; then
     uninstall
@@ -58,70 +88,54 @@ fi
 ######
 sleep "$SHOUT_S"
 echo -e "=====================================================\n"
-if pm list package -3 | grep "wipe.cache.module" >/dev/null 2>&1; then
-    sleep "$SHOUT_S"
+if ! pm list package -3 | grep "wipe.cache.module" >/dev/null 2>&1; then
     echo -e " » $TICKUPDATEAPP\n"
     sleep "$LONG_S"
     echo -e " » $TICKUPDATEAPP_1\n"
-else
-    sleep "$SHOUT_S"
-    echo -e " » $TICKUPDATEAPP_2\n"
-    sleep "$LONG_S"
-    echo -e " » $TICKUPDATEAPP_3\n"
-fi
-######
-case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
-    *KEY_VOLUMEUP*)
-      if [ "$update" = 1 ]; then
-          if [ "$clearbox_stop_install" = 1 ]; then
-              "$home_dir/BashCore" StopInstall RESET >/dev/null
-              RESET=1
-          fi
-      fi
-      sleep "$SHOUT_S"
-      echo -e " » $INSTALLAPP❤\n"
-      cp "$MODPATH/ClearBox.apk" "$TMPDIR/"
-      chmod +x "$TMPDIR/ClearBox.apk"
-      if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
+    ######
+    case "$(timeout "$TIMEOUT_S" getevent -qlc 1 2>/dev/null)" in
+        *KEY_VOLUMEUP*)
           sleep "$SHOUT_S"
-          echo -e " » $SUCCESSFUL✅\n"
-      else
-          sleep "$SHOUT_S"
-          echo -e " » $INSTALL_APP_FAILED❌\n"
-          sleep "$SHOUT_S"
-          echo -e " » $INSTALL_APP_TRY\n"
-          sleep "$SHOUT_S"
-          if [ ! -f "$MODPATH/ClearBox.apk" ]; then
-              echo -e " » $APKNOTFIND\n"
-              uninstall; exit 1
-          elif [ ! -f "$TMPDIR/ClearBox.apk" ]; then
-                echo -e " » $APKUNUP\n"
-                rm -r "$TMPDIR"
-                mkdir -p "$TMPDIR"
-                cp "$MODPATH/ClearBox.apk" "$TMPDIR"
-                [ ! -f "$TMPDIR/ClearBox.apk" ] && echo -e " » $APKGETERR\n"; uninstall; exit 1
-          fi
+          echo -e " » $INSTALLAPP❤\n"
+          cp "$MODPATH/ClearBox.apk" "$TMPDIR/"
           chmod +x "$TMPDIR/ClearBox.apk"
-          pm uninstall "wipe.cache.module" >/dev/null
           if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
               sleep "$SHOUT_S"
               echo -e " » $SUCCESSFUL✅\n"
           else
-              sleep "$SHOUT_S"
-              echo -e " » $INSTALL_APP_FAILED❌\n"
-              sleep "$SHOUT_S"
-              echo -e " » $INSTALLERROR\n"
+              reinstall
           fi
-      fi
-      rm "$TMPDIR/ClearBox.apk" >/dev/null 2>&1
-      rm -rf "$MODPATH/ClearBox.apk" >/dev/null 2>&1
-      [ "$RESET" = 1 ] && "$home_dir/BashCore" StopInstall STOP >/dev/null
-      ;;
-    *)
-      sleep "$SHOUT_S"
-      echo -e " » $NOTINSTALLAPP💔\n"
-      ;;
-esac
+          rm "$TMPDIR/ClearBox.apk" >/dev/null 2>&1
+          rm -rf "$MODPATH/ClearBox.apk" >/dev/null 2>&1
+          ;;
+        *)
+          sleep "$SHOUT_S"
+          echo -e " » $NOTINSTALLAPP💔\n"
+          ;;
+    esac
+else
+    echo -e " » $TICKUPDATEAPP_2\n"
+    
+    if [ "$update" = 1 ]; then
+        if [ "$clearbox_stop_install" = 1 ]; then
+            "$home_dir/BashCore" StopInstall RESET >/dev/null
+            RESET=1
+        fi
+    fi
+    
+    cp "$MODPATH/ClearBox.apk" "$TMPDIR/"
+    chmod +x "$TMPDIR/ClearBox.apk"
+    if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
+        sleep "$SHOUT_S"
+        echo -e " » $SUCCESSFUL✅\n"
+    else
+        reinstall
+    fi
+    rm "$TMPDIR/ClearBox.apk" >/dev/null 2>&1
+    rm -rf "$MODPATH/ClearBox.apk" >/dev/null 2>&1
+    
+    [ "$RESET" = 1 ] && "$home_dir/BashCore" StopInstall STOP >/dev/null
+fi
 ######
 sleep "$SHOUT_S"
 echo -e "=====================================================\n"
