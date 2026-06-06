@@ -19,6 +19,10 @@ import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.main.permissions.CheckRootStatus
 import java.io.BufferedReader
 import java.io.DataOutputStream
+import wipe.cache.krscript.model.PageNode
+import wipe.cache.krscript.model.NodeInfoBase
+import wipe.cache.krscript.config.PageConfigReader
+import wipe.cache.krscript.config.PageConfigSh
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var startLogo: View

@@ -7,7 +7,7 @@
 
     <string name="app_name">ClearBox</string>
     <string name="btn_exit">Return</string>
-    <string name="please_wait">Please wait</string>
+    <string name="please_wait">• • •</string>
     <string name="title_activity_action_page">Function Pages</string>
 
     <string name="author_name"> </string>

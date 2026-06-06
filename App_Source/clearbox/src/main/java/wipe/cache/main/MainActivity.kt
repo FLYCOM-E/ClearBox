@@ -66,13 +66,17 @@ class MainActivity : AppCompatActivity() {
         mainTabhost.setup()
         val tabIconHelper = TabIconHelper(mainTabhost, this)
         
-        progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
+            val cachedPages = PageCache.pageItems
+            val cachedFavorites = PageCache.homeItems
             val page2Config = krScriptConfig.getPageListConfig()
             val favoritesConfig = krScriptConfig.getFavoriteConfig()
             
-            val pages = PageCache.pageItems ?: getItems(page2Config)
-            val favorites = PageCache.homeItems ?: getItems(favoritesConfig)
+            val pages = cachedPages ?: run {
+                handler.post { progressBarDialog.showDialog(getString(R.string.please_wait)) }
+                getItems(page2Config!!)
+            }
+            val favorites = PageCache.homeItems ?: getItems(favoritesConfig!!)
             
             PageCache.homeItems = null
             PageCache.pageItems = null
@@ -81,14 +85,14 @@ class MainActivity : AppCompatActivity() {
                 progressBarDialog.hideDialog()
 
                 if (favorites != null && favorites.size > 0) {
-                    updateFavoritesTab(favorites, favoritesConfig)
+                    updateFavoritesTab(favorites, favoritesConfig!!)
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), ContextCompat.getDrawable(this, CommonR.drawable.function)!!, R.id.main_tabhost_2)
                 } else {
                     mainTabhost2.visibility = View.GONE
                 }
 
                 if (pages != null && pages.size > 0) {
-                    updateMoreTab(pages, page2Config)
+                    updateMoreTab(pages, page2Config!!)
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), ContextCompat.getDrawable(this, CommonR.drawable.function)!!, R.id.main_tabhost_3)
                 } else {
                     mainTabhost3.visibility = View.GONE

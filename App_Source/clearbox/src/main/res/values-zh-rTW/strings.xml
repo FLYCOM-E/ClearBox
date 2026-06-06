@@ -7,7 +7,7 @@
 
     <string name="app_name">ClearBox</string>
     <string name="btn_exit">返回</string>
-    <string name="please_wait">請稍等</string>
+    <string name="please_wait">• • •</string>
     <string name="title_activity_action_page">功能分頁</string>
 
     <string name="author_name"> </string>
