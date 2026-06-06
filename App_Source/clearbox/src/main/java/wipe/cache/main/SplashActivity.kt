@@ -96,20 +96,40 @@ class SplashActivity : AppCompatActivity() {
     private fun checkRoot(next: Runnable) {
         CheckRootStatus(this, next).forceGetRoot()
     }
-
+    
     private fun startToFinish() {
         startStateText.text = getString(R.string.pop_started)
-
+    
         val config = KrScriptConfig().init(this)
         if (config.getBeforeStartSh()!!.isNotEmpty()) {
             BeforeStartThread(this, config, UpdateLogViewHandler(startStateText, Runnable {
-                gotoHome()
+                preloadAndGotoHome(config)
             })).start()
         } else {
-            gotoHome()
+            preloadAndGotoHome(config)
         }
     }
-
+    
+    private fun preloadAndGotoHome(config: KrScriptConfig) {
+        startStateText.text = getString(R.string.please_wait)
+        Thread {
+            config.getFavoriteConfig()?.let { PageCache.homeItems = getItems(it) }
+            config.getPageListConfig()?.let { PageCache.pageItems = getItems(it) }
+            myHandler.post { gotoHome() }
+        }.start()
+    }
+    
+    private fun getItems(pageNode: PageNode): ArrayList<NodeInfoBase>? {
+        var items: ArrayList<NodeInfoBase>? = null
+        if (pageNode.pageConfigSh.isNotEmpty()) {
+            items = PageConfigSh(this, pageNode.pageConfigSh, null).execute()
+        }
+        if (items == null && pageNode.pageConfigPath.isNotEmpty()) {
+            items = PageConfigReader(this.applicationContext, pageNode.pageConfigPath, null).readConfigXml()
+        }
+        return items
+    }
+    
     private fun gotoHome() {
         if (this.intent != null && this.intent.hasExtra("JumpActionPage") && this.intent.getBooleanExtra("JumpActionPage", false)) {
             val actionPage = Intent(this.applicationContext, ActionPage::class.java)

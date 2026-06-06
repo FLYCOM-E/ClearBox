@@ -70,9 +70,13 @@ class MainActivity : AppCompatActivity() {
         Thread(Runnable {
             val page2Config = krScriptConfig.getPageListConfig()
             val favoritesConfig = krScriptConfig.getFavoriteConfig()
-
-            val pages = getItems(page2Config!!)
-            val favorites = getItems(favoritesConfig!!)
+            
+            val pages = PageCache.pageItems ?: getItems(page2Config)
+            val favorites = PageCache.homeItems ?: getItems(favoritesConfig)
+            
+            PageCache.homeItems = null
+            PageCache.pageItems = null
+            
             handler.post {
                 progressBarDialog.hideDialog()
 
