@@ -24,6 +24,9 @@
 
 The execution time is much faster than regular cleaning software on the market, comparable to ✈️ speed. The automation function is only handled by a very low-usage **Timed**, so the overhead is negligible. No software background process is required, no forced app binding, and it supports full functionality through a terminal **TUI**.
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/clean_cache.png)
+
 __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**](https://github.com/bmax121/APatch), [**KernelSU**](https://github.com/tiann/KernelSU), and their various forks__
 
 
@@ -152,6 +155,9 @@ Clear system software cache, system cache, and also clear **MTP** host data (can
 
 Feature automation, driven by the **Timed** component (ultra-low overhead).
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/auto_clean.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/set_time.png)
+
 ### **•  Did you know?**
 
 You can use the **Timed** module to run custom tasks! Follow the configuration below:
@@ -248,6 +254,7 @@ This is an optimization function set, including disk optimization ( **f2fs-GC** 
 **F2fs** disk **GC**, this function belongs to emergency **GC**, so it does not need to be used frequently, just run it regularly.
 The solution comes from the big guy **Coolapk@Amktiao**, and has been agreed, thanks to the big guy!
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/f2fs_gc.png)
 
 **Dexoat** software pre-compilation, that is, pre-compile software to accelerate runtime speed, the disadvantage is that it takes up storage space, which belongs to the space-electricity-for-smooth operation ()
 The module provides three modes in advance: system default **Dexoat**, custom compilation mode, **RESET**:

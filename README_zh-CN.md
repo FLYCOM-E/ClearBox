@@ -24,6 +24,9 @@
 
 执行所用时间相对市面上普通清理软件来说快如✈️，自动化功能仅由一个极低占用 **Timed** 负责，开销可直接无视，无软件后台进程，不强制绑定 App，支持完整功能终端 **TUI**
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/clean_cache.png)
+
 __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其各种分支__
 
 
@@ -152,6 +155,9 @@ iso img
 
 功能自动化，由 **Timed** 组件驱动执行（超低开销）。
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/auto_clean.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/set_time.png)
+
 ### **•  您知道吗？**
 
 您可以利用此模块 **Timed** 运行自定义任务！请按照以下配置：
@@ -248,6 +254,7 @@ post=Test Run/已运行 Sync
 **F2fs** 磁盘 **GC**，此功能属于紧急 **GC**，因此不需要经常使用，定期运行即可。
 方案来自 **Coolapk@Amktiao** 大佬，已得到同意，感谢大佬！
 
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/f2fs_gc.png)
 
 **Dexoat** 软件预编译，即提前编译软件加速运行时速度，缺点是占用储存空间，属于以空间电量换流畅操作（）
 模块预提供了三个模式：系统默认 **Dexoat** 、自定义编译模式、**RESET**：
