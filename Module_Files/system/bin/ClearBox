@@ -35,21 +35,21 @@ md_menu()
 clear
 echo -e "\033[104m [$L_HOME_HELLO_TITLE]\033[0m"
 echo -e "\033[96m ==============================================\033[0m\n"
-echo -e "\033[93m  1：$L_CLEARALL\033[0m\n"
-echo -e "\033[93m  2：$L_CUST_CLEAR\033[0m\n"
-echo -e "\033[93m  3：$L_STORAGE_CLEAR\033[0m\n"
-echo -e "\033[93m  4：$L_CLEAR_ALL_APP_CACHE\033[0m\n"
-echo -e "\033[93m  5：$L_FILE_ALL\033[0m\n"
-echo -e "\033[93m  6：$L_FILE_CLEAR\033[0m\n"
-echo -e "\033[93m  7：$L_CUST_APP_CLEAR\033[0m\n"
-echo -e "\033[93m  8：$L_CLEAR_SYS_CACHE\033[0m\n"
-echo -e "\033[93m  9：$L_AUTO_CLEAR\033[0m\n"
-echo -e "\033[93m  10：$L_STOP_INSTALL\033[0m\n"
-echo -e "\033[93m  11：$L_PATH_BIND\033[0m\n"
-echo -e "\033[93m  12：$L_STOP_STORAGE\033[0m\n"
-echo -e "\033[93m  13：$L_STOP_APP_CACHE\033[0m\n"
-echo -e "\033[93m  14：$L_DISK_APP_PLUS\033[0m\n"
-echo -e "\033[93m  00：$L_SETTINGS\033[0m\n"
+echo -e "\033[93m  1:\t$L_CLEARALL\033[0m"
+echo -e "\033[93m  2:\t$L_CUST_CLEAR\033[0m"
+echo -e "\033[93m  3:\t$L_STORAGE_CLEAR\033[0m"
+echo -e "\033[93m  4:\t$L_CLEAR_ALL_APP_CACHE\033[0m"
+echo -e "\033[93m  5:\t$L_FILE_ALL\033[0m"
+echo -e "\033[93m  6:\t$L_FILE_CLEAR\033[0m"
+echo -e "\033[93m  7:\t$L_CUST_APP_CLEAR\033[0m"
+echo -e "\033[93m  8:\t$L_CLEAR_SYS_CACHE\033[0m"
+echo -e "\033[93m  9:\t$L_AUTO_CLEAR\033[0m"
+echo -e "\033[93m  10:\t$L_STOP_INSTALL\033[0m"
+echo -e "\033[93m  11:\t$L_PATH_BIND\033[0m"
+echo -e "\033[93m  12:\t$L_STOP_STORAGE\033[0m"
+echo -e "\033[93m  13:\t$L_STOP_APP_CACHE\033[0m"
+echo -e "\033[93m  14:\t$L_DISK_APP_PLUS\033[0m"
+echo -e "\033[93m  00:\t$L_SETTINGS\033[0m\n"
 echo -e "\033[96m ==============================================\033[0m"
 echo -e "\t\t   --- $L_HOME_EXIT_TITLE ---"
 echo -n " $L_PLEASE_INPUT: "
@@ -97,7 +97,7 @@ case "$input" in
          filename=$(basename "$file" | cut -f1 -d ".")
          count=$((count + 1))
          Num[$count]="$count,$filename"
-         echo -e "\033[93m\t $count：$L_CLEAN $filename\033[0m\n"
+         echo -e "\033[93m $count：$L_CLEAN $filename\033[0m\n"
       done
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT: "
@@ -138,7 +138,7 @@ case "$input" in
          app_package=$(grep '@' "$file" | head -n1 | cut -f1 -d '/' | cut -f2 -d '@')
          count=$((count + 1))
          Num[$count]="$count,$app_package"
-         echo -e "\033[93m\t $count：$L_CLEAN $appname\033[0m\n"
+         echo -e "\033[93m $count:\t$L_CLEAN $appname\033[0m\n"
       done
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT: "
@@ -172,12 +172,12 @@ case "$input" in
       clear
       echo -e "\033[104m [$L_AUTO_CLEAR]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：$L_AUTO_RUN $L_CLEARALL\033[0m\n"
-      echo -e "\033[93m \t2：$L_AUTO_RUN $L_CUST_CLEAR\033[0m\n"
-      echo -e "\033[93m \t3：$L_AUTO_RUN $L_STORAGE_CLEAR\033[0m\n"
-      echo -e "\033[93m \t4：$L_AUTO_RUN $L_CLEAR_ALL_APP_CACHE\033[0m\n"
-      echo -e "\033[93m \t5：$L_AUTO_RUN $L_FILE_ALL\033[0m\n"
-      echo -e "\033[93m \t6：$L_AUTO_RUN $L_DISK_GC\033[0m\n"
+      echo -e "\033[93m 1:\t$L_AUTO_RUN $L_CLEARALL\033[0m\n"
+      echo -e "\033[93m 2:\t$L_AUTO_RUN $L_CUST_CLEAR\033[0m\n"
+      echo -e "\033[93m 3:\t$L_AUTO_RUN $L_STORAGE_CLEAR\033[0m\n"
+      echo -e "\033[93m 4:\t$L_AUTO_RUN $L_CLEAR_ALL_APP_CACHE\033[0m\n"
+      echo -e "\033[93m 5:\t$L_AUTO_RUN $L_FILE_ALL\033[0m\n"
+      echo -e "\033[93m 6:\t$L_AUTO_RUN $L_DISK_GC\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read at_input
@@ -187,8 +187,8 @@ case "$input" in
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearAll.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
-            echo -e "\033[93m \t0：$L_CLOSE_FUNCTION\033[0m\n"
+            echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
+            echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read at_fast_input
@@ -223,8 +223,8 @@ case "$input" in
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ListDir.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
-            echo -e "\033[93m \t0：$L_CLOSE_FUNCTION\033[0m\n"
+            echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
+            echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read at_cust_input
@@ -259,8 +259,8 @@ case "$input" in
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearDir.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_AR_CUST_TIME ($L_UNIT：$L_TIME_M)\033[0m\n"
-            echo -e "\033[93m \t0：$L_CLOSE_FUNCTION\033[0m\n"
+            echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_M)\033[0m\n"
+            echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read at_storage_input
@@ -295,8 +295,8 @@ case "$input" in
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearCache.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
-            echo -e "\033[93m \t0：$L_CLOSE_FUNCTION\033[0m\n"
+            echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
+            echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read at_appclean_input
@@ -331,8 +331,8 @@ case "$input" in
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/FileAll.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
-            echo -e "\033[93m \t0：$L_CLOSE_FUNCTION\033[0m\n"
+            echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
+            echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read at_fileall_input
@@ -367,8 +367,8 @@ case "$input" in
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/F2fsGc.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
-            echo -e "\033[93m \t0：$L_CLOSE_FUNCTION\033[0m\n"
+            echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
+            echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read at_fast_input
@@ -412,7 +412,7 @@ case "$input" in
       fi
       echo -e "\033[104m [$L_STOP_INSTALL]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：${text_1}${L_STOP_INSTALL}\033[0m\n"
+      echo -e "\033[93m 1:\t${text_1}${L_STOP_INSTALL}\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read sa_input
@@ -449,7 +449,7 @@ case "$input" in
       fi
       echo -e "\033[104m [$L_PATH_BIND]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：${text_1}${L_PATH_BIND}\033[0m\n"
+      echo -e "\033[93m 1:\t${text_1}${L_PATH_BIND}\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read bm_input
@@ -488,7 +488,7 @@ case "$input" in
       fi
       echo -e "\033[104m [$L_STOP_STORAGE]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：${text_1}${L_STOP_STORAGE}\033[0m\n"
+      echo -e "\033[93m 1:\t${text_1}${L_STOP_STORAGE}\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read ss_input
@@ -525,9 +525,9 @@ case "$input" in
       fi
       echo -e "\033[104m [$L_STOP_APP_CACHE]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：${text_1}${L_STOP_APP_CACHE}\033[0m\n"
-      echo -e "\033[93m \t2：$L_ADD_WHITELIST\033[0m\n"
-      echo -e "\033[93m \t3：$L_REMOVE_WHITELIST\033[0m\n"
+      echo -e "\033[93m 1:\t${text_1}${L_STOP_APP_CACHE}\033[0m\n"
+      echo -e "\033[93m 2:\t$L_ADD_WHITELIST\033[0m\n"
+      echo -e "\033[93m 3:\t$L_REMOVE_WHITELIST\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read sc_input
@@ -597,9 +597,9 @@ case "$input" in
       clear
       echo -e "\033[104m [$L_DISK_APP_PLUS]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：$L_DISK_GC\033[0m\n"
-      echo -e "\033[93m \t2：$L_FAST_DISK_GC\033[0m\n"
-      echo -e "\033[93m \t3：$L_DEXOAT\033[0m\n"
+      echo -e "\033[93m 1:\t$L_DISK_GC\033[0m\n"
+      echo -e "\033[93m 2:\t$L_FAST_DISK_GC\033[0m\n"
+      echo -e "\033[93m 3:\t$L_DEXOAT\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read dg_input
@@ -616,9 +616,9 @@ case "$input" in
             clear
             echo -e "\033[104m [DEXOAT]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_SYS_DEXOAT\033[0m\n"
-            echo -e "\033[93m \t2：$L_CUST_DEXOAT\033[0m\n"
-            echo -e "\033[93m \t3：$L_DEXOAT_RESET\033[0m\n"
+            echo -e "\033[93m 1:\t$L_SYS_DEXOAT\033[0m\n"
+            echo -e "\033[93m 2:\t$L_CUST_DEXOAT\033[0m\n"
+            echo -e "\033[93m 3:\t$L_DEXOAT_RESET\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read cust_mode
@@ -630,9 +630,9 @@ case "$input" in
                   clear
                   echo -e "\033[104m [$L_MODE]\033[0m"
                   echo -e "\033[96m ==============================================\033[0m\n"
-                  echo -e "\033[93m \t1：Speed $L_MODE\033[0m\n"
-                  echo -e "\033[93m \t2：Speed-Profile $L_MODE\033[0m\n"
-                  echo -e "\033[93m \t3：Everything $L_MODE\033[0m\n"
+                  echo -e "\033[93m 1:\tSpeed $L_MODE\033[0m\n"
+                  echo -e "\033[93m 2:\tSpeed-Profile $L_MODE\033[0m\n"
+                  echo -e "\033[93m 3:\tEverything $L_MODE\033[0m\n"
                   echo -e "\033[96m ==============================================\033[0m\n"
                   echo -n " $L_PLEASE_INPUT:"
                   read mode
@@ -671,12 +671,12 @@ case "$input" in
       clear
       echo -e "\033[104m [$L_SETTINGS]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
-      echo -e "\033[93m \t1：$L_CLEAN_SETTINGS\033[0m\n"
-      echo -e "\033[93m \t2：$L_TUI_SWITCH\033[0m\n"
-      echo -e "\033[93m \t00：$L_ABOUT\033[0m\n"
-      echo -e "\033[93m \t01：$L_CONFIG_BACKUP\033[0m\n"
-      echo -e "\033[93m \t02：$L_UNINSTALL\033[0m\n"
-      echo -e "\033[93m \t03：$L_VIEW_LOG\033[0m\n"
+      echo -e "\033[93m 1:\t$L_CLEAN_SETTINGS\033[0m\n"
+      echo -e "\033[93m 2:\t$L_TUI_SWITCH\033[0m\n"
+      echo -e "\033[93m 00:\t$L_ABOUT\033[0m\n"
+      echo -e "\033[93m 01:\t$L_CONFIG_BACKUP\033[0m\n"
+      echo -e "\033[93m 02:\t$L_UNINSTALL\033[0m\n"
+      echo -e "\033[93m 03:\t$L_VIEW_LOG\033[0m\n"
       echo -e "\033[96m ==============================================\033[0m\n"
       echo -n " $L_PLEASE_INPUT:"
       read settings_option_input
@@ -695,12 +695,12 @@ case "$input" in
             fi
             echo -e "\033[104m [$L_CLEAN_SETTINGS]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：$L_EXTERNAL_SETTINGS\033[0m\n"
-            echo -e "\033[93m \t2：${text_1}${L_ES_AUTO_FILE_ALL}\033[0m\n"
-            echo -e "\033[93m \t3：${text_2}${L_ES_AUTO_DISK_GC}\033[0m\n"
-            echo -e "\033[93m \t4：$L_ADD_WHITELIST\033[0m\n"
-            echo -e "\033[93m \t5：$L_REMOVE_WHITELIST\033[0m\n"
-            echo -e "\033[93m \t6：$L_CACHE_SKIP_SIZE\033[0m\n"
+            echo -e "\033[93m 1:\t$L_EXTERNAL_SETTINGS\033[0m\n"
+            echo -e "\033[93m 2:\t${text_1}${L_ES_AUTO_FILE_ALL}\033[0m\n"
+            echo -e "\033[93m 3:\t${text_2}${L_ES_AUTO_DISK_GC}\033[0m\n"
+            echo -e "\033[93m 4:\t$L_ADD_WHITELIST\033[0m\n"
+            echo -e "\033[93m 5:\t$L_REMOVE_WHITELIST\033[0m\n"
+            echo -e "\033[93m 6:\t$L_CACHE_SKIP_SIZE\033[0m\n"
             echo -e "\033[96m==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read clean_option_input
@@ -724,9 +724,9 @@ case "$input" in
                   fi
                   echo -e "\033[104m [$L_EXTERNAL_SETTINGS]\033[0m"
                   echo -e "\033[96m ==============================================\033[0m\n"
-                  echo -e "\033[93m \t1：${text_1}${L_EXTERNAL_FILE_CLEAN}\033[0m\n"
-                  echo -e "\033[93m \t2：${text_2}${L_EXTERNAL_FILE_ALL}\033[0m\n"
-                  echo -e "\033[93m \t3：${text_3}${L_EXTERNAL_FILE_CLEAN}\033[0m\n"
+                  echo -e "\033[93m 1:\t${text_1}${L_EXTERNAL_FILE_CLEAN}\033[0m\n"
+                  echo -e "\033[93m 2:\t${text_2}${L_EXTERNAL_FILE_ALL}\033[0m\n"
+                  echo -e "\033[93m 3:\t${text_3}${L_EXTERNAL_FILE_CLEAN}\033[0m\n"
                   echo -e "\033[96m ==============================================\033[0m\n"
                   echo -n " $L_PLEASE_INPUT:"
                   read disk_option_input
@@ -941,9 +941,9 @@ case "$input" in
             echo -e "\033[92m     CCC  LLLL  EEEEEE  A     A   R    R\033[0m\n\n"
             echo -e "\033[104m \t$Str_1\033[0m"
             echo -e "\033[104m \t\t$Str_2\033[0m\n"
-            echo -e "\033[93m \t1：GitHub\033[0m\n"
-            echo -e "\033[93m \t2：YHChat\033[0m\n"
-            echo -e "\033[93m \t3：Telegram\033[0m\n"
+            echo -e "\033[93m 1:\tGitHub\033[0m\n"
+            echo -e "\033[93m 2:\tYHChat\033[0m\n"
+            echo -e "\033[93m 3:\tTelegram\033[0m\n"
             if [ "$clearbox_debug_mode" = 1 ]; then
                 DebugTitle=$(echo -en "\033[91m DEBUG MODE \033[0m")
                 echo -e "\t\t\t\t$DebugTitle"
@@ -976,8 +976,8 @@ case "$input" in
             clear
             echo -e "\033[104m [$L_CONFIG_BACKUP]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
-            echo -e "\033[93m \t1：BACKUP\033[0m\n"
-            echo -e "\033[93m \t2：RECOVER\033[0m\n"
+            echo -e "\033[93m \t1:\tBACKUP\033[0m\n"
+            echo -e "\033[93m \t2:\tRECOVER\033[0m\n"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -en " $L_PLEASE_INPUT:"
             read backup_option_input
