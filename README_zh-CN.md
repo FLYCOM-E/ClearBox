@@ -180,7 +180,7 @@ post=Test Run/已运行 Sync
 
 以上配置会在每天凌晨 **0~5** 点之间运行一次 **`/system/bin/sync`** 命令，并发送一条通知
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/Pictures/timed_notification.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/timed_notification.png)
 
 
 

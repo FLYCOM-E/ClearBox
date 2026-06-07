@@ -5,7 +5,9 @@ ifeq ($(strip $(CC)),)
     $(error 编译器$CC变量设置为空！The compiler $CC variable is set to empty!)
 endif
 
-home_dir = Module_Files
+module_dir = ModuleFiles
+app_dir = AppSource
+tui_dir = TuiSource
 
 UTILS_C = src/INCLUDE/Utils.c \
 			src/INCLUDE/Signed.c \
@@ -26,7 +28,7 @@ BIN_C = src/BashCore.c \
 		src/Daemon/F2fsGcd.c \
 		src/Daemon/Timed.c
 
-CORE_ELF = $(home_dir)/BashCore
+CORE_ELF = $(module_dir)/BashCore
 
 all: $(CORE_ELF)
 .PHONY: all
@@ -36,17 +38,18 @@ $(CORE_ELF): $(BIN_C)
 
 clean: 
 	@rm $(CORE_ELF)
-	@rm -f $(home_dir)/ClearBox.apk
-	@rm -r $(home_dir)/LANG
-	@rm -r $(home_dir)/AppConfigs
-	@rm -r $(home_dir)/FileConfigs
+	@rm -f $(module_dir)/ClearBox.apk
+	@rm -r $(module_dir)/LANG
+	@rm -r $(module_dir)/AppConfigs
+	@rm -r $(module_dir)/FileConfigs
 
 module_tar: 
-	@find App_Source -name "*.apk" -exec cp {} $(home_dir)/ClearBox.apk \;
-	@cp -r LANG_Configs $(home_dir)/LANG
-	@cp -r AppConfigs $(home_dir)/AppConfigs
-	@cp -r FileConfigs $(home_dir)/FileConfigs
-	@cp $(home_dir)/module.prop ./module.prop.bak
-	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update_$(M_TARGET).json" >> $(home_dir)/module.prop
-	@cd $(home_dir) && zip -r ../ClearBox_$(M_TARGET)_$(M_API).zip *
-	@mv ./module.prop.bak $(home_dir)/module.prop
+	@find $(app_dir) -name "*.apk" -exec cp {} $(module_dir)/ClearBox.apk \;
+	@cp $(tui_dir)/Main.bash $(module_dir)/system/bin/ClearBox
+	@cp -r LangConfigs $(module_dir)/LANG
+	@cp -r AppConfigs $(module_dir)/AppConfigs
+	@cp -r FileConfigs $(module_dir)/FileConfigs
+	@cp $(module_dir)/module.prop ./module.prop.bak
+	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update_$(M_TARGET).json" >> $(module_dir)/module.prop
+	@cd $(module_dir) && zip -r ../ClearBox_$(M_TARGET)_$(M_API).zip *
+	@mv ./module.prop.bak $(module_dir)/module.prop
