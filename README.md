@@ -24,8 +24,7 @@
 
 The execution time is much faster than regular cleaning software on the market, comparable to ✈️ speed. The automation function is only handled by a very low-usage **Timed**, so the overhead is negligible. No software background process is required, no forced app binding, and it supports full functionality through a terminal **TUI**.
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home.png)
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/clean_cache.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home_clean.png)
 
 __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**](https://github.com/bmax121/APatch), [**KernelSU**](https://github.com/tiann/KernelSU), and their various forks__
 
@@ -156,7 +155,6 @@ Clear system software cache, system cache, and also clear **MTP** host data (can
 Feature automation, driven by the **Timed** component (ultra-low overhead).
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/auto_clean.png)
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/set_time.png)
 
 ### **•  Did you know?**
 

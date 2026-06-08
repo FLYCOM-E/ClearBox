@@ -24,8 +24,7 @@
 
 执行所用时间相对市面上普通清理软件来说快如✈️，自动化功能仅由一个极低占用 **Timed** 负责，开销可直接无视，无软件后台进程，不强制绑定 App，支持完整功能终端 **TUI**
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home.png)
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/clean_cache.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home_clean.png)
 
 __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) 及其各种分支__
 
@@ -156,7 +155,6 @@ iso img
 功能自动化，由 **Timed** 组件驱动执行（超低开销）。
 
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/auto_clean.png)
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/set_time.png)
 
 ### **•  您知道吗？**
 
