@@ -31,6 +31,7 @@ int main(int argc, char * argv[])
         {
             * p = '\0';
         }
+        pclose(local_lang_p);
     }
     if (strstr(lang, "zh-CN") ||
        strstr(lang, "Hans"))
