@@ -7,6 +7,7 @@ app_config_dir="AppCleanRules"
 storage_config_dir="CleanConfigs"
 file_config_dir="FileConfigs"
 bind_config_dir="BindConfigs"
+timed_config_dir="TimedConfigs"
 core="BashCore"
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
@@ -51,7 +52,7 @@ StartSettings()
     mkdir -p "$work_dir/$app_config_dir"
     mkdir -p "$work_dir/$storage_config_dir"
     mkdir -p "$work_dir/$file_config_dir"
-    mkdir -p "$work_dir/$file_config_dir"
+    mkdir -p "$work_dir/$timed_config_dir"
     mkdir -p "$work_dir/$bind_config_dir"
     ######
     [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"

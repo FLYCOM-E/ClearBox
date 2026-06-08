@@ -15,6 +15,7 @@ fi
 app_config_dir="AppCleanRules"
 storage_config_dir="CleanConfigs"
 file_config_dir="FileConfigs"
+timed_config_dir="TimedConfigs"
 source "$work_dir/settings.prop"
 exec 2>>/dev/null
 ######
@@ -28,21 +29,22 @@ exec 2>>/dev/null
 [ -n "$DebugPro" ] && sed -i 's|DebugPro=|clearbox_debug_mode=|g' "$work_dir/settings.prop"
 [ -n "$ClearCacheSize" ] && sed -i 's|ClearCacheSize=|clearbox_clear_cache_size=|g' "$work_dir/settings.prop"
 
-if [ -f "$work_dir/TimedConfig/ClearAll.conf" ]; then
-    grep -q "in=" "$work_dir/TimedConfig/ClearAll.conf" || echo "in=0/5" >> "$work_dir/TimedConfig/ClearAll.conf"
-fi
-if [ -f "$work_dir/TimedConfig/ClearCache.conf" ]; then
-    grep -q "in=" "$work_dir/TimedConfig/ClearCache.conf" || echo "in=0/5" >> "$work_dir/TimedConfig/ClearCache.conf"
-fi
-
 mv "$work_dir/文件格式配置" "$work_dir/$file_config_dir"
 mv "$work_dir/清理规则" "$work_dir/$app_config_dir"
 mv "$work_dir/清理配置" "$work_dir/$storage_config_dir"
+mv "$work_dir/TimedConfig" "$work_dir/$timed_config_dir"
 
 rm -f "$work_dir/$file_config_dir/安装包.conf"
 rm -f "$work_dir/$file_config_dir/压缩包.conf"
 rm -f "$work_dir/$file_config_dir/镜像文件.conf"
 rm -f "$work_dir/$file_config_dir/字体文件.conf"
+
+if [ -f "$work_dir/$timed_config_dir/ClearAll.conf" ]; then
+    grep -q "in=" "$work_dir/$timed_config_dir/ClearAll.conf" || echo "in=0/5" >> "$work_dir/$timed_config_dir/ClearAll.conf"
+fi
+if [ -f "$work_dir/TimedConfig/ClearCache.conf" ]; then
+    grep -q "in=" "$work_dir/$timed_config_dir/ClearCache.conf" || echo "in=0/5" >> "$work_dir/$timed_config_dir/ClearCache.conf"
+fi
 
 [ "$clearbox_clear_cache_size" -gt 100 ] && sed -i 's|clearbox_clear_cache_size=[0-9]*|clearbox_clear_cache_size=5|g' "$work_dir/settings.prop"
 sed -i '/^$/d' "$work_dir/settings.prop"
