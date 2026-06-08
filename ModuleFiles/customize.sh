@@ -58,14 +58,15 @@ fi
 ######
 lang=""
 lang_dir="LANG"
-if getprop persist.sys.locale | grep -E "zh-CN|Hans" 2>/dev/null; then
-    source "$MODPATH/$lang_dir/zh_CN.conf"
+local_lang="$(settings get system system_locales | cut -f1 -d ',')"
+if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
+    source "$home_dir/$lang_dir/zh_CN.conf"
     lang="zh_CN"
-elif getprop persist.sys.locale | grep -E "zh-TW|Hant" 2>/dev/null; then
-    source "$MODPATH/$lang_dir/zh_TW.conf"
+elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then
+    source "$home_dir/$lang_dir/zh_TW.conf"
     lang="zh_TW"
 else
-    source "$MODPATH/$lang_dir/en_US.conf"
+    source "$home_dir/$lang_dir/en_US.conf"
     lang="en_US"
 fi
 ######

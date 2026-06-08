@@ -21,14 +21,24 @@ int main(int argc, char * argv[])
 {
     // 多语言
     char lang[PROP_VALUE_MAX] = "";
-    getprop("persist.sys.locale", lang); // 不检查是否失败
-    if (strcmp(lang, "zh-CN") == 0 ||
-        strstr(lang, "Hans"))
+    FILE * local_lang_p = popen("settings get system system_locales", "r");
+    if (local_lang_p)
+    {
+        fgets(lang, sizeof(lang), local_lang_p);
+        lang[strcspn(lang, "\n")] = '\0';
+        char * p = strchr(lang, ',');
+        if (p)
+        {
+            * p = '\0';
+        }
+    }
+    if (strstr(lang, "zh-CN") ||
+       strstr(lang, "Hans"))
     {
         current_lang = LANG_zh_CN;
     }
-    else if (strcmp(lang, "zh-TW") == 0 ||
-             strstr(lang, "Hant"))
+    else if (strstr(lang, "zh-TW") ||
+            strstr(lang, "Hant"))
     {
         current_lang = LANG_zh_TW;
     }

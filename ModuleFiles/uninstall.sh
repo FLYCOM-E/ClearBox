@@ -30,9 +30,10 @@ fi
 exec 2>>/dev/null
 source "$work_dir/settings.prop"
 lang_dir="LANG"
-if getprop persist.sys.locale | grep -E "zh-CN|Hans" 2>/dev/null; then
+local_lang="$(settings get system system_locales | cut -f1 -d ',')"
+if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
     source "$home_dir/$lang_dir/zh_CN.conf"
-elif getprop persist.sys.locale | grep -E "zh-TW|Hant" 2>/dev/null; then
+elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then
     source "$home_dir/$lang_dir/zh_TW.conf"
 else
     source "$home_dir/$lang_dir/en_US.conf"
