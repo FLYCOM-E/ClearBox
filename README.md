@@ -214,8 +214,6 @@ Blocking cache will not clear the software cache, so the software cache will not
 
 Extremely low overhead, automatically delays execution when the screen is off
 
-External storage expansion only supports single card. If you have expanded multiple cards, expanded storage will not be processed
-
 If some software is abnormal, please add it to the whitelist yourself!
 
 
