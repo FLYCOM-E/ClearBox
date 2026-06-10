@@ -64,17 +64,13 @@ jobs:
       
       - name: Build ${{ matrix.target }}
         run: |
-          chmod +x *; chmod +x App_Source/*
-          cd App_Source
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
           echo -e "storeFile=$(pwd)/release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > keystore.properties
-          ./gradlew assembleRelease --no-daemon
-          rm -f release.keystore keystore.properties
-          cd ..
           export ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}
           export M_API=${{ github.event.inputs.api_level || '23' }}
           export M_TARGET=${{ matrix.target }}
-          bash build.sh
+          bash build.sh --build-apk
+          rm -f release.keystore keystore.properties
       
       - name: Unzip artifact for re-packaging
         run: |
