@@ -9,61 +9,31 @@
 
 #define SERVER_NAME "StopCached"        // 进程名（MAX 15）
 #define DATA_DIR "/data/data"           // 软件数据根目录
-#define MICRO_CARD_PATH "/mnt/expand"   // 拓展卡根目录
 #define ROM_NAME "RunStart"             // 储存文件名
 #define WHITELIST_NAME "whitelist.prop" // 白名单文件名
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
-#define MAX_CARD 5                      // 最大拓展卡数量
-#define MAX_CARD_ID_LEN 256             // 拓展卡 ID 限制长度
+#define MAX_WHITELIST_APP 512               // 最大白名单数量
 
-static int set_app_cache(char * dir, char * top_app,
-                        char * reset_app, char * work_dir,
-                        int skip_reset);
+static int set_app_cache(char * top_app,
+                        char * reset_app,
+                        int skip_reset,
+                        char whitelist[][MAX_PACKAGE]);
+static int read_whitelist(char * whitelist_file,
+                          char whitelist[][MAX_PACKAGE],
+                          int * read_whitelist_app);
 
 int stop_cache_daemon(char * argv[], char * work_dir)
 {
-    // 检查及读取外部拓展储存
-    int card_count = 0;
-    char card_list[MAX_CARD][sizeof(MICRO_CARD_PATH) + MAX_CARD_ID_LEN] = {0};
-    
-    if (access(MICRO_CARD_PATH, F_OK) == 0)
-    {
-        struct dirent * entry;
-        DIR * micro_card_dp = opendir(MICRO_CARD_PATH);
-        if (micro_card_dp)
-        {
-            while ((entry = readdir(micro_card_dp)))
-            {
-                if (strcmp(entry -> d_name, ".") == 0 ||
-                    strcmp(entry -> d_name, "..") == 0)
-                {
-                    continue;
-                }
-                
-                if (card_count < MAX_CARD)
-                {
-                    snprintf(card_list[card_count], sizeof(card_list[card_count]),
-                             "%s/%s/user/0", MICRO_CARD_PATH, entry -> d_name);
-                    if (access(card_list[card_count], F_OK) == 0)
-                    {
-                        card_count++;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
-            closedir(micro_card_dp);
-        }
-    }
-    
     // 定义储存文件
-    char rom_file[strlen(work_dir) + sizeof(ROM_NAME) + 2];
+    char rom_file[strlen(work_dir) + sizeof(ROM_NAME) + 2],
+         whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 2];
     snprintf(rom_file, sizeof(rom_file), "%s/%s", work_dir, ROM_NAME);
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);
     
     // 定义待处理 app 临时储存变量
-    char top_app_list[5][MAX_PACKAGE] = {0}, reset_app[MAX_PACKAGE] = "";
+    char top_app_list[5][MAX_PACKAGE] = {0},
+         reset_app[MAX_PACKAGE] = "",
+         whitelist[MAX_WHITELIST_APP][MAX_PACKAGE] = {0};
     
     // 提取 RunStart 储存值
     if (access(rom_file, F_OK) == 0)
@@ -108,6 +78,24 @@ int stop_cache_daemon(char * argv[], char * work_dir)
             fprintf(stderr, L_OPEN_FILE_FAILED, rom_file, strerror(errno));
         }
     }
+    
+    // 读取白名单
+    int read_whitelist_app = 0;
+    read_whitelist(whitelist_file, whitelist, &read_whitelist_app);
+    
+    // INOTIFY
+    int inotify_fd = inotify_init1(IN_NONBLOCK);
+    if (inotify_fd == -1)
+    {
+        return 1;
+    }
+    int inotify_wd = inotify_add_watch(inotify_fd, rom_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
+    if (inotify_wd == -1)
+    {
+        return 1;
+    }
+    char inotify_buffer[PATH_MAX] = "";
+    int watch = 1;
     
     // 如果包名含“ / ”则丢弃
     for (int i = 0; i < 5; i++)
@@ -180,6 +168,40 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         else
         {
             sleep(cycle_time);
+        }
+        
+        if (watch == 1)
+        {
+            ssize_t len = read(inotify_fd, inotify_buffer, sizeof(inotify_buffer));
+            if (len != -1)
+            {
+                char * inotify_buffer_p = inotify_buffer;
+                char * inotify_len_p = inotify_buffer + len;
+                while (inotify_buffer_p < inotify_len_p)
+                {
+                    struct inotify_event * event = (struct inotify_event *)inotify_buffer_p;
+                    if (event -> mask & IN_DELETE_SELF)
+                    {
+                        inotify_rm_watch(inotify_fd, (uint32_t)inotify_wd);
+                        watch = 0;
+                        break;
+                    }
+                    if (event -> mask & IN_CLOSE_WRITE)
+                    {
+                        read_whitelist(whitelist_file, whitelist, &read_whitelist_app);
+                    }
+                    
+                    inotify_buffer_p += sizeof(struct inotify_event) + event -> len;
+                }
+            }
+        }
+        else
+        {
+            if (access(rom_file, F_OK) == 0)
+            {
+                inotify_add_watch(inotify_fd, rom_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
+                watch = 1;
+            }
         }
         
         // 获取前台软件包名
@@ -265,47 +287,51 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         // 调用处理函数，这里配合前面检查，skip_stop 为 1 则跳过
         if (skip_stop == 0)
         {
-            // 内部储存
-            set_app_cache(DATA_DIR, top_app_list[0], reset_app, work_dir, skip_reset);
-            // 外部储存
-            if (card_count > 0)
-            {
-                for (int i = 0; i < card_count; i++)
-                {
-                    set_app_cache(card_list[i], top_app_list[0], reset_app, work_dir, skip_reset);
-                }
-            }
+            set_app_cache(top_app_list[0], reset_app, skip_reset, whitelist);
         }
         // 循环返回 ===
     }
     
+    close(inotify_fd);
     return 0;
 }
 
 /*
 缓存阻止/恢复
 接收：
-    char * dir 软件数据根目录
     char * top_app 前台App包名
     char * reset_app 待恢复App包名
     char * work_dir 配置目录
     int skip_reset 是否跳过恢复
-返回：
-    int 成功返回0，失败返回-1
+    char whitelist[][MAX_PACKAGE] 白名单列表
 */
-static int set_app_cache(char * dir, char * top_app,
-                        char * reset_app, char * work_dir,
-                        int skip_reset)
+static int set_app_cache(char * top_app,
+                        char * reset_app,
+                        int skip_reset,
+                        char whitelist[][MAX_PACKAGE])
 {
-    char top_app_dir[strlen(dir) + strlen(top_app) + 16],
-         reset_app_dir[strlen(dir) + strlen(reset_app) + 16],
-         whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 8];
-    snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", dir, top_app);              //topApp缓存目录定义
-    snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", dir, reset_app);         //resetApp缓存目录定义
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);   //定义WhiteList
+    char top_app_dir[sizeof(DATA_DIR) + strlen(top_app) + 16],
+         reset_app_dir[sizeof(DATA_DIR) + strlen(reset_app) + 16];
+    snprintf(top_app_dir, sizeof(top_app_dir), "%s/%s/cache", DATA_DIR, top_app);              //topApp缓存目录定义
+    snprintf(reset_app_dir, sizeof(reset_app_dir), "%s/%s/cache", DATA_DIR, reset_app);         //resetApp缓存目录定义
+    
+    // WHITELIST CHECK
+    int in_whitelist = 0;
+    for (int i = 0; i < MAX_WHITELIST_APP; i++)
+    {
+        if (strcmp(whitelist[i], "END") == 0)
+        {
+            break;
+        }
+        if (strcmp(whitelist[i], top_app) == 0)
+        {
+            in_whitelist = 1;
+            break;
+        }
+    }
     
     //检查缓存目录是否真实存在并过滤路径逃逸
-    if (s_grep(whitelist_file, top_app, 1) != 1)
+    if (in_whitelist != 1)
     {
         if (access(top_app_dir, F_OK) == 0 &&
             strstr(top_app_dir, "/../") == NULL)
@@ -340,5 +366,97 @@ static int set_app_cache(char * dir, char * top_app,
             print_log(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", reset_app, strerror(errno));
         }
     }
+    return 0;
+}
+
+/*
+白名单读取/更新
+接收：
+    char * whitelist_file 白名单文件
+    char whitelist[][MAX_PACKAGE] 白名单列表数组
+    int * read_whitelist_app 已读取白名单 App 数量
+返回：
+    成功返回 0，失败返回 1
+*/
+static int read_whitelist(char * whitelist_file,
+                          char whitelist[][MAX_PACKAGE],
+                          int * read_whitelist_app)
+{
+    int update = 0;
+    if (* read_whitelist_app != 0)
+    {
+        update = 1;
+    }
+    
+    FILE * fp = fopen(whitelist_file, "r");
+    if (fp == NULL)
+    {
+        fprintf(stderr, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
+        return 1;
+    }
+    else
+    {
+        int count = 0;
+        char line[MAX_PACKAGE] = "";
+        while (fgets(line, sizeof(line), fp))
+        {
+            line[strcspn(line, "\n")] = 0;
+            if (strlen(line) <= 1)
+            {
+                continue;
+            }
+            
+            if (update == 1) // 如果为更新并且当前行 App 与上次记录不一致则解锁此 App
+            {
+                if (strcmp(whitelist[count], line) != 0)
+                {
+                    // TODO：这里有点开销，怎么优化呢...目前规模不大，如果以后拓展，这里最好改成哈希计算
+                    int is_new = 1;
+                    for (int i = 0; i < * read_whitelist_app; i++)
+                    {
+                        if (strcmp(whitelist[i], line) == 0)
+                        {
+                            is_new = 0;
+                        }
+                    }
+                    
+                    if (is_new)
+                    {
+                        char app_dir[sizeof(DATA_DIR) + strlen(line) + 16];
+                        snprintf(app_dir, sizeof(app_dir), "%s/%s/cache", DATA_DIR, line);
+                        if (access(app_dir, F_OK) == 0)
+                        {
+                            if (s_chattr(app_dir, 0, 1) == 0)
+                            {
+                                print_log(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", line);
+                            }
+                            else
+                            {
+                                print_log(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", line, strerror(errno));
+                            }
+                        }
+                    }
+                }
+            }
+            
+            snprintf(whitelist[count], sizeof(whitelist[count]), "%s", line);
+            if ((count + 1) != MAX_WHITELIST_APP)
+            {
+                count++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        fclose(fp);
+        
+        * read_whitelist_app = count;
+        if ((count + 1) != MAX_WHITELIST_APP)
+        {
+            snprintf(whitelist[count + 1], sizeof(whitelist[count + 1]), "END");
+        }
+    }
+    
     return 0;
 }

@@ -265,6 +265,7 @@ int time_daemon(char * argv[], char * work_dir)
         sleep((unsigned int)(60 - (time(NULL) % 60)));
     }
     
+    close(inotify_fd);
     return 0;
 }
 
