@@ -38,12 +38,13 @@ export LDFLAGS="-target ${TARGET}${M_API}"
 make -j$(nproc)
 if [ "$1" = "-build-apk" ] || [ "$1" = "--build-apk" ]; then
     cd AppSource/
-    if [ ! -f "keystore.properties" ]; then
-        echo "KEY Error! "
-        exit 1
+    chmod +x ./gradlew
+    if [ "$2" = "release" ]; then
+        ./gradlew assembleRelease --no-daemon
+    else
+        ./gradlew assembleDebug --no-daemon
     fi
-    chmod +x gradlew
-    ./gradlew assembleRelease --no-daemon
+    cd ..
 fi
 
 make module_tar && echo -e " » 打包完成，成品：ClearBox_${M_TARGET}_${M_API}.zip！\n » Tar Done, Is: ClearBox_${M_TARGET}_${M_API}.zip! "

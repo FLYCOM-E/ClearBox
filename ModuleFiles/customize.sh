@@ -60,13 +60,13 @@ lang=""
 lang_dir="LANG"
 local_lang="$(settings get system system_locales | cut -f1 -d ',')"
 if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
-    source "$home_dir/$lang_dir/zh_CN.conf"
+    source "$MODPATH/$lang_dir/zh_CN.conf"
     lang="zh_CN"
 elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then
-    source "$home_dir/$lang_dir/zh_TW.conf"
+    source "$MODPATH/$lang_dir/zh_TW.conf"
     lang="zh_TW"
 else
-    source "$home_dir/$lang_dir/en_US.conf"
+    source "$MODPATH/$lang_dir/en_US.conf"
     lang="en_US"
 fi
 ######

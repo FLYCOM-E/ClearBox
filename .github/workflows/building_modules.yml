@@ -57,19 +57,19 @@ jobs:
       - name: Get version info from module.prop
         id: get_version
         run: |
-          VERSION=$(grep '^version=' Module_Files/module.prop | cut -f2 -d '=')
-          VERSION_CODE=$(grep '^versionCode=' Module_Files/module.prop | cut -f2 -d '=')
+          VERSION=$(grep '^version=' ModuleFiles/module.prop | cut -f2 -d '=')
+          VERSION_CODE=$(grep '^versionCode=' ModuleFiles/module.prop | cut -f2 -d '=')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "versionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
       
       - name: Build ${{ matrix.target }}
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
-          echo -e "storeFile=$(pwd)/release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > keystore.properties
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > AppSource/release.keystore
+          echo -e "storeFile=$(pwd)/AppSource/release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > AppSource/keystore.properties
           export ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}
           export M_API=${{ github.event.inputs.api_level || '23' }}
           export M_TARGET=${{ matrix.target }}
-          bash build.sh --build-apk
+          bash build.sh --build-apk release
           rm -f release.keystore keystore.properties
       
       - name: Unzip artifact for re-packaging
@@ -109,8 +109,8 @@ jobs:
           LANGS=("zh_CN" "en_US" "zh_TW")
           ARCHS=("aarch64" "armv7a" "x86_64")
           
-          VERSION=$(grep '^version=' Module_Files/module.prop | cut -f2 -d '=')
-          VERSION_CODE=$(grep '^versionCode=' Module_Files/module.prop | cut -f2 -d '=')
+          VERSION=$(grep '^version=' ModuleFiles/module.prop | cut -f2 -d '=')
+          VERSION_CODE=$(grep '^versionCode=' ModuleFiles/module.prop | cut -f2 -d '=')
           
           echo "Updating JSON files with version $VERSION..."
           
@@ -135,7 +135,7 @@ jobs:
           else
             git add UpdateJson/
             git commit -m "Update: Version $VERSION ($VERSION_CODE) Updatejson"
-            git push
+            git push origin HEAD:main
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

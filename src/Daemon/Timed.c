@@ -15,7 +15,7 @@
 #define MAX_COMMAND_LEN 4096           // 命令最大长度
 #define MAX_TITLE_LEN 128              // 通知标题最大长度
 #define MAX_MESSAGE_LEN 512            // 通知内容最大长度
-#define CONFIG_PATH_NAME "TimedConfig" // 配置目录名
+#define CONFIG_PATH_NAME "TimedConfigs"// 配置目录名
 
 struct config_struct
 {
