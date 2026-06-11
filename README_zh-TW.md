@@ -68,7 +68,7 @@ bash build.sh
 
 ## **2**：清理/幹掉自訂目錄
 
-這項功能是規則清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs/`** 目錄下自行新增清理規則。
+這項功能是規則清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs`** 目錄下自行新增清理規則。
 
 配置方法：
 
@@ -160,7 +160,7 @@ iso img
 
 您可以利用此模組 **Timed** 執行自定義任務！請按照以下配置：
 
-配置目錄：**`/data/adb/wipe_cache/TimedConfig`**
+配置目錄：**`/data/adb/wipe_cache/TimedConfigs`**
 
 在此目錄下建立一個自定義名稱的 **.conf** 檔案，填入並修改以下行（部分可選）：
 

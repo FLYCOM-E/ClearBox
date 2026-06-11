@@ -68,7 +68,7 @@ bash build.sh
 
 ## **2**：清理/干掉自定义目录
 
-这项功能是规则清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs/`** 目录下自行添加清理规则。
+这项功能是规则清理功能，可在 **`/data/adb/wipe_cache/CleanConfigs`** 目录下自行添加清理规则。
 
 配置方法：
 
@@ -160,7 +160,7 @@ iso img
 
 您可以利用此模块 **Timed** 运行自定义任务！请按照以下配置：
 
-配置目录：**`/data/adb/wipe_cache/TimedConfig`**
+配置目录：**`/data/adb/wipe_cache/TimedConfigs`**
 
 在此目录下创建一个自定义名称 **.conf** 文件，填入并修改以下行（部分可选）：
 

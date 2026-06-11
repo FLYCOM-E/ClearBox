@@ -42,7 +42,7 @@ rm -f "$work_dir/$file_config_dir/字体文件.conf"
 if [ -f "$work_dir/$timed_config_dir/ClearAll.conf" ]; then
     grep -q "in=" "$work_dir/$timed_config_dir/ClearAll.conf" || echo "in=0/5" >> "$work_dir/$timed_config_dir/ClearAll.conf"
 fi
-if [ -f "$work_dir/TimedConfig/ClearCache.conf" ]; then
+if [ -f "$work_dir/$timed_config_dir/ClearCache.conf" ]; then
     grep -q "in=" "$work_dir/$timed_config_dir/ClearCache.conf" || echo "in=0/5" >> "$work_dir/$timed_config_dir/ClearCache.conf"
 fi
 

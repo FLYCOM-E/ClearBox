@@ -31,7 +31,7 @@ export Str_1=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d '=' | cut -f1 -d
 export Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 export app_config_dir="AppCleanRules"
 export file_config_dir="FileConfigs"
-export timed_config_dir="TimedConfig"
+export timed_config_dir="TimedConfigs"
 export core="BashCore"
 ######
 [[ -f $Core ]] && . $Core

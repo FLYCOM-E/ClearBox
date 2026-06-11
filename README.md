@@ -68,7 +68,7 @@ Perform fast one-click optimization/cleanup, the effect is equivalent to periodi
 
 ## **2**：Clean/Kill custom directories
 
-This function is rule-based cleanup. You can add cleanup rules yourself in the **`/data/adb/wipe_cache/CleanConfigs/`** directory.
+This function is rule-based cleanup. You can add cleanup rules yourself in the **`/data/adb/wipe_cache/CleanConfigs`** directory.
 
 Configuration method:
 
@@ -160,7 +160,7 @@ Feature automation, driven by the **Timed** component (ultra-low overhead).
 
 You can use the **Timed** module to run custom tasks! Follow the configuration below:
 
-Config Directory: **`/data/adb/wipe_cache/TimedConfig`**
+Config Directory: **`/data/adb/wipe_cache/TimedConfigs`**
 
 In this directory, create a **.conf** file with a custom name, then add and modify the following lines (some are optional):
 

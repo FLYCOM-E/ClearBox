@@ -17,7 +17,7 @@ Str_1=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d '=' | cut -f1 -d "|")
 Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 app_config_dir="AppCleanRules"
 file_config_dir="FileConfigs"
-timed_config_dir="TimedConfig"
+timed_config_dir="TimedConfigs"
 core="BashCore"
 ######
 lang_dir="LANG"
