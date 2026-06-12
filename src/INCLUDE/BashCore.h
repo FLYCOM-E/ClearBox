@@ -41,7 +41,7 @@ long get_path_size(char * path);
 int post(const char * title, const char * message, const char * id);
 int write_log(char * config_dir, char * name_id, char * text);
 int set_name_space(void);
-int get_settings_prop(char * settings_file, char * key);
+int get_settings_prop(char * settings_file, char * key, char * str, int str_len);
 int set_server_name(char * argv[], char * new_name);
 int s_sed(char * file, char * target_line, char * text, int mode);
 int s_chattr(char * path, int mode, int dir);

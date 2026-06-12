@@ -283,14 +283,18 @@ int set_name_space(void)
 接收：
     char * settings_file 设置文件（完整路径）
     char * key 具体 prop
+    char * str 字符串指针。可选，如果目标是字符串则复制值至此字符串
+        |
+         --- int str_len 如果传递 str 用于接收字符串则需要传递 str 大小
 返回：
-    int 返回 -1 失败，否则返回具体值。非数字值返回 0
+    int 返回 -1 失败，否则返回具体 value
 */
-int get_settings_prop(char * settings_file, char * key)
+int get_settings_prop(char * settings_file, char * key, char * str, int str_len)
 {
     int value = 0;
-    char * line_key = NULL;
+    char * line_key = NULL, * value_p = NULL, * ptr = NULL;
     char line[SETTINGS_FILE_MAX_LINE] = {0};
+    
     FILE * settings_file_fp = fopen(settings_file, "r");
     if (settings_file_fp == NULL)
     {
@@ -300,11 +304,21 @@ int get_settings_prop(char * settings_file, char * key)
     while (fgets(line, sizeof(line), settings_file_fp))
     {
         line[strcspn(line, "\n")] = 0;
-        char * line_p = NULL;
-        line_key = strtok_r(line, "=", &line_p);
+        char * strtok_p = NULL;
+        line_key = strtok_r(line, "=", &strtok_p);
         if (strcmp(line_key, key) == 0)
         {
-            value = (int)strtol(strtok_r(NULL, "=", &line_p), NULL, 10);
+            errno = 0;
+            value_p = strtok_r(NULL, "=", &strtok_p);
+            value = (int)strtol(value_p, &ptr, 10);
+            if (ptr == value_p || errno == ERANGE || value <= INT_MIN || value >= INT_MAX)
+            {
+                value = 0;
+                if (str != NULL)
+                {
+                    snprintf(str, str_len, "%s", value_p);
+                }
+            }
             break;
         }
     }
