@@ -162,7 +162,6 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
     // 创建文件归类根目录
-    if (strstr(dir_name, "/"))
     {
         char * dp = NULL, * strtok_p = NULL;
         char path[PATH_MAX] = "", f_dir[PATH_MAX] = "", tmp_name[NAME_MAX] = "";
