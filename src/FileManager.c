@@ -161,6 +161,32 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
+    // 创建文件归类根目录
+    if (strstr(dir_name, "/"))
+    {
+        char * dp = NULL, * strtok_p = NULL;
+        char path[PATH_MAX] = "", f_dir[PATH_MAX] = "", tmp_name[NAME_MAX] = "";
+        snprintf(path, sizeof(path), "%s", dir_name);
+        snprintf(tmp_name, sizeof(tmp_name), "%s", storage_dir);
+        
+        dp = strtok_r(path, "/", &strtok_p);
+        while (dp)
+        {
+            snprintf(f_dir, sizeof(f_dir), "%s/%s", tmp_name, dp);
+            snprintf(tmp_name, sizeof(tmp_name), "%s", f_dir);
+            
+            if (mkdir(f_dir, 0775) != 0)
+            {
+                if (errno != EEXIST)
+                {
+                    fprintf(stderr, L_MKDIR_ERROR, f_dir, strerror(errno));
+                    return 1;
+                }
+            }
+            dp = strtok_r(NULL, "/", &strtok_p);
+        }
+    }
+    
     // 文件清理模式
     if (file_clear == 1)
     {
@@ -211,18 +237,6 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     }
     else
     {
-        // 定义/创建文件归类根目录
-        char f_dir[strlen(storage_dir) + strlen(dir_name) + 8];
-        snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, dir_name);
-        if (access(f_dir, F_OK) != 0)
-        {
-            if (mkdir(f_dir, 0775) != 0)
-            {
-                fprintf(stderr, L_MKDIR_ERROR, f_dir, strerror(errno));
-                return 1;
-            }
-        }
-        
         // 遍历配置目录
         struct dirent * entry;
         DIR * config_dir_dp = opendir(config_dir);
