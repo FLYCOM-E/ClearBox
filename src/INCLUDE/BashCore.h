@@ -25,7 +25,6 @@
 // 多语言
 #include "Lang.h"
 
-#define MAX_PACKAGE 256                 // 软件包名最大长度
 #define MAX_WORK_DIR_LEN 512            // 工作目录最大长度
 #define MAX_BIN_DIR_LEN 512             // 二进制目录最大长度
 #define LOG_FILE_NAME "LOG.log"         // 日志文件名 Max Size 30
@@ -41,7 +40,7 @@ long get_path_size(char * path);
 int post(const char * title, const char * message, const char * id);
 int write_log(char * config_dir, char * name_id, char * text);
 int set_name_space(void);
-int get_settings_prop(char * settings_file, char * key, char * str, int str_len);
+int get_settings_prop(char * settings_file, char * key, char * str, size_t str_len);
 int set_server_name(char * argv[], char * new_name);
 int s_sed(char * file, char * target_line, char * text, int mode);
 int s_chattr(char * path, int mode, int dir);

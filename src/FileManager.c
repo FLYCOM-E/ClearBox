@@ -19,7 +19,7 @@
 static int file_clear = 0;              // 全局 mode
 static char * now_config_name = NULL;       // 配置文件名（为避免配置名跨多函数传）
 
-static int clear_service(char * work_dir, char * storage_dir, char * config_name);
+static int clear_service(char * work_dir, char * storage_dir, char * config_name, char * dir_name);
 static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
                      int count, long max_size, long min_size);
 static int find_size(char * str, long * max_size, long * min_size);
@@ -37,17 +37,23 @@ int file_manager(char * work_dir, int mode, char * config_name)
         config_name = NULL;
     }
     
-    int file_clear_disk = 0, // 是否清理拓展储存文件
-        file_all_disk = 0;   // 是否归类拓展储存文件
-    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
+    int file_clear_disk = 0,                // 是否清理拓展储存文件
+        file_all_disk = 0;                  // 是否归类拓展储存文件
+    char file_dir_name[NAME_MAX + 1] = "",  // 归类目录名（可选）
+         settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     // 查找设置对应值
-    file_all_disk = get_settings_prop(settings_file, "clearbox_file_all_disk");
-    file_clear_disk = get_settings_prop(settings_file, "clearbox_file_clear_disk");
+    file_all_disk = get_settings_prop(settings_file, "clearbox_file_all_disk", NULL, 0);
+    file_clear_disk = get_settings_prop(settings_file, "clearbox_file_clear_disk", NULL, 0);
+    get_settings_prop(settings_file, "clearbox_file_all_dirname", file_dir_name, sizeof(file_dir_name));
+    if (strlen(file_dir_name) <= 1)
+    {
+        snprintf(file_dir_name, sizeof(file_dir_name), "%s", F_DIR_NAME);
+    }
     
     // 调用函数（内部储存
-    if (clear_service(work_dir, STORAGES_DIR, config_name) == 0)
+    if (clear_service(work_dir, STORAGES_DIR, config_name, file_dir_name) == 0)
     {
         if (file_clear == 1)
         {
@@ -106,7 +112,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
         snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
         
         // 调用函数（外部储存
-        if (clear_service(work_dir, sdcard_dir, config_name) == 0)
+        if (clear_service(work_dir, sdcard_dir, config_name, file_dir_name) == 0)
         {
             if (file_clear == 1)
             {
@@ -141,10 +147,11 @@ int file_manager(char * work_dir, int mode, char * config_name)
     char * work_dir 配置目录路径
     char * storage_dir 储存根目录
     char * config_name 配置名称（仅文件清理模式需要）
+    char * dir_name 归类目录名
 返回：
     int 成功返回 0，失败返回 1
 */
-static int clear_service(char * work_dir, char * storage_dir, char * config_name)
+static int clear_service(char * work_dir, char * storage_dir, char * config_name, char * dir_name)
 {   
     if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
     {
@@ -160,8 +167,8 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         now_config_name = config_name; // 设置全局变量
         
         // 这里仍然定义归类目录，用于清理时跳过避免被清理
-        char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_name) + 8];
-        snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_name);
+        char file_dir[strlen(dir_name) + strlen(storage_dir) + strlen(config_name) + 8];
+        snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, dir_name, config_name);
         
         char config_file[strlen(config_dir) + strlen(config_name) + 16]; // 配置文件
         snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
@@ -205,8 +212,8 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     else
     {
         // 定义/创建文件归类根目录
-        char f_dir[strlen(storage_dir) + strlen(F_DIR_NAME) + 8];
-        snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, F_DIR_NAME);
+        char f_dir[strlen(storage_dir) + strlen(dir_name) + 8];
+        snprintf(f_dir, sizeof(f_dir), "%s/%s", storage_dir, dir_name);
         if (access(f_dir, F_OK) != 0)
         {
             if (mkdir(f_dir, 0775) != 0)
@@ -242,13 +249,13 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
             // 提取文件名用于创建最终归类目录
             char * have_p = NULL;
             char * config_file_name_p = strtok_r(config_file_name, ".", &have_p);
-            char file_dir[strlen(F_DIR_NAME) + strlen(storage_dir) + strlen(config_file_name_p) + 8];
-            snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, F_DIR_NAME, config_file_name_p);
+            char file_dir[strlen(storage_dir) + strlen(dir_name) + strlen(config_file_name_p) + 8];
+            snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, dir_name, config_file_name_p);
             if (access(file_dir, F_OK) != 0)
             {
                 if (mkdir(file_dir, 0775) != 0)
                 {
-                    fprintf(stderr, L_MKDIR_ERROR, f_dir, strerror(errno));
+                    fprintf(stderr, L_MKDIR_ERROR, file_dir, strerror(errno));
                     closedir(config_dir_dp);
                     return 1;
                 }

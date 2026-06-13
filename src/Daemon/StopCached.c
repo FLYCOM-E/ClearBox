@@ -17,9 +17,9 @@
 static int set_app_cache(char * top_app,
                         char * reset_app,
                         int skip_reset,
-                        char whitelist[][MAX_PACKAGE]);
+                        char whitelist[][NAME_MAX]);
 static int read_whitelist(char * whitelist_file,
-                          char whitelist[][MAX_PACKAGE],
+                          char whitelist[][NAME_MAX],
                           int * read_whitelist_app);
 
 int stop_cache_daemon(char * argv[], char * work_dir)
@@ -31,15 +31,15 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);
     
     // 定义待处理 app 临时储存变量
-    char top_app_list[5][MAX_PACKAGE] = {0},
-         reset_app[MAX_PACKAGE] = "",
-         whitelist[MAX_WHITELIST_APP][MAX_PACKAGE] = {0};
+    char top_app_list[5][NAME_MAX] = {0},
+         reset_app[NAME_MAX] = "",
+         whitelist[MAX_WHITELIST_APP][NAME_MAX] = {0};
     
     // 提取 RunStart 储存值
     if (access(rom_file, F_OK) == 0)
     {
         char tmp[16] = "";
-        char rom_key_line[MAX_PACKAGE] = "";
+        char rom_key_line[NAME_MAX] = "";
         char * rom_key_line_p = NULL;
         FILE * rom_file_fp_r = fopen(rom_file, "r");
         if (rom_file_fp_r)
@@ -205,7 +205,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         }
         
         // 获取前台软件包名
-        char top_app[MAX_PACKAGE] = "";
+        char top_app[NAME_MAX] = "";
         FILE * top_app_fp = popen(GET_TOPAPP, "r");
         if (top_app_fp == NULL)
         {
@@ -303,12 +303,12 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     char * reset_app 待恢复App包名
     char * work_dir 配置目录
     int skip_reset 是否跳过恢复
-    char whitelist[][MAX_PACKAGE] 白名单列表
+    char whitelist[][NAME_MAX] 白名单列表
 */
 static int set_app_cache(char * top_app,
                         char * reset_app,
                         int skip_reset,
-                        char whitelist[][MAX_PACKAGE])
+                        char whitelist[][NAME_MAX])
 {
     char top_app_dir[sizeof(DATA_DIR) + strlen(top_app) + 16],
          reset_app_dir[sizeof(DATA_DIR) + strlen(reset_app) + 16];
@@ -373,13 +373,13 @@ static int set_app_cache(char * top_app,
 白名单读取/更新
 接收：
     char * whitelist_file 白名单文件
-    char whitelist[][MAX_PACKAGE] 白名单列表数组
+    char whitelist[][NAME_MAX] 白名单列表数组
     int * read_whitelist_app 已读取白名单 App 数量
 返回：
     成功返回 0，失败返回 1
 */
 static int read_whitelist(char * whitelist_file,
-                          char whitelist[][MAX_PACKAGE],
+                          char whitelist[][NAME_MAX],
                           int * read_whitelist_app)
 {
     int update = 0;
@@ -397,7 +397,7 @@ static int read_whitelist(char * whitelist_file,
     else
     {
         int count = 0;
-        char line[MAX_PACKAGE] = "";
+        char line[NAME_MAX + 1] = "";
         while (fgets(line, sizeof(line), fp))
         {
             line[strcspn(line, "\n")] = 0;

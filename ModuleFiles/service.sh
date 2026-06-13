@@ -43,6 +43,7 @@ StartSettings()
         [ -z "$clearbox_file_clear_disk" ] && echo "clearbox_file_clear_disk=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_debug_mode" ] && echo "clearbox_debug_mode=0" >> "$work_dir/settings.prop"
         [ -z "$clearbox_clear_cache_size" ] && echo "clearbox_clear_cache_size=5" >> "$work_dir/settings.prop"
+        [ -z "$clearbox_file_all_dirname" ] && echo "clearbox_file_all_dirname=Documents" >> "$work_dir/settings.prop"
     }
     ######
     touch "$work_dir/settings.prop" 2>/dev/null

@@ -103,7 +103,7 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
     
     // 读取及处理配置
     int count = 0, get_config = 0;
-    char app_dir[sizeof(DATA_DIR) + MAX_PACKAGE + 2];
+    char app_dir[sizeof(DATA_DIR) + NAME_MAX + 3];
     char line[PATH_MAX] = "", app_name[MAX_APP_NAME] = "";
     char * app_package_fp = NULL, * app_name_fp = NULL;
     

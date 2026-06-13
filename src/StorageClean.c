@@ -21,7 +21,7 @@ int storage_clean(char * work_dir)
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     // 设置查找对应值
-    int clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk");
+    int clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
     
     // 处理内部储存
     storage_cache_clear(STORAGES_DIR, work_dir);

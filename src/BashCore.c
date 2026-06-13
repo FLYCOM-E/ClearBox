@@ -394,7 +394,7 @@ static int file_all(char * work_dir, char * settings_file, int auto_)
 {
     if (auto_ == 1) // 根据prop决定是否运行文件归类（仅用于一键/自动清理
     {
-        int auto_file_all = get_settings_prop(settings_file, "clearbox_auto_file_all");
+        int auto_file_all = get_settings_prop(settings_file, "clearbox_auto_file_all", NULL, 0);
         if (auto_file_all != 1)
         {
             return 0;
@@ -408,7 +408,7 @@ static int fast_gc(char * argv[], char * settings_file, int auto_)
 {
     if (auto_ == 1)
     {
-        int auto_fast_gc = get_settings_prop(settings_file, "clearbox_auto_fast_gc");
+        int auto_fast_gc = get_settings_prop(settings_file, "clearbox_auto_fast_gc", NULL, 0);
         if (auto_fast_gc != 1)
         {
             return 0;

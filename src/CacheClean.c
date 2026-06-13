@@ -36,8 +36,8 @@ int app_cache_clean(char * work_dir, int mode)
         snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
         
         // 获取设置值
-        clear_cache_size = get_settings_prop(settings_file, "clearbox_clear_cache_size");
-        clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk");
+        clear_cache_size = get_settings_prop(settings_file, "clearbox_clear_cache_size", NULL, 0);
+        clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
          
         //调用处理函数
         int clear_size = user_cache_clean(DATA_DIR, whitelist_file, clear_cache_size);
@@ -111,7 +111,7 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
     
     // 获取第三方软件包名列表并储存
     int app_count = 0;
-    char package_list[MAX_APPLIST][MAX_PACKAGE];
+    char package_list[MAX_APPLIST][NAME_MAX + 1];
     FILE * package_list_fp = popen(GET_APPLIST, "r");
     if (package_list_fp == NULL)
     {
@@ -203,8 +203,8 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
 */
 static int system_cache_clean(void)
 {
-    char app_cache_path[sizeof(DATA_DIR) + MAX_PACKAGE + 16],
-         package_list_line[MAX_PACKAGE] = "";
+    char app_cache_path[sizeof(DATA_DIR) + NAME_MAX + 16],
+         package_list_line[NAME_MAX + 1] = "";
     
     struct dirent * uid_dir = NULL;
     DIR * uid_dir_dp = opendir(DATA_DIR);

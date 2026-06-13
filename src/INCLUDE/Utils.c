@@ -284,12 +284,11 @@ int set_name_space(void)
     char * settings_file 设置文件（完整路径）
     char * key 具体 prop
     char * str 字符串指针。可选，如果目标是字符串则复制值至此字符串
-        |
-         --- int str_len 如果传递 str 用于接收字符串则需要传递 str 大小
+        └── int str_len 如果传递 str 用于接收字符串则需要传递 str 大小
 返回：
     int 返回 -1 失败，否则返回具体 value
 */
-int get_settings_prop(char * settings_file, char * key, char * str, int str_len)
+int get_settings_prop(char * settings_file, char * key, char * str, size_t str_len)
 {
     int value = 0;
     char * line_key = NULL, * value_p = NULL, * ptr = NULL;
@@ -310,14 +309,21 @@ int get_settings_prop(char * settings_file, char * key, char * str, int str_len)
         {
             errno = 0;
             value_p = strtok_r(NULL, "=", &strtok_p);
-            value = (int)strtol(value_p, &ptr, 10);
-            if (ptr == value_p || errno == ERANGE || value <= INT_MIN || value >= INT_MAX)
+            if (value_p != NULL)
             {
-                value = 0;
-                if (str != NULL)
+                value = (int)strtol(value_p, &ptr, 10);
+                if (ptr == value_p || errno == ERANGE || value <= INT_MIN || value >= INT_MAX)
                 {
-                    snprintf(str, str_len, "%s", value_p);
+                    value = 0;
+                    if (str != NULL)
+                    {
+                        snprintf(str, str_len, "%s", value_p);
+                    }
                 }
+            }
+            else
+            {
+                value = -1;
             }
             break;
         }
