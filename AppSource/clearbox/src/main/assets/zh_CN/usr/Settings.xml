@@ -69,10 +69,3 @@
     </action>
 </group>
 <!-- END -->
-<group title="TEST">
-    <action>
-        <title>目录测试</title>
-        <param name="test" type="folder" value="/sdcard/Download" editable="true" />
-        <set>echo "路径为: $test"</set>
-    </action>
-</group>

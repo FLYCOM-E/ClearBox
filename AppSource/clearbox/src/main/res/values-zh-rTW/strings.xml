@@ -32,7 +32,9 @@
     <string name="title_activity_folder_selector">請長按選擇目錄</string>
     <string name="page_info_error">頁面資訊無效</string>
     <string name="pick_dir">選定目錄？</string>
-    <string name="pick_file">選定檔案？</string>
+    <string name="pick_file">選擇檔案？  </string>
+     <string name="file_deleted_repick">檔案已被刪除，請重新選擇</string>
+     <string name="dir_deleted_repick">目錄已刪除，請重新選擇</string>
     <string name="not_file_in_dir">該目錄下沒有檔案！</string>
     <string name="get_file_list_error">取得檔案列表失敗！</string>
     <string name="start_file_manager_error">啟動內建檔案選擇器失敗！</string>

@@ -157,121 +157,75 @@ class AdapterFileSelector private constructor(
     override fun getItemId(position: Int): Long {
         return 0
     }
-
+    
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View
         if (hasParent && position == 0) {
-            view = View.inflate(parent.getContext(), R.layout.list_item_dir, null)
-            ((view.findViewById<View?>(R.id.ItemTitle)) as TextView).setText("...")
-            view.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View?) {
-                    goParent()
-                }
-            })
-            return view
-        } else {
-            val file = getItem(position) as File
-            if (file.isDirectory()) {
-                view = View.inflate(parent.getContext(), R.layout.list_item_dir, null)
-                view.setOnClickListener(object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        if (!file.exists()) {
-                            Toast.makeText(
-                                view.getContext(),
-                                "File is deleted, please repick",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            return
-                        }
-                        view.setOnClickListener {
-                            if (!file.exists()) {
-                                Toast.makeText(view.context, "File is deleted, please repick", Toast.LENGTH_SHORT).show()
-                                return@setOnClickListener
-                            }
-                            loadDir(file)
-                        }
-                    }
-                })
-                if (folderChooserMode) {
-                    view.setOnLongClickListener(object : View.OnLongClickListener {
-                        override fun onLongClick(v: View?): Boolean {
-                            confirm(
-                                view.getContext(),
-                                view.getContext().getString(R.string.pick_dir),
-                                file.getAbsolutePath(),
-                                object : Runnable {
-                                    override fun run() {
-                                        if (!file.exists()) {
-                                            Toast.makeText(
-                                                view.getContext(),
-                                                "Dir is deleted, please repick",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            return
-                                        }
-                                        selectedFile = file
-                                        fileSelected!!.run()
-                                    }
-                                },
-                                object : Runnable {
-                                    override fun run() {
-                                    }
-                                })
-                            return true
-                        }
-                    })
-                }
-            } else {
-                view = View.inflate(parent.getContext(), R.layout.list_item_file, null)
-                val fileLength = file.length()
-                val fileSize: String?
-                if (fileLength < 1024) {
-                    fileSize = fileLength.toString() + "B"
-                } else if (fileLength < 1048576) {
-                    fileSize =
-                        String.format("%sKB", String.format("%.2f", (file.length() / 1024.0)))
-                } else if (fileLength < 1073741824) {
-                    fileSize =
-                        String.format("%sMB", String.format("%.2f", (file.length() / 1048576.0)))
-                } else {
-                    fileSize =
-                        String.format("%sGB", String.format("%.2f", (file.length() / 1073741824.0)))
-                }
-
-                ((view.findViewById<View?>(R.id.ItemText)) as TextView).setText(fileSize)
-
-                view.setOnClickListener(object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        confirm(
-                            view.getContext(),
-                            "选定文件？",
-                            file.getAbsolutePath(),
-                            object : Runnable {
-                                override fun run() {
-                                    if (!file.exists()) {
-                                        Toast.makeText(
-                                            view.getContext(),
-                                            "所选的文件已被删除，请重新选择！",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        return
-                                    }
-                                    selectedFile = file
-                                    fileSelected!!.run()
-                                }
-                            },
-                            object : Runnable {
-                                override fun run() {
-                                }
-                            })
-                    }
-                })
-            }
-            ((view.findViewById<View?>(R.id.ItemTitle)) as TextView).setText(file.getName())
+            view = View.inflate(parent.context, R.layout.list_item_dir, null)
+            (view.findViewById<View>(R.id.ItemTitle) as TextView).text = "..."
+            view.setOnClickListener { goParent() }
             return view
         }
+    
+        val file = getItem(position) as File
+        if (file.isDirectory) {
+            view = View.inflate(parent.context, R.layout.list_item_dir, null)
+            view.setOnClickListener {
+                if (!file.exists()) {
+                    Toast.makeText(view.context, R.string.file_deleted_repick, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                loadDir(file)
+            }
+            if (folderChooserMode) {
+                view.setOnLongClickListener {
+                    confirm(
+                        view.context,
+                        view.context.getString(R.string.pick_dir),
+                        file.absolutePath,
+                        Runnable {
+                            if (!file.exists()) {
+                                Toast.makeText(view.context, R.string.dir_deleted_repick, Toast.LENGTH_SHORT).show()
+                                return@Runnable
+                            }
+                            selectedFile = file
+                            fileSelected!!.run()
+                        },
+                        Runnable {}
+                    )
+                    true
+                }
+            }
+        } else {
+            view = View.inflate(parent.context, R.layout.list_item_file, null)
+            val fileSize = when {
+                file.length() < 1024       -> "${file.length()}B"
+                file.length() < 1048576    -> String.format("%.2fKB", file.length() / 1024.0)
+                file.length() < 1073741824 -> String.format("%.2fMB", file.length() / 1048576.0)
+                else                       -> String.format("%.2fGB", file.length() / 1073741824.0)
+            }
+            (view.findViewById<View>(R.id.ItemText) as TextView).text = fileSize
+            view.setOnClickListener {
+                confirm(
+                    view.context,
+                    view.context.getString(R.string.pick_file),
+                    file.absolutePath,
+                    Runnable {
+                        if (!file.exists()) {
+                            Toast.makeText(view.context, R.string.file_deleted_repick, Toast.LENGTH_SHORT).show()
+                            return@Runnable
+                        }
+                        selectedFile = file
+                        fileSelected!!.run()
+                    },
+                    Runnable {}
+                )
+            }
+        }
+        (view.findViewById<View>(R.id.ItemTitle) as TextView).text = file.name
+        return view
     }
-
+    
     companion object {
         fun FolderChooser(
             rootDir: File,
