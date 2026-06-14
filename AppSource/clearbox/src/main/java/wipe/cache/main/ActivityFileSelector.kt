@@ -19,17 +19,19 @@ import wipe.cache.main.ui.AdapterFileSelector
 import java.io.File
 import wipe.cache.common.shell.RootFile
 import androidx.activity.OnBackPressedCallback
+import com.google.android.material.button.MaterialButton
 
 class ActivityFileSelector : AppCompatActivity() {
     companion object {
         val MODE_FILE = 0
         val MODE_FOLDER = 1
     }
-
+    
     private var adapterFileSelector: AdapterFileSelector? = null
     var extension = ""
     var mode = MODE_FILE
-
+    
+    private lateinit var btnSelectDir: com.google.android.material.button.MaterialButton
     private lateinit var fileSelectorList: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,7 @@ class ActivityFileSelector : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { finish() }
 
         fileSelectorList = findViewById(R.id.file_selector_list)
+        btnSelectDir = findViewById(R.id.btn_select_dir)
 
         val extras = intent.extras
         if (extras != null) {
@@ -91,12 +94,12 @@ class ActivityFileSelector : AppCompatActivity() {
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 111)
     }
-
+    
     override fun onResume() {
         super.onResume()
-        loadData()
+        if (adapterFileSelector == null) loadData()
     }
-
+    
     private fun loadData() {
         val sdcard = File(Environment.getExternalStorageDirectory().absolutePath)
         val onSelected = Runnable {
@@ -112,5 +115,15 @@ class ActivityFileSelector : AppCompatActivity() {
             AdapterFileSelector.FileChooser(sdcard, onSelected, ProgressBarDialog(this), extension)
         }
         fileSelectorList.adapter = adapterFileSelector
+        if (mode == MODE_FOLDER) {
+            btnSelectDir.visibility = View.VISIBLE
+            btnSelectDir.setOnClickListener {
+                val currentPath = adapterFileSelector?.currentDir?.absolutePath
+                if (currentPath != null) {
+                    setResult(Activity.RESULT_OK, Intent().putExtra("file", currentPath))
+                    finish()
+                }
+            }
+        }
     }
 }

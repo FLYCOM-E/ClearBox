@@ -3,22 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTintMode="screen"
-    android:clipToPadding="true"
     android:fitsSystemWindows="true"
-    android:keepScreenOn="false"
     tools:openDrawer="start">
 
-    <wipe.cache.common.ui.OverScrollListView
-        android:id="@+id/file_selector_list"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="56dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </wipe.cache.common.ui.OverScrollListView>
+        <wipe.cache.common.ui.OverScrollListView
+            android:id="@+id/file_selector_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="56dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_select_dir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:visibility="gone"
+            android:text="@string/select_current_dir" />
+
+    </LinearLayout>
 
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -23,7 +23,8 @@ class AdapterFileSelector private constructor(
 ) : BaseAdapter() {
     private var fileArray: Array<File?>? = null
     private var fileSelected: Runnable? = null
-    private var currentDir: File? = null
+    var currentDir: File? = null
+        private set
     var selectedFile: File? = null
         private set
     private val handler = Handler()
