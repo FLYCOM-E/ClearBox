@@ -12,6 +12,7 @@ import wipe.cache.common.ui.ProgressBarDialog
 import wipe.cache.main.R
 import java.io.File
 import java.io.FileFilter
+import wipe.cache.common.shell.RootFile
 import java.util.Locale
 
 class AdapterFileSelector private constructor(
@@ -55,69 +56,64 @@ class AdapterFileSelector private constructor(
         }
         loadDir(rootDir)
     }
-
+    
     private fun loadDir(dir: File) {
         progressBarDialog!!.showDialog("Loading...")
-        Thread(object : Runnable {
-            override fun run() {
-                val parent = dir.getParentFile()
-                if (parent != null) {
-                    val parentPath = parent.getAbsolutePath()
-                    hasParent =
-                        parent.exists() && parent.canRead() && (leaveRootDir || !(rootDir.startsWith(
-                            parentPath
-                        ) && rootDir.length > parentPath.length))
-                } else {
-                    hasParent = false
-                }
-
-                if (dir.exists() && dir.canRead()) {
-                    val files = dir.listFiles(object : FileFilter {
-                        override fun accept(fileItem: File): Boolean {
-                            if (folderChooserMode) {
-                                return fileItem.isDirectory()
-                            } else {
-                                return fileItem.exists() && (!fileItem.isFile() || extension == null || extension!!.isEmpty() || fileItem.getName()
-                                    .endsWith(extension!!))
-                            }
-                        }
-                    })
-
-                    // 文件排序
-                    for (i in files!!.indices) {
-                        for (j in i + 1..<files.size) {
-                            if ((files[j]!!.isDirectory() && files[i]!!.isFile())) {
-                                val t = files[i]
-                                files[i] = files[j]
-                                files[j] = t
-                            } else if (files[j]!!.isDirectory() == files[i]!!.isDirectory() && (files[j]!!.getName()
-                                    .lowercase(
-                                        Locale.getDefault()
-                                    ).compareTo(
-                                        files[i]!!.getName().lowercase(
-                                            Locale.getDefault()
-                                        )
-                                    ) < 0)
-                            ) {
-                                val t = files[i]
-                                files[i] = files[j]
-                                files[j] = t
-                            }
-                        }
-                    }
-                    fileArray = files
-                }
-                currentDir = dir
-                handler.post(object : Runnable {
-                    override fun run() {
-                        notifyDataSetChanged()
-                        progressBarDialog!!.hideDialog()
-                    }
-                })
+        Thread {
+            val parent = dir.parentFile
+            if (parent != null) {
+                val parentPath = parent.absolutePath
+                hasParent = parent.exists() && (leaveRootDir || !(rootDir.startsWith(parentPath) && rootDir.length > parentPath.length))
+            } else {
+                hasParent = false
             }
-        }).start()
+            
+            var files: Array<File?>? = tryListDir(dir)
+    
+            if (files != null) {
+                sortFiles(files)
+            }
+                
+            fileArray = files
+            currentDir = dir
+            handler.post {
+                notifyDataSetChanged()
+                progressBarDialog!!.hideDialog()
+            }
+        }.start()
     }
-
+    
+    private fun tryListDir(dir: File): Array<File?>? {
+        val result = dir.listFiles(FileFilter { f ->
+            if (folderChooserMode) f.isDirectory
+            else f.exists() && (!f.isFile || extension.isNullOrEmpty() || f.name.endsWith(extension!!))
+        })
+        if (result != null) return result as Array<File?>
+        
+        return try {
+            val rootFiles = RootFile.list(dir.absolutePath)
+            rootFiles
+                .filter { if (folderChooserMode) it.isDirectory else true }
+                .map { File(it.absolutePath) }
+                .toTypedArray<File?>()
+        } catch (e: Exception) {
+            null
+        }
+    }
+    
+    private fun sortFiles(files: Array<File?>) {
+        for (i in files.indices) {
+            for (j in i + 1 until files.size) {
+                val fi = files[i] ?: continue
+                val fj = files[j] ?: continue
+                val swap = (fj.isDirectory && fi.isFile) ||
+                    (fj.isDirectory == fi.isDirectory &&
+                     fj.name.lowercase() < fi.name.lowercase())
+                if (swap) { val t = files[i]; files[i] = files[j]; files[j] = t }
+            }
+        }
+    }
+    
     fun goParent(): Boolean {
         if (hasParent) {
             loadDir(File(currentDir!!.getParent()))
@@ -187,12 +183,12 @@ class AdapterFileSelector private constructor(
                             ).show()
                             return
                         }
-                        val files = file.listFiles()
-                        if (files != null && files.size > 0) {
+                        view.setOnClickListener {
+                            if (!file.exists()) {
+                                Toast.makeText(view.context, "File is deleted, please repick", Toast.LENGTH_SHORT).show()
+                                return@setOnClickListener
+                            }
                             loadDir(file)
-                        } else {
-                            Snackbar.make(view, R.string.not_file_in_dir, Snackbar.LENGTH_SHORT)
-                                .show()
                         }
                     }
                 })

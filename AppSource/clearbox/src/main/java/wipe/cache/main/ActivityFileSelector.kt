@@ -17,6 +17,7 @@ import androidx.core.content.PermissionChecker
 import wipe.cache.common.ui.ProgressBarDialog
 import wipe.cache.main.ui.AdapterFileSelector
 import java.io.File
+import wipe.cache.common.shell.RootFile
 import androidx.activity.OnBackPressedCallback
 
 class ActivityFileSelector : AppCompatActivity() {
@@ -97,30 +98,19 @@ class ActivityFileSelector : AppCompatActivity() {
     }
 
     private fun loadData() {
-        if (checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            val sdcard = File(Environment.getExternalStorageDirectory().absolutePath)
-            if (sdcard.exists() && sdcard.isDirectory) {
-                val list = sdcard.listFiles()
-                if (list == null) {
-                    Toast.makeText(applicationContext, R.string.get_file_list_error, Toast.LENGTH_LONG).show()
-                    return
-                }
-                val onSelected = Runnable {
-                    val file: File? = adapterFileSelector!!.selectedFile
-                    if (file != null) {
-                        setResult(Activity.RESULT_OK, Intent().putExtra("file", file.absolutePath))
-                        finish()
-                    }
-                }
-                adapterFileSelector = if (mode == MODE_FOLDER) {
-                    AdapterFileSelector.FolderChooser(sdcard, onSelected, ProgressBarDialog(this))
-                } else {
-                    AdapterFileSelector.FileChooser(sdcard, onSelected, ProgressBarDialog(this), extension)
-                }
-                fileSelectorList.adapter = adapterFileSelector
+        val sdcard = File(Environment.getExternalStorageDirectory().absolutePath)
+        val onSelected = Runnable {
+            val file: File? = adapterFileSelector!!.selectedFile
+            if (file != null) {
+                setResult(Activity.RESULT_OK, Intent().putExtra("file", file.absolutePath))
+                finish()
             }
-        } else {
-            requestPermissions()
         }
+        adapterFileSelector = if (mode == MODE_FOLDER) {
+            AdapterFileSelector.FolderChooser(sdcard, onSelected, ProgressBarDialog(this))
+        } else {
+            AdapterFileSelector.FileChooser(sdcard, onSelected, ProgressBarDialog(this), extension)
+        }
+        fileSelectorList.adapter = adapterFileSelector
     }
 }

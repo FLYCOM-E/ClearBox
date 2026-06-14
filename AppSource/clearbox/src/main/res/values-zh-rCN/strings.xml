@@ -32,6 +32,7 @@
     <string name="title_activity_folder_selector">请长按选择目录</string>
     <string name="page_info_error">页面信息无效</string>
     <string name="pick_dir">选定目录？</string>
+    <string name="pick_file">选定文件？</string>
     <string name="not_file_in_dir">该目录下没有文件！</string>
     <string name="get_file_list_error">获取文件列表失败！</string>
     <string name="start_file_manager_error">启动内置文件选择器失败！</string>
