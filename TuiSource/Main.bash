@@ -702,6 +702,7 @@ case "$input" in
             echo -e "\033[93m 4:\t$L_ADD_WHITELIST\033[0m\n"
             echo -e "\033[93m 5:\t$L_REMOVE_WHITELIST\033[0m\n"
             echo -e "\033[93m 6:\t$L_CACHE_SKIP_SIZE\033[0m\n"
+            echo -e "\033[93m 7:\t$L_CUST_FILE_ALL_PATH\033[0m\n"
             echo -e "\033[96m==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read clean_option_input
@@ -892,6 +893,14 @@ case "$input" in
                         echo -e "\033[92m » $L_CANCEL\033[0m"
                         ;;
                   esac
+                  ;;
+                7)
+                  clear
+                  echo -en " » $L_INPUT_PATH："
+                  read path_input
+                  [ -z "$path_input" ] && path_input="/storage/emulated/0/Documents"
+                  sed -i 's/clearbox_file_all_dirname=*/clearbox_file_all_dirname='"$path_input"'/g' "$work_dir/settings.prop"
+                  echo " » SUCCESSFUL!"
                   ;;
                 *)
                   echo -e "\033[91m » $L_INPUT_ERROR\033[0m"

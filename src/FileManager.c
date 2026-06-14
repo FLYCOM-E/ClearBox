@@ -161,14 +161,24 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
+    int all_path = 0;
     // 创建文件归类根目录
     {
         char * dp = NULL, * strtok_p = NULL;
         char path[PATH_MAX] = "", f_dir[PATH_MAX] = "", tmp_name[NAME_MAX] = "";
         snprintf(path, sizeof(path), "%s", dir_name);
-        snprintf(tmp_name, sizeof(tmp_name), "%s", storage_dir);
         
-        dp = strtok_r(path, "/", &strtok_p);
+        if (path[0] == '/')
+        {
+            dp = strtok_r(path + 1, "/", &strtok_p);
+            all_path = 1;
+        }
+        else
+        {
+            dp = strtok_r(path, "/", &strtok_p);
+            snprintf(tmp_name, sizeof(tmp_name), "%s", storage_dir);
+        }
+        
         while (dp)
         {
             snprintf(f_dir, sizeof(f_dir), "%s/%s", tmp_name, dp);
@@ -192,8 +202,15 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         now_config_name = config_name; // 设置全局变量
         
         // 这里仍然定义归类目录，用于清理时跳过避免被清理
-        char file_dir[strlen(dir_name) + strlen(storage_dir) + strlen(config_name) + 8];
-        snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, dir_name, config_name);
+        char file_dir[PATH_MAX] = "";
+        if (all_path == 1)
+        {
+            snprintf(file_dir, sizeof(file_dir), "%s/%s", dir_name, config_name);
+        }
+        else
+        {
+            snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, dir_name, config_name);
+        }
         
         char config_file[strlen(config_dir) + strlen(config_name) + 16]; // 配置文件
         snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
@@ -262,8 +279,15 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
             // 提取文件名用于创建最终归类目录
             char * have_p = NULL;
             char * config_file_name_p = strtok_r(config_file_name, ".", &have_p);
-            char file_dir[strlen(storage_dir) + strlen(dir_name) + strlen(config_file_name_p) + 8];
-            snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, dir_name, config_file_name_p);
+            char file_dir[PATH_MAX] = "";
+            if (all_path == 1)
+            {
+                snprintf(file_dir, sizeof(file_dir), "%s/%s", dir_name, config_file_name_p);
+            }
+            else
+            {
+                snprintf(file_dir, sizeof(file_dir), "%s/%s/%s", storage_dir, dir_name, config_file_name_p);
+            }
             if (access(file_dir, F_OK) != 0)
             {
                 if (mkdir(file_dir, 0775) != 0)

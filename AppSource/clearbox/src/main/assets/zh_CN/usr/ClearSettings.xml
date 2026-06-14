@@ -85,3 +85,15 @@
     </action>
 </group>
 <!-- END -->
+<!-- START -->
+<group title="文件归类">
+    <action>
+        <title>自定义文件归类目录</title>
+        <param name="path" type="folder" value="/storage/emulated/0/Documents" editable="true" />
+            <set>
+            sed -i 's/clearbox_file_all_dirname=*/clearbox_file_all_dirname='"$path"'/g' "$work_dir/settings.prop"
+            echo " » 设定成功！"
+            </set>
+    </action>
+</group>
+<!-- END -->

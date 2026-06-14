@@ -220,7 +220,7 @@ If some software is abnormal, please add it to the whitelist yourself!
 
 ## **12**：Magnet (one-click file classification
 
-One-click classify internal/multi-external storage files, rules shared with file cleanup
+One-click organization of internal/external storage files, shares rules with file cleaning, supports custom organization directory
 
 
 
