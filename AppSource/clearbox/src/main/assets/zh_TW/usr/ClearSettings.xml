@@ -76,7 +76,7 @@
 <group title="快取清理大小設定">
     <action interruptible="false">
         <title>緩存清理跳過大小</title>
-        <summary sh="echo -n '當前設定大小：'; echo -n $(cat $work_dir/settings.prop | grep clearbox_clear_cache_size | cut -f2 -d '='); echo -n ' M'" />
+        <summary sh="echo -n '當前設定大小：'; echo -n $(grep clearbox_clear_cache_size $work_dir/settings.prop | cut -f2 -d '='); echo -n ' M'" />
         <param name="put" desc="請輸入新值[數字]：(單位：兆（M）. 範圍：100M)" label="數字" max="100" min="1" required="required" type="int" />
             <set>
             sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
@@ -89,9 +89,10 @@
 <group title="檔案歸類">
     <action>
         <title>自訂檔案歸類目錄</title>
-        <param name="path" type="folder" value="/storage/emulated/0/Documents" editable="true" />
+        <summary sh="echo -n '當前設定：'; echo -n $(grep clearbox_file_all_dirname $work_dir/settings.prop | cut -f2 -d '=')" />
+        <param name="path" type="folder" value="Documents" editable="true" />
             <set>
-            sed -i 's/clearbox_file_all_dirname=*/clearbox_file_all_dirname='"$path"'/g' "$work_dir/settings.prop"
+            sed -i 's|clearbox_file_all_dirname=.*|clearbox_file_all_dirname='"$path"'|g' "$work_dir/settings.prop"
             echo " » 設定成功！"
             </set>
     </action>

@@ -896,10 +896,11 @@ case "$input" in
                   ;;
                 7)
                   clear
+                  echo " » PATH: $clearbox_file_all_dirname"
                   echo -en " » $L_INPUT_PATH："
                   read path_input
-                  [ -z "$path_input" ] && path_input="/storage/emulated/0/Documents"
-                  sed -i 's/clearbox_file_all_dirname=*/clearbox_file_all_dirname='"$path_input"'/g' "$work_dir/settings.prop"
+                  [ -z "$path_input" ] && path_input="Documents"
+                  sed -i 's|clearbox_file_all_dirname=.*|clearbox_file_all_dirname='"$path_input"'|g' "$work_dir/settings.prop"
                   echo " » SUCCESSFUL!"
                   ;;
                 *)
