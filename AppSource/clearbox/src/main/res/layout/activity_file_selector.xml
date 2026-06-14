@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:visibility="gone"
-            android:text="@string/select_current_dir" />
+            android:text="@string/pick_dir" />
 
     </LinearLayout>
 
