@@ -7,22 +7,29 @@
 
 #include "INCLUDE/BashCore.h"
 
-#define MAX_CONFIG_NAME 256             // 配置名称长度限制（不含.conf后缀)
-#define MAX_ARGS_SIZE 32                // 后缀名称长度限制
-#define MAX_CONFIG_LINE 512             // 最大配置行长（仅用于识别大小声明行）
-#define CONFIG_MAX_ARGS 5000            // 单个文件格式配置最多允许的后缀数量
-#define F_DIR_NAME "Documents"          // 归类目录名称（仅文件归类模式会用）
-#define CONFIG_DIR_NAME "FileConfigs"   // 配置文件夹名称
-#define CARD_HOME "/mnt/media_rw"       // 外置储存根目录
-#define STORAGES_DIR "/storage/emulated/0"    // 内置储存根目录
+#define MAX_CONFIG_NAME 256                 // 配置名称长度限制（不含.conf后缀)
+#define MAX_ARGS_SIZE 32                      // 后缀名称长度限制
+#define MAX_CONFIG_LINE 512                  // 最大配置行长（仅用于识别大小声明行）
+#define CONFIG_MAX_ARGS 5000                // 单个文件格式配置最多允许的后缀数量
+#define F_DIR_NAME "Documents"                // 归类目录名称（仅文件归类模式会用）
+#define CONFIG_DIR_NAME "FileConfigs"         // 配置文件夹名称
+#define CARD_HOME "/mnt/media_rw"           // 外置储存根目录
+#define STORAGES_DIR "/storage/emulated/0"   // 内置储存根目录
 
-static int file_clear = 0;              // 全局 mode
-static char * now_config_name = NULL;       // 配置文件名（为避免配置名跨多函数传）
+static int file_clear = 0;                         // 全局 mode
+static char * now_config_name = NULL;         // 配置文件名（为避免配置名跨多函数传）
+
+struct file_rules
+{
+    char name[MAX_ARGS_SIZE];
+    long max_size;
+    long min_size;
+};
 
 static int clear_service(char * work_dir, char * storage_dir, char * config_name, char * dir_name);
-static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
-                     int count, long max_size, long min_size);
-static int find_size(char * str, long * max_size, long * min_size);
+static int find_file(char * storage, char * file_dir, struct file_rules file_args[], int count);
+static int read_config(struct file_rules file_args[], char * config_file, int * count);
+static int find_size(struct file_rules file_args[], int index, long * max, long * min);
 static long get_size(char * value, char * unit);
 
 int file_manager(char * work_dir, int mode, char * config_name)
@@ -215,39 +222,19 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         char config_file[strlen(config_dir) + strlen(config_name) + 16]; // 配置文件
         snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
         
-        FILE * config_file_fp = fopen(config_file, "r");
-        if (config_file_fp == NULL)
+        int count = 0;
+        struct file_rules file_args[CONFIG_MAX_ARGS];
+        
+        if (read_config(file_args, config_file, &count) != 0)
         {
-            fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
             return 1;
         }
-        
-        long max_size = -1, min_size = -1;
-        
-        // 循环读取文件格式配置每个后缀并放进数组
-        int count = 0;
-        char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
-        while (fscanf(config_file_fp, "%30s", file_args[count]) == 1)
-        {
-            if (file_args[count][0] == '@')
-            {
-                find_size(file_args[count], &max_size, &min_size);
-                continue;
-            }
-            if (count == CONFIG_MAX_ARGS)
-            {
-                break;
-            }
-            count++;
-        }
-        
-        fclose(config_file_fp);
         
         printf(L_FM_CR_START, config_name);
         fflush(stdout);
         
         // 文件清理
-        int all_count = find_file(storage_dir, file_dir, file_args, count, max_size, min_size);
+        int all_count = find_file(storage_dir, file_dir, file_args, count);
         
         fprintf(stderr, L_FM_CR_END, all_count, config_name);
     }
@@ -293,43 +280,22 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
                 if (mkdir(file_dir, 0775) != 0)
                 {
                     fprintf(stderr, L_MKDIR_ERROR, file_dir, strerror(errno));
-                    closedir(config_dir_dp);
-                    return 1;
-                }
-            }
-            
-            FILE * config_file_fp = fopen(config_file, "r");
-            if (config_file_fp == NULL)
-            {
-                fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
-                continue;
-            }
-            
-            long max_size = -1, min_size = -1;
-            
-            // 循环读取文件格式配置每个后缀并放进数组
-            int count = 0;
-            char file_args[CONFIG_MAX_ARGS][MAX_ARGS_SIZE] = {0};
-            while (fscanf(config_file_fp, "%30s", file_args[count]) == 1)
-            {
-                if (file_args[count][0] == '@')
-                {
-                    find_size(file_args[count], &max_size, &min_size);
                     continue;
                 }
-                if (count == CONFIG_MAX_ARGS)
-                {
-                    break;
-                }
-                count++;
             }
             
-            fclose(config_file_fp);
+            int count = 0;
+            struct file_rules file_args[CONFIG_MAX_ARGS];
+            
+            if (read_config(file_args, config_file, &count) != 0)
+            {
+                continue;
+            }
             
             printf(L_FM_ALL_START, config_file_name_p);
             fflush(stdout);
             
-            int all_count = find_file(storage_dir, file_dir, file_args, count, max_size, min_size);
+            int all_count = find_file(storage_dir, file_dir, file_args, count);
             
             fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
         }
@@ -350,8 +316,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
 另：
     自动根据全局 file_clear 值 1 判断是否为文件清理模式
 */
-static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE],
-                     int count, long max_size, long min_size)
+static int find_file(char * storage, char * file_dir, struct file_rules file_args[], int count)
 {
     if (access(file_dir, F_OK) != 0)
     {
@@ -392,25 +357,10 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
         
         if (S_ISDIR(file_stat.st_mode)) // 目录继续自调用递归
         {
-            file_count += find_file(path, file_dir, args, count, max_size, min_size);
+            file_count += find_file(path, file_dir, file_args, count);
         }
         else if (S_ISREG(file_stat.st_mode)) // File
         {
-            if (max_size != -1)
-            {
-                if (file_stat.st_size > max_size)
-                {
-                    continue;
-                }
-            }
-            if (min_size != -1)
-            {
-                if (file_stat.st_size < min_size)
-                {
-                    continue;
-                }
-            }
-            
             // 提取文件后缀进行匹配，这个会比较慢，视后缀数量
             char * str_p = strrchr(file_name, '.');
             if (str_p == NULL)
@@ -421,9 +371,24 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
             
             for (int i = 0; i < count; i++)
             {
-                if (strcasecmp(args[i], str_p + 1) != 0)
+                if (strcasecmp(file_args[i].name, str_p + 1) != 0)
                 {
                     continue;
+                }
+                
+                if (file_args[i].max_size != -1)
+                {
+                    if (file_stat.st_size > file_args[i].max_size)
+                    {
+                        break;
+                    }
+                }
+                if (file_args[i].min_size != -1)
+                {
+                    if (file_stat.st_size < file_args[i].min_size)
+                    {
+                        break;
+                    }
                 }
                 
                 // === === 清理模式直接清理并返回 === ===
@@ -473,17 +438,61 @@ static int find_file(char * storage, char * file_dir, char args[][MAX_ARGS_SIZE]
 }
 
 /*
+配置读取函数
+接收：
+    struct file_rules file_args[]    后缀数组
+    char * config_file           配置文件
+    int * count                 总解析后缀数量
+返回：
+    成功返回 0，失败返回 1
+*/
+static int read_config(struct file_rules file_args[], char * config_file, int * count)
+{
+    FILE * config_file_fp = fopen(config_file, "r");
+    if (config_file_fp == NULL)
+    {
+        fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+        return 1;
+    }
+    
+    long max = -1, min = -1;
+    // 循环读取文件格式配置每个后缀并放进数组
+    while (fscanf(config_file_fp, "%30s", file_args[* count].name) == 1)
+    {
+        if (file_args[* count].name[0] == '@')
+        {
+            find_size(file_args, * count, &max, &min);
+            continue;
+        }
+        else
+        {
+            file_args[* count].max_size = max;
+            file_args[* count].min_size = min;
+        }
+        if (* count == CONFIG_MAX_ARGS)
+        {
+            break;
+        }
+        * count += 1;
+    }
+    fclose(config_file_fp);
+    
+    return 0;
+}
+
+/*
 文件配置 MAX MIN 声明识别函数
 接收：
-    char * str 后缀字符串
-    long * max_size 最大大小
-    long * min_size 最小大小
+    struct file_rules file_args[index]   后缀字符串
+    int index                       索引
+    long * max                    最大大小
+    long * min                     最小大小
 返回：
     成功返回 0，失败自动检查填写错误/未填写
     如未填写导致则重置文件指针位置，返回 1
     并置 max_size / min_size -1
 */
-static int find_size(char * str, long * max_size, long * min_size)
+static int find_size(struct file_rules file_args[], int index, long * max, long * min)
 {
     /*
     格式：
@@ -498,16 +507,18 @@ static int find_size(char * str, long * max_size, long * min_size)
          * value = NULL,
          * unit = NULL,
          * value_size = NULL;
+    char str_cp[MAX_ARGS_SIZE] = "";
+    snprintf(str_cp, sizeof(str_cp), "%s", file_args[index].name);
     
     // === MAX ===
-    key = strtok_r(str + 1, "=", &have);
+    key = strtok_r(file_args[index].name + 1, "=", &have);
     value = strtok_r(NULL, "=", &have);
     if (key && value &&
         strcasecmp(key, "MAX") == 0)
     {
         if (strtol(value, NULL, 10) == -1)
         {
-            (* max_size) = -1;
+            (* max) = -1;
             return 0;
         }
         have = NULL;
@@ -516,7 +527,7 @@ static int find_size(char * str, long * max_size, long * min_size)
         
         if (value_size && unit)
         {
-            (* max_size) = get_size(value_size, unit);
+            (* max) = get_size(value_size, unit);
         }
         else
         {
@@ -527,14 +538,14 @@ static int find_size(char * str, long * max_size, long * min_size)
     have = NULL;
     
     // === MIN ===
-    key = strtok_r(str, "=", &have);
+    key = strtok_r(str_cp, "=", &have);
     value = strtok_r(NULL, "=", &have);
     if (key && value &&
         strcasecmp(key, "MIN") == 0)
     {
         if (strtol(value, NULL, 10) == -1)
         {
-            (* min_size) = -1;
+            (* min) = -1;
             return 0;
         }
         have = NULL;
@@ -543,7 +554,7 @@ static int find_size(char * str, long * max_size, long * min_size)
         
         if (value_size && unit)
         {
-            (* min_size) = get_size(value_size, unit);
+            (* min) = get_size(value_size, unit);
         }
         else
         {
@@ -551,10 +562,10 @@ static int find_size(char * str, long * max_size, long * min_size)
         }
     }
     
-    if ((* min_size) > (* max_size))
+    if ((* min) > (* max))
     {
         fprintf(stderr, L_FM_MIN_SIZE_ERROR, now_config_name);
-        (* min_size) = -1;
+        (* min) = -1;
     }
     
     return 0;
