@@ -71,7 +71,7 @@
             android:name=".ActivityFileSelector"
             android:exported="true"
             android:excludeFromRecents="true"
-            android:label="@string/title_activity_file_selector"
+            android:label="@string/path_selector"
             android:configChanges="keyboardHidden|orientation|layoutDirection|screenLayout|colorMode|fontScale|smallestScreenSize|density|keyboard|screenSize|touchscreen"
             android:launchMode="standard">
             <intent-filter>

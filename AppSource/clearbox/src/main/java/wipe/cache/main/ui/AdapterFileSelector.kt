@@ -178,25 +178,6 @@ class AdapterFileSelector private constructor(
                 }
                 loadDir(file)
             }
-            if (folderChooserMode) {
-                view.setOnLongClickListener {
-                    confirm(
-                        view.context,
-                        view.context.getString(R.string.pick_dir),
-                        file.absolutePath,
-                        Runnable {
-                            if (!file.exists()) {
-                                Toast.makeText(view.context, R.string.dir_deleted_repick, Toast.LENGTH_SHORT).show()
-                                return@Runnable
-                            }
-                            selectedFile = file
-                            fileSelected!!.run()
-                        },
-                        Runnable {}
-                    )
-                    true
-                }
-            }
         } else {
             view = View.inflate(parent.context, R.layout.list_item_file, null)
             val fileSize = when {

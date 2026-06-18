@@ -7,12 +7,12 @@
 
     <string name="app_name">ClearBox</string>
     <string name="btn_exit">返回</string>
-    <string name="please_wait">• • •</string>
+    <string name="please_wait">(⁠・⁠∀⁠・⁠)</string>
     <string name="title_activity_action_page">功能分頁</string>
 
     <string name="author_name"> </string>
     <string name="appliction_name">歡迎使用 · ClearBox</string>
-    <string name="engine_version_name">Powered By Kr-Script_MD3</string>
+    <string name="engine_version_name">Powered By Kr-Script</string>
     
     <string name="tab_home">首頁</string>
     <string name="tab_favorites"></string>
@@ -22,14 +22,12 @@
     <string name="btn_retry">再試試</string>
 
     <string name="starting">ClearBox</string>
-    <string name="pop_before_start">(⁠・⁠∀⁠・⁠)</string>
     <string name="pop_started">Welcome To ClearBox</string>
     <string name="permission_checking">正在檢查權限……</string>
     <string name="error_root">貌似未成功獲取 ROOT 權限哦 (・・;)！</string>
     <string name="error_su_timeout">ROOT 授權超時！請排查...</string>
     <string name="transparent_ui">透明介面</string>
-    <string name="title_activity_file_selector">請選擇檔案</string>
-    <string name="title_activity_folder_selector">請長按選擇目錄</string>
+    <string name="path_selector">File</string>
     <string name="page_info_error">頁面資訊無效</string>
     <string name="pick_dir">選定目錄？</string>
     <string name="pick_file">選擇檔案？  </string>

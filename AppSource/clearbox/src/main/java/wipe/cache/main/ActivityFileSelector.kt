@@ -36,6 +36,7 @@ class ActivityFileSelector : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeModeState.switchTheme(this)
         setContentView(R.layout.activity_file_selector)
 
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -57,7 +58,7 @@ class ActivityFileSelector : AppCompatActivity() {
             }
             if (extras.containsKey("mode")) {
                 mode = extras.getInt("mode")
-                if (mode == MODE_FOLDER) title = getString(R.string.title_activity_folder_selector)
+                if (mode == MODE_FOLDER) title = getString(R.string.path_selector)
             }
         }
         

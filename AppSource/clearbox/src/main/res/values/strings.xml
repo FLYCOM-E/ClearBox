@@ -7,12 +7,12 @@
 
     <string name="app_name">ClearBox</string>
     <string name="btn_exit">Return</string>
-    <string name="please_wait">• • •</string>
+    <string name="please_wait">(⁠・⁠∀⁠・⁠)</string>
     <string name="title_activity_action_page">Function Pages</string>
 
     <string name="author_name"> </string>
     <string name="appliction_name">Welcome to · ClearBox</string>
-    <string name="engine_version_name">Powered By Kr-Script_MD3</string>
+    <string name="engine_version_name">Powered By Kr-Script</string>
     
     <string name="tab_home">Home</string>
     <string name="tab_favorites"></string>
@@ -22,14 +22,12 @@
     <string name="btn_retry">Try Again</string>
 
     <string name="starting">ClearBox</string>
-    <string name="pop_before_start">(⁠・⁠∀⁠・⁠)</string>
     <string name="pop_started">Welcome To ClearBox</string>
     <string name="permission_checking">Checking permissions…</string>
     <string name="error_root">Seems like ROOT permission was not successfully obtained (・・;)!</string>
     <string name="error_su_timeout">ROOT authorization timeout! Please check...</string>
     <string name="transparent_ui">Transparent UI</string>
-    <string name="title_activity_file_selector">Please select file</string>
-    <string name="title_activity_folder_selector">Long press to select directory</string>
+    <string name="path_selector">File</string>
     <string name="page_info_error">Invalid page info</string>
     <string name="pick_dir">Select directory？</string>
     <string name="pick_file">Select file？</string>
