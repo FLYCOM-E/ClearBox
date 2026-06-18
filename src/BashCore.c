@@ -311,17 +311,6 @@ int main(int argc, char * argv[])
     {
         freezer_open();
     }
-    else if (strcasecmp(argv[1], "configManager") == 0)
-    {
-        if (argc < 4)
-        {
-            fprintf(stderr, L_ARGS_FAILED);
-        }
-        else
-        {
-            module_config(home_dir, argv[2], argv[3]);
-        }
-    }
     else if (strcasecmp(argv[1], "StopCached") == 0)
     {
         stop_cache_daemon(argv, work_dir);
@@ -337,6 +326,25 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_ARGS_FAILED);
         }
         bmount(work_dir, argv[2]);
+    }
+    else if (strcasecmp(argv[1], "configManager") == 0)
+    {
+        if (argc < 3)
+        {
+            fprintf(stderr, L_ARGS_FAILED);
+        }
+        else if (strcmp(argv[2], "backup") == 0)
+        {
+            module_config(home_dir, argv[2], "");
+        }
+        else
+        {
+            if (argc < 4)
+            {
+                fprintf(stderr, L_ARGS_FAILED);
+            }
+            module_config(home_dir, argv[2], argv[3]);
+        }
     }
     else if (strcasecmp(argv[1], "help") == 0 ||
             strcasecmp(argv[1], "-help") == 0 ||
