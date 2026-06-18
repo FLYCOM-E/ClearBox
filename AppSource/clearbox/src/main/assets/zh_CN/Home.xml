@@ -15,10 +15,6 @@ cat <<w
             "$home_dir/$core" ClearAll
             </set>
     </action>
-</group>
-<!-- END -->
-<!-- START -->
-<group title="">
     <action interruptible="false" auto-off="false" id="002">
         <title>清理/干掉自定义目录</title>
             <set>
@@ -92,7 +88,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title=" ">
+<group title="">
     <switch>
         <title>内部储存固定功能</title>
             <get>
@@ -120,7 +116,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title=" ">
+<group title="">
     <pages>
         <page title="特殊功能" config-sh="cat Other.xml" />
     </pages>

@@ -15,10 +15,6 @@ cat <<w
             "$home_dir/$core" ClearAll
             </set>
     </action>
-</group>
-<!-- END -->
-<!-- START -->
-<group title="">
     <action interruptible="false" auto-off="false" id="002">
         <title>Clean up/remove custom directory</title>
             <set>
@@ -92,7 +88,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title=" ">
+<group title="">
     <switch>
         <title>Internal storage fixed function</title>
             <get>
@@ -120,7 +116,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title=" ">
+<group title="">
     <pages>
         <page title="Special Features" config-sh="cat Other.xml" />
     </pages>
