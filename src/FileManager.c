@@ -5,7 +5,7 @@
      此 Code 来自 ClearBox 模块，用于内部储存指定格式文件清理
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define MAX_CONFIG_NAME 256                 // 配置名称长度限制（不含.conf后缀)
 #define MAX_ARGS_SIZE 32                      // 后缀名称长度限制

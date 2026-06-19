@@ -5,7 +5,7 @@
       此 Code 来自 ClearBox 模块，用于运行 Dexoat 编译
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 static void dexoat_system(void);
 static int dexoat_cust(char * mode);
@@ -15,7 +15,7 @@ int dexoat(int mode, char * cust_mode)
     // 触发系统 Dexoat
     if (mode == 0)
     {
-        return dexoat_system();
+        dexoat_system();
     }
     else if (mode == 1)
     {

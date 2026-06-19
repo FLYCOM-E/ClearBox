@@ -32,7 +32,7 @@ export Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 export app_config_dir="AppCleanRules"
 export file_config_dir="FileConfigs"
 export timed_config_dir="TimedConfigs"
-export core="BashCore"
+export core="clearbox"
 ######
 [[ -f $Core ]] && . $Core
 if [[ -f "$1" ]]; then

@@ -6,7 +6,7 @@
                 （其实 Shell 可能更适合？）
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define PROP "ro.build.version.sdk"
 #define SET_FREEZER "device_config put activity_manager_native_boot use_freezer true"

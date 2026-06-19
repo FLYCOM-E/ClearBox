@@ -5,7 +5,7 @@
   此 Code 来自 ClearBox 模块，用于 App 自动缓存阻止功能（DAEMON）
 */
 
-#include "../INCLUDE/BashCore.h"
+#include "../INCLUDE/main.h"
 
 #define SERVER_NAME "StopCached"        // 进程名（MAX 15）
 #define DATA_DIR "/data/data"           // 软件数据根目录
@@ -120,7 +120,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         write_log(work_dir, SERVER_NAME, log_text);
         return -1;
     }
-    if (s_signed() != 0)
+    if (s_signal() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);

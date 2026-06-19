@@ -5,7 +5,7 @@
   此 Code 来自 ClearBox 模块，用于自定义规则清理/干掉文件目录
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define CONFIG_DIR_NAME "CleanConfigs" // 配置目录名称
 

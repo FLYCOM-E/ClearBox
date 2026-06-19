@@ -5,7 +5,7 @@
       此 Code 来自 ClearBox 模块，用于模块内部提供必要功能
 */
 
-#include "BashCore.h"
+#include "main.h"
 
 /*
 递归删除函数

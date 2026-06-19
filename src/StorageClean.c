@@ -5,7 +5,7 @@
      此 Code 来自 ClearBox 模块，用于删除垃圾缓存及空文件夹
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define WHITELIST "ClearWhitelist.prop"     // 白名单文件名
 #define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录

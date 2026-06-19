@@ -10,10 +10,10 @@ app_dir = AppSource
 tui_dir = TuiSource
 
 UTILS_C = src/INCLUDE/Utils.c \
-			src/INCLUDE/Signed.c \
+			src/INCLUDE/Signal.c \
 			src/INCLUDE/Chattr.c \
 			src/INCLUDE/Help.c
-BIN_C = src/BashCore.c \
+BIN_C = src/main.c \
 		src/AppClean.c \
 		src/CacheClean.c \
 		src/Dexoat.c \
@@ -28,7 +28,7 @@ BIN_C = src/BashCore.c \
 		src/Daemon/F2fsGcd.c \
 		src/Daemon/Timed.c
 
-CORE_ELF = $(module_dir)/BashCore
+CORE_ELF = $(module_dir)/clearbox
 
 all: $(CORE_ELF)
 .PHONY: all

@@ -1,19 +1,19 @@
-#include "BashCore.h"
+#include "main.h"
 
 volatile sig_atomic_t sig_flag = 1;
-static void s_signed_service(int sig);
+static void s_signal_service(int sig);
 
 /*
 信号注册处理
 依赖：
-    s_signed_service() 函数，进行信号处理
+    s_signal_service() 函数，进行信号处理
 返回：
     成功返回 0，失败返回 -1
 */
-int s_signed(void)
+int s_signal(void)
 {
     struct sigaction sg;
-    sg.sa_handler = s_signed_service;
+    sg.sa_handler = s_signal_service;
     sigemptyset(&sg.sa_mask);
     sg.sa_flags = 0;
     
@@ -36,7 +36,7 @@ int s_signed(void)
 /*
 信号处理辅助函数，设置全局标志位
 */
-static void s_signed_service(int sig)
+static void s_signal_service(int sig)
 {
     (void)sig;
     sig_flag = 0;

@@ -6,7 +6,7 @@
              原理来自 Coolapk@Amktiao，感谢大佬
 */
 
-#include "../INCLUDE/BashCore.h"
+#include "../INCLUDE/main.h"
 
 #define SERVER_NAME "F2FS-GC"            // 进程名（MAX 15）
 #define PROP "dev.mnt.dev.data"             // 路径名称属性
@@ -29,7 +29,7 @@ int disk_gc(char * argv[], int mode)
     }
     else if (mode == 1)
     {
-        return fast_gc();
+        fast_gc();
     }
     
     return 0;
@@ -101,7 +101,7 @@ static int f2fs_gc(char * argv[])
     {
         return -1;
     }
-    if (s_signed() != 0)
+    if (s_signal() != 0)
     {
         return -1;
     }

@@ -5,7 +5,7 @@
      此 Code 来自 ClearBox 模块，用于储存重定向规则解析与挂载
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define CONFIG_DIR_NAME "BindConfigs"         // 配置目录名
 #define DATA_DIR "/data/media/0"                // 内部储存根目录

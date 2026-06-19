@@ -1,4 +1,4 @@
-#include "BashCore.h"
+#include "main.h"
 
 /*
 此函数用于代替外部 chattr 避免进程调用开销

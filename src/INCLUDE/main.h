@@ -46,7 +46,7 @@ int s_sed(char * file, char * target_line, char * text, int mode);
 int s_chattr(char * path, int mode, int dir);
 int help(char * argv[]);
 int s_daemon(void);
-int s_signed(void);
+int s_signal(void);
 
 int app_cache_clean(char * work_dir, int mode);
 int cust_rule_clean(char * work_dir);

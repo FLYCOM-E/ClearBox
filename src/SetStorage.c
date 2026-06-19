@@ -5,7 +5,7 @@
       此 Code 来自 ClearBox 模块，用于内部储存固定功能
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define DATA_DIR "/data/media/0"                // 阻止目录
 #define PROP_STOP "clearbox_stop_storage=1"     // PROP OPEN

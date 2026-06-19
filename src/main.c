@@ -5,10 +5,10 @@
      此 Code 来自 ClearBox 模块，用于根据传入参数调用清理脚本
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define PATH_ROM_FILE "/data/adb/wipe_cache/PATH" // PATH 储存文件
-#define SERVER_NAME "BashCore"                    // 进程名
+#define SERVER_NAME "clearbox"                        // 进程名
 
 static int running(char * args[]);
 static int module_config(char * home_dir, char * mode, char * config_file);

@@ -18,7 +18,7 @@ Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 app_config_dir="AppCleanRules"
 file_config_dir="FileConfigs"
 timed_config_dir="TimedConfigs"
-core="BashCore"
+core="clearbox"
 ######
 lang_dir="LANG"
 local_lang="$(settings get system system_locales | cut -f1 -d ',')"

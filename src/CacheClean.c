@@ -5,7 +5,7 @@
      此 Code 来自 ClearBox 模块，用于清空内部储存软件缓存
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define MAX_APPLIST 3000                                    // 软件列表最大数量
 #define DATA_DIR "/data/user"                               // 软件数据根目录

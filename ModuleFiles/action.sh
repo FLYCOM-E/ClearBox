@@ -12,7 +12,7 @@ else
 fi
 ######
 if ! am start wipe.cache.module/wipe.cache.main.SplashActivity; then
-    "$home_dir/BashCore" ClearAll
+    "$home_dir/clearbox" ClearAll
     sleep 1
 fi
 

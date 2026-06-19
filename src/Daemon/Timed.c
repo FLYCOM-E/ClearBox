@@ -5,7 +5,7 @@
  此 Code 来自 ClearBox 模块，用于自动任务配置解析与执行（DAEMON）
 */
 
-#include "../INCLUDE/BashCore.h"
+#include "../INCLUDE/main.h"
 
 #define SERVER_NAME "ClearBox Timed"   // 进程名
 #define WAIT_TIME 60                   // 单次循环等待秒数（自动对齐）
@@ -92,7 +92,7 @@ int time_daemon(char * argv[], char * work_dir)
         write_log(work_dir, SERVER_NAME, log_text);
         return -1;
     }
-    if (s_signed() != 0)
+    if (s_signal() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);

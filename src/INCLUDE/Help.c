@@ -1,4 +1,4 @@
-#include "BashCore.h"
+#include "main.h"
 
 int help(char * argv[])
 {

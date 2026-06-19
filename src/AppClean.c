@@ -5,7 +5,7 @@
      此 Code 来自 ClearBox 模块，用于自定义规则软件内部清理
 */
 
-#include "INCLUDE/BashCore.h"
+#include "INCLUDE/main.h"
 
 #define MAX_APP_NAME 128            // 软件名称最大长度
 #define DATA_DIR "/data/data"       // 软件数据根目录
