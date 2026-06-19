@@ -77,7 +77,7 @@
     <action interruptible="false">
         <title>緩存清理跳過大小</title>
         <summary sh="echo -n '當前設定大小：'; echo -n $(grep clearbox_clear_cache_size $work_dir/settings.prop | cut -f2 -d '='); echo -n ' M'" />
-        <param name="put" desc="請輸入新值[數字]：(單位：兆（M）. 範圍：100M)" label="數字" max="100" min="1" required="required" type="int" />
+        <param name="put" desc="請輸入新值[數字]：(單位：兆（M）. 範圍：100M)" label="數字" max="100" min="0" required="required" type="int" />
             <set>
             sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
             echo " » 設定成功"

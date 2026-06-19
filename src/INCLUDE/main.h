@@ -47,6 +47,7 @@ int s_chattr(char * path, int mode, int dir);
 int help(char * argv[]);
 int s_daemon(void);
 int s_signal(void);
+double byte_to_size(long byte, char * unit);
 
 int app_cache_clean(char * work_dir, int mode);
 int cust_rule_clean(char * work_dir);

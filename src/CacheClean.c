@@ -14,7 +14,7 @@
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 
-static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
+static long user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
 static int system_cache_clean(void);
 
 int app_cache_clean(char * work_dir, int mode)
@@ -40,14 +40,16 @@ int app_cache_clean(char * work_dir, int mode)
         clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
          
         //调用处理函数
-        int clear_size = user_cache_clean(DATA_DIR, whitelist_file, clear_cache_size);
+        long clear_size = user_cache_clean(DATA_DIR, whitelist_file, clear_cache_size);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
         }
         else
         {
-            fprintf(stderr, L_CC_CLEAR_SUCCESSFUL, clear_size);
+            char unit = '\0';
+            double size = byte_to_size(clear_size, &unit);
+            fprintf(stderr, L_CC_CLEAR_SUCCESSFUL, size, unit);
         }
         
         // 检查是否允许清理拓展储存 App 缓存
@@ -82,7 +84,9 @@ int app_cache_clean(char * work_dir, int mode)
             }
             else
             {
-                fprintf(stderr, L_CC_CLEAR_SUCCESSFUL_SD, clear_size);
+                char unit = '\0';
+                double size = byte_to_size(clear_size, &unit);
+                fprintf(stderr, L_CC_CLEAR_SUCCESSFUL_SD, size, unit);
             }
         }
         closedir(card_id_dp);
@@ -101,12 +105,13 @@ int app_cache_clean(char * work_dir, int mode)
     char * work_dir 软件数据目录，自动处理多用户 ID，兼容拓展储存
     int * clear_cache_size 缓存清理限制大小
 返回：
-    int 清理垃圾大小（单位：兆M），失败返回 -1
+    long 清理垃圾大小（单位：Byte），失败返回 -1
 */
-static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size)
+static long user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size)
 {
     // 定义所需变量
-    int cache_size = 0, clean_size = 0, count = 0, no_count = 0;
+    int count = 0, no_count = 0;
+    long cache_size = 0, clean_size = 0;
     char app_cache_dir[512] = {0};
     
     // 获取第三方软件包名列表并储存
@@ -162,9 +167,9 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
                 continue;
             }
             
-            // 获取/比较缓存大小（兆M）
-            cache_size = (int)(get_path_size(app_cache_dir) / 1024 / 1024);
-            if (cache_size > clear_cache_size)
+            // 获取/比较缓存大小
+            cache_size = get_path_size(app_cache_dir);
+            if ((cache_size / 1024 / 1024) > clear_cache_size)
             {
                 // 白名单检查
                 if (s_grep(whitelist_file, package_list[i] + 8, 1) == 1)

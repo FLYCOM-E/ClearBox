@@ -460,3 +460,37 @@ int s_daemon(void)
     
     return 0;
 }
+
+/*
+字节单位识别与转换
+接收：
+    long byte      字节数
+    double * size  小数指针
+    char * unit    单位字符指针
+*/
+double byte_to_size(long byte, char * unit)
+{
+    double size = 0;
+    if (byte < 1024)
+    {
+        size = ((double)byte);
+        * unit = 'B';
+    }
+    else if (byte < 1048576)
+    {
+        size = ((double)byte / 1024.0);
+        * unit = 'K';
+    }
+    else if (byte < 1073741824)
+    {
+        size = ((double)byte / 1024.0 / 1024.0);
+        * unit = 'M';
+    }
+    else
+    {
+        size = ((double)byte / 1024.0 / 1024.0 / 1024.0);
+        * unit = 'G';
+    }
+    
+    return size;
+}

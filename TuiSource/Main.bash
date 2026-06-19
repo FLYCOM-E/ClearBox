@@ -880,8 +880,8 @@ case "$input" in
                         read size_input
                         if ! echo "$size_input" | grep [0-9] >>/dev/null; then
                             echo -e "\033[1;92m » $L_INPUT_NOTIS_NUM\033[0m"
-                        elif [ "$size_input" -lt 1 ]; then
-                            echo -e "\033[1;92m » $L_CACHE_SKIP_MIN_ERR 1 $L_SIZE_M\033[0m"
+                        elif [ "$size_input" -lt 0 ]; then
+                            echo -e "\033[1;92m » $L_CACHE_SKIP_MIN_ERR 0 $L_SIZE_M\033[0m"
                         elif [ "$size_input" -gt 100 ]; then
                             echo -e "\033[1;92m » $L_CACHE_SKIP_MAX_ERR 100 $L_SIZE_M\033[0m"
                         else

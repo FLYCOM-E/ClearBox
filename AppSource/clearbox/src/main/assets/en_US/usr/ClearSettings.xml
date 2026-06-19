@@ -77,7 +77,7 @@
     <action interruptible="false">
         <title>Skip cache cleaning by size</title>
         <summary sh="echo -n 'Current set size:'; echo -n $(grep clearbox_clear_cache_size $work_dir/settings.prop | cut -f2 -d '='); echo -n ' M'" />
-        <param name="put" desc="Please enter a new value [number]: (Unit: MB. Range: 100M)" label="number" max="100" min="1" required="required" type="int" />
+        <param name="put" desc="Please enter a new value [number]: (Unit: MB. Range: 100M)" label="number" max="100" min="0" required="required" type="int" />
             <set>
             sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
             echo " » Setting successful!"

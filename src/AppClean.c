@@ -11,7 +11,7 @@
 #define DATA_DIR "/data/data"       // 软件数据根目录
 #define CONFIG_DIR_NAME "AppCleanRules"   // 配置目录名称
 
-static int read_clear(char * config_file, int * success_config, int * failed_config, int * total_clear_size);
+static int read_clear(char * config_file, int * success_config, int * failed_config, long * total_clear_size);
 
 int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
 {
@@ -20,8 +20,8 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
     int success_config = 0,   // 成功处理配置数量
-        failed_config = 0,    // 处理失败配置数量
-        total_clear_size = 0; // 总清理大小，如模式为全部清理则为所有配置累计清理和（单位 M）
+        failed_config = 0;     // 处理失败配置数量
+    long total_clear_size = 0; // 总清理大小，如模式为全部清理则为所有配置累计清理和（单位 M）
     
     // mode 1 为全部清理模式
     if (mode == 1)
@@ -71,7 +71,9 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     
     if (success_config != 0)
     {
-        fprintf(stderr, L_AC_CLEAN_SUCCESSFUL, total_clear_size);
+        char unit = '\0';
+        double size = byte_to_size(total_clear_size, &unit);
+        fprintf(stderr, L_AC_CLEAN_SUCCESSFUL, size, unit);
     }
     else
     {
@@ -88,11 +90,11 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     char * config_file 配置文件（完整路径）
     int * success_config 成功处理配置数量
     int * failed_config 处理失败配置数量
-    int * total_clear_size 总清理大小（MB）
+    long * total_clear_size 总清理大小 (Byte)
 返回：
     0 成功，-1 失败
 */
-static int read_clear(char * config_file, int * success_config, int * failed_config, int * total_clear_size)
+static int read_clear(char * config_file, int * success_config, int * failed_config, long * total_clear_size)
 {
     FILE * config_fp = fopen(config_file, "r");
     if (config_fp == NULL)
@@ -200,8 +202,10 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         }
         else
         {
-            printf(L_AC_CLEAR_PATH_SUCCESS, line, (clear_size / 1024 / 1024));
-            (* total_clear_size) += (clear_size / 1024 / 1024);
+            char unit = '\0';
+            double size = byte_to_size(clear_size, &unit);
+            printf(L_AC_CLEAR_PATH_SUCCESS, line, size, unit);
+            * total_clear_size += clear_size;
         }
         fflush(stdout);
     }
