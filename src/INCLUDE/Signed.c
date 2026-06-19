@@ -8,7 +8,7 @@ static void s_signed_service(int sig);
 依赖：
     s_signed_service() 函数，进行信号处理
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 int s_signed(void)
 {
@@ -19,15 +19,15 @@ int s_signed(void)
     
     if (sigaction(SIGINT, &sg, NULL) == -1)
     {
-        return 1;
+        return -1;
     }
     if (sigaction(SIGTERM, &sg, NULL) == -1)
     {
-        return 1;
+        return -1;
     }
     if (sigaction(SIGQUIT, &sg, NULL) == -1)
     {
-        return 1;
+        return -1;
     }
     
     return 0;

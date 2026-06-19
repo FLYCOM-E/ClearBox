@@ -63,7 +63,7 @@ int app_cache_clean(char * work_dir, int mode)
         if (card_id_dp == NULL)
         {
             fprintf(stderr, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
-            return 0;
+            return -1;
         }
         while ((entry = readdir(card_id_dp)))
         {
@@ -101,7 +101,7 @@ int app_cache_clean(char * work_dir, int mode)
     char * work_dir 软件数据目录，自动处理多用户 ID，兼容拓展储存
     int * clear_cache_size 缓存清理限制大小
 返回：
-    int 清理垃圾大小（单位：兆M），失败返回-1
+    int 清理垃圾大小（单位：兆M），失败返回 -1
 */
 static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size)
 {
@@ -199,7 +199,7 @@ static int user_cache_clean(char * work_dir, char * whitelist_file, int clear_ca
 /* 
 此函数用于清理系统缓存
 返回：
-    int 成功返回0，失败返回-1
+    int 成功返回 0，失败返回 -1
 */
 static int system_cache_clean(void)
 {

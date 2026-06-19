@@ -13,7 +13,7 @@
     char * path
     int all 是否删除目录本身，1删除，0跳过
 返回：
-    long 成功返回清理大小（字节），失败返回-1
+    long 成功返回清理大小（字节），失败返回 -1
 */
 long s_remove(char * path, int all)
 {
@@ -178,7 +178,7 @@ long get_path_size(char * path)
     const char * message 消息内容
     const char * id 消息 ID，为空则随机生成
 返回：
-    int 成功返回 0，失败返回 1
+    int 成功返回 0，失败返回 -1
 */
 int post(const char * title, const char * message, const char * id)
 {
@@ -198,7 +198,7 @@ int post(const char * title, const char * message, const char * id)
     if (new_pid == -1)
     {
         printf("Post: Fork Error\n");
-        return 1;
+        return -1;
     }
     if (new_pid == 0)
     {
@@ -212,12 +212,12 @@ int post(const char * title, const char * message, const char * id)
         if (waitpid(new_pid, &end, 0) == -1)
         {
             printf("Post: Wait Error\n");
-            return 1;
+            return -1;
         }
         if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
         {
             printf("Post: exit code error\n");
-            return 1;
+            return -1;
         }
     }
     return 0;
@@ -230,7 +230,7 @@ int post(const char * title, const char * message, const char * id)
     char * name_id 进程名
     char * text Log信息
 */
-int write_log(char * config_dir, char * name_id, char * text)
+void write_log(char * config_dir, char * name_id, char * text)
 {
     //获取当前时间（用于log）
     char now_time[64] = "";
@@ -251,7 +251,7 @@ int write_log(char * config_dir, char * name_id, char * text)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, log_file, strerror(errno));
     }
-    return 0;
+    return;
 }
 
 /*
@@ -338,7 +338,7 @@ int get_settings_prop(char * settings_file, char * key, char * str, size_t str_l
     char * argv[]
     char * new_name 新名称
 */
-int set_server_name(char * argv[], char * new_name)
+void set_server_name(char * argv[], char * new_name)
 {
     size_t size = strlen(argv[0]);
     if (strlen(new_name) <= size)
@@ -348,7 +348,7 @@ int set_server_name(char * argv[], char * new_name)
     }
     prctl(PR_SET_NAME, new_name);
     
-    return 0;
+    return;
 }
 
 /*
@@ -359,7 +359,7 @@ int set_server_name(char * argv[], char * new_name)
     char * text 替换内容
     int mode 为 1 则模糊匹配（慎）
 返回：
-    成功返回 0，失败返回 1，未找到返回 2
+    成功返回 0，失败返回 -1，未找到返回 2
 全局替换
 */
 int s_sed(char * file, char * target_line, char * text, int mode)
@@ -375,13 +375,13 @@ int s_sed(char * file, char * target_line, char * text, int mode)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, file, strerror(errno));
         if (tmp_fp) fclose(tmp_fp);
-        return 1;
+        return -1;
     }
     if (tmp_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, tmp_file, strerror(errno));
         fclose(file_fp);
-        return 1;
+        return -1;
     }
     
     while (fgets(line, sizeof(line), file_fp))
@@ -420,7 +420,7 @@ int s_sed(char * file, char * target_line, char * text, int mode)
     {
         unlink(tmp_file);
         fprintf(stderr, L_MOVE_ERROR, file, strerror(errno));
-        return 1;
+        return -1;
     }
     if (found == 0)
     {
@@ -432,7 +432,7 @@ int s_sed(char * file, char * target_line, char * text, int mode)
 /*
 守护进程化
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 int s_daemon(void)
 {
@@ -440,7 +440,7 @@ int s_daemon(void)
     pid_t new_pid = fork();
     if (new_pid == -1)
     {
-        return 1;
+        return -1;
     }
     if (new_pid != 0)
     {

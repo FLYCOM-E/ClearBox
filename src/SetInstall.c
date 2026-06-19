@@ -45,7 +45,7 @@ int set_install(char * work_dir, char * mode)
     else
     {
         fprintf(stderr, L_MODE_ERR, mode);
-        return 1;
+        return -1;
     }
     fflush(stdout);
     

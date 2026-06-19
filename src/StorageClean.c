@@ -47,7 +47,7 @@ int storage_clean(char * work_dir)
     if (sdcard_id_dp == NULL)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
-        return 0;
+        return -1;
     }
     while ((entry = readdir(sdcard_id_dp)))
     {
@@ -86,14 +86,14 @@ int storage_clean(char * work_dir)
     char * data_path 储存根目录
     char * work_dir 配置目录
 返回：
-    int 成功返回0，失败返回1
+    int 成功返回 0，失败返回 -1
 */
 static int storage_cache_clear(char * data_path, char * work_dir)
 {
     if (access(data_path, F_OK) != 0)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, data_path, strerror(errno));
-        return 1;
+        return -1;
     }
     
     // 拼接路径/白名单文件
@@ -109,7 +109,7 @@ static int storage_cache_clear(char * data_path, char * work_dir)
     if (app_data_dir_dp == NULL)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, app_data_path, strerror(errno));
-        return 1;
+        return -1;
     }
     while ((entry = readdir(app_data_dir_dp)))
     {
@@ -157,7 +157,7 @@ static int storage_cache_clear(char * data_path, char * work_dir)
     char * dir 储存根目录
     int home 如果外置储存根目录为空是否删除该根目录，默认使用1（跳过删除）
 返回：
-    int 成功返回清理空文件夹/文件数量，失败返回-1
+    int 成功返回清理空文件夹/文件数量，失败返回 -1
 */
 static int storage_clear(char * dir, int home)
 {

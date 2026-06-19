@@ -7,7 +7,7 @@
 
 #include "INCLUDE/BashCore.h"
 
-static int dexoat_system(void);
+static void dexoat_system(void);
 static int dexoat_cust(char * mode);
 
 int dexoat(int mode, char * cust_mode)
@@ -26,10 +26,11 @@ int dexoat(int mode, char * cust_mode)
 }
 
 // 系统Dexoat
-static int dexoat_system(void)
+static void dexoat_system(void)
 {
     fprintf(stderr, L_DO_RUN_SYSTEM);
-    return system("pm bg-dexopt-job");
+    system("pm bg-dexopt-job");
+    return;
 }
 
 // 自定义模式Dexoat
@@ -40,7 +41,7 @@ static int dexoat_cust(char * mode)
     pid_t newPid = fork();
     if (newPid == -1)
     {
-        return 1;
+        return -1;
     }
     if (newPid == 0)
     {
@@ -52,11 +53,11 @@ static int dexoat_cust(char * mode)
         int end = 0;
         if (waitpid(newPid, &end, 0) == -1)
         {
-            return 1;
+            return -1;
         }
         if (WIFEXITED(end) == 0 && WEXITSTATUS(end) != 0)
         {
-            return 1;
+            return -1;
         }
     }
     return 0;

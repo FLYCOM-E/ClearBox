@@ -48,7 +48,7 @@ int time_daemon(char * argv[], char * work_dir)
     // 设置命名空间
     if (set_name_space() != 0)
     {
-        return 1;
+        return -1;
     }
     
     // 拼接及检查配置目录
@@ -60,12 +60,12 @@ int time_daemon(char * argv[], char * work_dir)
     if (read_config(config_dir, &read_config_count, config, "") != 0)
     {
         // 错误信息由 read_config 函数报告
-        return 1;
+        return -1;
     }
     if (read_config_count == 0)
     {
         fprintf(stderr, L_NOCONFIG);
-        return 1;
+        return -1;
     }
     
     // INOTIFY
@@ -73,13 +73,13 @@ int time_daemon(char * argv[], char * work_dir)
     if (inotify_fd == -1)
     {
         fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
-        return 1;
+        return -1;
     }
     int inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
     if (inotify_wd == -1)
     {
         fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
-        return 1;
+        return -1;
     }
     int watch = 1;
     char inotify_buffer[PATH_MAX] = "";
@@ -90,13 +90,13 @@ int time_daemon(char * argv[], char * work_dir)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);
-        return 1;
+        return -1;
     }
     if (s_signed() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);
-        return 1;
+        return -1;
     }
     else
     {
@@ -277,7 +277,7 @@ int time_daemon(char * argv[], char * work_dir)
     struct config_struct config[] 结构体数组
     char * config_file_name 指定要读取的配置名称，为空则全量读取
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 static int read_config(char * config_dir, volatile int * read_config_count, struct config_struct config[], char * config_file_name)
 {
@@ -306,7 +306,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
             if (last_index == -1)
             {
                 printf(L_TD_MAX_CONFIG, MAX_CONFIG);
-                return 1;
+                return -1;
             }
             else
             {
@@ -318,7 +318,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
         snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config_file_name);
         if (get_config(config_file, config_file_name, config, index) != 0)
         {
-            return 1;
+            return -1;
         }
         
         // 设置配置为启用并保留名称
@@ -338,7 +338,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
     if (config_dir_dp == NULL)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
-        return 1;
+        return -1;
     }
     // 遍历配置目录
     while ((entry = readdir(config_dir_dp)))
@@ -372,7 +372,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
             if (last_index == -1)
             {
                 printf(L_TD_MAX_CONFIG, MAX_CONFIG);
-                return 1;
+                return -1;
             }
             else
             {
@@ -416,7 +416,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
     struct config_struct config[] 读入结构体数组
     int count 数组写入位置
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 static int get_config(char * config_file, char * config_file_name, struct config_struct config[], int count)
 {
@@ -433,7 +433,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
     if (config_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, config_file_name, strerror(errno));
-        return 1;
+        return -1;
     }
     while (fgets(line, sizeof(line), config_fp))
     {
@@ -574,7 +574,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
         run_ != 1) // post、in 非必须字段不检查
     {
         fprintf(stderr, L_TD_CONFIG_ERROR, config_file_name);
-        return 1;
+        return -1;
     }
     
     return 0;

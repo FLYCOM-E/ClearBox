@@ -105,7 +105,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
     if (sdcard_id_dp == NULL)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
-        return 0;
+        return -1;
     }
     while ((entry = readdir(sdcard_id_dp)))
     {
@@ -156,13 +156,13 @@ int file_manager(char * work_dir, int mode, char * config_name)
     char * config_name 配置名称（仅文件清理模式需要）
     char * dir_name 归类目录名
 返回：
-    int 成功返回 0，失败返回 1
+    int 成功返回 0，失败返回 -1
 */
 static int clear_service(char * work_dir, char * storage_dir, char * config_name, char * dir_name)
 {   
     if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
     {
-        return 1;
+        return -1;
     }
     
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
@@ -196,7 +196,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
                 if (errno != EEXIST)
                 {
                     fprintf(stderr, L_MKDIR_ERROR, f_dir, strerror(errno));
-                    return 1;
+                    return -1;
                 }
             }
             dp = strtok_r(NULL, "/", &strtok_p);
@@ -227,7 +227,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         
         if (read_config(file_args, config_file, &count) != 0)
         {
-            return 1;
+            return -1;
         }
         
         printf(L_FM_CR_START, config_name);
@@ -246,7 +246,7 @@ static int clear_service(char * work_dir, char * storage_dir, char * config_name
         if (config_dir_dp == NULL)
         {
             fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
-            return 1;
+            return -1;
         }
         while ((entry = readdir(config_dir_dp)))
         {
@@ -444,7 +444,7 @@ static int find_file(char * storage, char * file_dir, struct file_rules file_arg
     char * config_file           配置文件
     int * count                 总解析后缀数量
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 static int read_config(struct file_rules file_args[], char * config_file, int * count)
 {
@@ -452,7 +452,7 @@ static int read_config(struct file_rules file_args[], char * config_file, int * 
     if (config_file_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
-        return 1;
+        return -1;
     }
     
     long max = -1, min = -1;
@@ -488,9 +488,7 @@ static int read_config(struct file_rules file_args[], char * config_file, int * 
     long * max                    最大大小
     long * min                     最小大小
 返回：
-    成功返回 0，失败自动检查填写错误/未填写
-    如未填写导致则重置文件指针位置，返回 1
-    并置 max_size / min_size -1
+    成功返回 0，失败置 max / min -1
 */
 static int find_size(struct file_rules file_args[], int index, long * max, long * min)
 {

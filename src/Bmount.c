@@ -18,20 +18,20 @@ int bmount(char * work_dir, char * mode_str)
     if (access(work_dir, F_OK) != 0)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, work_dir, strerror(errno));
-        return 1;
+        return -1;
     }
     
     if (s_grep(MOUNTS, "sdcardfs", 0) == 1)
     {
         // sdcardfs 不兼容
         fprintf(stderr, L_BM_ERROR_IS_SDCARDFS);
-        return 1;
+        return -1;
     }
     
     // 设置命名空间
     if (set_name_space() != 0)
     {
-        return 1;
+        return -1;
     }
     
     int mode = 0;
@@ -46,7 +46,7 @@ int bmount(char * work_dir, char * mode_str)
     else
     {
         fprintf(stderr, L_MODE_ERR, mode_str);
-        return 1;
+        return -1;
     }
     
     char config_dir[strlen(work_dir) + sizeof(CONFIG_DIR_NAME) + 2];
@@ -57,7 +57,7 @@ int bmount(char * work_dir, char * mode_str)
     if (config_dir_dp == NULL)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
-        return 1;
+        return -1;
     }
     
     while ((entry = readdir(config_dir_dp)))
@@ -84,7 +84,7 @@ int bmount(char * work_dir, char * mode_str)
     char * config_file 配置文件
     int mode 模式 为 1 挂载，0 卸载
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 static int bind_mount(char * config_file, int mode)
 {
@@ -92,7 +92,7 @@ static int bind_mount(char * config_file, int mode)
     if (config_file_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
-        return 1;
+        return -1;
     }
     
     char line[PATH_MAX] = "";

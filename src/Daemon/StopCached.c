@@ -14,7 +14,7 @@
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
 #define MAX_WHITELIST_APP 512               // 最大白名单数量
 
-static int set_app_cache(char * top_app,
+static void set_app_cache(char * top_app,
                         char * reset_app,
                         int skip_reset,
                         char whitelist[][NAME_MAX]);
@@ -87,12 +87,12 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     int inotify_fd = inotify_init1(IN_NONBLOCK);
     if (inotify_fd == -1)
     {
-        return 1;
+        return -1;
     }
     int inotify_wd = inotify_add_watch(inotify_fd, rom_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
     if (inotify_wd == -1)
     {
-        return 1;
+        return -1;
     }
     char inotify_buffer[PATH_MAX] = "";
     int watch = 1;
@@ -109,7 +109,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     // 设置命名空间
     if (set_name_space() != 0)
     {
-        return 1;
+        return -1;
     }
     
     // 脱离终端
@@ -118,13 +118,13 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);
-        return 1;
+        return -1;
     }
     if (s_signed() != 0)
     {
         snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
         write_log(work_dir, SERVER_NAME, log_text);
-        return 1;
+        return -1;
     }
     else
     {
@@ -305,7 +305,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     int skip_reset 是否跳过恢复
     char whitelist[][NAME_MAX] 白名单列表
 */
-static int set_app_cache(char * top_app,
+static void set_app_cache(char * top_app,
                         char * reset_app,
                         int skip_reset,
                         char whitelist[][NAME_MAX])
@@ -350,7 +350,7 @@ static int set_app_cache(char * top_app,
     // 配合前面，skip_reset 为 1 不执行恢复
     if (skip_reset == 1)
     {
-        return 0;
+        return;
     }
     
     //检查缓存目录是否真实存在并过滤路径逃逸
@@ -366,7 +366,7 @@ static int set_app_cache(char * top_app,
             print_log(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", reset_app, strerror(errno));
         }
     }
-    return 0;
+    return;
 }
 
 /*
@@ -376,7 +376,7 @@ static int set_app_cache(char * top_app,
     char whitelist[][NAME_MAX] 白名单列表数组
     int * read_whitelist_app 已读取白名单 App 数量
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 static int read_whitelist(char * whitelist_file,
                           char whitelist[][NAME_MAX],
@@ -392,7 +392,7 @@ static int read_whitelist(char * whitelist_file,
     if (fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
-        return 1;
+        return -1;
     }
     else
     {

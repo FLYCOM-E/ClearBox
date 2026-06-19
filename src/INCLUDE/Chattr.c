@@ -7,20 +7,20 @@
     int mode 模式，1 锁定，0 解锁
     int dir 是否递归，1 递归，0 仅锁定不递归，非目录无效
 返回：
-    成功返回 0，失败返回 1
+    成功返回 0，失败返回 -1
 */
 int s_chattr(char * path, int mode, int dir)
 {
     int fd = open(path, O_RDONLY | O_NONBLOCK | O_NOCTTY | O_NOFOLLOW);
     if (fd < 0)
     {
-        return 1;
+        return -1;
     }
     unsigned int flags = 0;
     if (ioctl(fd, FS_IOC_GETFLAGS, &flags) < 0)
     {
         close(fd);
-        return 1;
+        return -1;
     }
     
     if (mode == 1)
@@ -35,7 +35,7 @@ int s_chattr(char * path, int mode, int dir)
     if (ioctl(fd, FS_IOC_SETFLAGS, &flags) < 0)
     {
         close(fd);
-        return 1;
+        return -1;
     }
     close(fd);
     

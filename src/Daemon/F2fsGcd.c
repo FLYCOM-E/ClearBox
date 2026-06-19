@@ -17,7 +17,7 @@
 #define SYSFS_FREE_FILE "free_segments"     // 自由段节点名
 
 static int f2fs_gc(char * argv[]);
-static int fast_gc(void);
+static void fast_gc(void);
 static long get_f2fs_dirty(char * dirty_file);
 static long get_f2fs_free(char * free_file);
 
@@ -38,14 +38,14 @@ int disk_gc(char * argv[], int mode)
 /*
 紧急GC
 返回：
-    int 成功返回 0，失败返回 1
+    int 成功返回 0，失败返回 -1
 */
 static int f2fs_gc(char * argv[])
 {
     char sysfs_name[PROP_VALUE_MAX] = {0};
     if (getprop(PROP, sysfs_name) <= 0)
     {
-        return 1;
+        return -1;
     }
     
     char f2fs_sysfs_path[strlen(SYSFS_PATH) + strlen(sysfs_name) + 2];
@@ -61,13 +61,13 @@ static int f2fs_gc(char * argv[])
     if (access(f2fs_sysfs_path, F_OK) != 0)
     {
         fprintf(stderr, L_FG_ERR_NOF2FS);
-        return 1;
+        return -1;
     }
     // 检测是否支持当前 gc 方案
     if (access(f2fs_sysfs_file, F_OK) != 0)
     {
         fprintf(stderr, L_FG_ERR_CHECK);
-        return 1;
+        return -1;
     }
     
     // 获取脏段/自由段
@@ -82,7 +82,7 @@ static int f2fs_gc(char * argv[])
     if (f2fs_sysfs_file_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, f2fs_sysfs_file, strerror(errno));
-        return 1;
+        return -1;
     }
     if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
     {
@@ -93,17 +93,17 @@ static int f2fs_gc(char * argv[])
     {
         fprintf(stderr, L_FG_ERR_WRITESYSFS);
         fclose(f2fs_sysfs_file_fp);
-        return 1;
+        return -1;
     }
     
     // Daemon
     if (s_daemon() != 0)
     {
-        return 1;
+        return -1;
     }
     if (s_signed() != 0)
     {
-        return 1;
+        return -1;
     }
     else
     {
@@ -229,11 +229,10 @@ static long get_f2fs_free(char * free_file)
 }
 
 // 快速磁盘优化
-static int fast_gc(void)
+static void fast_gc(void)
 {
     // 这是一个说慢不慢说快不快的功能，不检查成功，因为部分设备可能不支持
     system("sm idle-maint run >/dev/null 2>&1");
     system("sm fstrim >/dev/null 2>&1");
     printf(L_FG_FAST_GC_DONE);
-    return 0;
 }

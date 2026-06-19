@@ -21,7 +21,7 @@ int cust_rule_clean(char * work_dir)
     if (config_dir_dp == NULL)
     {
         fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
-        return 1;
+        return -1;
     }
     while ((config_file_name = readdir(config_dir_dp)))
     {

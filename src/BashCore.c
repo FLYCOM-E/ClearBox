@@ -51,18 +51,18 @@ int main(int argc, char * argv[])
     if (getuid() != 0)
     {
         fprintf(stderr, L_NOT_USE_ROOT, getuid());
-        return 1;
+        return -1;
     }
     if (argc < 2)
     {
         fprintf(stderr, L_ARGS_FAILED);
-        return 1;
+        return -1;
     }
     
     // 设置命名空间
     if (set_name_space() != 0)
     {
-        return 1;
+        return -1;
     }
     
     char home_dir[128] = "",        // 模块根目录
@@ -78,7 +78,7 @@ int main(int argc, char * argv[])
     if (path_file_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
-        return 1;
+        return -1;
     }
     while (fgets(path_file_line, sizeof(path_file_line), path_file_fp))
     {
@@ -106,12 +106,12 @@ int main(int argc, char * argv[])
     if (access(home_dir, F_OK) != 0)
     {
         fprintf(stderr, " » Error：HOME_PATH\n");
-        return 1;
+        return -1;
     }
     if (access(work_dir, F_OK) != 0)
     {
         fprintf(stderr, " » Error：WORK_PATH\n");
-        return 1;
+        return -1;
     }
     
     /* 
@@ -132,7 +132,7 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
         }
-        return 1;
+        return -1;
     }
     
     // 定义设置配置文件
@@ -355,6 +355,7 @@ int main(int argc, char * argv[])
     else
     {
         fprintf(stderr, L_MODE_ERR, argv[1]);
+        return -1;
     }
     
     return 0;
@@ -366,7 +367,7 @@ static int running(char * args[])
     pid_t newPid = fork();
     if (newPid == -1)
     {
-        return 1;
+        return -1;
     }
     if (newPid == 0)
     {
@@ -378,11 +379,11 @@ static int running(char * args[])
         int end = 0;
         if (waitpid(newPid, &end, 0) == -1)
         {
-            return 1;
+            return -1;
         }
         if (WIFEXITED(end) && WEXITSTATUS(end) != 0)
         {
-            return 1;
+            return -1;
         }
     }
     return 0;

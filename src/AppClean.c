@@ -32,7 +32,7 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
         if (config_dir_fp == NULL)
         {
             fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
-            return 1;
+            return -1;
         }
         while ((config_name = readdir(config_dir_fp)))
         {
@@ -90,7 +90,7 @@ int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
     int * failed_config 处理失败配置数量
     int * total_clear_size 总清理大小（MB）
 返回：
-    0 成功，1 失败
+    0 成功，-1 失败
 */
 static int read_clear(char * config_file, int * success_config, int * failed_config, int * total_clear_size)
 {
@@ -98,7 +98,7 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
     if (config_fp == NULL)
     {
         fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
-        return 1;
+        return -1;
     }
     
     // 读取及处理配置
@@ -207,5 +207,5 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
     }
     fclose(config_fp);
     
-    return get_config ? 0 : 1;
+    return get_config ? 0 : -1;
 }
