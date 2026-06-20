@@ -102,7 +102,7 @@ int file_manager(int mode, char * config_name)
     DIR * sdcard_id_dp = opendir(CARD_HOME);
     if (sdcard_id_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
         return -1;
     }
     while ((entry = readdir(sdcard_id_dp)))
@@ -192,7 +192,7 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
             {
                 if (errno != EEXIST)
                 {
-                    fprintf(stderr, L_MKDIR_ERROR, f_dir, strerror(errno));
+                    write_log(work_dir, SERVER_NAME, L_MKDIR_ERROR, f_dir, strerror(errno));
                     return -1;
                 }
             }
@@ -242,7 +242,7 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
         DIR * config_dir_dp = opendir(config_dir);
         if (config_dir_dp == NULL)
         {
-            fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
+            write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
             return -1;
         }
         while ((entry = readdir(config_dir_dp)))
@@ -276,7 +276,7 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
             {
                 if (mkdir(file_dir, 0775) != 0)
                 {
-                    fprintf(stderr, L_MKDIR_ERROR, file_dir, strerror(errno));
+                    write_log(work_dir, SERVER_NAME, L_MKDIR_ERROR, file_dir, strerror(errno));
                     continue;
                 }
             }
@@ -317,7 +317,7 @@ static int find_file(char * storage, char * file_dir, struct file_rules file_arg
 {
     if (access(file_dir, F_OK) != 0)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, file_dir, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, file_dir, strerror(errno));
         return -1;
     }
     
@@ -327,7 +327,7 @@ static int find_file(char * storage, char * file_dir, struct file_rules file_arg
     DIR * storage_dp = opendir(storage);
     if (storage_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, storage, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, storage, strerror(errno));
         return -1;
     }
     while ((entry = readdir(storage_dp)))
@@ -398,7 +398,7 @@ static int find_file(char * storage, char * file_dir, struct file_rules file_arg
                     }
                     else
                     {
-                        fprintf(stderr, L_DELETE_ERROR, path, strerror(errno));
+                        write_log(work_dir, SERVER_NAME, L_DELETE_ERROR, path, strerror(errno));
                     }
                     break;
                 }
@@ -423,7 +423,7 @@ static int find_file(char * storage, char * file_dir, struct file_rules file_arg
                 }
                 else
                 {
-                    fprintf(stderr, L_MOVE_ERROR, path, strerror(errno));
+                    write_log(work_dir, SERVER_NAME, L_MOVE_ERROR, path, strerror(errno));
                 }
                 
                 break;
@@ -448,7 +448,7 @@ static int read_config(struct file_rules file_args[], char * config_file, int * 
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file, strerror(errno));
         return -1;
     }
     

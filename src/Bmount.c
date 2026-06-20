@@ -50,7 +50,7 @@ int bmount(char * mode_str)
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
         return -1;
     }
     
@@ -85,7 +85,7 @@ static int bind_mount(char * config_file, int mode)
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, config_file, strerror(errno));
         return -1;
     }
     
@@ -153,7 +153,7 @@ static int bind_mount(char * config_file, int mode)
             }
             else if (mount(root_dir, bind_dir, NULL, MS_BIND, NULL) == -1)
             {
-                fprintf(stderr, L_MOUNT_ERROR, root_dir, bind_dir, strerror(errno));
+                write_log(work_dir, SERVER_NAME, L_MOUNT_ERROR, root_dir, bind_dir, strerror(errno));
             }
             else
             {

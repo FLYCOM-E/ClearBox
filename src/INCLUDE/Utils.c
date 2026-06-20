@@ -53,7 +53,7 @@ long s_remove(char * path, int all)
         }
         else
         {
-            fprintf(stderr, L_OPEN_PATH_FAILED, path, strerror(errno));
+            write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, path, strerror(errno));
         }
     }
     else
@@ -109,7 +109,7 @@ int s_grep(char * file, char * text, int mode)
     }
     else
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, file, strerror(errno));
         end = -1;
     }
     return end;
@@ -135,7 +135,7 @@ long get_path_size(char * path)
     DIR * path_dp = opendir(path);
     if (path_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, path, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, path, strerror(errno));
         return 0;
     }
     
@@ -311,7 +311,7 @@ int get_settings_prop(char * config_file, char * key, char * str, size_t str_len
     FILE * settings_file_fp = fopen(config_file, "r");
     if (settings_file_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file, strerror(errno));
         return -1;
     }
     while (fgets(line, sizeof(line), settings_file_fp))
@@ -387,13 +387,13 @@ int s_sed(char * file, char * target_line, char * text, int mode)
     FILE * file_fp = fopen(file, "r");
     if (file_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, file, strerror(errno));
         if (tmp_fp) fclose(tmp_fp);
         return -1;
     }
     if (tmp_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, tmp_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, tmp_file, strerror(errno));
         fclose(file_fp);
         return -1;
     }
@@ -433,7 +433,7 @@ int s_sed(char * file, char * target_line, char * text, int mode)
     if (rename(tmp_file, file) != 0)
     {
         unlink(tmp_file);
-        fprintf(stderr, L_MOVE_ERROR, file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_MOVE_ERROR, file, strerror(errno));
         return -1;
     }
     if (found == 0)

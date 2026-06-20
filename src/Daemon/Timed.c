@@ -328,7 +328,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
         return -1;
     }
     // 遍历配置目录
@@ -423,7 +423,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
     FILE * config_fp = fopen(config_file, "r");
     if (config_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, config_file_name, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file_name, strerror(errno));
         return -1;
     }
     while (fgets(line, sizeof(line), config_fp))

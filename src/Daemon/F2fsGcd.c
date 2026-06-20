@@ -81,7 +81,7 @@ static int f2fs_gc(char * argv[])
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
     if (f2fs_sysfs_file_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, f2fs_sysfs_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, f2fs_sysfs_file, strerror(errno));
         return -1;
     }
     if (fprintf(f2fs_sysfs_file_fp, "%d", 1) > 0)
@@ -195,7 +195,7 @@ static long get_f2fs_dirty(char * dirty_file)
     }
     else
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, dirty_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, dirty_file, strerror(errno));
         return 0;
     }
     return strtol(cache, NULL, 10);
@@ -219,7 +219,7 @@ static long get_f2fs_free(char * free_file)
     }
     else
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, free_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, free_file, strerror(errno));
         return 0;
     }
     return strtol(cache, NULL, 10);

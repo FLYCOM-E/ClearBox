@@ -10,6 +10,7 @@
 #define MAX_APP_NAME 128                  // 软件名称最大长度
 #define DATA_DIR "/data/data"                 // 软件数据根目录
 #define CONFIG_DIR_NAME "AppCleanRules"   // 配置目录名称
+#define SERVER_NAME "AppClean"
 
 static int read_clear(char * config_file, int * success_config, int * failed_config, long * total_clear_size);
 
@@ -31,7 +32,7 @@ int app_cust_rule_clean(char * app_package, int mode)
         DIR * config_dir_fp = opendir(config_dir);
         if (config_dir_fp == NULL)
         {
-            fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
+            write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
             return -1;
         }
         while ((config_name = readdir(config_dir_fp)))
@@ -99,7 +100,7 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
     FILE * config_fp = fopen(config_file, "r");
     if (config_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file, strerror(errno));
         return -1;
     }
     

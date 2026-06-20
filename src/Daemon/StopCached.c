@@ -75,7 +75,7 @@ int stop_cache_daemon(char * argv[])
         }
         else
         {
-            fprintf(stderr, L_OPEN_FILE_FAILED, rom_file, strerror(errno));
+            write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, rom_file, strerror(errno));
         }
     }
     
@@ -386,7 +386,7 @@ static int read_whitelist(char * whitelist_file,
     FILE * fp = fopen(whitelist_file, "r");
     if (fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
         return -1;
     }
     else

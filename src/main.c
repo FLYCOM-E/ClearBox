@@ -78,7 +78,7 @@ int main(int argc, char * argv[])
     FILE * path_file_fp = fopen(PATH_ROM_FILE, "r");
     if (path_file_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
         return -1;
     }
     while (fgets(path_file_line, sizeof(path_file_line), path_file_fp))
@@ -131,7 +131,7 @@ int main(int argc, char * argv[])
         }
         else
         {
-            fprintf(stderr, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
+            write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
         }
         return -1;
     }

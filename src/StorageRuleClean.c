@@ -20,7 +20,7 @@ int cust_rule_clean(void)
     DIR * config_dir_dp = opendir(config_dir);
     if (config_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, config_dir, strerror(errno));
         return -1;
     }
     while ((config_file_name = readdir(config_dir_dp)))
@@ -38,7 +38,7 @@ int cust_rule_clean(void)
         FILE * config_file_fp = fopen(config_file, "r");
         if (config_file_fp == NULL)
         {
-            fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
+            write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file, strerror(errno));
             continue;
         }
         
