@@ -265,6 +265,8 @@ static int system_cache_clean(void)
     s_remove("/data/resource-cache", 0);
     s_remove("/data/system/package_cache", 0);
     s_remove("/data/dalvik-cache", 0);
+    s_remove("/data/tombstones", 0);
+    s_remove("/data/anr", 0);
     
     fprintf(stderr, L_CC_CLEAR_SYSTEMCACHE);
     return 0;

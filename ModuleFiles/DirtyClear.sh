@@ -46,6 +46,10 @@ if [ -f "$work_dir/$timed_config_dir/ClearCache.conf" ]; then
     grep -q "in=" "$work_dir/$timed_config_dir/ClearCache.conf" || echo "in=0/5" >> "$work_dir/$timed_config_dir/ClearCache.conf"
 fi
 
+for file in "$work_dir/$timed_config_dir/"*; do
+    sed -i "s|BashCore|clearbox|g" "$file"
+done
+
 [ "$clearbox_clear_cache_size" -gt 100 ] && sed -i 's|clearbox_clear_cache_size=[0-9]*|clearbox_clear_cache_size=5|g' "$work_dir/settings.prop"
 sed -i '/^$/d' "$work_dir/settings.prop"
 
