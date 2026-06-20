@@ -1,3 +1,8 @@
+/*
+                    GNU GENERAL PUBLIC
+                        Version 3
+*/
+
 #include "main.h"
 
 volatile sig_atomic_t sig_flag = 1;

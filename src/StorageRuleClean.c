@@ -9,7 +9,7 @@
 
 #define CONFIG_DIR_NAME "CleanConfigs" // 配置目录名称
 
-int cust_rule_clean(char * work_dir)
+int cust_rule_clean(void)
 {
     /// 配置目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];

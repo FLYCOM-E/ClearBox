@@ -26,13 +26,13 @@ struct file_rules
     long min_size;
 };
 
-static int clear_service(char * work_dir, char * storage_dir, char * config_name, char * dir_name);
+static int clear_service(char * storage_dir, char * config_name, char * dir_name);
 static int find_file(char * storage, char * file_dir, struct file_rules file_args[], int count);
 static int read_config(struct file_rules file_args[], char * config_file, int * count);
 static int find_size(struct file_rules file_args[], int index, long * max, long * min);
 static long get_size(char * value, char * unit);
 
-int file_manager(char * work_dir, int mode, char * config_name)
+int file_manager(int mode, char * config_name)
 {
     if (mode == 0)
     {
@@ -44,11 +44,9 @@ int file_manager(char * work_dir, int mode, char * config_name)
         config_name = NULL;
     }
     
-    int file_clear_disk = 0,                // 是否清理拓展储存文件
-        file_all_disk = 0;                  // 是否归类拓展储存文件
-    char file_dir_name[NAME_MAX + 1] = "",  // 归类目录名（可选）
-         settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
-    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
+    int file_clear_disk = 0,                    // 是否清理拓展储存文件
+        file_all_disk = 0;                     // 是否归类拓展储存文件
+    char file_dir_name[NAME_MAX + 1] = "";  // 归类目录名（可选）
     
     // 查找设置对应值
     file_all_disk = get_settings_prop(settings_file, "clearbox_file_all_disk", NULL, 0);
@@ -60,7 +58,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
     }
     
     // 调用函数（内部储存
-    if (clear_service(work_dir, STORAGES_DIR, config_name, file_dir_name) == 0)
+    if (clear_service(STORAGES_DIR, config_name, file_dir_name) == 0)
     {
         if (file_clear == 1)
         {
@@ -119,7 +117,7 @@ int file_manager(char * work_dir, int mode, char * config_name)
         snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
         
         // 调用函数（外部储存
-        if (clear_service(work_dir, sdcard_dir, config_name, file_dir_name) == 0)
+        if (clear_service(sdcard_dir, config_name, file_dir_name) == 0)
         {
             if (file_clear == 1)
             {
@@ -151,16 +149,15 @@ int file_manager(char * work_dir, int mode, char * config_name)
 /*
 文件配置读取/清理函数
 接收：
-    char * work_dir 配置目录路径
     char * storage_dir 储存根目录
     char * config_name 配置名称（仅文件清理模式需要）
     char * dir_name 归类目录名
 返回：
     int 成功返回 0，失败返回 -1
 */
-static int clear_service(char * work_dir, char * storage_dir, char * config_name, char * dir_name)
+static int clear_service(char * storage_dir, char * config_name, char * dir_name)
 {   
-    if (access(work_dir, F_OK) != 0 || access(storage_dir, F_OK) != 0)
+    if (access(storage_dir, F_OK) != 0)
     {
         return -1;
     }

@@ -13,7 +13,7 @@
 
 static int read_clear(char * config_file, int * success_config, int * failed_config, long * total_clear_size);
 
-int app_cust_rule_clean(char * work_dir, char * app_package, int mode)
+int app_cust_rule_clean(char * app_package, int mode)
 {
     // 拼接工作目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];

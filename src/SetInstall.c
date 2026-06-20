@@ -11,12 +11,10 @@
 #define PROP_STOP "clearbox_stop_install=1"     // PROP OPEN
 #define PROP_RESET "clearbox_stop_install=0"    // PROP CLOSE
 
-int set_install(char * work_dir, char * mode)
+int set_install(char * mode)
 {
     // Stop & Reset
     int success = 0;
-    char settings_file[strlen(work_dir) + sizeof(SETTINGS_FILE) + 2];
-    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     if (strcasecmp(mode, "STOP") == 0)
     {

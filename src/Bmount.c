@@ -13,14 +13,8 @@
 
 static int bind_mount(char * config_file, int mode);
 
-int bmount(char * work_dir, char * mode_str)
+int bmount(char * mode_str)
 {
-    if (access(work_dir, F_OK) != 0)
-    {
-        fprintf(stderr, L_OPEN_PATH_FAILED, work_dir, strerror(errno));
-        return -1;
-    }
-    
     if (s_grep(MOUNTS, "sdcardfs", 0) == 1)
     {
         // sdcardfs 不兼容

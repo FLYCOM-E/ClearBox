@@ -11,9 +11,13 @@
 #define SERVER_NAME "clearbox"                        // 进程名
 
 static int running(char * args[]);
-static int module_config(char * home_dir, char * mode, char * config_file);
-static int file_all(char * work_dir, char * settings_file, int auto_);
-static int fast_gc(char * argv[], char * settings_file, int auto_);
+static int module_config(char * mode, char * config_file);
+static int file_all(int auto_);
+static int fast_gc(char * argv[], int auto_);
+
+char home_dir[128] = "",            // 模块根目录
+     work_dir[128] = "",             // 配置目录
+     settings_file[PATH_MAX] = ""; // 设置文件
 
 LangType current_lang;
 
@@ -65,10 +69,7 @@ int main(int argc, char * argv[])
         return -1;
     }
     
-    char home_dir[128] = "",        // 模块根目录
-         work_dir[128] = "",        // 配置目录
-         path_file_line[256] = "";
-    
+    char path_file_line[256] = "";
     char * path_file_key = NULL;
     char * path_file_value = NULL;
     int path_file_err = 0;
@@ -136,7 +137,6 @@ int main(int argc, char * argv[])
     }
     
     // 定义设置配置文件
-    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     // 根据输入参数执行对应操作
@@ -151,19 +151,19 @@ int main(int argc, char * argv[])
                 switch (i)
                 {
                     case 0: 
-                        app_cust_rule_clean(work_dir, "null", 1);
+                        app_cust_rule_clean("null", 1);
                         break;
                     case 1: 
-                        fast_gc(argv, settings_file, 1);
+                        fast_gc(argv, 1);
                         break;
                     case 2: 
-                        app_cache_clean(work_dir, 0);
+                        app_cache_clean(0);
                         break;
                     case 3: 
-                        storage_clean(work_dir);
+                        storage_clean();
                         break;
                     case 4: 
-                        cust_rule_clean(work_dir);
+                        cust_rule_clean();
                         break;
                     case 5:
                         freezer_open();
@@ -178,23 +178,23 @@ int main(int argc, char * argv[])
         }
         
         // 文件归类是高资源占用操作不并行
-        file_all(work_dir, settings_file, 1);
+        file_all(1);
     }
     else if (strcasecmp(argv[1], "ClearCache") == 0)
     {
-        app_cache_clean(work_dir, 0);
+        app_cache_clean(0);
     }
     else if (strcasecmp(argv[1], "Clear_SCache") == 0)
     {
-        app_cache_clean(work_dir, 1);
+        app_cache_clean(1);
     }
     else if (strcasecmp(argv[1], "List_Dir") == 0)
     {
-        cust_rule_clean(work_dir);
+        cust_rule_clean();
     }
     else if (strcasecmp(argv[1], "All_Dir") == 0)
     {
-        storage_clean(work_dir);
+        storage_clean();
     }
     else if (strcasecmp(argv[1], "File_Clear") == 0)
     {
@@ -203,7 +203,7 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_ARGS_FAILED);
         }
         
-        file_manager(work_dir, 0, argv[2]);
+        file_manager(0, argv[2]);
     }
     else if (strcasecmp(argv[1], "Clear_App") == 0)
     {
@@ -212,15 +212,15 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_ARGS_FAILED);
         }
         
-        app_cust_rule_clean(work_dir, argv[2], 0);
+        app_cust_rule_clean(argv[2], 0);
     }
     else if (strcasecmp(argv[1], "Clear_App_All") == 0)
     {
-        app_cust_rule_clean(work_dir, "null", 1);
+        app_cust_rule_clean("null", 1);
     }
     else if (strcasecmp(argv[1], "File_All") == 0)
     {
-        file_all(work_dir, settings_file, 0);
+        file_all(0);
     }
     else if (strcasecmp(argv[1], "StopInstall") == 0)
     {
@@ -229,7 +229,7 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_ARGS_FAILED);
         }
         
-        set_install(work_dir, argv[2]);
+        set_install(argv[2]);
     }
     else if (strcasecmp(argv[1], "StopStorage") == 0)
     {
@@ -238,11 +238,11 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_ARGS_FAILED);
         }
         
-        set_storage(work_dir, argv[2]);
+        set_storage(argv[2]);
     }
     else if (strcasecmp(argv[1], "Fast_GC") == 0)
     {
-        fast_gc(argv, settings_file, 0);
+        fast_gc(argv, 0);
     }
     else if (strcasecmp(argv[1], "F2fs_GC") == 0)
     {
@@ -271,11 +271,11 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "StopCached") == 0)
     {
-        stop_cache_daemon(argv, work_dir);
+        stop_cache_daemon(argv);
     }
     else if (strcasecmp(argv[1], "Timed") == 0)
     {
-        time_daemon(argv, work_dir);
+        time_daemon(argv);
     }
     else if (strcasecmp(argv[1], "BindPath") == 0)
     {
@@ -284,7 +284,7 @@ int main(int argc, char * argv[])
             fprintf(stderr, L_ARGS_FAILED);
         }
         
-        bmount(work_dir, argv[2]);
+        bmount(argv[2]);
     }
     else if (strcasecmp(argv[1], "configManager") == 0)
     {
@@ -294,7 +294,7 @@ int main(int argc, char * argv[])
         }
         else if (strcmp(argv[2], "backup") == 0)
         {
-            module_config(home_dir, argv[2], "");
+            module_config(argv[2], "");
         }
         else
         {
@@ -302,7 +302,7 @@ int main(int argc, char * argv[])
             {
                 fprintf(stderr, L_ARGS_FAILED);
             }
-            module_config(home_dir, argv[2], argv[3]);
+            module_config(argv[2], argv[3]);
         }
     }
     else if (strcasecmp(argv[1], "help") == 0 ||
@@ -349,7 +349,7 @@ static int running(char * args[])
 }
 
 // 配置备份 & 恢复
-static int module_config(char * home_dir, char * mode, char * config_file)
+static int module_config(char * mode, char * config_file)
 {
     char bash[128] = "";
     snprintf(bash, sizeof(bash), "%s/ConfigManager.sh", home_dir);
@@ -358,7 +358,7 @@ static int module_config(char * home_dir, char * mode, char * config_file)
 }
 
 // 文件归类
-static int file_all(char * work_dir, char * settings_file, int auto_)
+static int file_all(int auto_)
 {
     if (auto_ == 1) // 根据prop决定是否运行文件归类（仅用于一键/自动清理
     {
@@ -368,11 +368,11 @@ static int file_all(char * work_dir, char * settings_file, int auto_)
             return 0;
         }
     }
-    return file_manager(work_dir, 1, "null");
+    return file_manager(1, "null");
 }
 
 // 快速 GC
-static int fast_gc(char * argv[], char * settings_file, int auto_)
+static int fast_gc(char * argv[], int auto_)
 {
     if (auto_ == 1)
     {

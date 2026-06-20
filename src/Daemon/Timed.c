@@ -43,7 +43,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
 static int get_config(char * config_file, char * config_file_name, struct config_struct config[], int count);
 static int running(char * command);
 
-int time_daemon(char * argv[], char * work_dir)
+int time_daemon(char * argv[])
 {
     // 设置命名空间
     if (set_name_space() != 0)

@@ -11,12 +11,10 @@
 #define PROP_STOP "clearbox_stop_storage=1"     // PROP OPEN
 #define PROP_RESET "clearbox_stop_storage=0"    // PROP CLOSE
 
-int set_storage(char * work_dir, char * mode)
+int set_storage(char * mode)
 {
     // Stop & Reset
     int success = 0;
-    char settings_file[strlen(work_dir) + sizeof(SETTINGS_FILE) + 2];
-    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     if (strcasecmp(mode, "STOP") == 0)
     {

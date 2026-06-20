@@ -22,7 +22,7 @@ static int read_whitelist(char * whitelist_file,
                           char whitelist[][NAME_MAX],
                           int * read_whitelist_app);
 
-int stop_cache_daemon(char * argv[], char * work_dir)
+int stop_cache_daemon(char * argv[])
 {
     // 定义储存文件
     char rom_file[strlen(work_dir) + sizeof(ROM_NAME) + 2],
@@ -297,7 +297,6 @@ int stop_cache_daemon(char * argv[], char * work_dir)
 接收：
     char * top_app 前台App包名
     char * reset_app 待恢复App包名
-    char * work_dir 配置目录
     int skip_reset 是否跳过恢复
     char whitelist[][NAME_MAX] 白名单列表
 */

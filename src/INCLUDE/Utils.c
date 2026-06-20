@@ -2,7 +2,7 @@
                     GNU GENERAL PUBLIC
                         Version 3
 
-      此 Code 来自 ClearBox 模块，用于模块内部提供必要功能
+      所有函数来自 ClearBox 模块，用于模块内部提供必要功能
 */
 
 #include "main.h"
@@ -233,7 +233,7 @@ int post(const char * id, const char * title, const char * message, ...)
 /*
 一个Log函数，用于提供一个统一的Log写入接口
 接收：
-    const char * config_dir 模块配置目录，Log会在这里创建
+    const char * config_dir 配置目录
     const char * name_id 进程名
     const char * text Log 信息（支持格式化）
     ... 格式化内容（可选）
@@ -295,23 +295,23 @@ int set_name_space(void)
 /*
 此函数用于获取模块 Settings 设置信息
 接收：
-    char * settings_file 设置文件（完整路径）
+    char * config_file 设置文件（完整路径）
     char * key 具体 prop
     char * str 字符串指针。可选，如果目标是字符串则复制值至此字符串
         └── int str_len 如果传递 str 用于接收字符串则需要传递 str 大小
 返回：
     int 返回 -1 失败，否则返回具体 value
 */
-int get_settings_prop(char * settings_file, char * key, char * str, size_t str_len)
+int get_settings_prop(char * config_file, char * key, char * str, size_t str_len)
 {
     int value = 0;
     char * line_key = NULL, * value_p = NULL, * ptr = NULL;
     char line[SETTINGS_FILE_MAX_LINE] = {0};
     
-    FILE * settings_file_fp = fopen(settings_file, "r");
+    FILE * settings_file_fp = fopen(config_file, "r");
     if (settings_file_fp == NULL)
     {
-        fprintf(stderr, L_OPEN_FILE_FAILED, settings_file, strerror(errno));
+        fprintf(stderr, L_OPEN_FILE_FAILED, config_file, strerror(errno));
         return -1;
     }
     while (fgets(line, sizeof(line), settings_file_fp))
@@ -507,4 +507,70 @@ double byte_to_size(long byte, char * unit)
     }
     
     return size;
+}
+
+/*
+此函数用于代替外部 chattr 避免进程调用开销
+接收：
+    char * path 路径
+    int mode 模式，1 锁定，0 解锁
+    int dir 是否递归，1 递归，0 仅锁定不递归，非目录无效
+返回：
+    成功返回 0，失败返回 -1
+*/
+int s_chattr(char * path, int mode, int dir)
+{
+    int fd = open(path, O_RDONLY | O_NONBLOCK | O_NOCTTY | O_NOFOLLOW);
+    if (fd < 0)
+    {
+        return -1;
+    }
+    unsigned int flags = 0;
+    if (ioctl(fd, FS_IOC_GETFLAGS, &flags) < 0)
+    {
+        close(fd);
+        return -1;
+    }
+    
+    if (mode == 1)
+    {
+        flags |= FS_IMMUTABLE_FL;
+    }
+    else
+    {
+        flags &= ~(unsigned int)FS_IMMUTABLE_FL;
+    }
+    
+    if (ioctl(fd, FS_IOC_SETFLAGS, &flags) < 0)
+    {
+        close(fd);
+        return -1;
+    }
+    close(fd);
+    
+    if (dir != 1)
+    {
+        return 0;
+    }
+    
+    DIR * path_dp = opendir(path);
+    if (path_dp == NULL)
+    {
+        return 0;
+    }
+    struct dirent * entry;
+    while ((entry = readdir(path_dp)))
+    {
+        if (strcmp(entry -> d_name, ".") == 0 ||
+            strcmp(entry -> d_name, "..") == 0)
+        {
+            continue;
+        }
+        char paths[strlen(path) + strlen(entry -> d_name) + 2];
+        snprintf(paths, sizeof(paths), "%s/%s", path, entry -> d_name);
+        s_chattr(paths, mode, dir);
+    }
+    closedir(path_dp);
+    
+    return 0;
 }

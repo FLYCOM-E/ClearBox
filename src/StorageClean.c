@@ -11,20 +11,18 @@
 #define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录
 #define STORAGES_DIR "/storage/emulated/0"        // 储存目录
 
-static int storage_cache_clear(char * data_path, char * work_dir);
+static int storage_cache_clear(char * data_path);
 static int storage_clear(char * storage_dir, int home);
 
-int storage_clean(char * work_dir)
+int storage_clean(void)
 {
     int clean_count = 0;
-    char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
-    snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     // 设置查找对应值
     int clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
     
     // 处理内部储存
-    storage_cache_clear(STORAGES_DIR, work_dir);
+    storage_cache_clear(STORAGES_DIR);
     clean_count = storage_clear(STORAGES_DIR, 1);
     
     if (clean_count == -1)
@@ -61,7 +59,7 @@ int storage_clean(char * work_dir)
         snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
         
         // 调用函数（外部储存
-        storage_cache_clear(sdcard_dir, work_dir);
+        storage_cache_clear(sdcard_dir);
         clean_count = storage_clear(sdcard_dir, 1);
         
         if (clean_count == -1)
@@ -84,11 +82,10 @@ int storage_clean(char * work_dir)
 内/外部储存App缓存清理函数
 接收：
     char * data_path 储存根目录
-    char * work_dir 配置目录
 返回：
     int 成功返回 0，失败返回 -1
 */
-static int storage_cache_clear(char * data_path, char * work_dir)
+static int storage_cache_clear(char * data_path)
 {
     if (access(data_path, F_OK) != 0)
     {

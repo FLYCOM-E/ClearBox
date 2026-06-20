@@ -14,10 +14,10 @@
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 
-static long user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size);
+static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size);
 static int system_cache_clean(void);
 
-int app_cache_clean(char * work_dir, int mode)
+int app_cache_clean(int mode)
 {
     // 用户软件缓存清理
     if (mode == 0)
@@ -32,8 +32,6 @@ int app_cache_clean(char * work_dir, int mode)
         clear_disk 是否清理 SD 软件缓存
         */
         int clear_cache_size = 0, clear_disk = 0;
-        char settings_file[strlen(work_dir) + strlen(SETTINGS_FILE) + 2];
-        snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
         
         // 获取设置值
         clear_cache_size = get_settings_prop(settings_file, "clearbox_clear_cache_size", NULL, 0);
@@ -102,12 +100,12 @@ int app_cache_clean(char * work_dir, int mode)
 /* 
 此函数用于清理软件缓存，返回总清理大小
 接收：
-    char * work_dir 软件数据目录，自动处理多用户 ID，兼容拓展储存
+    char * data_dir 软件数据目录，自动处理多用户 ID，兼容拓展储存
     int * clear_cache_size 缓存清理限制大小
 返回：
     long 清理垃圾大小（单位：Byte），失败返回 -1
 */
-static long user_cache_clean(char * work_dir, char * whitelist_file, int clear_cache_size)
+static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size)
 {
     // 定义所需变量
     int count = 0, no_count = 0;
@@ -135,10 +133,10 @@ static long user_cache_clean(char * work_dir, char * whitelist_file, int clear_c
     
     // 打开 User ID 目录
     struct dirent * uid_dir;
-    DIR * uid_dir_dp = opendir(work_dir);
+    DIR * uid_dir_dp = opendir(data_dir);
     if (uid_dir_dp == NULL)
     {
-        fprintf(stderr, L_OPEN_PATH_FAILED, work_dir, strerror(errno));
+        fprintf(stderr, L_OPEN_PATH_FAILED, data_dir, strerror(errno));
         return -1;
     }
     
@@ -161,7 +159,7 @@ static long user_cache_clean(char * work_dir, char * whitelist_file, int clear_c
             }
             
             // 拼接软件缓存目录
-            snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", work_dir, uid_dir -> d_name, package_list[i] + 8);
+            snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", data_dir, uid_dir -> d_name, package_list[i] + 8);
             if (access(app_cache_dir, F_OK) != 0)
             {
                 continue;
