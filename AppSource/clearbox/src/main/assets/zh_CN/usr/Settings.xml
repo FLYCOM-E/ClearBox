@@ -8,6 +8,13 @@
 <!-- END -->
 <!-- START -->
 <group title=" ">
+    <pages>
+        <page title="配置备份" config-sh="cat BackupConfigs.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
     <switch>
         <title>终端UI开关</title>
             <get>
@@ -33,13 +40,6 @@
             fi
             </set>
     </switch>
-</group>
-<!-- END -->
-<!-- START -->
-<group title=" ">
-    <pages>
-        <page title="配置备份" config-sh="cat BackupConfigs.xml"/>
-    </pages>
 </group>
 <!-- END -->
 <!-- START -->
