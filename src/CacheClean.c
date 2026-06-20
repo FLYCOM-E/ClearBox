@@ -13,6 +13,7 @@
 #define WHITELIST_FILE "ClearWhitelist.prop"                   // 白名单文件名
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
+#define SERVER_NAME "CacheClean"
 
 static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size);
 static int system_cache_clean(void);

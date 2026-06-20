@@ -8,6 +8,7 @@
 #include "INCLUDE/main.h"
 
 #define CONFIG_DIR_NAME "CleanConfigs" // 配置目录名称
+#define SERVER_NAME "StorageRuleClean"
 
 int cust_rule_clean(void)
 {
