@@ -179,36 +179,22 @@ int main(int argc, char * argv[])
         
         // 文件归类是高资源占用操作不并行
         file_all(work_dir, settings_file, 1);
-        
-        write_log(work_dir, SERVER_NAME, "优化清理");
     }
     else if (strcasecmp(argv[1], "ClearCache") == 0)
     {
-        if (app_cache_clean(work_dir, 0) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "清理第三方软件缓存失败");
-        }
+        app_cache_clean(work_dir, 0);
     }
     else if (strcasecmp(argv[1], "Clear_SCache") == 0)
     {
-        if (app_cache_clean(work_dir, 1) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "清理系统软件缓存失败");
-        }
+        app_cache_clean(work_dir, 1);
     }
     else if (strcasecmp(argv[1], "List_Dir") == 0)
     {
-        if (cust_rule_clean(work_dir) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "自定义规则清理失败");
-        }
+        cust_rule_clean(work_dir);
     }
     else if (strcasecmp(argv[1], "All_Dir") == 0)
     {
-        if (storage_clean(work_dir) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "清理储存目录失败");
-        }
+        storage_clean(work_dir);
     }
     else if (strcasecmp(argv[1], "File_Clear") == 0)
     {
@@ -216,10 +202,8 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        else if (file_manager(work_dir, 0, argv[2]) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "自定义文件清理失败");
-        }
+        
+        file_manager(work_dir, 0, argv[2]);
     }
     else if (strcasecmp(argv[1], "Clear_App") == 0)
     {
@@ -227,24 +211,16 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        else if (app_cust_rule_clean(work_dir, argv[2], 0) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "自定义软件清理失败");
-        }
+        
+        app_cust_rule_clean(work_dir, argv[2], 0);
     }
     else if (strcasecmp(argv[1], "Clear_App_All") == 0)
     {
-        if (app_cust_rule_clean(work_dir, "null", 1) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "软件规则清理失败");
-        }
+        app_cust_rule_clean(work_dir, "null", 1);
     }
     else if (strcasecmp(argv[1], "File_All") == 0)
     {
-        if (file_all(work_dir, settings_file, 0) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "自定义文件归类失败");
-        }
+        file_all(work_dir, settings_file, 0);
     }
     else if (strcasecmp(argv[1], "StopInstall") == 0)
     {
@@ -252,10 +228,8 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        else if (set_install(work_dir, argv[2]) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "阻止安装失败");
-        }
+        
+        set_install(work_dir, argv[2]);
     }
     else if (strcasecmp(argv[1], "StopStorage") == 0)
     {
@@ -263,31 +237,20 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        else if (set_storage(work_dir, argv[2]) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "内部储存固定失败");
-        }
+        
+        set_storage(work_dir, argv[2]);
     }
     else if (strcasecmp(argv[1], "Fast_GC") == 0)
     {
-        if (fast_gc(argv, settings_file, 0) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "FAST GC 失败");
-        }
+        fast_gc(argv, settings_file, 0);
     }
     else if (strcasecmp(argv[1], "F2fs_GC") == 0)
     {
-        if (disk_gc(argv, 0) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "F2FS GC 失败");
-        }
+        disk_gc(argv, 0);
     }
     else if (strcasecmp(argv[1], "Dexoat_1") == 0)
     {
-        if (dexoat(0, "null") != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "运行系统Dexoat失败");
-        }
+        dexoat(0, "null");
     }
     else if (strcasecmp(argv[1], "Dexoat_2") == 0)
     {
@@ -295,17 +258,12 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        else if (dexoat(1, argv[2]) != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "自定义模式Dexoat失败");
-        }
+        
+        dexoat(1, argv[2]);
     }
     else if (strcasecmp(argv[1], "Dexoat_3") == 0)
     {
-        if (dexoat(1, "space") != 0)
-        {
-            write_log(work_dir, SERVER_NAME, "Dexoat RESET 失败");
-        }
+        dexoat(1, "space");
     }
     else if (strcasecmp(argv[1], "Freezer") == 0)
     {
@@ -325,6 +283,7 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
+        
         bmount(work_dir, argv[2]);
     }
     else if (strcasecmp(argv[1], "configManager") == 0)
