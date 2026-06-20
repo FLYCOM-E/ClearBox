@@ -8,9 +8,9 @@
 #include "INCLUDE/main.h"
 
 #define MAX_APPLIST 3000                                    // 软件列表最大数量
-#define DATA_DIR "/data/user"                               // 软件数据根目录
+#define DATA_DIR "/data/user"                                  // 软件数据根目录
 #define CARD_HOME "/mnt/expand"                             // 拓展储存根目录
-#define WHITELIST_FILE "ClearWhitelist.prop"                // 白名单文件名
+#define WHITELIST_FILE "ClearWhitelist.prop"                   // 白名单文件名
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 

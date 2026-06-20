@@ -8,8 +8,8 @@
 #include "INCLUDE/main.h"
 
 #define CONFIG_DIR_NAME "BindConfigs"         // 配置目录名
-#define DATA_DIR "/data/media/0"                // 内部储存根目录
-#define MOUNTS "/proc/mounts"                  // 系统挂载列表
+#define DATA_DIR "/data/media/0"               // 内部储存根目录
+#define MOUNTS "/proc/mounts"                 // 系统挂载列表
 
 static int bind_mount(char * config_file, int mode);
 

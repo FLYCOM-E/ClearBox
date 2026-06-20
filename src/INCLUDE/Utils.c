@@ -172,16 +172,23 @@ long get_path_size(char * path)
 }
 
 /*
-通知发送函数，通过切换用户至shell并使用Shell发送通知
+通知发送函数，切换用户至 uid 2000 通过 Shell 发送通知
 接收：
-    const char * title 通知标题
-    const char * message 消息内容
     const char * id 消息 ID，为空则随机生成
+    const char * title 通知标题
+    const char * message 消息内容（支持格式化）
+    ... 格式化内容（可选）
 返回：
     int 成功返回 0，失败返回 -1
 */
-int post(const char * title, const char * message, const char * id)
+int post(const char * id, const char * title, const char * message, ...)
 {
+    char buffer[PATH_MAX] = "";
+    va_list args;
+    va_start(args, message);
+    vsnprintf(buffer, sizeof(buffer), message, args);
+    va_end(args);
+    
     //生成一个随机ID
     char rand_str[24] = {0};
     if (strcmp(id, "") == 0)
@@ -203,7 +210,7 @@ int post(const char * title, const char * message, const char * id)
     if (new_pid == 0)
     {
         setuid(2000);
-        execlp("cmd", "cmd", "notification", "post", "-t", title, rand_str, message, NULL);
+        execlp("cmd", "cmd", "notification", "post", "-t", title, rand_str, buffer, NULL);
         _exit(127);
     }
     else
@@ -226,12 +233,19 @@ int post(const char * title, const char * message, const char * id)
 /*
 一个Log函数，用于提供一个统一的Log写入接口
 接收：
-    char * config_dir 模块配置目录，Log会在这里创建
-    char * name_id 进程名
-    char * text Log信息
+    const char * config_dir 模块配置目录，Log会在这里创建
+    const char * name_id 进程名
+    const char * text Log 信息（支持格式化）
+    ... 格式化内容（可选）
 */
-void write_log(char * config_dir, char * name_id, char * text)
+void write_log(const char * config_dir, const char * name_id, const char * text, ...)
 {
+    char buffer[PATH_MAX] = "";
+    va_list args;
+    va_start(args, text);
+    vsnprintf(buffer, sizeof(buffer), text, args);
+    va_end(args);
+    
     //获取当前时间（用于log）
     char now_time[64] = "";
     time_t now_time_tmp = time(NULL);
@@ -244,7 +258,7 @@ void write_log(char * config_dir, char * name_id, char * text)
     FILE * log_file_fp = fopen(log_file, "a+");
     if (log_file_fp)
     {
-        fprintf(log_file_fp, "[%s] <%s> %s\n", now_time, name_id, text);
+        fprintf(log_file_fp, "[%s] <%s> %s\n", now_time, name_id, buffer);
         fclose(log_file_fp);
     }
     else

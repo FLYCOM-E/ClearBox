@@ -85,27 +85,23 @@ int time_daemon(char * argv[], char * work_dir)
     char inotify_buffer[PATH_MAX] = "";
     
     // Daemon
-    char log_text[strlen(L_SERVER_START_ERR) + strlen(L_TD_START_SUCCESS) + 128];
     if (s_daemon() != 0)
     {
-        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
-        write_log(work_dir, SERVER_NAME, log_text);
+        write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
         return -1;
     }
     if (s_signal() != 0)
     {
-        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
-        write_log(work_dir, SERVER_NAME, log_text);
+        write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
         return -1;
     }
     else
     {
         sig_flag = 1;
     }
-    snprintf(log_text, sizeof(log_text), L_TD_START_SUCCESS, read_config_count, getpid());
-    post(SERVER_NAME, log_text, SERVER_NAME);
-    write_log(work_dir, SERVER_NAME, log_text);
     set_server_name(argv, SERVER_NAME);
+    post(SERVER_NAME, SERVER_NAME, L_TD_START_SUCCESS, read_config_count, getpid());
+    write_log(work_dir, SERVER_NAME, L_TD_START_SUCCESS, read_config_count, getpid());
     
     while (sig_flag)
     {
@@ -140,9 +136,7 @@ int time_daemon(char * argv[], char * work_dir)
                     {
                         if (read_config(config_dir, &read_config_count, config, event -> name) == 0)
                         {
-                            char message[strlen(L_TD_LOAD_CONFIG_SUCCESS) + strlen(event -> name) + 2];
-                            snprintf(message, sizeof(message), L_TD_LOAD_CONFIG_SUCCESS, event -> name);
-                            post(SERVER_NAME, message, event -> name);
+                            post(event -> name, SERVER_NAME, L_TD_LOAD_CONFIG_SUCCESS, event -> name);
                         }
                     }
                     
@@ -216,7 +210,7 @@ int time_daemon(char * argv[], char * work_dir)
                 // 如果有设置通知则发送
                 if (config[i].post == 1)
                 {
-                    post(config[i].title, config[i].message, config[i].config_name);
+                    post(config[i].config_name, config[i].title, config[i].message);
                 }
                 
                 // 配置文件
@@ -242,10 +236,7 @@ int time_daemon(char * argv[], char * work_dir)
                     if (success != 0 &&
                         difftime(now_time, config[i].last_error_notify) >= 3600) // 1小时
                     {
-                        char error_text[512] = {0};
-                        snprintf(error_text, sizeof(error_text), L_TD_CONFIG_WRITE_ERROR,
-                                 config[i].config_name);
-                        post(SERVER_NAME, error_text, SERVER_NAME);
+                        post(SERVER_NAME, SERVER_NAME, L_TD_CONFIG_WRITE_ERROR, config[i].config_name);
                         config[i].last_error_notify = now_time; // 记录上次通知时间，避免短时间多次通知
                     }
                 }

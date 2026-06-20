@@ -113,27 +113,23 @@ int stop_cache_daemon(char * argv[], char * work_dir)
     }
     
     // 脱离终端
-    char log_text[strlen(L_SERVER_START_ERR) + strlen(L_SCD_START_SUCCESS) + 128];
     if (s_daemon() != 0)
     {
-        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
-        write_log(work_dir, SERVER_NAME, log_text);
+        write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
         return -1;
     }
     if (s_signal() != 0)
     {
-        snprintf(log_text, sizeof(log_text), L_SERVER_START_ERR, strerror(errno));
-        write_log(work_dir, SERVER_NAME, log_text);
+        write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
         return -1;
     }
     else
     {
         sig_flag = 1;
     }
-    snprintf(log_text, sizeof(log_text), L_SCD_START_SUCCESS, getpid());
-    post(SERVER_NAME, log_text, SERVER_NAME);
-    write_log(work_dir, SERVER_NAME, log_text);
     set_server_name(argv, SERVER_NAME);
+    post(SERVER_NAME, SERVER_NAME, L_SCD_START_SUCCESS, getpid());
+    write_log(work_dir, SERVER_NAME, L_SCD_START_SUCCESS, getpid());
     
     /* 
     等待时间
@@ -156,7 +152,7 @@ int stop_cache_daemon(char * argv[], char * work_dir)
         // 检查获取前台失败次数
         if (get_error == max_get_error)
         {
-            post(SERVER_NAME, L_SCD_GETAPP_ERR_EXIT, SERVER_NAME);
+            post(SERVER_NAME, SERVER_NAME, L_SCD_GETAPP_ERR_EXIT);
             break;
         }
         if (empty_count >= max_empty_count)

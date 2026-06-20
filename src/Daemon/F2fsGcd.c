@@ -110,11 +110,10 @@ static int f2fs_gc(char * argv[])
         sig_flag = 1;
     }
     set_server_name(argv, SERVER_NAME);
-    post(SERVER_NAME, L_FG_START, SERVER_NAME);
+    post(SERVER_NAME, SERVER_NAME, L_FG_START);
     
     // 等待循环
-    char cache[16] = "",
-         post_str[128] = "";;
+    char cache[16] = "";
     int time_s = 0, time_m = 0;
     
     for ( ; ; )
@@ -129,7 +128,7 @@ static int f2fs_gc(char * argv[])
         }
         if (time_m == TIMEOUT)
         {
-            post(SERVER_NAME, L_FG_ERR_TIMEOUT, SERVER_NAME);
+            post(SERVER_NAME, SERVER_NAME, L_FG_ERR_TIMEOUT);
             break; // 超时退出
         }
         
@@ -140,7 +139,7 @@ static int f2fs_gc(char * argv[])
             fclose(sysfs_file_fp);
             if (strtol(cache, NULL, 10) == 0)
             {
-                post(SERVER_NAME, L_FG_END, SERVER_NAME);
+                post(SERVER_NAME, SERVER_NAME, L_FG_END);
                 break; // GC 完成
             }
         }
@@ -148,17 +147,16 @@ static int f2fs_gc(char * argv[])
         // 这是一个时间打印逻辑
         if (time_m == 0)
         {
-            snprintf(post_str, sizeof(post_str), L_FG_RUN_S, time_s);
+            post(SERVER_NAME, SERVER_NAME, L_FG_RUN_S, time_s);
         }
         else if (time_s == 0)
         {
-            snprintf(post_str, sizeof(post_str), L_FG_RUN_M, time_m);
+            post(SERVER_NAME, SERVER_NAME, L_FG_RUN_M, time_m);
         }
         else
         {
-            snprintf(post_str, sizeof(post_str), L_FG_RUN_MS, time_m, time_s);
+            post(SERVER_NAME, SERVER_NAME, L_FG_RUN_MS, time_m, time_s);
         }
-        post(SERVER_NAME, post_str, SERVER_NAME);
     }
     
     // 读取最新脏段/空闲段
@@ -169,13 +167,12 @@ static int f2fs_gc(char * argv[])
     // 如果脏段反增说明可能此设备不支持或 GC 未完全完成
     if (old_f2fs_dirty > f2fs_dirty)
     {
-        snprintf(post_str, sizeof(post_str), L_FG_END_DIRTY, old_f2fs_dirty - f2fs_dirty);
+        post(SERVER_NAME, SERVER_NAME, L_FG_END_DIRTY, (old_f2fs_dirty - f2fs_dirty));
     }
     else
     {
-        snprintf(post_str, sizeof(post_str), L_FG_END_DIRTY_2, f2fs_dirty - old_f2fs_dirty);
+        post(SERVER_NAME, SERVER_NAME, L_FG_END_DIRTY_2, (f2fs_dirty - old_f2fs_dirty));
     }
-    post(SERVER_NAME, post_str, SERVER_NAME);
     
     return 0;
 }
