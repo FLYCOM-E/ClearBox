@@ -75,7 +75,7 @@ int time_daemon(char * argv[])
         fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
         return -1;
     }
-    int inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
+    int inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF | IN_MOVED_TO);
     if (inotify_wd == -1)
     {
         fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
@@ -123,11 +123,9 @@ int time_daemon(char * argv[])
                         watch = 0;
                         break;
                     }
-                    if (event -> mask & IN_CLOSE_WRITE)
-                    {
-                        file_edited = 1;
-                    }
-                    if (event -> mask & IN_CREATE)
+                    if (event -> mask & IN_CLOSE_WRITE ||
+                       event -> mask & IN_CREATE ||
+                       event -> mask & IN_MOVED_TO)
                     {
                         file_edited = 1;
                     }
