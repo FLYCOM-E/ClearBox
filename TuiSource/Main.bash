@@ -953,8 +953,9 @@ case "$input" in
             echo -e "\033[104m \t$Str_1\033[0m"
             echo -e "\033[104m \t\t$Str_2\033[0m\n"
             echo -e "\033[93m 1:\tGitHub\033[0m\n"
-            echo -e "\033[93m 2:\tYHChat\033[0m\n"
-            echo -e "\033[93m 3:\tTelegram\033[0m\n"
+            echo -e "\033[93m 2:\tTelegram channel\033[0m\n"
+            echo -e "\033[93m 3:\tTelegram group\033[0m\n"
+            echo -e "\033[93m 4:\tYHChat\033[0m\n"
             if [ "$clearbox_debug_mode" = 1 ]; then
                 DebugTitle=$(echo -en "\033[91m DEBUG MODE \033[0m")
                 echo -e "\t\t\t\t$DebugTitle"
@@ -969,12 +970,17 @@ case "$input" in
                   fi
                   ;;
                 2)
-                  if ! am start -a android.intent.action.VIEW -d "https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950" >>/dev/null; then
+                  if ! am start -a android.intent.action.VIEW -d "https://t.me/clearbox_update" >>/dev/null; then
                       echo " » Error"
                   fi
                   ;;
                 3)
-                  if ! am start -a android.intent.action.VIEW -d "https://t.me/clearboxmodule" >>/dev/null; then
+                  if ! am start -a android.intent.action.VIEW -d "https://t.me/clearbox_group" >>/dev/null; then
+                      echo " » Error"
+                  fi
+                  ;;
+                4)
+                  if ! am start -a android.intent.action.VIEW -d "https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950" >>/dev/null; then
                       echo " » Error"
                   fi
                   ;;

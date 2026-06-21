@@ -123,10 +123,6 @@ int stop_cache_daemon(char * argv[])
         write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
         return -1;
     }
-    else
-    {
-        sig_flag = 1;
-    }
     set_server_name(argv, SERVER_NAME);
     post(SERVER_NAME, SERVER_NAME, L_SCD_START_SUCCESS, getpid());
     write_log(work_dir, SERVER_NAME, L_SCD_START_SUCCESS, getpid());
@@ -147,7 +143,7 @@ int stop_cache_daemon(char * argv[])
                  max_empty_count = 30;
     
     // Start
-    while (sig_flag)
+    while (sig_flag == 0)
     {
         // 检查获取前台失败次数
         if (get_error == max_get_error)
@@ -287,8 +283,13 @@ int stop_cache_daemon(char * argv[])
         }
         // 循环返回 ===
     }
-    
     close(inotify_fd);
+    
+    if (sig_flag == SIGHUP)
+    {
+        execv("/proc/self/exe", argv);
+    }
+    
     return 0;
 }
 

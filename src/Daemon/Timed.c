@@ -64,7 +64,7 @@ int time_daemon(char * argv[])
     }
     if (read_config_count == 0)
     {
-        fprintf(stderr, L_NOCONFIG);
+        write_log(work_dir, SERVER_NAME, L_NOCONFIG);
         return -1;
     }
     
@@ -72,13 +72,13 @@ int time_daemon(char * argv[])
     int inotify_fd = inotify_init1(IN_NONBLOCK);
     if (inotify_fd == -1)
     {
-        fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
         return -1;
     }
     int inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF | IN_MOVED_TO);
     if (inotify_wd == -1)
     {
-        fprintf(stderr, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
         return -1;
     }
     int watch = 1;
@@ -95,15 +95,11 @@ int time_daemon(char * argv[])
         write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
         return -1;
     }
-    else
-    {
-        sig_flag = 1;
-    }
     set_server_name(argv, SERVER_NAME);
     post(SERVER_NAME, SERVER_NAME, L_TD_START_SUCCESS, read_config_count, getpid());
     write_log(work_dir, SERVER_NAME, L_TD_START_SUCCESS, read_config_count, getpid());
     
-    while (sig_flag)
+    while (sig_flag == 0)
     {
         if (watch == 1)
         {
@@ -253,8 +249,13 @@ int time_daemon(char * argv[])
         while (waitpid(-1, NULL, WNOHANG) > 0);
         sleep((unsigned int)(60 - (time(NULL) % 60)));
     }
-    
     close(inotify_fd);
+    
+    if (sig_flag == SIGHUP)
+    {
+        execv("/proc/self/exe", argv);
+    }
+    
     return 0;
 }
 
@@ -294,7 +295,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
         {
             if (last_index == -1)
             {
-                printf(L_TD_MAX_CONFIG, MAX_CONFIG);
+                write_log(work_dir, SERVER_NAME, L_TD_MAX_CONFIG, MAX_CONFIG);
                 return -1;
             }
             else
@@ -313,7 +314,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
         // 设置配置为启用并保留名称
         config[index].enable = 1;
         snprintf(config[index].config_name, sizeof(config[index].config_name), "%s", config_file_name);
-        printf(L_TD_CONFIG_SUCCESS, config_file_name);
+        write_log(work_dir, SERVER_NAME, L_TD_CONFIG_SUCCESS, config_file_name);
         
         if (index >= * read_config_count)
         {
@@ -360,7 +361,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
         {
             if (last_index == -1)
             {
-                printf(L_TD_MAX_CONFIG, MAX_CONFIG);
+                write_log(work_dir, SERVER_NAME, L_TD_MAX_CONFIG, MAX_CONFIG);
                 return -1;
             }
             else
@@ -379,7 +380,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
         // 设置配置为启用并保留名称
         config[index].enable = 1;
         snprintf(config[index].config_name, sizeof(config[index].config_name), "%s", entry -> d_name);
-        printf(L_TD_CONFIG_SUCCESS, entry -> d_name);
+        write_log(work_dir, SERVER_NAME, L_TD_CONFIG_SUCCESS, entry -> d_name);
         
         if (index >= * read_config_count)
         {
@@ -388,7 +389,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
         
         if (* read_config_count == MAX_CONFIG) // 限制配置数量
         {
-            printf(L_TD_MAX_CONFIG, MAX_CONFIG);
+            write_log(work_dir, SERVER_NAME, L_TD_MAX_CONFIG, MAX_CONFIG);
             break;
         }
     }
@@ -440,7 +441,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
         char * value = strtok_r(NULL, "=", &line_p);
         if (value == NULL || key == NULL)
         {
-            fprintf(stderr, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
+            write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
             continue;
         }
         
@@ -462,7 +463,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
             }
             else
             {
-                fprintf(stderr, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
+                write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
                 continue;
             }
         }
@@ -488,7 +489,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
             // 不检查命令（不好做检查）
             if (strlen(value) >= MAX_COMMAND_LEN)
             {
-                fprintf(stderr, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
+                write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
                 continue;
             }
             snprintf(config[count].run, sizeof(config[count].run), "%s", value);
@@ -512,7 +513,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
                     end_hour > 23 ||
                     end_hour < 0)
                 {
-                    fprintf(stderr, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
+                    write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
                     continue;
                 }
                 
@@ -522,7 +523,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
             }
             else
             {
-                fprintf(stderr, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
+                write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
                 continue;
             }
         }
@@ -535,11 +536,11 @@ static int get_config(char * config_file, char * config_file_name, struct config
             {
                 if (strlen(title) > MAX_TITLE_LEN)
                 {
-                    fprintf(stderr, L_TD_W_POST_TITLE_TOOLONG, config_file_name);
+                    write_log(work_dir, SERVER_NAME, L_TD_W_POST_TITLE_TOOLONG, config_file_name);
                 }
                 if (strlen(message + 1) > MAX_MESSAGE_LEN)
                 {
-                    fprintf(stderr, L_TD_W_POST_MESSAGE_TOOLONG, config_file_name);
+                    write_log(work_dir, SERVER_NAME, L_TD_W_POST_MESSAGE_TOOLONG, config_file_name);
                 }
                 snprintf(config[count].title, sizeof(config[count].title), "%s", title);
                 snprintf(config[count].message, sizeof(config[count].message), "%s", message + 1);
@@ -547,13 +548,13 @@ static int get_config(char * config_file, char * config_file_name, struct config
             }
             else
             {
-                fprintf(stderr, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
+                write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
                 continue;
             }
         }
         else
         {
-            fprintf(stderr, L_TD_LINE_ERR_KEY, config_file_name, line_count, key);
+            write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_KEY, config_file_name, line_count, key);
         }
     }
     fclose(config_fp);
@@ -562,7 +563,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
         date_ != 1 ||
         run_ != 1) // post、in 非必须字段不检查
     {
-        fprintf(stderr, L_TD_CONFIG_ERROR, config_file_name);
+        write_log(work_dir, SERVER_NAME, L_TD_CONFIG_ERROR, config_file_name);
         return -1;
     }
     
@@ -575,7 +576,7 @@ static int running(char * command)
     pid_t new_pid = fork();
     if (new_pid == -1)
     {
-        return 1;
+        return -1;
     }
     if (new_pid == 0)
     {

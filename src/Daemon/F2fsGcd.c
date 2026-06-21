@@ -105,10 +105,6 @@ static int f2fs_gc(char * argv[])
     {
         return -1;
     }
-    else
-    {
-        sig_flag = 1;
-    }
     set_server_name(argv, SERVER_NAME);
     post(SERVER_NAME, SERVER_NAME, L_FG_START);
     

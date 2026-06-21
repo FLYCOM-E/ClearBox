@@ -43,14 +43,21 @@ echo '
 echo '
 <group>
     <text>
-        <slice break="break" link="https://yhfx.jwznb.com/share?key=yigOTedUjh62&amp;ts=1747355950" size="20">YHChat</slice>
+        <slice break="break" link="https://t.me/clearbox_update" size="20">Telegram channel</slice>
     </text>
 </group>
 '
 echo '
 <group>
     <text>
-        <slice break="break" link="https://t.me/clearboxmodule" size="20">Telegram</slice>
+        <slice break="break" link="https://t.me/clearbox_group" size="20">Telegram group</slice>
+    </text>
+</group>
+'
+echo '
+<group>
+    <text>
+        <slice break="break" link="https://yhfx.jwznb.com/share?key=yigOTedUjh62&amp;ts=1747355950" size="20">YhChat</slice>
     </text>
 </group>
 '

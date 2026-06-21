@@ -5,7 +5,7 @@
 
 #include "main.h"
 
-volatile sig_atomic_t sig_flag = 1;
+volatile sig_atomic_t sig_flag = 0;
 static void s_signal_service(int sig);
 
 /*
@@ -34,6 +34,10 @@ int s_signal(void)
     {
         return -1;
     }
+    if (sigaction(SIGHUP, &sg, NULL) == -1)
+    {
+        return -1;
+    }
     
     return 0;
 }
@@ -43,6 +47,5 @@ int s_signal(void)
 */
 static void s_signal_service(int sig)
 {
-    (void)sig;
-    sig_flag = 0;
+    sig_flag = sig;
 }
