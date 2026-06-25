@@ -15,7 +15,7 @@
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 #define SERVER_NAME "CacheClean"
 
-static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size);
+static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size, char package_list[][NAME_MAX + 1], int app_count);
 static int system_cache_clean(void);
 
 int app_cache_clean(int mode)
@@ -37,9 +37,28 @@ int app_cache_clean(int mode)
         // 获取设置值
         clear_cache_size = get_settings_prop(settings_file, "clearbox_clear_cache_size", NULL, 0);
         clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
-         
+        
+        // 获取第三方软件包名列表并储存
+        int app_count = 0;
+        char package_list[MAX_APPLIST][NAME_MAX + 1];
+        FILE * package_list_fp = popen(GET_APPLIST, "r");
+        if (package_list_fp == NULL)
+        {
+            fprintf(stderr, L_GET_APPLIST_ERROR);
+            return -1;
+        }
+        else
+        {
+            while (app_count < MAX_APPLIST && fgets(package_list[app_count], sizeof(package_list[app_count]), package_list_fp))
+            {
+                package_list[app_count][strcspn(package_list[app_count], "\n")] = 0;
+                app_count++;
+            }
+            pclose(package_list_fp);
+        }
+        
         //调用处理函数
-        long clear_size = user_cache_clean(DATA_DIR, whitelist_file, clear_cache_size);
+        long clear_size = user_cache_clean(DATA_DIR, whitelist_file, clear_cache_size, package_list, app_count);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
@@ -76,7 +95,7 @@ int app_cache_clean(int mode)
             
             snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", entry -> d_name);
             
-            clear_size = user_cache_clean(micro_dir, whitelist_file, clear_cache_size);
+            clear_size = user_cache_clean(micro_dir, whitelist_file, clear_cache_size, package_list, app_count);
             if (clear_size == -1)
             {
                 fprintf(stderr, L_CC_CLEAR_FAILED_SD);
@@ -101,36 +120,20 @@ int app_cache_clean(int mode)
 /* 
 此函数用于清理软件缓存，返回总清理大小
 接收：
-    char * data_dir 软件数据目录，自动处理多用户 ID，兼容拓展储存
-    int * clear_cache_size 缓存清理限制大小
+    char * data_dir         软件数据目录，自动处理多用户 ID，兼容拓展储存
+    char * whitelist_file     白名单文件
+    int * clear_cache_size  缓存清理限制大小
+    char package_list[][]    app 列表
+    int app_count          app 数量
 返回：
     long 清理垃圾大小（单位：Byte），失败返回 -1
 */
-static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size)
+static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size, char package_list[][NAME_MAX + 1], int app_count)
 {
     // 定义所需变量
     int count = 0, no_count = 0;
     long cache_size = 0, clean_size = 0;
     char app_cache_dir[512] = {0};
-    
-    // 获取第三方软件包名列表并储存
-    int app_count = 0;
-    char package_list[MAX_APPLIST][NAME_MAX + 1];
-    FILE * package_list_fp = popen(GET_APPLIST, "r");
-    if (package_list_fp == NULL)
-    {
-        fprintf(stderr, L_GET_APPLIST_ERROR);
-        return -1;
-    }
-    else
-    {
-        while (fgets(package_list[app_count], sizeof(package_list[app_count]), package_list_fp))
-        {
-            package_list[app_count][strcspn(package_list[app_count], "\n")] = 0;
-            app_count++;
-        }
-        pclose(package_list_fp);
-    }
     
     // 打开 User ID 目录
     struct dirent * uid_dir;
