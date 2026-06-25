@@ -10,11 +10,11 @@
 
 #define SERVER_NAME "F2FS-GC"            // 进程名（MAX 15）
 #define PROP "dev.mnt.dev.data"             // 路径名称属性
-#define TIMEOUT 9                           // 超时时间（单位 M）
+#define TIMEOUT 15                        // 超时时间（单位 M）
 #define SYSFS_PATH "/sys/fs/f2fs"           // F2FS sysfs 路径
-#define SYSFS_FILE_NAME "gc_urgent"         // 节点设备名
+#define SYSFS_FILE_NAME "gc_urgent"        // 节点设备名
 #define SYSFS_DIRTY_FILE "dirty_segments"   // 脏段节点名
-#define SYSFS_FREE_FILE "free_segments"     // 自由段节点名
+#define SYSFS_FREE_FILE "free_segments"    // 自由段节点名
 
 static int f2fs_gc(char * argv[]);
 static void fast_gc(void);
@@ -96,6 +96,15 @@ static int f2fs_gc(char * argv[])
         return -1;
     }
     
+    long page_size = 4096;
+    FILE * page_size_p = popen("getconf PAGE_SIZE", "r");
+    if (page_size_p)
+    {
+        char page_size_str[64] = "";
+        fgets(page_size_str, sizeof(page_size_str), page_size_p);
+        page_size = strtol(page_size_str, NULL, 10);
+    }
+    
     // Daemon
     if (s_daemon() != 0)
     {
@@ -163,7 +172,19 @@ static int f2fs_gc(char * argv[])
     // 如果脏段反增说明可能此设备不支持或 GC 未完全完成
     if (old_f2fs_dirty > f2fs_dirty)
     {
-        post(SERVER_NAME, SERVER_NAME, L_FG_END_DIRTY, (old_f2fs_dirty - f2fs_dirty));
+        long byte_size = 0;
+        if (page_size == 4096)
+        {
+            byte_size = (((old_f2fs_dirty - f2fs_dirty) * 2) * 1024 * 1024);
+        }
+        else
+        {
+            byte_size = (((old_f2fs_dirty - f2fs_dirty) * 8) * 1024 * 1024);
+        }
+        
+        char unit = '\0';
+        double size = byte_to_size(byte_size, &unit);
+        post(SERVER_NAME, SERVER_NAME, L_FG_END_DIRTY, (old_f2fs_dirty - f2fs_dirty), size, unit);
     }
     else
     {

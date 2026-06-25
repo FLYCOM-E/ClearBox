@@ -402,34 +402,32 @@ static int read_whitelist(char * whitelist_file,
                 continue;
             }
             
-            if (update == 1) // 如果为更新并且当前行 App 与上次记录不一致则解锁此 App
+            // 如果为更新并且当前行 App 与上次记录不一致则解锁此 App
+            if (update == 1 && strcmp(whitelist[count], line) != 0)
             {
-                if (strcmp(whitelist[count], line) != 0)
+                // TODO：这里有点开销，怎么优化呢...目前规模不大，如果以后拓展，这里最好改成哈希计算
+                int is_new = 1;
+                for (int i = 0; i < * read_whitelist_app; i++)
                 {
-                    // TODO：这里有点开销，怎么优化呢...目前规模不大，如果以后拓展，这里最好改成哈希计算
-                    int is_new = 1;
-                    for (int i = 0; i < * read_whitelist_app; i++)
+                    if (strcmp(whitelist[i], line) == 0)
                     {
-                        if (strcmp(whitelist[i], line) == 0)
-                        {
-                            is_new = 0;
-                        }
+                        is_new = 0;
                     }
-                    
-                    if (is_new)
+                }
+                
+                if (is_new)
+                {
+                    char app_dir[sizeof(DATA_DIR) + strlen(line) + 16];
+                    snprintf(app_dir, sizeof(app_dir), "%s/%s/cache", DATA_DIR, line);
+                    if (access(app_dir, F_OK) == 0)
                     {
-                        char app_dir[sizeof(DATA_DIR) + strlen(line) + 16];
-                        snprintf(app_dir, sizeof(app_dir), "%s/%s/cache", DATA_DIR, line);
-                        if (access(app_dir, F_OK) == 0)
+                        if (s_chattr(app_dir, 0, 1) == 0)
                         {
-                            if (s_chattr(app_dir, 0, 1) == 0)
-                            {
-                                print_log(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", line);
-                            }
-                            else
-                            {
-                                print_log(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", line, strerror(errno));
-                            }
+                            print_log(ANDROID_LOG_INFO, SERVER_NAME, "Reset %s Success\n", line);
+                        }
+                        else
+                        {
+                            print_log(ANDROID_LOG_WARN, SERVER_NAME, "Reset %s Failed: %s\n", line, strerror(errno));
                         }
                     }
                 }
