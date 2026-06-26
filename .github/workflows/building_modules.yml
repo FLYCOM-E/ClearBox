@@ -67,8 +67,8 @@ jobs:
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > AppSource/release.keystore
           echo -e "storeFile=$(pwd)/AppSource/release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > AppSource/keystore.properties
           export ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}
-          export M_API=${{ github.event.inputs.api_level || '23' }}
-          export M_TARGET=${{ matrix.target }}
+          export TARGET_API=${{ github.event.inputs.api_level || '23' }}
+          export TARGET=${{ matrix.target }}
           bash build.sh --build-apk release
           rm -f release.keystore keystore.properties
       

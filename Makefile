@@ -49,6 +49,6 @@ module_tar:
 	@cp -r AppConfigs $(module_dir)/AppConfigs
 	@cp -r FileConfigs $(module_dir)/FileConfigs
 	@cp $(module_dir)/module.prop ./module.prop.bak
-	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update_$(M_TARGET).json" >> $(module_dir)/module.prop
-	@cd $(module_dir) && zip -r ../ClearBox_$(M_TARGET)_$(M_API).zip *
+	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update_$(TARGET).json" >> $(module_dir)/module.prop
+	@cd $(module_dir) && zip -r ../ClearBox_$(TARGET)_$(TARGET_API).zip *
 	@mv ./module.prop.bak $(module_dir)/module.prop

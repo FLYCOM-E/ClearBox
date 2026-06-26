@@ -41,8 +41,8 @@ sudo apt install zip make
 git clone https://github.com/FLYCOM-E/ClearBox
 cd ClearBox && chmod +x *
 
-export M_API=23 #(可以自行根据需要调整目标api版本)
-export M_TARGET=aarch64 #(可选aarch64、armv7a、x86_64、i686)
+export TARGET_API=23 #(可以自行根据需要调整目标api版本)
+export TARGET=aarch64 #(可选aarch64、armv7a、x86_64、i686)
 
 bash build.sh
 ```
