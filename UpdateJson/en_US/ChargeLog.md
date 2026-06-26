@@ -1,14 +1,24 @@
-# Version 5.1.1 (93)
+# Version 5.1.2 (94)
 
 # ADD
-- StopCached supports immediate unlocking when adding to whitelist
-- App whitelist now supports multi-select
+- File organization now supports setting custom organization directory, supports absolute/relative paths
+- System cache cleaning added: `/data/anr` `/data/tombstones`
+- Added cleaning rules:
+```
+info.muge.appshare   #AppShare
+com.coolapk.market   #Coolapk
+```
 
 # UPDATE
-- Replaced language detection API, fixed language detection failures on some devices
-- Optimized module installation flow: if App is already installed, directly install instead of asking for update
-- Storage redirect now supports quoted path parsing; turning off the bind switch immediately unmounts
+- Cleanup size display now supports dynamic unit display, F2FS-GC statistics now show size instead of segment count
+- App cache cleaning optimized for multi-user performance, no longer repeatedly fetches app list
+- File organization size limit feature now fully supports per-extension configuration
+- Timed, StopCached process signal handling optimized
+- Rule directory binding now supports single-quote wrapped path parsing
+- LOG recording mechanism updated
+- App UI layout updated
+- Comment support optimized
 
 # FIX
-- Fixed bug where Timed config directory was not created on first installation, thanks to TG@'Ezekiel King'
-- App fixed Splash Background and Dialog Background colors not following Monet theme
+- Timed hot-reload now includes move event monitoring, fixed issue where atomic config modification did not trigger update
+- Fixed configuration backup abnormality

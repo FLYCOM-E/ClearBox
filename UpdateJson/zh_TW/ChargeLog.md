@@ -1,14 +1,24 @@
-# Version 5.1.1 (93)
+# Version 5.1.2 (94)
 
 # ADD
-- StopCached 支援新增白名單即刻解鎖
-- App 白名單新增支援多選
+- 檔案歸類支援設定歸類目錄，支援填寫絕對/相對路徑
+- 系統快取清理新增：`/data/anr` `/data/tombstones`
+- 新增清理配置：
+```
+info.muge.appshare   #AppShare
+com.coolapk.market   #Coolapk
+```
 
 # UPDATE
-- 更換語言識別 API，修復部分裝置語言識別失敗的問題
-- 模組安裝流程最佳化：如果已安裝 App 則不再詢問是否更新而是直接安裝
-- 儲存重新導向支援引號路徑解析，綁定開關關閉立即解除掛載
+- 清理顯示大小單位支援動態單位顯示、F2FS-GC 統計改為顯示大小而不是段數量
+- App 快取清理針對多使用者效能最佳化，不再重複取得 App 列表
+- 檔案歸類大小限制功能完整支援為每個附檔名配置限制
+- Timed、StopCached 行程訊號處理最佳化
+- 規則目錄綁定規則支援單引號包裹解析
+- LOG 記錄機制更新
+- App UI 排版更新
+- 註解支援最佳化
 
 # FIX
-- 修復首次安裝時 Timed 配置目錄未建立的 Bug，感謝 TG@'Ezekiel King'
-- App 修復 Splash Background、Dialog Background 顏色非莫奈問題
+- Timed 熱更新增加移動事件監控，修復原子修改配置不更新問題
+- 修復配置備份異常
