@@ -112,9 +112,18 @@ static int bind_mount(char * config_file, int mode)
              * root_dir_p = NULL,
              * bind_dir_p = NULL;
         
-        if (line[0] == '"')
+        if (line[0] == '"' ||
+           line[0] == '\'')
         {
-            bind_dir_p = strchr(line + 1, '"');
+            if (line[0] == '"')
+            {
+                bind_dir_p = strchr(line + 1, '"');
+            }
+            else
+            {
+                bind_dir_p = strchr(line + 1, '\'');
+            }
+            
             if (bind_dir_p)
             {
                 * bind_dir_p = '\0';
@@ -130,9 +139,18 @@ static int bind_mount(char * config_file, int mode)
         // 如果解析到引号，那么跳过 strtok
         skip_cut_str:
         
-        if (bind_dir_p && * bind_dir_p == '"')
+        if (bind_dir_p && (bind_dir_p[0] == '"' || bind_dir_p[0] == '\''))
         {
-            char * p = strchr(bind_dir_p + 1, '"');
+            char * p = NULL;
+            if (bind_dir_p[0] == '"')
+            {
+                p = strchr(bind_dir_p + 1, '"');
+            }
+            else
+            {
+                p = strchr(bind_dir_p + 1, '\'');
+            }
+            
             if (p)
             {
                 * p = '\0';
