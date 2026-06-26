@@ -457,6 +457,10 @@ static int read_config(struct file_rules file_args[], char * config_file, int * 
     // 循环读取文件格式配置每个后缀并放进数组
     while (fscanf(config_file_fp, "%30s", file_args[* count].name) == 1)
     {
+        if (file_args[* count].name[0] == '#')
+        {
+            continue;
+        }
         if (file_args[* count].name[0] == '@')
         {
             find_size(file_args, * count, &max, &min);

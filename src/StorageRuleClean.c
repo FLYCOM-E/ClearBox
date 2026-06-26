@@ -53,12 +53,11 @@ int cust_rule_clean(void)
             config_file_line[strcspn(config_file_line, "\n")] = 0;
             count++;
             
-            // 如果该行被注释则返回
-            if (config_file_line[0] == '#')
+            if (config_file_line[0] == '#' ||
+               strlen(config_file_line) <= 1)
             {
                 continue;
             }
-            
             if (config_file_line[0] == '@')
             {
                 //初始目录

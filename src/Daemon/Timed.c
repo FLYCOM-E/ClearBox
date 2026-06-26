@@ -429,8 +429,8 @@ static int get_config(char * config_file, char * config_file_name, struct config
     {
         line_count++;
         line[strcspn(line, "\n")] = 0;
-        // 注释跳过
-        if (line[0] == '#')
+        if (line[0] == '#' ||
+           strlen(line) <= 1)
         {
             continue;
         }

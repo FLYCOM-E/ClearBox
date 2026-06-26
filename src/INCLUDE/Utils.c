@@ -83,25 +83,23 @@ int s_grep(char * file, char * text, int mode)
     FILE * file_fp = fopen(file, "r");
     if (file_fp)
     {
-        if (mode == 1)
+        while (fgets(line, sizeof(line), file_fp))
         {
-            while (fgets(line, sizeof(line), file_fp))
+            line[strcspn(line, "\n")] = 0;
+            if (mode == 1)
             {
-                line[strcspn(line, "\n")] = 0;
                 if (strcmp(line, text) == 0)
                 {
                     end = 1;
+                    break;
                 }
             }
-        }
-        else
-        {
-            while (fgets(line, sizeof(line), file_fp))
+            else
             {
-                line[strcspn(line, "\n")] = 0;
                 if (strstr(line, text))
                 {
                     end = 1;
+                    break;
                 }
             }
         }
@@ -258,7 +256,7 @@ void write_log(const char * config_dir, const char * name_id, const char * text,
     FILE * log_file_fp = fopen(log_file, "a+");
     if (log_file_fp)
     {
-        fprintf(log_file_fp, "[%s] <%s> %s\n", now_time, name_id, buffer);
+        fprintf(log_file_fp, "[%s] <%s>: %s\n", now_time, name_id, buffer);
         fclose(log_file_fp);
     }
     else
@@ -317,6 +315,12 @@ int get_settings_prop(char * config_file, char * key, char * str, size_t str_len
     while (fgets(line, sizeof(line), settings_file_fp))
     {
         line[strcspn(line, "\n")] = 0;
+        if (line[0] == '#' ||
+           strlen(line) <= 1)
+        {
+            continue;
+        }
+        
         char * strtok_p = NULL;
         line_key = strtok_r(line, "=", &strtok_p);
         if (strcmp(line_key, key) == 0)
