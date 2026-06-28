@@ -7,8 +7,8 @@
 
 #include "INCLUDE/main.h"
 
-#define PATH_ROM_FILE "/data/adb/wipe_cache/PATH" // PATH 储存文件
-#define SERVER_NAME "clearbox"                        // 进程名
+#define PATH_FILE "/data/adb/wipe_cache/PATH"    // PATH 储存文件
+#define SERVER_NAME "clearbox"                    // 进程名
 
 static int running(char * args[]);
 static int module_config(char * mode, char * config_file);
@@ -34,6 +34,7 @@ int main(int argc, char * argv[])
     if (argc < 2)
     {
         fprintf(stderr, L_ARGS_FAILED);
+        help(argv);
         return -1;
     }
     
@@ -43,71 +44,73 @@ int main(int argc, char * argv[])
         return -1;
     }
     
-    char path_file_line[256] = "";
-    char * path_file_key = NULL;
-    char * path_file_value = NULL;
-    int path_file_err = 0;
-    
     // 读取 PATH
-    FILE * path_file_fp = fopen(PATH_ROM_FILE, "r");
-    if (path_file_fp == NULL)
     {
-        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
-        return -1;
-    }
-    while (fgets(path_file_line, sizeof(path_file_line), path_file_fp))
-    {
-        char * path_file_line_p = NULL;
-        path_file_key = strtok_r(path_file_line, "=", &path_file_line_p);
-        path_file_value = strtok_r(NULL, "=", &path_file_line_p);
+        int path_file_err = 0;
+        char line_buffer[NAME_MAX + 1] = "";
+        char * key = NULL;
+        char * value = NULL;
         
-        if (strcmp(path_file_key, "home_dir") == 0)
+        FILE * path_file_fp = fopen(PATH_FILE, "r");
+        if (path_file_fp == NULL)
         {
-            snprintf(home_dir, sizeof(home_dir), "%s", path_file_value);
-            home_dir[strcspn(home_dir, "\n")] = 0;
+            write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, PATH_FILE, strerror(errno));
+            return -1;
         }
-        else if (strcmp(path_file_key, "work_dir") == 0)
+        while (fgets(line_buffer, sizeof(line_buffer), path_file_fp))
         {
-            snprintf(work_dir, sizeof(work_dir), "%s", path_file_value);
-            work_dir[strcspn(work_dir, "\n")] = 0;
+            char * path_file_line_p = NULL;
+            key = strtok_r(line_buffer, "=", &path_file_line_p);
+            value = strtok_r(NULL, "=", &path_file_line_p);
+            
+            if (strcmp(key, "home_dir") == 0)
+            {
+                snprintf(home_dir, sizeof(home_dir), "%s", value);
+                home_dir[strcspn(home_dir, "\n")] = 0;
+            }
+            else if (strcmp(key, "work_dir") == 0)
+            {
+                snprintf(work_dir, sizeof(work_dir), "%s", value);
+                work_dir[strcspn(work_dir, "\n")] = 0;
+            }
+            else
+            {
+                path_file_err = 1; // 如果有错误行则设置标识
+            }
         }
-        else
+        fclose(path_file_fp);
+        
+        if (access(home_dir, F_OK) != 0)
         {
-            path_file_err = 1; // 如果有错误行则设置标识
+            fprintf(stderr, " » Error：HOME_PATH\n");
+            return -1;
         }
-    }
-    fclose(path_file_fp);
-    
-    if (access(home_dir, F_OK) != 0)
-    {
-        fprintf(stderr, " » Error：HOME_PATH\n");
-        return -1;
-    }
-    if (access(work_dir, F_OK) != 0)
-    {
-        fprintf(stderr, " » Error：WORK_PATH\n");
-        return -1;
-    }
-    
-    /* 
-    PATH 错误时尝试重写纠正
-    如果原 PATH 内容有误可能会重写成错误的
-    这里仅防止意外行，比如 PATH=/xxx 影响后续可能的其它脚本运行
-    */
-    if (path_file_err == 1)
-    {
-        fprintf(stderr, L_PATH_FILE_ERROR, PATH_ROM_FILE);
-        FILE * fp = fopen(PATH_ROM_FILE, "w");
-        if (fp)
+        if (access(work_dir, F_OK) != 0)
         {
-            fprintf(fp, "home_dir=%s\nwork_dir=%s", home_dir, work_dir);
-            fclose(fp);
+            fprintf(stderr, " » Error：WORK_PATH\n");
+            return -1;
         }
-        else
+        
+        /* 
+        PATH 错误时尝试重写纠正
+        如果原 PATH 内容有误可能会重写成错误的
+        这里仅防止意外行，比如 PATH=/xxx 影响后续可能的其它脚本运行
+        */
+        if (path_file_err == 1)
         {
-            write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, PATH_ROM_FILE, strerror(errno));
+            fprintf(stderr, L_PATH_FILE_ERROR, PATH_FILE);
+            FILE * fp = fopen(PATH_FILE, "w");
+            if (fp)
+            {
+                fprintf(fp, "home_dir=%s\nwork_dir=%s", home_dir, work_dir);
+                fclose(fp);
+            }
+            else
+            {
+                write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, PATH_FILE, strerror(errno));
+            }
+            return -1;
         }
-        return -1;
     }
     
     // 定义设置配置文件
@@ -288,6 +291,7 @@ int main(int argc, char * argv[])
     else
     {
         fprintf(stderr, L_MODE_ERR, argv[1]);
+        help(argv);
         return -1;
     }
     
