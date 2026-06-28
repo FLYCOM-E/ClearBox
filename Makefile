@@ -11,7 +11,8 @@ tui_dir = TuiSource
 
 UTILS_C = src/INCLUDE/Utils.c \
 			src/INCLUDE/Signal.c \
-			src/INCLUDE/Help.c
+			src/INCLUDE/Help.c \
+			src/INCLUDE/Lang.c
 BIN_C = src/main.c \
 		src/AppClean.c \
 		src/CacheClean.c \

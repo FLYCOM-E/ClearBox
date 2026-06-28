@@ -24,34 +24,8 @@ LangType current_lang;
 int main(int argc, char * argv[])
 {
     // 多语言
-    char lang[PROP_VALUE_MAX] = "";
-    FILE * local_lang_p = popen("settings get system system_locales", "r");
-    if (local_lang_p)
-    {
-        fgets(lang, sizeof(lang), local_lang_p);
-        lang[strcspn(lang, "\n")] = '\0';
-        char * p = strchr(lang, ',');
-        if (p)
-        {
-            * p = '\0';
-        }
-        pclose(local_lang_p);
-    }
-    if (strstr(lang, "zh-CN") ||
-       strstr(lang, "Hans"))
-    {
-        current_lang = LANG_zh_CN;
-    }
-    else if (strstr(lang, "zh-TW") ||
-            strstr(lang, "Hant"))
-    {
-        current_lang = LANG_zh_TW;
-    }
-    else
-    {
-        current_lang = LANG_en_US;
-    }
-
+    set_language(&current_lang);
+    
     if (getuid() != 0)
     {
         fprintf(stderr, L_NOT_USE_ROOT, getuid());

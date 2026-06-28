@@ -52,6 +52,7 @@ int help(char * argv[]);
 int s_daemon(void);
 int s_signal(void);
 double byte_to_size(long byte, char * unit);
+void set_language(LangType * current_lang);
 
 int app_cache_clean(int mode);
 int cust_rule_clean(void);
