@@ -15,8 +15,11 @@
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 #define SERVER_NAME "CacheClean"
 
-static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size, char package_list[][NAME_MAX + 1], int app_count);
+static long user_cache_clean(char * data_dir, int clear_cache_size,
+                             char package_list[][NAME_MAX + 1], int app_count,
+                             char white_list[][NAME_MAX + 1], int whitelist_count);
 static int system_cache_clean(void);
+static int whitelist_check(char * package, char white_list[][NAME_MAX + 1], int whitelist_count);
 
 int app_cache_clean(int mode)
 {
@@ -41,24 +44,43 @@ int app_cache_clean(int mode)
         // 获取第三方软件包名列表并储存
         int app_count = 0;
         char package_list[MAX_APPLIST][NAME_MAX + 1];
-        FILE * package_list_fp = popen(GET_APPLIST, "r");
-        if (package_list_fp == NULL)
         {
-            fprintf(stderr, L_GET_APPLIST_ERROR);
-            return -1;
-        }
-        else
-        {
-            while (app_count < MAX_APPLIST && fgets(package_list[app_count], sizeof(package_list[app_count]), package_list_fp))
+            char package_buffer[NAME_MAX + 1] = "";
+            FILE * package_list_fp = popen(GET_APPLIST, "r");
+            if (package_list_fp == NULL)
             {
-                package_list[app_count][strcspn(package_list[app_count], "\n")] = 0;
-                app_count++;
+                fprintf(stderr, L_GET_APPLIST_ERROR);
+                return -1;
             }
-            pclose(package_list_fp);
+            else
+            {
+                while (app_count < MAX_APPLIST && fgets(package_buffer, sizeof(package_buffer), package_list_fp))
+                {
+                    snprintf(package_list[app_count], sizeof(package_list[app_count]), package_buffer + 8);
+                    package_list[app_count][strcspn(package_list[app_count], "\n")] = 0;
+                    app_count++;
+                }
+                pclose(package_list_fp);
+            }
         }
         
-        //调用处理函数
-        long clear_size = user_cache_clean(DATA_DIR, whitelist_file, clear_cache_size, package_list, app_count);
+        // 获取白名单列表并储存
+        int whitelist_count = 0;
+        char white_list[MAX_APPLIST][NAME_MAX + 1];
+        {
+            FILE * whitelist_file_fp = fopen(whitelist_file, "r");
+            if (whitelist_file_fp)
+            {
+                while (fgets(white_list[whitelist_count], sizeof(white_list[whitelist_count]), whitelist_file_fp))
+                {
+                    white_list[whitelist_count][strcspn(white_list[whitelist_count], "\n")] = '\0';
+                    whitelist_count++;
+                }
+            }
+        }
+        
+        // 调用处理函数
+        long clear_size = user_cache_clean(DATA_DIR, clear_cache_size, package_list, app_count, white_list, whitelist_count);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
@@ -95,7 +117,7 @@ int app_cache_clean(int mode)
             
             snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", entry -> d_name);
             
-            clear_size = user_cache_clean(micro_dir, whitelist_file, clear_cache_size, package_list, app_count);
+            clear_size = user_cache_clean(micro_dir, clear_cache_size, package_list, app_count, white_list, whitelist_count);
             if (clear_size == -1)
             {
                 fprintf(stderr, L_CC_CLEAR_FAILED_SD);
@@ -121,14 +143,17 @@ int app_cache_clean(int mode)
 此函数用于清理软件缓存，返回总清理大小
 接收：
     char * data_dir         软件数据目录，自动处理多用户 ID，兼容拓展储存
-    char * whitelist_file     白名单文件
     int * clear_cache_size  缓存清理限制大小
     char package_list[][]    app 列表
     int app_count          app 数量
+    char white_list[][]       白名单列表
+    int whitelist_count     白名单 app 数量
 返回：
     long 清理垃圾大小（单位：Byte），失败返回 -1
 */
-static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_cache_size, char package_list[][NAME_MAX + 1], int app_count)
+static long user_cache_clean(char * data_dir, int clear_cache_size,
+                             char package_list[][NAME_MAX + 1], int app_count,
+                             char white_list[][NAME_MAX + 1], int whitelist_count)
 {
     // 定义所需变量
     int count = 0, no_count = 0;
@@ -157,13 +182,14 @@ static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_c
         // 遍历第三方用户软件包名列表
         for (int i = 0; i < app_count; i++)
         {
-            if (strlen(package_list[i]) < 9)
+            // 白名单检查
+            if (whitelist_check(package_list[i], white_list, whitelist_count) == 0)
             {
                 continue;
             }
             
             // 拼接软件缓存目录
-            snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", data_dir, uid_dir -> d_name, package_list[i] + 8);
+            snprintf(app_cache_dir, sizeof(app_cache_dir), "%s/%s/%s/cache", data_dir, uid_dir -> d_name, package_list[i]);
             if (access(app_cache_dir, F_OK) != 0)
             {
                 continue;
@@ -173,16 +199,11 @@ static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_c
             cache_size = get_path_size(app_cache_dir);
             if ((cache_size / 1024 / 1024) > clear_cache_size)
             {
-                // 白名单检查
-                if (s_grep(whitelist_file, package_list[i] + 8, 1) == 1)
-                {
-                    continue;
-                }
                 if (s_remove(app_cache_dir, 0) != -1)
                 {
                     count++;
                     clean_size += cache_size; 
-                    printf(L_CC_CLEAR, package_list[i] + 8);
+                    printf(L_CC_CLEAR, package_list[i]);
                 }
                 else
                 {
@@ -192,7 +213,7 @@ static long user_cache_clean(char * data_dir, char * whitelist_file, int clear_c
             else
             {
                 no_count++;
-                printf(L_CC_CLEAR_SKIP, package_list[i] + 8);
+                printf(L_CC_CLEAR_SKIP, package_list[i]);
             }
             fflush(stdout);
         }
@@ -273,4 +294,18 @@ static int system_cache_clean(void)
     
     fprintf(stderr, L_CC_CLEAR_SYSTEMCACHE);
     return 0;
+}
+
+/* 列表匹配函数 */
+static int whitelist_check(char * package, char white_list[][NAME_MAX + 1], int whitelist_count)
+{
+    int in_list = -1;
+    for (int i = 0; i < whitelist_count; i++)
+    {
+        if (strcmp(white_list[i], package) == 0)
+        {
+            in_list = 0;
+        }
+    }
+    return in_list;
 }

@@ -7,7 +7,6 @@
 
 #include "INCLUDE/main.h"
 
-#define MAX_APP_NAME 128                  // 软件名称最大长度
 #define DATA_DIR "/data/data"                 // 软件数据根目录
 #define CONFIG_DIR_NAME "AppCleanRules"   // 配置目录名称
 #define SERVER_NAME "AppClean"
@@ -16,13 +15,13 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
 
 int app_cust_rule_clean(char * app_package, int mode)
 {
-    // 拼接工作目录
+    // 配置目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
     int success_config = 0,   // 成功处理配置数量
         failed_config = 0;     // 处理失败配置数量
-    long total_clear_size = 0; // 总清理大小，如模式为全部清理则为所有配置累计清理和（单位 M）
+    long total_clear_size = 0; // 总清理大小（单位 Byte）
     
     // mode 1 为全部清理模式
     if (mode == 1)
@@ -105,10 +104,10 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
     }
     
     // 读取及处理配置
-    int count = 0, get_config = 0;
+    int count = 0, get_info = 0;
     char app_dir[sizeof(DATA_DIR) + NAME_MAX + 3];
-    char line[PATH_MAX] = "", app_name[MAX_APP_NAME] = "";
-    char * app_package_fp = NULL, * app_name_fp = NULL;
+    char line[PATH_MAX] = "", app_name[NAME_MAX] = "";
+    char * app_package_p = NULL, * app_name_p = NULL;
     
     while (fgets(line, sizeof(line), config_fp))
     {
@@ -117,7 +116,7 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         
         // 如果该行被注释/为空则返回
         if (line[0] == '#' ||
-            strlen(line) <= 1) // 此空行检查请不要删除，除非您知道自己在做什么
+           strlen(line) <= 1)
         {
             continue;
         }
@@ -126,42 +125,44 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
         配置文件第一行以 ＠ 开头，格式：
         @<软件包名>/<软件名称>
         */
-        if (get_config == 0) // 未读取初始行
+        if (get_info == 0) // 未读取初始行
         {
             if (line[0] == '@')
             {
                 char * line_p = NULL;
-                app_package_fp = strtok_r(line, "/", &line_p);
-                app_name_fp = strtok_r(NULL, "/", &line_p);
+                app_package_p = strtok_r(line, "/", &line_p);
+                app_name_p = strtok_r(NULL, "/", &line_p);
                 
-                if (app_package_fp && app_name_fp &&
-                    strcmp(app_package_fp + 1, ""))
+                if ((app_package_p && app_name_p) &&
+                   strcmp(app_package_p + 1, ""))
                 {
-                    snprintf(app_name, sizeof(app_name), "%s", app_name_fp);                     //软件名称
-                    snprintf(app_dir, sizeof(app_dir), "%s/%s", DATA_DIR, app_package_fp + 1);   //软件目录
+                    snprintf(app_name, sizeof(app_name), "%s", app_name_p);                    //软件名称
+                    snprintf(app_dir, sizeof(app_dir), "%s/%s", DATA_DIR, app_package_p + 1);   //软件目录
                     
                     if (access(app_dir, F_OK) == 0)
                     {
                         printf(L_AC_CLEAR, app_name);
-                        get_config++;
-                        (* success_config)++;
                         fflush(stdout);
+                        
+                        get_info++;
+                        (* success_config)++;
                         continue;
                     }
                     else
                     {
                         fprintf(stderr, L_AC_CONFIG_APP_NOTFOUND, config_file);
+                        
                         (* failed_config)++;
                         break;
                     }
                 }
                 else
                 {
-                    if (app_package_fp == NULL)
+                    if (app_package_p == NULL)
                     {
                         fprintf(stderr, L_AC_CONFIG_PACKAGE_ERR, config_file);
                     }
-                    else if (app_name_fp == NULL)
+                    else if (app_name_p == NULL)
                     {
                         fprintf(stderr, L_AC_CONFIG_APPNAME_ERR, config_file);
                     }
@@ -212,5 +213,5 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
     }
     fclose(config_fp);
     
-    return get_config ? 0 : -1;
+    return get_info ? 0 : -1;
 }
