@@ -11,6 +11,7 @@
 #define DATA_DIR "/data/user"                                  // 软件数据根目录
 #define CARD_HOME "/mnt/expand"                             // 拓展储存根目录
 #define WHITELIST_FILE "ClearWhitelist.prop"                   // 白名单文件名
+#define DEFAULT_CCS 5                                       // 缓存清理限制大小回退
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
 #define SERVER_NAME "CacheClean"
@@ -29,17 +30,16 @@ int app_cache_clean(int mode)
         // whiteList定义
         char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_FILE) + 2];
         snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
-         
-        /* 
-        读取：
-        clear_cache_size 缓存清理限制大小
-        clear_disk 是否清理 SD 软件缓存
-        */
-        int clear_cache_size = 0, clear_disk = 0;
         
         // 获取设置值
+        int clear_cache_size = 0,  // 缓存清理限制大小
+           clear_disk = 0;         // 是否清理外部储存
         clear_cache_size = get_settings_prop(settings_file, "clearbox_clear_cache_size", NULL, 0);
         clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
+        if (clear_cache_size == -1)
+        {
+            clear_cache_size = DEFAULT_CCS;
+        }
         
         // 获取第三方软件包名列表并储存
         int app_count = 0;
@@ -157,7 +157,7 @@ static long user_cache_clean(char * data_dir, int clear_cache_size,
 {
     // 定义所需变量
     int count = 0, no_count = 0;
-    long cache_size = 0, clean_size = 0;
+    long clean_size = 0;
     char app_cache_dir[512] = {0};
     
     // 打开 User ID 目录
@@ -196,26 +196,30 @@ static long user_cache_clean(char * data_dir, int clear_cache_size,
             }
             
             // 获取/比较缓存大小
-            cache_size = get_path_size(app_cache_dir);
-            if ((cache_size / 1024 / 1024) > clear_cache_size)
+            if (clear_cache_size >= 0)
             {
-                if (s_remove(app_cache_dir, 0) != -1)
-                {
-                    count++;
-                    clean_size += cache_size; 
-                    printf(L_CC_CLEAR, package_list[i]);
-                }
-                else
+                if ((get_path_size(app_cache_dir) / 1024 / 1024) < clear_cache_size)
                 {
                     no_count++;
+                    printf(L_CC_CLEAR_SKIP, package_list[i]);
+                    fflush(stdout);
+                    continue;
                 }
+            }
+            
+            long size = s_remove(app_cache_dir, 0);
+            if (size != -1)
+            {
+                printf(L_CC_CLEAR, package_list[i]);
+                fflush(stdout);
+                
+                clean_size += size;
+                count++;
             }
             else
             {
                 no_count++;
-                printf(L_CC_CLEAR_SKIP, package_list[i]);
             }
-            fflush(stdout);
         }
     }
     closedir(uid_dir_dp);
