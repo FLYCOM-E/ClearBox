@@ -89,11 +89,11 @@ typedef struct
     const char * l_fg_err_timeout;
     const char * l_fg_end;
     const char * l_fg_run_ms;
-    const char * l_fg_run_m;
     const char * l_fg_run_s;
     const char * l_fg_end_dirty;
     const char * l_fg_end_dirty_2;
     const char * l_fg_fast_gc_done;
+    const char * l_fg_dirty_low;
     const char * l_fm_all_failed_storage;
     const char * l_fm_all_successful_storage;
     const char * l_fm_all_failed_sd;
@@ -219,11 +219,11 @@ static const LangPack lang_packs[] =
         .l_fg_err_timeout = " » GC等待超时，已结束等待！\n",
         .l_fg_end = " » GC运行完成，已结束运行！\n",
         .l_fg_run_ms = " » 已运行 %d 分 %d 秒...\n",
-        .l_fg_run_m = " » 已运行 %d 分...\n",
         .l_fg_run_s = " » 已运行 %d 秒...\n",
         .l_fg_end_dirty = " » 磁盘脏块减少 %ld, 共 %.2f %c\n",
         .l_fg_end_dirty_2 = " » 磁盘脏块增加 %ld\n » GC可能仍在优化或并不适合您的设备！\n",
         .l_fg_fast_gc_done = " » 快速磁盘优化完成，可以试试更激进的GC优化哦 (・∀・)\n",
+        .l_fg_dirty_low = " » 您的磁盘状态极佳，无需优化 (・∀・)\n",
         .l_fm_all_failed_storage = " » 内部储存文件归类失败！\n",
         .l_fm_all_successful_storage = " » 内部储存文件归类成功！\n",
         .l_fm_all_failed_sd = " » 外部储存文件归类失败！\n",
@@ -346,11 +346,11 @@ static const LangPack lang_packs[] =
         .l_fg_err_timeout = " » GC等待逾時，已結束等待！\n",
         .l_fg_end = " » GC執行完成，已結束執行！\n",
         .l_fg_run_ms = " » 已執行 %d 分 %d 秒...\n",
-        .l_fg_run_m = " » 已執行 %d 分...\n",
         .l_fg_run_s = " » 已執行 %d 秒...\n",
         .l_fg_end_dirty = " » 磁碟髒塊減少 %ld，共 %.2f %c\n",
         .l_fg_end_dirty_2 = " » 磁碟髒塊增加 %ld\n » GC可能仍在最佳化或並不適合您的裝置！\n",
         .l_fg_fast_gc_done = " » 快速磁碟最佳化完成，可以試試更激進的GC最佳化哦 (・∀・)\n",
+        .l_fg_dirty_low = " » 您的磁碟狀態極佳，無需最佳化 (・∀・)\n",
         .l_fm_all_failed_storage = " » 內部儲存檔案歸類失敗！\n",
         .l_fm_all_successful_storage = " » 內部儲存檔案歸類成功！\n",
         .l_fm_all_failed_sd = " » 外部儲存檔案歸類失敗！\n",
@@ -473,11 +473,11 @@ static const LangPack lang_packs[] =
         .l_fg_err_timeout = " » GC wait timeout, waiting has been terminated!\n",
         .l_fg_end = " » GC run completed, operation has ended!\n",
         .l_fg_run_ms = " » Has been running for %d minutes %d seconds...\n",
-        .l_fg_run_m = " » Has been running for %d minutes...\n",
         .l_fg_run_s = " » Has been running for %d seconds...\n",
         .l_fg_end_dirty = " » Disk dirty blocks reduced by %ld, total %.2f %c\n",
         .l_fg_end_dirty_2 = " » Disk dirty blocks increased by %ld\n » GC may still be optimizing or may not be suitable for your device!\n",
         .l_fg_fast_gc_done = " » Fast disk optimization completed. You can try more aggressive GC optimization (・∀・)\n",
+        .l_fg_dirty_low = " » Your disk is in excellent condition, no optimization needed (・∀・)\n",
         .l_fm_all_failed_storage = " » Internal storage file organization failed!\n",
         .l_fm_all_successful_storage = " » Internal storage file organization successful!\n",
         .l_fm_all_failed_sd = " » External storage file organization failed!\n",
@@ -602,11 +602,11 @@ extern LangType current_lang;
 #define L_FG_ERR_TIMEOUT lang_packs[current_lang].l_fg_err_timeout
 #define L_FG_END lang_packs[current_lang].l_fg_end
 #define L_FG_RUN_MS lang_packs[current_lang].l_fg_run_ms
-#define L_FG_RUN_M lang_packs[current_lang].l_fg_run_m
 #define L_FG_RUN_S lang_packs[current_lang].l_fg_run_s
 #define L_FG_END_DIRTY lang_packs[current_lang].l_fg_end_dirty
 #define L_FG_END_DIRTY_2 lang_packs[current_lang].l_fg_end_dirty_2
 #define L_FG_FAST_GC_DONE lang_packs[current_lang].l_fg_fast_gc_done
+#define L_FG_DIRTY_LOW lang_packs[current_lang].l_fg_dirty_low
 #define L_FM_ALL_FAILED_STORAGE lang_packs[current_lang].l_fm_all_failed_storage
 #define L_FM_ALL_SUCCESSFUL_STORAGE lang_packs[current_lang].l_fm_all_successful_storage
 #define L_FM_ALL_FAILED_SD lang_packs[current_lang].l_fm_all_failed_sd

@@ -10,7 +10,8 @@
 
 #define SERVER_NAME "F2FS-GC"            // 进程名（MAX 15）
 #define PROP "dev.mnt.dev.data"             // 路径名称属性
-#define TIMEOUT 15                        // 超时时间（单位 M）
+#define TIMEOUT 15                         // 超时时间（单位 M）
+#define MIN_DIRTY 50                        // 磁盘保护最小脏段数量
 #define SYSFS_PATH "/sys/fs/f2fs"           // F2FS sysfs 路径
 #define SYSFS_FILE_NAME "gc_urgent"        // 节点设备名
 #define SYSFS_DIRTY_FILE "dirty_segments"   // 脏段节点名
@@ -76,6 +77,12 @@ static int f2fs_gc(char * argv[])
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
     fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
     fprintf(stderr, L_FG_FREE, f2fs_free);
+    
+    if (f2fs_dirty < MIN_DIRTY)
+    {
+        fprintf(stderr, L_FG_DIRTY_LOW, f2fs_dirty);
+        return -1;
+    }
     
     // 打开节点并触发 GC
     FILE * f2fs_sysfs_file_fp = fopen(f2fs_sysfs_file, "w");
@@ -156,7 +163,7 @@ static int f2fs_gc(char * argv[])
         }
         else if (time_s == 0)
         {
-            post(SERVER_NAME, SERVER_NAME, L_FG_RUN_M, time_m);
+            post(SERVER_NAME, SERVER_NAME, L_FG_DIRTY, get_f2fs_dirty(f2fs_sysfs_dirty_file));
         }
         else
         {
