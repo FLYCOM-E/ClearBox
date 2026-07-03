@@ -78,10 +78,22 @@ static int f2fs_gc(char * argv[])
     fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
     fprintf(stderr, L_FG_FREE, f2fs_free);
     
-    if (f2fs_dirty < MIN_DIRTY)
+    int min_dirty_size = get_settings_prop(settings_file, "clearbox_f2fs_gc_min_dirty", NULL, 0);
+    if (min_dirty_size != -1)
     {
-        fprintf(stderr, L_FG_DIRTY_LOW, f2fs_dirty);
-        return -1;
+        if (f2fs_dirty < min_dirty_size)
+        {
+            fprintf(stderr, L_FG_DIRTY_LOW, f2fs_dirty);
+            return -1;
+        }
+    }
+    else
+    {
+        if (f2fs_dirty < MIN_DIRTY)
+        {
+            fprintf(stderr, L_FG_DIRTY_LOW, f2fs_dirty);
+            return -1;
+        }
     }
     
     // 打开节点并触发 GC
