@@ -1,3 +1,4 @@
+#!/system/bin/env sh
 export SD_PATH=$({SDCARD_PATH})
 export EXECUTOR_PATH=$({EXECUTOR_PATH})
 export TMPDIR=$({TEMP_DIR})

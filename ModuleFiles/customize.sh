@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bin/env sh
 # 此脚本来自ClearBox模块，用于模块安装
 exec 2>>/dev/null
 SKIPUNZIP=1

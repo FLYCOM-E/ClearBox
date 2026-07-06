@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bin/env sh
 #此脚本用于将读取的软件从白名单移除
 for pk in $Package; do
     sed -i /"$pk"/d "$work_dir/whitelist.prop"

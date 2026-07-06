@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env sh
 set -e
 
 if [ ! -d "$ANDROID_NDK_HOME" ]; then

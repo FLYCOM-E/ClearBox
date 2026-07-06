@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bin/env sh
 # ClearBox
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######

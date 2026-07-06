@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bin/env sh
 source "$work_dir/settings.prop"
 if [ "$clearbox_debug_mode" = 1 ]; then
     exec 2>>"$work_dir/LOG.log"

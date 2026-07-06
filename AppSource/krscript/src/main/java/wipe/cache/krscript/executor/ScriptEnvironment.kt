@@ -142,7 +142,7 @@ object ScriptEnvironment {
             return outputPath
         }
 
-        val bytes = ("#!/system/bin/sh\n\n" + script)
+        val bytes = ("#!/system/bin/env sh\n\n" + script)
             .replace("\r\n".toRegex(), "\n")
             .replace("\r\t".toRegex(), "\t")
             .replace("\r".toRegex(), "\n")

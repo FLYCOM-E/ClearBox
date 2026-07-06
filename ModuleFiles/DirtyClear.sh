@@ -1,4 +1,4 @@
-#!/system/bin/sh
+#!/system/bin/env sh
 #此脚本来自ClearBox模块，升级过渡 / 配置纠错脚本
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！Please grant root privileges!"
