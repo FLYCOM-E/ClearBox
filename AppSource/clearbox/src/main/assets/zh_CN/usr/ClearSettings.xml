@@ -73,11 +73,11 @@
 </group>
 <!-- END -->
 <!-- START -->
-<group title="缓存清理大小设置">
+<group title=" ">
     <action interruptible="false">
         <title>缓存清理跳过大小</title>
         <summary sh="echo -n '当前设置大小：'; echo -n $(grep clearbox_clear_cache_size $work_dir/settings.prop | cut -f2 -d '='); echo -n ' M'" />
-        <param name="put" desc="请输入新值[数字]：(单位：兆（M）. 范围：100M)" label="数字" max="100" min="0" required="required" type="int" />
+        <param name="put" label="单位：兆（M）" required="required" type="int" />
             <set>
             sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
             echo " » 设定成功！"
@@ -86,7 +86,7 @@
 </group>
 <!-- END -->
 <!-- START -->
-<group title="文件归类">
+<group title=" ">
     <action>
         <title>自定义文件归类目录</title>
         <summary sh="echo -n '当前设置：'; echo -n $(grep clearbox_file_all_dirname $work_dir/settings.prop | cut -f2 -d '=')" />
@@ -103,7 +103,7 @@
     <action interruptible="false">
         <title>F2FS GC 最低优化阀值</title>
         <summary sh="echo -n '当前设置大小：'; grep clearbox_f2fs_gc_min_dirty $work_dir/settings.prop | cut -f2 -d '='" />
-        <param name="put" desc="请输入新值[数字]：" label="数字" min="0" required="required" type="int" />
+        <param name="put" label="数字" required="required" type="int" />
             <set>
             sed -i 's/clearbox_f2fs_gc_min_dirty=[0-9]*/clearbox_f2fs_gc_min_dirty='"$put"'/g' "$work_dir/settings.prop"
             echo " » 设定成功！"

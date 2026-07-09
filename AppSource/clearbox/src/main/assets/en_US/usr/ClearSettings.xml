@@ -73,11 +73,11 @@
 </group>
 <!-- END -->
 <!-- START -->
-<group title="Cache Cleanup Size Setting">
+<group title=" ">
     <action interruptible="false">
         <title>Skip cache cleaning by size</title>
         <summary sh="echo -n 'Current set size:'; echo -n $(grep clearbox_clear_cache_size $work_dir/settings.prop | cut -f2 -d '='); echo -n ' M'" />
-        <param name="put" desc="Please enter a new value [number]: (Unit: MB. Range: 100M)" label="number" max="100" min="0" required="required" type="int" />
+        <param name="put" label="Unit: MB" required="required" type="int" />
             <set>
             sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
             echo " » Setting successful!"
@@ -86,7 +86,7 @@
 </group>
 <!-- END -->
 <!-- START -->
-<group title="File Organization">
+<group title=" ">
     <action>
         <title>Custom File Organization Directory</title>
         <summary sh="echo -n 'Current set：'; echo -n $(grep clearbox_file_all_dirname $work_dir/settings.prop | cut -f2 -d '=')" />
@@ -103,7 +103,7 @@
     <action interruptible="false">
         <title>F2FS GC Minimum Optimization Threshold</title>
         <summary sh="echo -n 'Current setting size: '; grep clearbox_f2fs_gc_min_dirty $work_dir/settings.prop | cut -f2 -d '='" />
-        <param name="put" desc="Please enter new value [Number]：" label="Number" min="0" required="required" type="int" />
+        <param name="put" label="Number" required="required" type="int" />
             <set>
             sed -i 's/clearbox_f2fs_gc_min_dirty=[0-9]*/clearbox_f2fs_gc_min_dirty='"$put"'/g' "$work_dir/settings.prop"
             echo " » Setting successful!"
