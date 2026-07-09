@@ -98,3 +98,16 @@
     </action>
 </group>
 <!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false">
+        <title>F2FS GC Minimum Optimization Threshold</title>
+        <summary sh="echo -n 'Current setting size: '; grep clearbox_f2fs_gc_min_dirty $work_dir/settings.prop | cut -f2 -d '='" />
+        <param name="put" desc="Please enter new value [Number]：" label="Number" min="0" required="required" type="int" />
+            <set>
+            sed -i 's/clearbox_f2fs_gc_min_dirty=[0-9]*/clearbox_f2fs_gc_min_dirty='"$put"'/g' "$work_dir/settings.prop"
+            echo " » Setting successful!"
+            </set>
+    </action>
+</group>
+<!-- END -->

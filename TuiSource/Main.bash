@@ -703,6 +703,7 @@ case "$input" in
             echo -e "\033[93m 5:\t$L_REMOVE_WHITELIST\033[0m\n"
             echo -e "\033[93m 6:\t$L_CACHE_SKIP_SIZE\033[0m\n"
             echo -e "\033[93m 7:\t$L_CUST_FILE_ALL_PATH\033[0m\n"
+            echo -e "\033[93m 8:\t$L_GC_SKIP_SIZE\033[0m\n"
             echo -e "\033[96m==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read clean_option_input
@@ -871,8 +872,8 @@ case "$input" in
                   ;;
                 6)
                   clear
-                  echo " » $L_CACHE_SKIP_SIZE_NOW $clearbox_clear_cache_size M"
-                  echo -n " » $L_CACHE_SKIP_SIZE_ASK? (y/N):"
+                  echo " » $L_NUM_SIZE_NOW $clearbox_clear_cache_size M"
+                  echo -n " » $L_NUM_SIZE_ASK? (y/N):"
                   read ok_input
                   case "$ok_input" in
                       y | Y)
@@ -902,6 +903,27 @@ case "$input" in
                   [ -z "$path_input" ] && path_input="Documents"
                   sed -i 's|clearbox_file_all_dirname=.*|clearbox_file_all_dirname='"$path_input"'|g' "$work_dir/settings.prop"
                   echo " » SUCCESSFUL!"
+                  ;;
+                8)
+                  clear
+                  echo " » $L_NUM_SIZE_NOW $clearbox_f2fs_gc_min_dirty"
+                  echo -n " » $L_NUM_SIZE_ASK? (y/N):"
+                  read ok_input
+                  case "$ok_input" in
+                      y | Y)
+                        echo -n " » $L_INPUT_NOTIS_NUM:"
+                        read size_input
+                        if ! echo "$size_input" | grep [0-9] >>/dev/null; then
+                            echo -e "\033[1;92m » $L_INPUT_NOTIS_NUM\033[0m"
+                        else
+                            sed -i 's/clearbox_f2fs_gc_min_dirty=[0-9]*/clearbox_f2fs_gc_min_dirty='"$size_input"'/g' "$work_dir/settings.prop"
+                            echo " » SUCCESSFUL!"
+                        fi
+                        ;;
+                      *)
+                        echo -e "\033[92m » $L_CANCEL\033[0m"
+                        ;;
+                  esac
                   ;;
                 *)
                   echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
