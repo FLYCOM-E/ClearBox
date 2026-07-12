@@ -1,5 +1,7 @@
 #!/system/bin/env sh
-# 此脚本来自ClearBox模块，用于模块安装
+#
+# @ClearBoxModule：模块安装与更新
+#
 exec 2>>/dev/null
 SKIPUNZIP=1
 file_config_dir="FileConfigs"

@@ -1,5 +1,7 @@
 #!/system/bin/env sh
-# ClearBox
+#
+# @ClearBoxModule：模块配置初始化 & 启动
+#
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
 export home_dir="${0%/*}"

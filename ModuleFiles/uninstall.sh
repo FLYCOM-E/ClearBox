@@ -1,5 +1,7 @@
 #!/system/bin/env sh
-#此脚本来自ClearBox模块，用于完全卸载模块并清理残留
+#
+# @ClearBoxModule：完全卸载模块并清理残留
+#
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！Please grant root privileges!"
     exit 1

@@ -1,5 +1,7 @@
 #!/system/bin/env sh
-#此脚本来自ClearBox模块，用于提供终端菜单UI
+#
+# @ClearBoxModule：配置备份与恢复
+#
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！Please grant root privileges!"
     exit 1

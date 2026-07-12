@@ -1,5 +1,7 @@
 #!/system/bin/env sh
-#此脚本来自ClearBox模块，用于提供一键优化清理（Root管理器端）按钮
+#
+# @ClearBoxModule：提供一键优化清理（Root 管理器端）按钮
+#
 if [ ! "$(whoami)" = "root" ]; then
     echo " » 请授予root权限！Please grant root privileges!"
     exit 1
