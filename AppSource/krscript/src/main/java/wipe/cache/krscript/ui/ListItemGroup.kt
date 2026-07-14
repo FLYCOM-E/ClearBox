@@ -4,24 +4,24 @@ import android.content.Context
 import android.view.ViewGroup
 import wipe.cache.krscript.R
 import wipe.cache.krscript.model.GroupNode
+import android.view.View
+import android.util.TypedValue
 
-class ListItemGroup(context: Context,
-                    final var isRootGroup: Boolean,
-                    config: GroupNode) :
-        ListItemView(
-                context,
-                if (isRootGroup) R.layout.kr_group_list_root else R.layout.kr_group_list_item,
-                config) {
+class ListItemGroup(private val ctx: Context,
+                     final var isRootGroup: Boolean,
+                     config: GroupNode) :
+                        ListItemView(
+                            ctx,
+                            if (isRootGroup) R.layout.kr_group_list_root else R.layout.kr_group_list_item, config) {
     protected var children = ArrayList<ListItemView>()
-
+    
     fun addView(item: ListItemView): ListItemGroup {
         val content = layout.findViewById<ViewGroup>(android.R.id.content)
-        val typedValue = android.util.TypedValue()
-        context.theme.resolveAttribute(com.google.android.material.R.attr.colorOutlineVariant, typedValue, true)
-        setBackgroundColor(typedValue.data)
-        
+    
         if (children.isNotEmpty() && !isRootGroup) {
-            val divider = View(context).apply {
+            val typedValue = TypedValue()
+            ctx.theme.resolveAttribute(com.google.android.material.R.attr.colorOutlineVariant, typedValue, true)
+            val divider = View(ctx).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     1
@@ -30,13 +30,12 @@ class ListItemGroup(context: Context,
             }
             content.addView(divider)
         }
-        
+    
         content.addView(item.getView())
         children.add(item)
-        
         return this
     }
-
+    
     fun triggerActionByKey(key: String): Boolean {
         for (child in this.children) {
             if (child is ListItemClickable && child.key.equals(key)) {
