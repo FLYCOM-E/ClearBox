@@ -19,6 +19,9 @@
     <style name="AppTheme" parent="Theme.KrScript" />
     <style name="AppThemeDark" parent="Theme.KrScript">
         <item name="android:windowBackground">@color/app_bg</item>
+        <item name="android:statusBarColor">@color/app_bg</item>
+        <item name="android:navigationBarColor">@color/app_bg</item>
+    </style>
     </style>
     <style name="AppThemeWallpaperLight" parent="Theme.KrScript">
         <item name="android:statusBarColor">#00FFFFFF</item>

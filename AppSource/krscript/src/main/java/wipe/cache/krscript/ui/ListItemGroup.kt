@@ -19,11 +19,11 @@ class ListItemGroup(private val ctx: Context,
         val content = layout.findViewById<ViewGroup>(android.R.id.content)
         
         val view = item.getView()
-        val params = ViewGroup.MarginLayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+        val params = LinearLayout.LayoutParams (
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply {
-            bottomMargin = (8 * ctx.resources.displayMetrics.density).toInt() // 8dp
+            bottomMargin = (8 * ctx.resources.displayMetrics.density).toInt()
         }
         view.layoutParams = params
         
