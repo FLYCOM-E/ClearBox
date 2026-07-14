@@ -16,10 +16,24 @@ class ListItemGroup(context: Context,
 
     fun addView(item: ListItemView): ListItemGroup {
         val content = layout.findViewById<ViewGroup>(android.R.id.content)
+        val typedValue = android.util.TypedValue()
+        context.theme.resolveAttribute(com.google.android.material.R.attr.colorOutlineVariant, typedValue, true)
+        setBackgroundColor(typedValue.data)
+        
+        if (children.isNotEmpty() && !isRootGroup) {
+            val divider = View(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    1
+                )
+                setBackgroundColor(typedValue.data)
+            }
+            content.addView(divider)
+        }
+        
         content.addView(item.getView())
-
         children.add(item)
-
+        
         return this
     }
 
