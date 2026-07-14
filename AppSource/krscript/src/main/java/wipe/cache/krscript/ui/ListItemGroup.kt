@@ -6,7 +6,6 @@ import wipe.cache.krscript.R
 import wipe.cache.krscript.model.GroupNode
 import android.view.View
 import android.util.TypedValue
-import android.widget.LinearLayout
 
 class ListItemGroup(private val ctx: Context,
                      final var isRootGroup: Boolean,
@@ -19,16 +18,7 @@ class ListItemGroup(private val ctx: Context,
     fun addView(item: ListItemView): ListItemGroup {
         val content = layout.findViewById<ViewGroup>(android.R.id.content)
         
-        val view = item.getView()
-        val params = LinearLayout.LayoutParams (
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            bottomMargin = (8 * ctx.resources.displayMetrics.density).toInt()
-        }
-        view.layoutParams = params
-        
-        content.addView(view)
+        content.addView(item.getView())
         children.add(item)
         return this
     }
