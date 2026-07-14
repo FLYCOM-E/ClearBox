@@ -17,21 +17,17 @@ class ListItemGroup(private val ctx: Context,
     
     fun addView(item: ListItemView): ListItemGroup {
         val content = layout.findViewById<ViewGroup>(android.R.id.content)
-    
-        if (children.isNotEmpty() && !isRootGroup) {
-            val typedValue = TypedValue()
-            ctx.theme.resolveAttribute(com.google.android.material.R.attr.colorOutlineVariant, typedValue, true)
-            val divider = View(ctx).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    1
-                )
-                setBackgroundColor(typedValue.data)
-            }
-            content.addView(divider)
+        
+        val view = item.getView()
+        val params = ViewGroup.MarginLayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply {
+            bottomMargin = (8 * ctx.resources.displayMetrics.density).toInt() // 8dp
         }
-    
-        content.addView(item.getView())
+        view.layoutParams = params
+        
+        content.addView(view)
         children.add(item)
         return this
     }
