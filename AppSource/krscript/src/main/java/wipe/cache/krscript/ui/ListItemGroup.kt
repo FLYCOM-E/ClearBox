@@ -6,6 +6,7 @@ import wipe.cache.krscript.R
 import wipe.cache.krscript.model.GroupNode
 import android.view.View
 import android.util.TypedValue
+import android.widget.LinearLayout
 
 class ListItemGroup(private val ctx: Context,
                      final var isRootGroup: Boolean,

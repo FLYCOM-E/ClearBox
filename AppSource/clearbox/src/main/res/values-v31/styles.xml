@@ -22,7 +22,6 @@
         <item name="android:statusBarColor">@color/app_bg</item>
         <item name="android:navigationBarColor">@color/app_bg</item>
     </style>
-    </style>
     <style name="AppThemeWallpaperLight" parent="Theme.KrScript">
         <item name="android:statusBarColor">#00FFFFFF</item>
         <item name="android:navigationBarColor">#00FFFFFF</item>
