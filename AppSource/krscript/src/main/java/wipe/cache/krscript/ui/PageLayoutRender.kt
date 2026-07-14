@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import wipe.cache.krscript.R
 import wipe.cache.krscript.model.*
+import android.widget.LinearLayout
 
 class PageLayoutRender(private val mContext: Context,
                        private val itemConfigList: ArrayList<NodeInfoBase>,
@@ -101,11 +102,19 @@ class PageLayoutRender(private val mContext: Context,
                 } else if (it is GroupNode) {
                     val subGroup = createItemGroup(it)
                     if (it.children.size > 0) {
+                        val groupView = subGroup.getView()
+                        val params = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            bottomMargin = (8 * mContext.resources.displayMetrics.density).toInt()
+                        }
+                        groupView.layoutParams = params
                         parent.addView(subGroup)
                         mapConfigList(subGroup, it.children)
                     }
                 }
-
+                
                 if (uiRender != null) {
                     if (uiRender is ListItemClickable) {
                         uiRender.setOnClickListener(this.onItemClickListener)
