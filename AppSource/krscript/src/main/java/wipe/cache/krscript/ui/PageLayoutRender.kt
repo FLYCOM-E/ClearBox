@@ -111,6 +111,8 @@ class PageLayoutRender(private val mContext: Context,
                         }
                         groupView.layoutParams = params
                         parent.addView(subGroup)
+                        (groupView.layoutParams as? LinearLayout.LayoutParams)?.bottomMargin =
+                            (8 * mContext.resources.displayMetrics.density).toInt()
                         mapConfigList(subGroup, it.children)
                     }
                 }
