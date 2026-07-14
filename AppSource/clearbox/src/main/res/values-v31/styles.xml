@@ -17,7 +17,9 @@
         <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
     <style name="AppTheme" parent="Theme.KrScript" />
-    <style name="AppThemeDark" parent="Theme.KrScript" />
+    <style name="AppThemeDark" parent="Theme.KrScript">
+        <item name="android:windowBackground">@color/app_bg</item>
+    </style>
     <style name="AppThemeWallpaperLight" parent="Theme.KrScript">
         <item name="android:statusBarColor">#00FFFFFF</item>
         <item name="android:navigationBarColor">#00FFFFFF</item>

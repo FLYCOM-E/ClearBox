@@ -4,4 +4,5 @@
     <color name="md_primary_container">#00D2C4</color>
     <color name="md_secondary">#00D2C4</color>
     <color name="md_secondary_container">#00D2C4</color>
+    <color name="app_bg">#0D0D0D</color>
 </resources>
