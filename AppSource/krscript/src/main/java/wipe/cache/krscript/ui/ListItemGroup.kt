@@ -18,7 +18,15 @@ class ListItemGroup(private val ctx: Context,
     fun addView(item: ListItemView): ListItemGroup {
         val content = layout.findViewById<ViewGroup>(android.R.id.content)
         
-        android.util.Log.d("ListItemGroup", "content type: ${content.javaClass.simpleName}, isRootGroup: $isRootGroup")
+        if (isRootGroup && children.isNotEmpty()) {
+            val space = android.widget.Space(ctx).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    (8 * ctx.resources.displayMetrics.density).toInt()
+                )
+            }
+            content.addView(space)
+        }
         
         content.addView(item.getView())
         children.add(item)
