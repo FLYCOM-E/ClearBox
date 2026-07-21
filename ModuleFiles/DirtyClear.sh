@@ -43,9 +43,23 @@ rm -f "$work_dir/$file_config_dir/字体文件.conf"
 
 if [ -f "$work_dir/$timed_config_dir/ClearAll.conf" ]; then
     grep -q "in=" "$work_dir/$timed_config_dir/ClearAll.conf" || echo "in=0/5" >> "$work_dir/$timed_config_dir/ClearAll.conf"
+    grep "ClearAll" "$work_dir/$timed_config_dir/ClearAll.conf" && sed -i 's|ClearAll|--clear-all|g' "$work_dir/$timed_config_dir/ClearAll.conf"
 fi
 if [ -f "$work_dir/$timed_config_dir/ClearCache.conf" ]; then
     grep -q "in=" "$work_dir/$timed_config_dir/ClearCache.conf" || echo "in=0/5" >> "$work_dir/$timed_config_dir/ClearCache.conf"
+    grep "ClearCache" "$work_dir/$timed_config_dir/ClearCache.conf" && sed -i 's|ClearCache|--clear-app-cache|g' "$work_dir/$timed_config_dir/ClearCache.conf"
+fi
+if [ -f "$work_dir/$timed_config_dir/ClearDir.conf" ]; then
+    grep "All_Dir" "$work_dir/$timed_config_dir/ClearDir.conf" && sed -i 's|All_Dir|--clear-storage|g' "$work_dir/$timed_config_dir/ClearDir.conf"
+fi
+if [ -f "$work_dir/$timed_config_dir/F2fsGc.conf" ]; then
+    grep "F2fs_GC" "$work_dir/$timed_config_dir/F2fsGc.conf" && sed -i 's|F2fs_GC|--disk-f2fs-gc|g' "$work_dir/$timed_config_dir/F2fsGc.conf"
+fi
+if [ -f "$work_dir/$timed_config_dir/FileAll.conf" ]; then
+    grep "File_All" "$work_dir/$timed_config_dir/FileAll.conf" && sed -i 's|File_All|--file-sort|g' "$work_dir/$timed_config_dir/FileAll.conf"
+fi
+if [ -f "$work_dir/$timed_config_dir/ListDir.conf" ]; then
+    grep "List_Dir" "$work_dir/$timed_config_dir/ListDir.conf" && sed -i 's|List_Dir|--clear-storage-cust|g' "$work_dir/$timed_config_dir/ListDir.conf"
 fi
 
 for file in "$work_dir/$timed_config_dir/"*; do
