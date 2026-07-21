@@ -6,7 +6,7 @@
         <summary sh="echo -n 'Current setting time: '; grep 'time=' $work_dir/$timed_config_dir/ClearAll.conf | cut -f2 -d '='" />
         <param name="day_num" max="30" min="1" title="Slide to select time (Unit: Days)" type="seekbar" value="3" />
             <set>
-            echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/$core ClearAll\nin=0/5" > "$work_dir/$timed_config_dir/ClearAll.conf"
+            echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/$core --clear-all\nin=0/5" > "$work_dir/$timed_config_dir/ClearAll.conf"
             echo " » Setting successful!"
             </set>
     </action>

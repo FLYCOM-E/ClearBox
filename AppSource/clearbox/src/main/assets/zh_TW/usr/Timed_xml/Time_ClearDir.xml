@@ -6,7 +6,7 @@
         <summary sh="echo -n '目前設定時間：'; grep 'time=' $work_dir/$timed_config_dir/ClearDir.conf | cut -f2 -d '='" />
         <param name="minute_num" max="59" min="1" title="滑動滑塊選擇時間（單位：分鐘）" type="seekbar" value="10" />
             <set>
-            echo -e "time=${minute_num}/M\ndate=0\nrun=$home_dir/$core All_Dir" > "$work_dir/$timed_config_dir/ClearDir.conf"
+            echo -e "time=${minute_num}/M\ndate=0\nrun=$home_dir/$core --clear-storage" > "$work_dir/$timed_config_dir/ClearDir.conf"
             echo " » 設定成功！"
             </set>
     </action>

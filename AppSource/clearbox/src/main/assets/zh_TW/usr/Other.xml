@@ -14,7 +14,7 @@
         if grep "clearbox_stop_cache=0" "$work_dir/settings.prop" >/dev/null; then
             sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
             if ! pgrep "StopCached" >/dev/null 2>&amp;1; then
-                "$home_dir/$core" "StopCached"
+                "$home_dir/$core" "--daemon-stop-cache"
             fi
             echo " » 已開啟 ~"
         else
@@ -52,9 +52,9 @@
             </get>
             <set>
             if grep "clearbox_stop_install=0" "$work_dir/settings.prop" >/dev/null; then
-                "$home_dir/$core" StopInstall STOP
+                "$home_dir/$core" "--app-allow-install" STOP
             else
-                "$home_dir/$core" StopInstall RESET
+                "$home_dir/$core" "--app-allow-install" RESET
             fi
             </set>
     </switch>

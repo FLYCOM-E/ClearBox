@@ -38,7 +38,7 @@ for FN in "$work_dir/$file_config_dir"/*; do
         <action interruptible=\"false\" auto-off=\"false\" warning=\"清理內/外部儲存 $Name？\">
             <title>清理 $Name</title>
                 <set>
-                \"$home_dir/$core\" File_Clear \"$Name\"
+                \"$home_dir/$core\" --file-clear \"$Name\"
                 </set>
         </action>
     </group>

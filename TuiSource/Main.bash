@@ -60,19 +60,19 @@ read input
 case "$input" in
     1)
       clear
-      "$home_dir/$core" ClearAll
+      "$home_dir/$core" "--clear-all"
       ;;
     2)
       clear
-      "$home_dir/$core" List_Dir
+      "$home_dir/$core" "--clear-storage-cust"
       ;;
     3)
       clear
-      "$home_dir/$core" All_Dir
+      "$home_dir/$core" "--clear-storage"
       ;;
     4)
       clear
-      "$home_dir/$core" ClearCache
+      "$home_dir/$core" "--clear-app-cache"
       ;;
     5)
       echo -en " » $L_CONFIRM？(y): "
@@ -80,7 +80,7 @@ case "$input" in
       case "$input_fa" in
           y | Y)
             clear
-            "$home_dir/$core" File_All
+            "$home_dir/$core" "--file-sort"
             ;;
           *)
             echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -115,7 +115,7 @@ case "$input" in
              case "$fc_input_2" in
                  y | Y)
                    clear
-                   "$home_dir/$core" File_Clear "$filename"
+                   "$home_dir/$core" "--file-clear" "$filename"
                    break
                    ;;
                  *)
@@ -152,7 +152,7 @@ case "$input" in
          if [ "$(echo "${Num[$count_2]}" | cut -f1 -d ',')" = "$ac_input" ]; then
              app_package=$(echo "${Num[$count_2]}" | cut -f2 -d ',')
              clear
-             "$home_dir/$core" Clear_App "$app_package"
+             "$home_dir/$core" "--clear-app-cust" "$app_package"
              break
          fi
          [ "$count_2" = "$count" ] && echo -e "\033[91m » $L_INPUT_ERROR\033[0m" && break
@@ -164,7 +164,7 @@ case "$input" in
       case "$sc_input" in
           y | Y)
             clear
-            "$home_dir/$core" Clear_SCache
+            "$home_dir/$core" "--clear-system-cache"
             ;;
           *)
             echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -207,7 +207,7 @@ case "$input" in
                   elif [ "$day_input" -gt 30 ]; then
                       echo -e "\033[1;92m » $L_AR_TIME_MAX_ERR 30 $L_TIME_D!\033[0m"
                   else
-                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/$core ClearAll\nin=0/5" > "$work_dir/$timed_config_dir/ClearAll.conf"
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/$core --clear-all\nin=0/5" > "$work_dir/$timed_config_dir/ClearAll.conf"
                       echo " » $L_OPEND!"
                   fi
                   ;;
@@ -243,7 +243,7 @@ case "$input" in
                   elif [ "$hour_input" -ge 24 ]; then
                       echo -e "\033[1;92m » $L_AR_TIME_MAX_ERR 24 $L_TIME_H!\033[0m"
                   else
-                      echo -e "time=${hour_input}/H\ndate=0\nrun=$home_dir/$core List_Dir" > "$work_dir/$timed_config_dir/ListDir.conf"
+                      echo -e "time=${hour_input}/H\ndate=0\nrun=$home_dir/$core --clear-storage-cust" > "$work_dir/$timed_config_dir/ListDir.conf"
                       echo " » $L_OPEND!"
                   fi
                   ;;
@@ -279,7 +279,7 @@ case "$input" in
                   elif [ "$minute_input" -ge 60 ]; then
                       echo -e "\033[1;92m » $L_AR_TIME_MAX_ERR 1 $L_TIME_M!\033[0m"
                   else
-                      echo -e "time=${minute_input}/M\ndate=0\nrun=$home_dir/$core All_Dir" > "$work_dir/$timed_config_dir/ClearDir.conf"
+                      echo -e "time=${minute_input}/M\ndate=0\nrun=$home_dir/$core --clear-storage" > "$work_dir/$timed_config_dir/ClearDir.conf"
                       echo " » $L_OPEND!"
                   fi
                   ;;
@@ -315,7 +315,7 @@ case "$input" in
                   elif [ "$day_input" -gt 30 ]; then
                       echo -e "\033[1;92m » $L_AR_TIME_MAX_ERR 30 $L_TIME_D!\033[0m"
                   else
-                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/$core ClearCache\nin=0/5" > "$work_dir/$timed_config_dir/ClearCache.conf"
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/$core --clear-app-cache\nin=0/5" > "$work_dir/$timed_config_dir/ClearCache.conf"
                       echo " » $L_OPEND!"
                   fi
                   ;;
@@ -351,7 +351,7 @@ case "$input" in
                   elif [ "$hour_input" -ge 24 ]; then
                       echo -e "\033[1;92m » $L_AR_TIME_MAX_ERR 24 $L_TIME_H!\033[0m"
                   else
-                      echo -e "time=${hour_input}/H\ndate=0\nrun=$home_dir/$core File_All" > "$work_dir/$timed_config_dir/FileAll.conf"
+                      echo -e "time=${hour_input}/H\ndate=0\nrun=$home_dir/$core --file-sort" > "$work_dir/$timed_config_dir/FileAll.conf"
                       echo " » $L_OPEND!"
                   fi
                   ;;
@@ -387,7 +387,7 @@ case "$input" in
                   elif [ "$day_input" -gt 30 ]; then
                       echo -e "\033[1;92m » $L_AR_TIME_MAX_ERR 30 $L_TIME_D!\033[0m"
                   else
-                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/$core F2fs_GC\nin=0/5" > "$work_dir/$timed_config_dir/F2fsGc.conf"
+                      echo -e "time=${day_input}/D\ndate=0\nrun=$home_dir/$core --disk-f2fs-gc\nin=0/5" > "$work_dir/$timed_config_dir/F2fsGc.conf"
                       echo " » $L_OPEND!"
                   fi
                   ;;
@@ -427,7 +427,7 @@ case "$input" in
                 case "$ok_input" in
                     y | Y)
                       clear
-                      "$home_dir/$core" StopInstall STOP
+                      "$home_dir/$core" "--app-allow-install" STOP
                       ;;
                     *)
                       echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -435,7 +435,7 @@ case "$input" in
                 esac
             else
                 clear
-                "$home_dir/$core" StopInstall RESET
+                "$home_dir/$core" "--app-allow-install" RESET
             fi
             ;;
           *)
@@ -465,7 +465,7 @@ case "$input" in
                     y | Y)
                       clear
                       sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
-                      "$home_dir/$core" "BindPath" "MOUNT"
+                      "$home_dir/$core" "--storage-bind-custom" "MOUNT"
                       ;;
                     *)
                       echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -474,7 +474,7 @@ case "$input" in
             else
                 clear
                 sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
-                "$home_dir/$core" "BindPath" "UMOUNT"
+                "$home_dir/$core" "--storage-bind-custom" "UMOUNT"
             fi
             ;;
           *)
@@ -503,7 +503,7 @@ case "$input" in
                 case "$ok_input" in
                     y | Y)
                       clear
-                      "$home_dir/$core" StopStorage STOP
+                      "$home_dir/$core" "--storage-lock" STOP
                       ;;
                     *)
                       echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -511,7 +511,7 @@ case "$input" in
                 esac
             else
                 clear
-                "$home_dir/$core" StopStorage RESET
+                "$home_dir/$core" "--storage-lock" RESET
             fi
             ;;
           *)
@@ -544,7 +544,7 @@ case "$input" in
                       clear
                       sed -i 's/clearbox_stop_cache=0/clearbox_stop_cache=1/g' "$work_dir/settings.prop"
                       if ! pgrep "StopCached" >/dev/null 2>&1; then
-                          "$home_dir/$core" "StopCached"
+                          "$home_dir/$core" "--daemon-stop-cache"
                       fi
                       echo " » $L_OPEND!"
                       ;;
@@ -609,11 +609,11 @@ case "$input" in
       case "$dg_input" in
           1)
             clear
-            "$home_dir/$core" F2fs_GC
+            "$home_dir/$core" "--disk-f2fs-gc"
             ;;
           2)
             clear
-            "$home_dir/$core" Fast_GC
+            "$home_dir/$core" "--disk-gc"
             ;;
           3)
             clear
@@ -627,7 +627,7 @@ case "$input" in
             read cust_mode
             case "$cust_mode" in
                 1)
-                  "$home_dir/$core" Dexoat_1
+                  "$home_dir/$core" "--dexoat-system"
                   ;;
                 2)
                   clear
@@ -642,15 +642,15 @@ case "$input" in
                   case "$mode" in
                       1)
                         clear
-                        "$home_dir/$core" Dexoat_2 speed
+                        "$home_dir/$core" "--dexoat-custom" speed
                         ;;
                       2)
                         clear
-                        "$home_dir/$core" Dexoat_2 speed-profile
+                        "$home_dir/$core" "--dexoat-custom" speed-profile
                         ;;
                       3)
                         clear
-                        "$home_dir/$core" Dexoat_2 everything
+                        "$home_dir/$core" "--dexoat-custom" everything
                         ;;
                       *)
                         echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
@@ -658,7 +658,7 @@ case "$input" in
                   esac
                   ;;
                 3)
-                  "$home_dir/$core" Dexoat_3
+                  "$home_dir/$core" "--dexoat-reset"
                   ;;
                 *)
                   echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
@@ -1025,13 +1025,13 @@ case "$input" in
             case "$backup_option_input" in
                 1)
                   clear
-                  "$home_dir/$core" configManager backup
+                  "$home_dir/$core" "--config" backup
                   ;;
                 2)
                   clear
                   echo -en " » PATH: "
                   read configFile
-                  "$home_dir/$core" configManager recovery "$configFile"
+                  "$home_dir/$core" "--config" recovery "$configFile"
                   ;;
                 *)
                   echo -e "\033[91m » $L_INPUT_ERROR\033[0m"

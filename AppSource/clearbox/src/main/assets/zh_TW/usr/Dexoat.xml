@@ -4,7 +4,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>觸發系統默認 Dexoat</title>
             <set>
-            "$home_dir/$core" Dexoat_1
+            "$home_dir/$core" "--dexoat-system"
             </set>
     </action>
 </group>
@@ -12,7 +12,7 @@
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="自訂模式全部編譯" config-sh="cat . ./Dexoat_2.xml" />
+        <page title="自訂模式全部編譯" config-sh="cat . ./Dexoat_custom.xml" />
     </pages>
 </group>
 <!-- END -->
@@ -21,7 +21,7 @@
     <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
         <title>恢復（RESET）</title>
             <set>
-            "$home_dir/$core" Dexoat_3
+            "$home_dir/$core" "--dexoat-reset"
             </set>
     </action>
 </group>

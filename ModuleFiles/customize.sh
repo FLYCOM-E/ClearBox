@@ -121,7 +121,7 @@ else
     
     if [ "$update" = 1 ]; then
         if [ "$clearbox_stop_install" = 1 ]; then
-            "$home_dir/clearbox" StopInstall RESET >/dev/null
+            "$home_dir/clearbox" --app-allow-install RESET >/dev/null
             RESET=1
         fi
     fi
@@ -137,7 +137,7 @@ else
     rm "$TMPDIR/ClearBox.apk" >/dev/null 2>&1
     rm -rf "$MODPATH/ClearBox.apk" >/dev/null 2>&1
     
-    [ "$RESET" = 1 ] && "$home_dir/clearbox" StopInstall STOP >/dev/null
+    [ "$RESET" = 1 ] && "$home_dir/clearbox" --app-allow-install STOP >/dev/null
 fi
 ######
 sleep "$SHOUT_S"

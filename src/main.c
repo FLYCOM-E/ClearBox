@@ -82,12 +82,12 @@ int main(int argc, char * argv[])
         
         if (access(home_dir, F_OK) != 0)
         {
-            fprintf(stderr, " » Error：HOME_PATH\n");
+            fprintf(stderr, " » Error get：HOME_PATH\n");
             return -1;
         }
         if (access(work_dir, F_OK) != 0)
         {
-            fprintf(stderr, " » Error：WORK_PATH\n");
+            fprintf(stderr, " » Error get：WORK_PATH\n");
             return -1;
         }
         
@@ -117,7 +117,7 @@ int main(int argc, char * argv[])
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     // 根据输入参数执行对应操作
-    if (strcasecmp(argv[1], "ClearAll") == 0)
+    if (strcasecmp(argv[1], "--clear-all") == 0)
     {
         pid_t pids[6];
         for (int i = 0; i < 6; i++)
@@ -157,23 +157,23 @@ int main(int argc, char * argv[])
         // 文件归类是高资源占用操作不并行
         file_all(1);
     }
-    else if (strcasecmp(argv[1], "ClearCache") == 0)
+    else if (strcasecmp(argv[1], "--clear-app-cache") == 0)
     {
         app_cache_clean(0);
     }
-    else if (strcasecmp(argv[1], "Clear_SCache") == 0)
+    else if (strcasecmp(argv[1], "--clear-system-cache") == 0)
     {
         app_cache_clean(1);
     }
-    else if (strcasecmp(argv[1], "List_Dir") == 0)
+    else if (strcasecmp(argv[1], "--clear-storage-cust") == 0)
     {
         cust_rule_clean();
     }
-    else if (strcasecmp(argv[1], "All_Dir") == 0)
+    else if (strcasecmp(argv[1], "--clear-storage") == 0)
     {
         storage_clean();
     }
-    else if (strcasecmp(argv[1], "File_Clear") == 0)
+    else if (strcasecmp(argv[1], "--file-clear") == 0)
     {
         if (argc < 3)
         {
@@ -182,7 +182,7 @@ int main(int argc, char * argv[])
         
         file_manager(0, argv[2]);
     }
-    else if (strcasecmp(argv[1], "Clear_App") == 0)
+    else if (strcasecmp(argv[1], "--clear-app-cust") == 0)
     {
         if (argc < 3)
         {
@@ -191,15 +191,15 @@ int main(int argc, char * argv[])
         
         app_cust_rule_clean(argv[2], 0);
     }
-    else if (strcasecmp(argv[1], "Clear_App_All") == 0)
+    else if (strcasecmp(argv[1], "--clear-app-cust-all") == 0)
     {
         app_cust_rule_clean("null", 1);
     }
-    else if (strcasecmp(argv[1], "File_All") == 0)
+    else if (strcasecmp(argv[1], "--file-sort") == 0)
     {
         file_all(0);
     }
-    else if (strcasecmp(argv[1], "StopInstall") == 0)
+    else if (strcasecmp(argv[1], "--app-allow-install") == 0)
     {
         if (argc < 3)
         {
@@ -208,7 +208,7 @@ int main(int argc, char * argv[])
         
         set_install(argv[2]);
     }
-    else if (strcasecmp(argv[1], "StopStorage") == 0)
+    else if (strcasecmp(argv[1], "--storage-lock") == 0)
     {
         if (argc < 3)
         {
@@ -217,19 +217,19 @@ int main(int argc, char * argv[])
         
         set_storage(argv[2]);
     }
-    else if (strcasecmp(argv[1], "Fast_GC") == 0)
+    else if (strcasecmp(argv[1], "--disk-gc") == 0)
     {
         fast_gc(argv, 0);
     }
-    else if (strcasecmp(argv[1], "F2fs_GC") == 0)
+    else if (strcasecmp(argv[1], "--disk-f2fs-gc") == 0)
     {
         disk_gc(argv, 0);
     }
-    else if (strcasecmp(argv[1], "Dexoat_1") == 0)
+    else if (strcasecmp(argv[1], "--dexoat-system") == 0)
     {
         dexoat(0, "null");
     }
-    else if (strcasecmp(argv[1], "Dexoat_2") == 0)
+    else if (strcasecmp(argv[1], "--dexoat-custom") == 0)
     {
         if (argc < 3)
         {
@@ -238,23 +238,23 @@ int main(int argc, char * argv[])
         
         dexoat(1, argv[2]);
     }
-    else if (strcasecmp(argv[1], "Dexoat_3") == 0)
+    else if (strcasecmp(argv[1], "--dexoat-reset") == 0)
     {
         dexoat(1, "space");
     }
-    else if (strcasecmp(argv[1], "Freezer") == 0)
+    else if (strcasecmp(argv[1], "--open-system-freezer") == 0)
     {
         freezer_open();
     }
-    else if (strcasecmp(argv[1], "StopCached") == 0)
+    else if (strcasecmp(argv[1], "--daemon-stop-cache") == 0)
     {
         stop_cache_daemon(argv);
     }
-    else if (strcasecmp(argv[1], "Timed") == 0)
+    else if (strcasecmp(argv[1], "--daemon-time") == 0)
     {
         time_daemon(argv);
     }
-    else if (strcasecmp(argv[1], "BindPath") == 0)
+    else if (strcasecmp(argv[1], "--storage-bind-custom") == 0)
     {
         if (argc < 3)
         {
@@ -263,7 +263,7 @@ int main(int argc, char * argv[])
         
         bmount(argv[2]);
     }
-    else if (strcasecmp(argv[1], "configManager") == 0)
+    else if (strcasecmp(argv[1], "--config") == 0)
     {
         if (argc < 3)
         {

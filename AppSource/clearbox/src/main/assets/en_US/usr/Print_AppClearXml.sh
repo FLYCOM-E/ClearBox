@@ -39,7 +39,7 @@ for FN in "$work_dir/$app_config_dir"/*; do
         <action interruptible=\"false\" auto-off=\"false\" confirm=\"false\">
         <title>Clean $Name</title>
             <set>
-            \"$home_dir/$core\" Clear_App \"$Package\"
+            \"$home_dir/$core\" --clear-app-cust \"$Package\"
             </set>
         </action>
     </group>

@@ -6,7 +6,7 @@
         <summary sh="echo -n 'Current setting time: '; grep 'time=' $work_dir/$timed_config_dir/ListDir.conf | cut -f2 -d '='" />
         <param name="hour_num" max="23" min="1" title="Slide to select time (Unit: Hours)" type="seekbar" value="12" />
             <set>
-            echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/$core List_Dir" > "$work_dir/$timed_config_dir/ListDir.conf"
+            echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/$core --clear-storage-cust" > "$work_dir/$timed_config_dir/ListDir.conf"
             echo " » Setting successful!"
             </set>
     </action>

@@ -38,7 +38,7 @@ for FN in "$work_dir/$file_config_dir"/*; do
         <action interruptible=\"false\" auto-off=\"false\" warning=\"Clear internal/external storage $Name?\">
             <title>Clear $Name</title>
                 <set>
-                \"$home_dir/$core\" File_Clear \"$Name\"
+                \"$home_dir/$core\" --file-clear \"$Name\"
                 </set>
         </action>
     </group>

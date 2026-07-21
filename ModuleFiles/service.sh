@@ -118,15 +118,15 @@ fi
 ######
 if [ "$clearbox_stop_cache" = 1 ]; then
     if ! pgrep "StopCached" >/dev/null 2>&1; then
-        "$home_dir/$core" "StopCached"
+        "$home_dir/$core" "--daemon-stop-cache"
     fi
 fi
 if ! pgrep "ClearBox Timed" >/dev/null 2>&1; then
-    "$home_dir/$core" "Timed"
+    "$home_dir/$core" "--daemon-time"
 fi
 ######
 if [ "$clearbox_bind_path" = 1 ]; then
-    "$home_dir/$core" "BindPath" "MOUNT"
+    "$home_dir/$core" "--storage-bind-custom" "MOUNT"
 fi
 ######
 exit 0
