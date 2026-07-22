@@ -1,4 +1,4 @@
-/*
+
                     GNU GENERAL PUBLIC
                         Version 3
 
@@ -11,7 +11,7 @@
 #define MAX_ARGS_SIZE 32                      // 后缀名称长度限制
 #define MAX_CONFIG_LINE 512                  // 最大配置行长（仅用于识别大小声明行）
 #define CONFIG_MAX_ARGS 5000                // 单个文件格式配置最多允许的后缀数量
-#define F_DIR_NAME "Documents"                // 归类目录名称（仅文件归类模式会用）
+#define F_DIR_NAME "Documents"                // 默认归类目录名称
 #define CONFIG_DIR_NAME "FileConfigs"         // 配置文件夹名称
 #define CARD_HOME "/mnt/media_rw"           // 外置储存根目录
 #define STORAGES_DIR "/storage/emulated/0"   // 内置储存根目录
@@ -316,7 +316,8 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
 */
 static int find_file(char * storage, char * file_dir, struct file_rules file_args[], int count)
 {
-    if (access(file_dir, F_OK) != 0)
+    // 仅文件归类模式检查目标目录
+    if (file_clear != 1 && access(file_dir, F_OK) != 0)
     {
         write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, file_dir, strerror(errno));
         return -1;
