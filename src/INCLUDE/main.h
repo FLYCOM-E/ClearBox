@@ -37,6 +37,7 @@ extern volatile sig_atomic_t sig_flag;
 extern char home_dir[128],
              work_dir[128],
              settings_file[PATH_MAX];
+extern LangType current_lang;
 
 long s_remove(char * path, int all);
 int s_grep(char * file, char * text, int mode);

@@ -143,6 +143,7 @@ int stop_cache_daemon(char * argv[])
                  max_empty_count = 30;
     
     // Start
+    int while_count = 0; // 循环次数，用于语言更新，每 10 次检查更新语言
     while (sig_flag == 0)
     {
         // 检查获取前台失败次数
@@ -281,7 +282,14 @@ int stop_cache_daemon(char * argv[])
         {
             set_app_cache(top_app_list[0], reset_app, skip_reset, whitelist);
         }
-        // 循环返回 ===
+        
+        // 语言更新
+        while_count++;
+        if (while_count >= 10)
+        {
+            set_language(&current_lang);
+            while_count = 0;
+        }
     }
     close(inotify_fd);
     
