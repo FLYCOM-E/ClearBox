@@ -62,23 +62,25 @@ StartSettings()
     [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
     [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
     ######
+    if [ -d "$home_dir/AppConfigs" ]; then
+        cp "$home_dir/AppConfigs/"* "$work_dir/$app_config_dir/"
+        pm list package -a | cut -f2 -d ':' >"$work_dir/$app_config_dir/AppList.txt"
+        for file in "$work_dir/$app_config_dir/"*; do
+            name="$(basename $file | sed 's/\.[^.]*$//')"
+            if [ "$name" = "AppList" ]; then
+                continue
+            fi
+            if ! grep "$name" "$work_dir/$app_config_dir/AppList.txt" >/dev/null 2>&1; then
+                rm -f "$file"
+            fi
+        done
+        rm -f "$work_dir/$app_config_dir/AppList.txt"
+    fi
     if [ "$(ls "$work_dir/$file_config_dir/")" = "" ]; then
         if [ -d "$home_dir/$file_config_dir" ]; then
             cp -r "$home_dir/$file_config_dir/"* "$work_dir/$file_config_dir/"
         fi
     fi
-    if [ "$(ls "$work_dir/$app_config_dir/")" = "" ]; then
-        if [ -d "$home_dir/AppConfigs" ]; then
-            pm list package -a | cut -f2 -d ':' >"$work_dir/$app_config_dir/AppList.txt"
-            for file in "$home_dir/AppConfigs/"*; do
-                name="$(basename $file | sed 's/\.[^.]*$//')"
-                if grep "$name" "$work_dir/$app_config_dir/AppList.txt" >/dev/null 2>&1; then
-                    cp "$file" "$work_dir/$app_config_dir/"
-                fi
-            done
-            rm -f "$work_dir/$app_config_dir/AppList.txt"
-        fi
-    fi   
     for file in "$work_dir/$file_config_dir/"*; do
         name1=$(echo "$file" | cut -f1 -d '.')
         name2=$(echo "$file" | cut -f2 -d '.')
