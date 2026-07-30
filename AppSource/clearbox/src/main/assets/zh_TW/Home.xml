@@ -75,12 +75,14 @@ cat <<w
             </get>
             <set>
             if grep "clearbox_bind_path=0" "$work_dir/settings.prop" >/dev/null; then
-                sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
-                "$home_dir/$core" "--storage-bind-custom" "MOUNT"
+                if "$home_dir/$core" "--storage-bind-custom" "MOUNT"; then
+                    sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
+                fi
                 echo " » 已開啟 ~"
             else
-                sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
-                "$home_dir/$core" "--storage-bind-custom" "UMOUNT"
+                if "$home_dir/$core" "--storage-bind-custom" "UMOUNT"; then
+                    sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
+                fi
                 echo " » 已關閉 ~"
             fi
             </set>

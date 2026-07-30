@@ -464,8 +464,9 @@ case "$input" in
                 case "$ok_input" in
                     y | Y)
                       clear
-                      sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
-                      "$home_dir/$core" "--storage-bind-custom" "MOUNT"
+                      if "$home_dir/$core" "--storage-bind-custom" "MOUNT"; then
+                          sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
+                      fi
                       ;;
                     *)
                       echo -e "\033[92m » $L_CANCEL\033[0m"
@@ -473,8 +474,9 @@ case "$input" in
                 esac
             else
                 clear
-                sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
-                "$home_dir/$core" "--storage-bind-custom" "UMOUNT"
+                if "$home_dir/$core" "--storage-bind-custom" "UMOUNT"; then
+                    sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
+                fi
             fi
             ;;
           *)

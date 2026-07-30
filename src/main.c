@@ -118,6 +118,7 @@ int main(int argc, char * argv[])
     snprintf(settings_file, sizeof(settings_file), "%s/%s", work_dir, SETTINGS_FILE);
     
     // 根据输入参数执行对应操作
+    int exit_code = 0;
     if (strcasecmp(argv[1], "--clear-all") == 0)
     {
         pid_t pids[6];
@@ -160,19 +161,19 @@ int main(int argc, char * argv[])
     }
     else if (strcasecmp(argv[1], "--clear-app-cache") == 0)
     {
-        app_cache_clean(0);
+        exit_code = app_cache_clean(0);
     }
     else if (strcasecmp(argv[1], "--clear-system-cache") == 0)
     {
-        app_cache_clean(1);
+        exit_code = app_cache_clean(1);
     }
     else if (strcasecmp(argv[1], "--clear-storage-cust") == 0)
     {
-        cust_rule_clean();
+        exit_code = cust_rule_clean();
     }
     else if (strcasecmp(argv[1], "--clear-storage") == 0)
     {
-        storage_clean();
+        exit_code = storage_clean();
     }
     else if (strcasecmp(argv[1], "--file-clear") == 0)
     {
@@ -180,8 +181,10 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        
-        file_manager(0, argv[2]);
+        else
+        {
+            exit_code = file_manager(0, argv[2]);
+        }
     }
     else if (strcasecmp(argv[1], "--clear-app-cust") == 0)
     {
@@ -189,16 +192,18 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        
-        app_cust_rule_clean(argv[2], 0);
+        else
+        {
+            exit_code = app_cust_rule_clean(argv[2], 0);
+        }
     }
     else if (strcasecmp(argv[1], "--clear-app-cust-all") == 0)
     {
-        app_cust_rule_clean("null", 1);
+        exit_code = app_cust_rule_clean("null", 1);
     }
     else if (strcasecmp(argv[1], "--file-sort") == 0)
     {
-        file_all(0);
+        exit_code = file_all(0);
     }
     else if (strcasecmp(argv[1], "--app-allow-install") == 0)
     {
@@ -206,8 +211,10 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        
-        set_install(argv[2]);
+        else
+        {
+            exit_code = set_install(argv[2]);
+        }
     }
     else if (strcasecmp(argv[1], "--storage-lock") == 0)
     {
@@ -215,20 +222,22 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        
-        set_storage(argv[2]);
+        else
+        {
+            exit_code = set_storage(argv[2]);
+        }
     }
     else if (strcasecmp(argv[1], "--disk-gc") == 0)
     {
-        fast_gc(argv, 0);
+        exit_code = fast_gc(argv, 0);
     }
     else if (strcasecmp(argv[1], "--disk-f2fs-gc") == 0)
     {
-        disk_gc(argv, 0);
+        exit_code = disk_gc(argv, 0);
     }
     else if (strcasecmp(argv[1], "--dexoat-system") == 0)
     {
-        dexoat(0, "null");
+        exit_code = dexoat(0, "null");
     }
     else if (strcasecmp(argv[1], "--dexoat-custom") == 0)
     {
@@ -236,24 +245,26 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        
-        dexoat(1, argv[2]);
+        else
+        {
+            exit_code = dexoat(1, argv[2]);
+        }
     }
     else if (strcasecmp(argv[1], "--dexoat-reset") == 0)
     {
-        dexoat(1, "space");
+        exit_code = dexoat(1, "space");
     }
     else if (strcasecmp(argv[1], "--open-system-freezer") == 0)
     {
-        freezer_open();
+        exit_code = freezer_open();
     }
     else if (strcasecmp(argv[1], "--daemon-stop-cache") == 0)
     {
-        stop_cache_daemon(argv);
+        exit_code = stop_cache_daemon(argv);
     }
     else if (strcasecmp(argv[1], "--daemon-time") == 0)
     {
-        time_daemon(argv);
+        exit_code = time_daemon(argv);
     }
     else if (strcasecmp(argv[1], "--storage-bind-custom") == 0)
     {
@@ -261,8 +272,10 @@ int main(int argc, char * argv[])
         {
             fprintf(stderr, L_ARGS_FAILED);
         }
-        
-        bmount(argv[2]);
+        else
+        {
+            exit_code = bmount(argv[2]);
+        }
     }
     else if (strcasecmp(argv[1], "--config") == 0)
     {
@@ -272,7 +285,7 @@ int main(int argc, char * argv[])
         }
         else if (strcmp(argv[2], "backup") == 0)
         {
-            module_config(argv[2], "");
+            exit_code = module_config(argv[2], "");
         }
         else
         {
@@ -280,7 +293,10 @@ int main(int argc, char * argv[])
             {
                 fprintf(stderr, L_ARGS_FAILED);
             }
-            module_config(argv[2], argv[3]);
+            else
+            {
+                exit_code = module_config(argv[2], argv[3]);
+            }
         }
     }
     else if (strcasecmp(argv[1], "help") == 0 ||
@@ -293,10 +309,10 @@ int main(int argc, char * argv[])
     {
         fprintf(stderr, L_MODE_ERR, argv[1]);
         help(argv);
-        return -1;
+        exit_code = -1;
     }
     
-    return 0;
+    return exit_code;
 }
 
 // 一个通用函数，用途：执行二进制/脚本
