@@ -7,15 +7,16 @@
 
 #include "../INCLUDE/main.h"
 
-#define SERVER_NAME "ClearBox Timed"   // 进程名
-#define WAIT_TIME 60                   // 单次循环等待秒数（自动对齐）
-#define MAX_CONFIG 512                 // 最大配置数量
-#define MAX_CONFIG_NAME 256            // 配置文件名称最大长度
-#define CONFIG_LINE_MAX_LEN 512        // 配置文件行最大长度
-#define MAX_COMMAND_LEN 4096           // 命令最大长度
-#define MAX_TITLE_LEN 128              // 通知标题最大长度
-#define MAX_MESSAGE_LEN 512            // 通知内容最大长度
-#define CONFIG_PATH_NAME "TimedConfigs"// 配置目录名
+#define SERVER_NAME "ClearBox Timed"
+
+#define WAIT_TIME 60                            // 单次循环等待秒数（自动对齐）
+#define MAX_CONFIG 512                         // 最大配置数量
+#define MAX_CONFIG_NAME 256                 // 配置文件名称最大长度
+#define CONFIG_LINE_MAX_LEN 512              // 配置文件行最大长度
+#define MAX_COMMAND_LEN 4096              // 命令最大长度
+#define MAX_TITLE_LEN 128                     // 通知标题最大长度
+#define MAX_MESSAGE_LEN 512                 // 通知内容最大长度
+#define CONFIG_PATH_NAME "TimedConfigs"    // 配置目录名
 
 struct config_struct
 {

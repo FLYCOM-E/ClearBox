@@ -8,8 +8,11 @@
 
 #include "INCLUDE/main.h"
 
-#define PROP "ro.build.version.sdk"
+#define FREEZER_MIN_API 30
+
 #define SET_FREEZER "device_config put activity_manager_native_boot use_freezer true"
+
+#define PROP "ro.build.version.sdk"
 
 int freezer_open(void)
 {
@@ -24,7 +27,7 @@ int freezer_open(void)
     else
     {
         sdk = strtol(sdk_str, NULL, 10);
-        if (sdk >= 30)
+        if (sdk >= FREEZER_MIN_API)
         {
             if (system(SET_FREEZER) == 0)
             {

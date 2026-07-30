@@ -8,14 +8,16 @@
 
 #include "../INCLUDE/main.h"
 
-#define SERVER_NAME "F2FS-GC"            // 进程名（MAX 15）
-#define PROP "dev.mnt.dev.data"             // 路径名称属性
+#define SERVER_NAME "F2FS-GC"
+
 #define TIMEOUT 15                         // 超时时间（单位 M）
 #define MIN_DIRTY 50                        // 磁盘保护最小脏段数量
 #define SYSFS_PATH "/sys/fs/f2fs"           // F2FS sysfs 路径
 #define SYSFS_FILE_NAME "gc_urgent"        // 节点设备名
 #define SYSFS_DIRTY_FILE "dirty_segments"   // 脏段节点名
 #define SYSFS_FREE_FILE "free_segments"    // 自由段节点名
+
+#define PROP "dev.mnt.dev.data"
 
 static int f2fs_gc(char * argv[]);
 static void fast_gc(void);

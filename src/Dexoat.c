@@ -7,6 +7,8 @@
 
 #include "INCLUDE/main.h"
 
+#define SYS_DEF_DEXOAT "pm bg-dexopt-job" // 系统 DEXOAT
+
 static void dexoat_system(void);
 static int dexoat_cust(char * mode);
 
@@ -29,7 +31,7 @@ int dexoat(int mode, char * cust_mode)
 static void dexoat_system(void)
 {
     fprintf(stderr, L_DO_RUN_SYSTEM);
-    system("pm bg-dexopt-job");
+    system(SYS_DEF_DEXOAT);
     return;
 }
 

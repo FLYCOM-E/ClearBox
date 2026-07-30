@@ -7,9 +7,11 @@
 
 #include "INCLUDE/main.h"
 
+#define SERVER_NAME "AppClean"
+
 #define DATA_DIR "/data/data"                 // 软件数据根目录
 #define CONFIG_DIR_NAME "AppCleanRules"   // 配置目录名称
-#define SERVER_NAME "AppClean"
+#define CONFIG_FILE_END "conf"              // 配置文件后缀
 
 static int read_clear(char * config_file, int * success_config, int * failed_config, long * total_clear_size);
 
@@ -62,7 +64,7 @@ int app_cust_rule_clean(char * app_package, int mode)
     {
         // 清理指定配置
         char config_file[strlen(config_dir) + strlen(app_package) + 10];
-        snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, app_package);
+        snprintf(config_file, sizeof(config_file), "%s/%s.%s", config_dir, app_package, CONFIG_FILE_END);
         
         // Cleaning
         read_clear(config_file, &success_config, &failed_config, &total_clear_size);

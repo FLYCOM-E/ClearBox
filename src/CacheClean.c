@@ -7,14 +7,19 @@
 
 #include "INCLUDE/main.h"
 
-#define MAX_APPLIST 3000                                    // 软件列表最大数量
+#define SERVER_NAME "CacheClean"
+
+#define MAX_APPLIST 3000                                     // 软件列表最大数量
 #define DATA_DIR "/data/user"                                  // 软件数据根目录
 #define CARD_HOME "/mnt/expand"                             // 拓展储存根目录
-#define WHITELIST_FILE "ClearWhitelist.prop"                   // 白名单文件名
+#define WHITELIST_FILE "ClearWhitelist.prop"                    // 白名单文件名
 #define DEFAULT_CCS 5                                       // 缓存清理限制大小回退
+
 #define GET_APPLIST "pm list package -3 2>/dev/null"
 #define GET_S_APPLIST "pm list package -s 2>/dev/null"
-#define SERVER_NAME "CacheClean"
+
+#define CLEAR_CACHE_SIZE_KEY "clearbox_clear_cache_size"     // 缓存清理限制大小设置储存 KEY
+#define CLEAR_DISK_KEY "clearbox_clear_disk"                  // 是否清理外部储存设置储存 KEY
 
 static long user_cache_clean(char * data_dir, int clear_cache_size,
                              char package_list[][NAME_MAX + 1], int app_count,
@@ -26,7 +31,7 @@ int app_cache_clean(int mode)
 {
     // 用户软件缓存清理
     if (mode == 0)
-    {       
+    {
         // whiteList定义
         char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_FILE) + 2];
         snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
@@ -34,8 +39,8 @@ int app_cache_clean(int mode)
         // 获取设置值
         int clear_cache_size = 0,  // 缓存清理限制大小
            clear_disk = 0;         // 是否清理外部储存
-        clear_cache_size = get_settings_prop(settings_file, "clearbox_clear_cache_size", NULL, 0);
-        clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
+        clear_cache_size = get_settings_prop(settings_file, CLEAR_CACHE_SIZE_KEY, NULL, 0);
+        clear_disk = get_settings_prop(settings_file, CLEAR_DISK_KEY, NULL, 0);
         if (clear_cache_size == -1)
         {
             clear_cache_size = DEFAULT_CCS;
@@ -115,7 +120,7 @@ int app_cache_clean(int mode)
                 continue;
             }
             
-            snprintf(micro_dir, sizeof(micro_dir), "/mnt/expand/%s/user", entry -> d_name);
+            snprintf(micro_dir, sizeof(micro_dir), "%s/%s/user", CARD_HOME, entry -> d_name);
             
             clear_size = user_cache_clean(micro_dir, clear_cache_size, package_list, app_count, white_list, whitelist_count);
             if (clear_size == -1)
@@ -143,11 +148,11 @@ int app_cache_clean(int mode)
 此函数用于清理软件缓存，返回总清理大小
 接收：
     char * data_dir         软件数据目录，自动处理多用户 ID，兼容拓展储存
-    int * clear_cache_size  缓存清理限制大小
+    int * clear_cache_size   缓存清理限制大小
     char package_list[][]    app 列表
-    int app_count          app 数量
+    int app_count           app 数量
     char white_list[][]       白名单列表
-    int whitelist_count     白名单 app 数量
+    int whitelist_count      白名单 app 数量
 返回：
     long 清理垃圾大小（单位：Byte），失败返回 -1
 */

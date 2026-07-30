@@ -7,8 +7,9 @@
 
 #include "INCLUDE/main.h"
 
+#define SERVER_NAME "clearbox"
+
 #define PATH_FILE "/data/adb/wipe_cache/PATH"    // PATH 储存文件
-#define SERVER_NAME "clearbox"                    // 进程名
 
 static int running(char * args[]);
 static int module_config(char * mode, char * config_file);

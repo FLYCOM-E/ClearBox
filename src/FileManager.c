@@ -7,18 +7,24 @@
 
 #include "INCLUDE/main.h"
 
-#define MAX_CONFIG_NAME 256                 // 配置名称长度限制（不含.conf后缀)
-#define MAX_ARGS_SIZE 32                      // 后缀名称长度限制
-#define MAX_CONFIG_LINE 512                  // 最大配置行长（仅用于识别大小声明行）
-#define CONFIG_MAX_ARGS 5000                // 单个文件格式配置最多允许的后缀数量
-#define F_DIR_NAME "Documents"                // 默认归类目录名称
-#define CONFIG_DIR_NAME "FileConfigs"         // 配置文件夹名称
-#define CARD_HOME "/mnt/media_rw"           // 外置储存根目录
-#define STORAGES_DIR "/storage/emulated/0"   // 内置储存根目录
 #define SERVER_NAME "FileManager"
 
-static int file_clear = 0;                         // 全局 mode
-static char * now_config_name = NULL;         // 配置文件名（为避免配置名跨多函数传）
+#define MAX_CONFIG_NAME 256                           // 配置名称长度限制（不含后缀)
+#define MAX_ARGS_SIZE 32                                // 后缀名称长度限制
+#define MAX_CONFIG_LINE 512                             // 最大配置行长（仅用于识别大小声明行）
+#define CONFIG_MAX_ARGS 5000                          // 单个文件格式配置最多允许的后缀数量
+#define F_DIR_NAME "Documents"                          // 默认归类目录名称
+#define CONFIG_DIR_NAME "FileConfigs"                    // 配置文件夹名称
+#define CARD_HOME "/mnt/media_rw"                      // 外置储存根目录
+#define STORAGES_DIR "/storage/emulated/0"              // 内置储存根目录
+#define CONFIG_FILE_END "conf"                           // 配置文件后缀
+
+#define FILE_ALL_DISK_KEY "clearbox_file_all_disk"          // 是否归类拓展储存文件 - 设置 KEY
+#define FILE_CLEAR_DISK_KEY "clearbox_file_clear_disk"     // 是否清理拓展储存文件 - 设置 KEY
+#define FILE_DIR_NAME_KEY "clearbox_file_all_dirname"     // 归类目录名（可选） - 设置 KEY
+
+static int file_clear = 0;                                   // 全局 mode
+static char * now_config_name = NULL;                   // 配置文件名（为避免配置名跨多函数传）
 
 struct file_rules
 {
@@ -46,13 +52,13 @@ int file_manager(int mode, char * config_name)
     }
     
     int file_clear_disk = 0,                    // 是否清理拓展储存文件
-        file_all_disk = 0;                     // 是否归类拓展储存文件
+       file_all_disk = 0;                       // 是否归类拓展储存文件
     char file_dir_name[NAME_MAX + 1] = "";  // 归类目录名（可选）
     
     // 查找设置对应值
-    file_all_disk = get_settings_prop(settings_file, "clearbox_file_all_disk", NULL, 0);
-    file_clear_disk = get_settings_prop(settings_file, "clearbox_file_clear_disk", NULL, 0);
-    get_settings_prop(settings_file, "clearbox_file_all_dirname", file_dir_name, sizeof(file_dir_name));
+    file_all_disk = get_settings_prop(settings_file, FILE_ALL_DISK_KEY, NULL, 0);
+    file_clear_disk = get_settings_prop(settings_file, FILE_CLEAR_DISK_KEY, NULL, 0);
+    get_settings_prop(settings_file, FILE_DIR_NAME_KEY, file_dir_name, sizeof(file_dir_name));
     if (strlen(file_dir_name) <= 1)
     {
         snprintf(file_dir_name, sizeof(file_dir_name), "%s", F_DIR_NAME);
@@ -218,7 +224,7 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
         }
         
         char config_file[strlen(config_dir) + strlen(config_name) + 16]; // 配置文件
-        snprintf(config_file, sizeof(config_file), "%s/%s.conf", config_dir, config_name);
+        snprintf(config_file, sizeof(config_file), "%s/%s.%s", config_dir, config_name, CONFIG_FILE_END);
         
         int count = 0;
         struct file_rules file_args[CONFIG_MAX_ARGS];

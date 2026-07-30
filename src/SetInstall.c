@@ -8,6 +8,7 @@
 #include "INCLUDE/main.h"
 
 #define DATA_DIR "/data/app"                    // 阻止目录
+
 #define PROP_STOP "clearbox_stop_install=1"     // PROP OPEN
 #define PROP_RESET "clearbox_stop_install=0"    // PROP CLOSE
 

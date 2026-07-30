@@ -7,10 +7,13 @@
 
 #include "INCLUDE/main.h"
 
-#define WHITELIST "ClearWhitelist.prop"     // 白名单文件名
-#define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录
-#define STORAGES_DIR "/storage/emulated/0"        // 储存目录
 #define SERVER_NAME "StorageClean"
+
+#define WHITELIST "ClearWhitelist.prop"          // 白名单文件名
+#define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录
+#define STORAGES_DIR "/storage/emulated/0"   // 储存目录
+
+#define CLEAR_DISK_KEY "clearbox_clear_disk"   // 是否清理外部储存设置储存 KEY
 
 static int storage_cache_clear(char * data_path);
 static int storage_clear(char * storage_dir, int home);
@@ -20,7 +23,7 @@ int storage_clean(void)
     int clean_count = 0;
     
     // 设置查找对应值
-    int clear_disk = get_settings_prop(settings_file, "clearbox_clear_disk", NULL, 0);
+    int clear_disk = get_settings_prop(settings_file, CLEAR_DISK_KEY, NULL, 0);
     
     // 处理内部储存
     storage_cache_clear(STORAGES_DIR);
