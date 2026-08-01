@@ -1,24 +1,18 @@
-# Version 5.1.2 (94)
+# Version 5.1.3-Beta (95)
 
 # ADD
-- File organization now supports setting custom organization directory, supports absolute/relative paths
-- System cache cleaning added: `/data/anr` `/data/tombstones`
+- F2FS GC now includes disk protection, won't trigger when dirty segments are too low. Configurable minimum DIRTY limit
 - Added cleaning rules:
 ```
-info.muge.appshare   #AppShare
-com.coolapk.market   #Coolapk
+com.lemon.lv   #Jianying (CapCut)
 ```
 
 # UPDATE
-- Cleanup size display now supports dynamic unit display, F2FS-GC statistics now show size instead of segment count
-- App cache cleaning optimized for multi-user performance, no longer repeatedly fetches app list
-- File organization size limit feature now fully supports per-extension configuration
-- Timed, StopCached process signal handling optimized
-- Rule directory binding now supports single-quote wrapped path parsing
-- LOG recording mechanism updated
-- App UI layout updated
-- Comment support optimized
+- Updated App cleaning rule copy logic, automatically removes configurations for uninstalled apps
+- App cache cleaning optimized, improved cleaning speed
+- Updated command-line call parameters
 
 # FIX
-- Timed hot-reload now includes move event monitoring, fixed issue where atomic config modification did not trigger update
-- Fixed configuration backup abnormality
+- StopCached, Timed now support hot-reload for current language, fixed bug where Daemon still used old language for notifications after system language update
+- Fixed bug where directory binding feature could still be toggled on devices that don't support it
+- Fixed bug where file cleaning would error out and not clean if the target organization directory does not exist

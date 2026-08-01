@@ -1,24 +1,18 @@
-# Version 5.1.2 (94)
+# Version 5.1.3-Beta (95)
 
 # ADD
-- 文件归类支持设置归类目录，支持填写绝对/相对路径
-- 系统缓存清理新增: `/data/anr` `/data/tombstones`
+- F2FS GC 增加磁盘保护，脏段过低不触发。可配置最小 DIRTY 限制
 - 新增清理配置：
 ```
-info.muge.appshare   #AppShare
-com.coolapk.market   #Coolapk
+com.lemon.lv   #剪映
 ```
 
 # UPDATE
-- 清理显示大小单位支持动态单位显示、F2FS-GC 统计改为显示大小而不是段数量
-- App 缓存清理针对多用户性能优化，不再重复获取 App 列表
-- 文件归类大小限制功能完整支持为每个后缀配置限制
-- Timed、StopCached 进程信号处理优化
-- 规则目录绑定规则支持单引号包裹解析
-- LOG 记录机制更新
-- App UI 排版更新
-- 注释支持优化
+- 更新 App 清理规则复制逻辑，自动清除已卸载 App 配置
+- 软件缓存清理优化，提升清理速度
+- 更新命令行调用参数
 
 # FIX
-- Timed 热更新增加移动事件监控，修复原子修改配置不更新问题
-- 修复配置备份异常
+- StopCached、Timed 支持热更新当前语言，修复系统语言更新后 Daemon 仍然使用旧语言发送通知的 Bug
+- 修复目录绑定功能在设备不支持的情况下仍可正常开关的 Bug
+- 修复文件清理如果目标归类目录不存在会报错不清理的 Bug
