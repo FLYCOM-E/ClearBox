@@ -64,91 +64,109 @@ int file_manager(int mode, char * config_name)
         snprintf(file_dir_name, sizeof(file_dir_name), "%s", F_DIR_NAME);
     }
     
-    // 调用函数（内部储存
-    if (clear_service(STORAGES_DIR, config_name, file_dir_name) == 0)
+    int pid_c = 2;
+    pid_t pids[pid_c];
+    for (int i = 0; i < pid_c; i++)
     {
-        if (file_clear == 1)
-        {
-            printf(L_FM_CR_SUCCESSFUL_STORAGE);
-        }
-        else
-        {
-            printf(L_FM_ALL_SUCCESSFUL_STORAGE);
-        }
-    }
-    else
-    {
-        if (file_clear == 1)
-        {
-            fprintf(stderr, L_FM_CR_FAILED_STORAGE);
-        }
-        else
-        {
-            fprintf(stderr, L_FM_ALL_FAILED_STORAGE);
-        }
-    }
-    fflush(stdout);
-    
-    // 根据模式判断是否处理拓展储存
-    if (file_clear == 1)
-    {
-        if (file_clear_disk != 1)
-        {
-            return 0;
-        }
-    }
-    else
-    {
-        if (file_all_disk != 1)
-        {
-            return 0;
-        }
-    }
-    
-    struct dirent * entry;
-    DIR * sdcard_id_dp = opendir(CARD_HOME);
-    if (sdcard_id_dp == NULL)
-    {
-        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
-        return -1;
-    }
-    while ((entry = readdir(sdcard_id_dp)))
-    {
-        if (strcmp(entry -> d_name, ".") == 0 ||
-           strcmp(entry -> d_name, "..") == 0)
+        pids[i] = fork();
+        
+        if (pids[i] != 0)
         {
             continue;
         }
         
-        char sdcard_dir[sizeof(CARD_HOME) + strlen(entry -> d_name) + 2];
-        snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
-        
-        // 调用函数（外部储存
-        if (clear_service(sdcard_dir, config_name, file_dir_name) == 0)
+        if (i == 0)
         {
-            if (file_clear == 1)
+            // 调用函数（内部储存
+            if (clear_service(STORAGES_DIR, config_name, file_dir_name) == 0)
             {
-                printf(L_FM_CR_SUCCESSFUL_SD);
+                if (file_clear == 1)
+                {
+                    printf(L_FM_CR_SUCCESSFUL_STORAGE);
+                }
+                else
+                {
+                    printf(L_FM_ALL_SUCCESSFUL_STORAGE);
+                }
             }
             else
             {
-                printf(L_FM_ALL_SUCCESSFUL_SD);
+                if (file_clear == 1)
+                {
+                    fprintf(stderr, L_FM_CR_FAILED_STORAGE);
+                }
+                else
+                {
+                    fprintf(stderr, L_FM_ALL_FAILED_STORAGE);
+                }
             }
             fflush(stdout);
+            exit(0);
+        }
+        
+        // 根据模式判断是否处理拓展储存
+        if (file_clear == 1)
+        {
+            if (file_clear_disk != 1)
+            {
+                exit(0);
+            }
         }
         else
         {
-            if (file_clear == 1)
+            if (file_all_disk != 1)
             {
-                fprintf(stderr, L_FM_CR_FAILED_SD);
+                exit(0);
+            }
+        }
+        
+        struct dirent * entry;
+        DIR * sdcard_id_dp = opendir(CARD_HOME);
+        if (sdcard_id_dp == NULL)
+        {
+            write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, CARD_HOME, strerror(errno));
+            exit(errno);
+        }
+        while ((entry = readdir(sdcard_id_dp)))
+        {
+            if (strcmp(entry -> d_name, ".") == 0 ||
+               strcmp(entry -> d_name, "..") == 0)
+            {
+                continue;
+            }
+            
+            char sdcard_dir[sizeof(CARD_HOME) + strlen(entry -> d_name) + 2];
+            snprintf(sdcard_dir, sizeof(sdcard_dir), "%s/%s", CARD_HOME, entry -> d_name);
+            
+            // 调用函数（外部储存
+            if (clear_service(sdcard_dir, config_name, file_dir_name) == 0)
+            {
+                if (file_clear == 1)
+                {
+                    printf(L_FM_CR_SUCCESSFUL_SD);
+                }
+                else
+                {
+                    printf(L_FM_ALL_SUCCESSFUL_SD);
+                }
+                fflush(stdout);
             }
             else
             {
-                fprintf(stderr, L_FM_ALL_FAILED_SD);
+                if (file_clear == 1)
+                {
+                    fprintf(stderr, L_FM_CR_FAILED_SD);
+                }
+                else
+                {
+                    fprintf(stderr, L_FM_ALL_FAILED_SD);
+                }
             }
         }
+        closedir(sdcard_id_dp);
+        exit(0);
     }
-    closedir(sdcard_id_dp);
+    for (int i = 0; i < pid_c; i++) waitpid(pids[i], NULL, 0);
     
     return 0;
 }

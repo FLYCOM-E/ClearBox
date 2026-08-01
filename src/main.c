@@ -121,8 +121,9 @@ int main(int argc, char * argv[])
     int exit_code = 0;
     if (strcasecmp(argv[1], "--clear-all") == 0)
     {
-        pid_t pids[6];
-        for (int i = 0; i < 6; i++)
+        int pid_c = 6;
+        pid_t pids[pid_c];
+        for (int i = 0; i < pid_c; i++)
         {
             pids[i] = fork();
             if (pids[i] == 0)
@@ -151,10 +152,7 @@ int main(int argc, char * argv[])
                 exit(0);
             }
         }
-        for (int i = 0; i < 6; i++)
-        {
-            waitpid(pids[i], NULL, 0);
-        }
+        for (int i = 0; i < pid_c; i++) waitpid(pids[i], NULL, 0);
         
         // 文件归类是高资源占用操作不并行
         file_all(1);
