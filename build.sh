@@ -9,21 +9,21 @@ if [ "$TARGET_API" = "" ]; then
     echo "Failed: \$TARGET_API is space."
     exit 1
 fi
-if [ "$TARGET" = "" ]; then
-    echo "Failed: \$TARGET is space."
+if [ "$TARGET_ABI" = "" ]; then
+    echo "Failed: \$TARGET_ABI is space."
     exit 1
-elif [ "$TARGET" = "aarch64" ]; then
+elif [ "$TARGET_ABI" = "aarch64" ]; then
     export TARGET=aarch64-linux-android
-elif [ "$TARGET" = "armv7a" ]; then
+elif [ "$TARGET_ABI" = "armv7a" ]; then
     export TARGET=armv7a-linux-androideabi
-elif [ "$TARGET" = "x86_64" ]; then
+elif [ "$TARGET_ABI" = "x86_64" ]; then
     export TARGET=x86_64-linux-android
-elif [ "$TARGET" = "i686" ]; then
+elif [ "$TARGET_ABI" = "i686" ]; then
     export TARGET=i686-linux-android
-elif [ "$TARGET" = "riscv64" ]; then
+elif [ "$TARGET_ABI" = "riscv64" ]; then
     export TARGET=riscv64-linux-android
 else
-    echo "TARGET Error! "
+    echo "TARGET_ABI Error! "
     exit 1
 fi
 

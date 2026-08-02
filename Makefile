@@ -52,7 +52,7 @@ module_tar:
 	@cp $(tui_dir)/Main.bash $(module_dir)/system/bin/ClearBox
 	
 	@cp $(module_dir)/module.prop ./module.prop.bak
-	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update_$(TARGET).json" >> $(module_dir)/module.prop
+	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update_$(TARGET_ABI).json" >> $(module_dir)/module.prop
 	
 	@cp -r LangConfigs $(module_dir)/LANG
 	@cp -r AppConfigs $(module_dir)/AppConfigs
