@@ -18,8 +18,6 @@ elif [ "$TARGET_ABI" = "armv7a" ]; then
     export TARGET=armv7a-linux-androideabi
 elif [ "$TARGET_ABI" = "x86_64" ]; then
     export TARGET=x86_64-linux-android
-elif [ "$TARGET_ABI" = "i686" ]; then
-    export TARGET=i686-linux-android
 elif [ "$TARGET_ABI" = "riscv64" ]; then
     export TARGET=riscv64-linux-android
 else
