@@ -23,7 +23,7 @@
 #include <limits.h>
 
 // 多语言
-#include "Lang.h"
+#include "lang.h"
 
 #define MAX_WORK_DIR_LEN 512            // 工作目录最大长度
 #define MAX_BIN_DIR_LEN 512              // 二进制目录最大长度

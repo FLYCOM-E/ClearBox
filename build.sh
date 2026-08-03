@@ -45,5 +45,5 @@ if [ "$1" = "-build-apk" ] || [ "$1" = "--build-apk" ]; then
     cd ..
 fi
 
-make module_tar && echo -e " » 打包完成，成品：ClearBox_${TARGET}_${TARGET_API}.zip！\n » Tar Done, Is: ClearBox_${TARGET}_${TARGET_API}.zip! "
-make clean && echo -e " » 清理完成！\n » Clean Done! "
+make module_tar
+make clean
