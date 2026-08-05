@@ -1,0 +1,14 @@
+<resources>
+    <string name="execute_success">Выполнено успешно</string>
+    <string name="execute_fail">Ошибка выполнения</string>
+    <string name="execute_wait">Выполняется, подождите...</string>
+    <string name="btn_confirm">Подтвердить</string>
+    <string name="app_chooser_search_hint">Введите имя приложения или пакета для поиска</string>
+    <string name="item_chooser_search_hint">Поиск доступных опций</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="help_title">Подсказка</string>
+    <string name="info_title">Информация</string>
+    <string name="info_text">Содержание</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отмена</string>
+</resources>

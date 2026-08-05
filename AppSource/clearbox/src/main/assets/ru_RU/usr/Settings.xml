@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Настройки очистки" config-sh="cat ClearSettings.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Резервное копирование конфигурации" config-sh="cat BackupConfigs.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>Вкл/выкл TUI</title>
+            <get>
+            if [ -f "$home_dir/skip_mount" ]; then
+                echo 0
+            else
+                echo 1
+            fi
+            </get>
+            <set>
+            if [ -f "$home_dir/skip_mount" ]; then
+                if rm "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » Включено! Перезагрузка для вступления в силу"
+                else
+                    echo " » Ошибка включения!"
+                fi
+            else
+                if touch "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » Отключено! Перезагрузка для вступления в силу"
+                else
+                    echo " » Ошибка отключения!"
+                fi
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <page config-sh="Abort.sh" title="О программе"/>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" warning="Полностью удалить этот модуль и очистить остаточные файлы🤯?" interruptible="false" auto-off="false" auto-finish="false" >
+        <title>Удалить модуль (!</title>
+            <set>
+            sh "$home_dir/uninstall.sh"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="Журнал">
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
+        <title>Просмотр журнала</title>
+            <set>
+            if [ -f "$work_dir/LOG.log" ]; then
+                cat "$work_dir/LOG.log"
+            fi
+            </set>
+    </action>
+</group>

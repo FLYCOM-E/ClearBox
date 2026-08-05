@@ -1,0 +1,59 @@
+<resources>
+    <!-- Config Name -->
+    <string name="config_name">Config-ru_RU.conf</string>
+    
+    <!--Принудительно запрашивать ROOT-->
+    <bool name="force_root">true</bool>
+
+    <string name="app_name">ClearBox</string>
+    <string name="btn_exit">Назад</string>
+    <string name="please_wait">(⁠・⁠∀⁠・⁠)</string>
+    <string name="title_activity_action_page">Страницы функций</string>
+
+    <string name="author_name"> </string>
+    <string name="appliction_name">Добро пожаловать · ClearBox</string>
+    <string name="engine_version_name">Работает на Kr-Script</string>
+    
+    <string name="tab_home">Главная</string>
+    <string name="tab_favorites"></string>
+    <string name="tab_pages">Все</string>
+
+    <string name="copy_success">Скопировано</string>
+    <string name="btn_retry">Попробовать снова</string>
+
+    <string name="starting">ClearBox</string>
+    <string name="pop_started">Добро пожаловать в ClearBox</string>
+    <string name="permission_checking">Проверка разрешений…</string>
+    <string name="error_root">Похоже, не удалось получить ROOT-права (・・;)！</string>
+    <string name="error_su_timeout">Тайм-аут авторизации ROOT！Проверьте...</string>
+    <string name="transparent_ui">Прозрачный интерфейс</string>
+    <string name="path_selector">Файл</string>
+    <string name="page_info_error">Неверная информация о странице</string>
+    <string name="pick_dir">Выбрать папку？</string>
+    <string name="pick_file">Выбрать файл？</string>
+    <string name="file_deleted_repick">Файл удалён, выберите заново</string>
+    <string name="dir_deleted_repick">Папка удалена, выберите заново</string>
+    <string name="not_file_in_dir">В этой папке нет файлов！</string>
+    <string name="get_file_list_error">Не удалось получить список файлов！</string>
+    <string name="start_file_manager_error">Не удалось запустить встроенный файловый менеджер！</string>
+    
+    <string name="power_poweroff">Выключение</string>
+    <string name="power_reboot">Перезагрузка</string>
+    <string name="power_launcher">Перезапустить рабочий стол</string>
+    <string name="power_systemui">Перезапустить интерфейс системы</string>
+    <string name="power_hot_reboot">Горячая перезагрузка</string>
+    <string name="power_safemode">Перезагрузка в безопасный режим</string>
+    <string name="power_recovery">Перезагрузка в Recovery</string>
+    <string name="power_bootloader">Перезагрузка в FASTBOOT</string>
+    <string name="power_edl">Перезагрузка в 9008 (EDL)</string>
+    
+    <string name="power_shutdown_cmd">sync; svc power shutdown || reboot -p;</string>
+    <string name="power_reboot_cmd">sync; svc power reboot || reboot;</string>
+    <string name="power_launcher_cmd">sync; kill -9 $(pgrep -f $(cmd shortcut get-default-launcher | head -n1 | cut -f2 -d "{" | cut -f1 -d "/"));</string>
+    <string name="power_systemui_cmd">sync; kill -9 $(pgrep -f com.android.systemui) || killall com.android.systemui;</string>
+    <string name="power_hot_reboot_cmd">sync; am restart || kill $(pgrep system_server);</string>
+    <string name="power_safemode_cmd">sync; setprop persist.sys.safemode 1; svc power reboot || reboot;</string>
+    <string name="power_fastboot_cmd">sync; reboot bootloader;</string>
+    <string name="power_recovery_cmd">sync; reboot recovery;</string>
+    <string name="power_emergency_cmd">sync; reboot edl;</string>
+</resources>

@@ -30,6 +30,10 @@ void set_language(LangType * lang)
     {
         * lang = LANG_zh_TW;
     }
+    else if (strstr(lang_str, "ru-RU"))
+    {
+        * lang = LANG_ru_RU;
+    }
     else
     {
         * lang = LANG_en_US;

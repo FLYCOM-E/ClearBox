@@ -34,7 +34,7 @@ cat <<w
             </set>
     </action>
     <action warning="根据规则深度归类内/外部储存文件，储存目录：对应目录下 Document 文件夹下" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
-        <title>磁铁（一键归类文件</title>
+        <title>磁铁（一键归类文件）</title>
             <set>
             "$home_dir/$core" "--file-sort"
             </set>

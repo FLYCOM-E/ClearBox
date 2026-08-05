@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
+        <title>Запустить системный Dexoat по умолчанию</title>
+            <set>
+            "$home_dir/$core" "--dexoat-system"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Полная компиляция в пользовательском режиме" config-sh="cat . ./Dexoat_custom.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" id="001" >
+        <title>Сброс (RESET)</title>
+            <set>
+            "$home_dir/$core" "--dexoat-reset"
+            </set>
+    </action>
+</group>
+<!-- END -->

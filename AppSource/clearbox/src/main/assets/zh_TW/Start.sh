@@ -40,6 +40,6 @@ if [[ -f "$1" ]]; then
     cd "$ShellScript"
     . "$@" &
 else
-    echo "${1} 腳本缺失！"
+    echo "${1} Script missing!"
 fi
 wait

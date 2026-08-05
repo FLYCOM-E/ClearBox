@@ -67,6 +67,9 @@ if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
 elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then
     source "$MODPATH/$lang_dir/zh_TW.conf"
     lang="zh_TW"
+elif echo "$local_lang" | grep -E "ru-RU" 2>/dev/null; then
+    source "$home_dir/$lang_dir/ru_RU.conf"
+    lang="ru_RU"
 else
     source "$MODPATH/$lang_dir/en_US.conf"
     lang="en_US"

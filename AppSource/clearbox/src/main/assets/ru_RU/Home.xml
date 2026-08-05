@@ -3,52 +3,52 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="模組管理" config-sh="cat Settings.xml" />
+        <page title="Управление модулем" config-sh="cat Settings.xml" />
     </pages>
 </group>
 <!-- END -->
 <!-- START -->
 <group title=" ">
     <action interruptible="false" auto-off="false" id="001">
-        <title>一鍵優化清理</title>
+        <title>Оптимизация и очистка в один клик</title>
             <set>
             "$home_dir/$core" "--clear-all"
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="002">
-        <title>清理/刪掉自訂目錄</title>
+        <title>Очистка пользовательских каталогов</title>
             <set>
             "$home_dir/$core" "--clear-storage-cust"
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="003">
-        <title>清除垃圾檔案及空資料夾</title>
+        <title>Очистка мусорных файлов и пустых папок</title>
             <set>
             "$home_dir/$core" "--clear-storage"
             </set>
     </action>
     <action interruptible="false" auto-off="false" id="004">
-        <title>清空所有軟體快取</title>
+        <title>Очистка кэша всех приложений</title>
             <set>
             "$home_dir/$core" "--clear-app-cache"
             </set>
     </action>
-    <action warning="根據規則深度歸類內/外部儲存文件，儲存目錄：對應目錄下 Document 資料夾下" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
-        <title>磁鐵（一鍵歸類文件）</title>
+    <action warning="Сортировка файлов во внутреннем/внешнем хранилище по правилам. Каталог хранения: папка Document в соответствующем каталоге" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
+        <title>Магнит (сортировка файлов)</title>
             <set>
             "$home_dir/$core" "--file-sort"
             </set>
     </action>
     <page
         config-sh="Print_FileClearXml.sh"
-        desc="此頁面通過讀取清理配置文件動態構建"
-        title="深度檔案清理" />
+        desc="Эта страница динамически строится на основе конфигурационных файлов очистки"
+        title="Глубокая очистка файлов" />
     <page
         config-sh="Print_AppClearXml.sh"
-        desc="此頁面透過讀取配置規則文件動態構建"
-        title="軟件規則清理" />
-        <action shell="default" warning="清理系統運行時必要的快取，適合在系統出現奇怪 bug 或大更改時使用，清理後系統會自動重建這些快取，此操作並不能提升效能或有效降低儲存佔用，如果您不了解不建議隨意使用。清理後建議重新啟動" auto-off="false" auto-finish="false" id="006">
-            <title>清空系統快取</title>
+        desc="Эта страница динамически строится на основе файлов правил"
+        title="Очистка по правилам для приложений" />
+        <action shell="default" warning="Очистка системного кэша, необходимого для работы. Подходит при странных ошибках или после крупных изменений. После очистки система автоматически пересоздаст кэш. Эта операция не повышает производительность и не освобождает значительное место. Если вы не уверены, не используйте. После очистки рекомендуется перезагрузка." interruptible="false" auto-off="false" auto-finish="false" id="006">
+            <title>Очистка системного кэша</title>
                 <set>
                 "$home_dir/$core" "--clear-system-cache"
                 </set>
@@ -58,14 +58,14 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="自動清理" config-sh="cat Timed_ProSettings.xml" />
+        <page title="Автоочистка" config-sh="cat Timed_ProSettings.xml" />
     </pages>
 </group>
 <!-- END -->
 <!-- START -->
 <group title=" ">
     <switch>
-        <title>規則目錄綁定（重新導向</title>
+        <title>Привязка каталога правил (перенаправление)</title>
             <get>
             if grep "clearbox_bind_path=1" "$work_dir/settings.prop" >/dev/null; then
                 echo 1
@@ -78,12 +78,12 @@ cat <<w
                 if "$home_dir/$core" "--storage-bind-custom" "MOUNT"; then
                     sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
                 fi
-                echo " » 已開啟 ~"
+                echo " » Включено ~"
             else
                 if "$home_dir/$core" "--storage-bind-custom" "UMOUNT"; then
                     sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
                 fi
-                echo " » 已關閉 ~"
+                echo " » Отключено ~"
             fi
             </set>
     </switch>
@@ -92,7 +92,7 @@ cat <<w
 <!-- START -->
 <group title="">
     <switch>
-        <title>內部儲存固定功能</title>
+        <title>Фиксация внутреннего хранилища</title>
             <get>
             if grep "clearbox_stop_storage=1" "$work_dir/settings.prop" >/dev/null; then
                 echo 1
@@ -113,14 +113,14 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="系統最佳化" config-sh="cat system_plus.xml" />
+        <page title="Оптимизация системы" config-sh="cat system_plus.xml" />
     </pages>
 </group>
 <!-- END -->
 <!-- START -->
 <group title="">
     <pages>
-        <page title="特殊功能" config-sh="cat Other.xml" />
+        <page title="Специальные функции" config-sh="cat Other.xml" />
     </pages>
 </group>
 <!-- END -->

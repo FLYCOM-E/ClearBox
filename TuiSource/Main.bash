@@ -28,6 +28,8 @@ if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
     source "$home_dir/$lang_dir/zh_CN.conf"
 elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then
     source "$home_dir/$lang_dir/zh_TW.conf"
+elif echo "$local_lang" | grep -E "ru-RU" 2>/dev/null; then
+    source "$home_dir/$lang_dir/ru_RU.conf"
 else
     source "$home_dir/$lang_dir/en_US.conf"
 fi

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Периодический запуск: Оптимизация и очистка в один клик" config-sh="cat Timed_xml/Time_ClearAll.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Периодический запуск: Очистка пользовательских каталогов" config-sh="cat Timed_xml/Time_ListDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Периодический запуск: Очистка мусорных файлов и пустых папок" config-sh="cat Timed_xml/Time_ClearDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Периодический запуск: Очистка кэша всех приложений" config-sh="cat Timed_xml/Time_ClearCache.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Периодический запуск: Магнит (сортировка файлов" config-sh="cat Timed_xml/Time_FileAll.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="Периодический запуск: F2FS GC" config-sh="cat Timed_xml/Time_F2fsGc.xml"/>
+    </pages>
+</group>
+<!-- END -->
