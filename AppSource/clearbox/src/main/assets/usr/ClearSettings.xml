@@ -67,7 +67,7 @@ cat <<w
         <set>
         . ./rm_ClearCacheWhitelist.sh
         </set>
-        <param name="Package" type="app" multiple="true" separator=" " options-sh="sh $work_dir/ClearWhitelist.prop" />
+        <param name="Package" type="app" multiple="true" separator=" " options-sh="cat $work_dir/ClearWhitelist.prop" />
     </action>
 </group>
 <!-- END -->
