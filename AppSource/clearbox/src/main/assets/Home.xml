@@ -3,7 +3,7 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_SETTINGS" config-sh="cat Settings.xml" />
+        <page title="$L_SETTINGS" config-sh="sh Settings.xml" />
     </pages>
 </group>
 <!-- END -->

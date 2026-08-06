@@ -1,8 +1,9 @@
+cat <<w
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_CLEAN_SETTINGS" config-sh="cat ClearSettings.xml"/>
+        <page title="$L_CLEAN_SETTINGS" config-sh="sh ClearSettings.xml"/>
     </pages>
 </group>
 <!-- END -->
@@ -68,3 +69,4 @@
             </set>
     </action>
 </group>
+w
