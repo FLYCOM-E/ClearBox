@@ -1,7 +1,4 @@
 <resources>
-    <!-- Config Name -->
-    <string name="config_name">Config-zh_TW.conf</string>
-    
     <!--是否強制獲取ROOT-->
     <bool name="force_root">true</bool>
 

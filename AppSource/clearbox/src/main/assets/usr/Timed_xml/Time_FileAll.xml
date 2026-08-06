@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <action interruptible="false">
+        <title>$L_AR_CUST_TIME ($L_UNIT: $L_TIME_H)</title>
+        <summary sh="echo -n '$L_NUM_TIME_NOW '; grep 'time=' $work_dir/$timed_config_dir/FileAll.conf | cut -f2 -d '='" />
+        <param name="hour_num" max="23" min="1" type="seekbar" value="12" />
+            <set>
+            echo -e "time=${hour_num}/H\ndate=0\nrun=$home_dir/$core --file-sort" > "$work_dir/$timed_config_dir/FileAll.conf"
+            echo " » $L_OPEND! "
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false" auto-off="false" >
+        <title>$L_CLOSE_FUNCTION</title>
+            <set>
+            rm "$work_dir/$timed_config_dir/FileAll.conf"
+            echo " » $L_CLOSED! "
+            </set>
+    </action>
+</group>
+<!-- END -->

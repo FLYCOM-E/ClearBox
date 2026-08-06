@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_CLEAN_SETTINGS" config-sh="cat ClearSettings.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_CONFIG_BACKUP" config-sh="cat BackupConfigs.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>$L_TUI_SWITCH</title>
+            <get>
+            if [ -f "$home_dir/skip_mount" ]; then
+                echo 0
+            else
+                echo 1
+            fi
+            </get>
+            <set>
+            if [ -f "$home_dir/skip_mount" ]; then
+                if rm "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » $L_OPEN_RESTART"
+                else
+                    echo " » $L_OPEN_ERR! "
+                fi
+            else
+                if touch "$home_dir/skip_mount" 2>/dev/null; then
+                    echo " » $L_CLOSE_RESTART"
+                else
+                    echo " » L_CLOSE_ERR! "
+                fi
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <page config-sh="Abort.sh" title="$L_ABOUT"/>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" warning="$L_ASK_UNINSTALL🤯？" interruptible="false" auto-off="false" auto-finish="false" >
+        <title>$L_UNINSTALL</title>
+            <set>
+            sh "$home_dir/uninstall.sh"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action shell="default" interruptible="false" confirm="false" auto-off="false" auto-finish="false" >
+        <title>$L_VIEW_LOG</title>
+            <set>
+            if [ -f "$work_dir/LOG.log" ]; then
+                cat "$work_dir/LOG.log"
+            fi
+            </set>
+    </action>
+</group>

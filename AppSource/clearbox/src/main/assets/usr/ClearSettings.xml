@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_EXTERNAL_SETTINGS" config-sh="cat CardSettings.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <switch>
+        <title>$L_ES_AUTO_FILE_ALL</title>
+            <get>
+            if grep "clearbox_auto_file_all=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_auto_file_all=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_auto_file_all=0/clearbox_auto_file_all=1/g' "$work_dir/settings.prop"
+                echo " » $L_OPEND! "
+            else
+                sed -i 's/clearbox_auto_file_all=1/clearbox_auto_file_all=0/g' "$work_dir/settings.prop"
+                echo " » $L_CLOSED! "
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <switch>
+        <title>$L_ES_AUTO_DISK_GC</title>
+            <get>
+            if grep "clearbox_auto_fast_gc=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_auto_fast_gc=0" "$work_dir/settings.prop" >/dev/null; then
+                sed -i 's/clearbox_auto_fast_gc=0/clearbox_auto_fast_gc=1/g' "$work_dir/settings.prop"
+                echo " » $L_OPEND! "
+            else
+                sed -i 's/clearbox_auto_fast_gc=1/clearbox_auto_fast_gc=0/g' "$work_dir/settings.prop"
+                echo " » $L_CLOSED! "
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false" auto-off="false" >
+        <title>$L_ADD_WHITELIST</title>
+        <set>
+        . ./add_ClearCacheWhitelist.sh
+        </set>
+        <param name="Package" type="app" multiple="true" separator=" " options-sh="pm list package -3 | cut -f2 -d ':' | grep -vxFf $work_dir/ClearWhitelist.prop" />
+    </action>
+    <action interruptible="false" auto-off="false" >
+        <title>$L_REMOVE_WHITELIST</title>
+        <set>
+        . ./rm_ClearCacheWhitelist.sh
+        </set>
+        <param name="Package" type="app" multiple="true" separator=" " options-sh="cat $work_dir/ClearWhitelist.prop" />
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false">
+        <title>$L_CACHE_SKIP_SIZE</title>
+        <summary sh="echo -n '$L_NUM_SIZE_NOW '; echo -n $(grep clearbox_clear_cache_size $work_dir/settings.prop | cut -f2 -d '='); echo -n ' M'" />
+        <param name="put" label="$L_UNIT: $L_SIZE_M (M)" required="required" type="int" />
+            <set>
+            sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$put"'/g' "$work_dir/settings.prop"
+            echo " » $L_SET_SUCCESS"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action>
+        <title>$L_CUST_FILE_ALL_PATH</title>
+        <summary sh="echo -n '$L_NUM_PATH_NOW '; echo -n $(grep clearbox_file_all_dirname $work_dir/settings.prop | cut -f2 -d '=')" />
+        <param name="path" type="folder" value="Documents" editable="true" />
+            <set>
+            sed -i 's|clearbox_file_all_dirname=.*|clearbox_file_all_dirname='"$path"'|g' "$work_dir/settings.prop"
+            echo " » $L_SET_SUCCESS"
+            </set>
+    </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false">
+        <title>$L_GC_SKIP_SIZE</title>
+        <summary sh="echo -n '$L_NUM_SIZE_NOW '; grep clearbox_f2fs_gc_min_dirty $work_dir/settings.prop | cut -f2 -d '='" />
+        <param name="put" label="NUM" required="required" type="int" />
+            <set>
+            sed -i 's/clearbox_f2fs_gc_min_dirty=[0-9]*/clearbox_f2fs_gc_min_dirty='"$put"'/g' "$work_dir/settings.prop"
+            echo " » $L_SET_SUCCESS"
+            </set>
+    </action>
+</group>
+<!-- END -->

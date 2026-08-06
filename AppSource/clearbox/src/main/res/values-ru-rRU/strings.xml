@@ -1,7 +1,4 @@
 <resources>
-    <!-- Config Name -->
-    <string name="config_name">Config-ru_RU.conf</string>
-    
     <!--Принудительно запрашивать ROOT-->
     <bool name="force_root">true</bool>
 

@@ -190,7 +190,7 @@ case "$input" in
           1)
             clear
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearAll.conf" | cut -f2 -d "=")
-            echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
+            echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -226,7 +226,7 @@ case "$input" in
           2)
             clear
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ListDir.conf" | cut -f2 -d "=")
-            echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
+            echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -262,7 +262,7 @@ case "$input" in
           3)
             clear
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearDir.conf" | cut -f2 -d "=")
-            echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
+            echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_M)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -298,7 +298,7 @@ case "$input" in
           4)
             clear
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearCache.conf" | cut -f2 -d "=")
-            echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
+            echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -334,7 +334,7 @@ case "$input" in
           5)
             clear
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/FileAll.conf" | cut -f2 -d "=")
-            echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
+            echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -370,7 +370,7 @@ case "$input" in
           6)
             clear
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/F2fsGc.conf" | cut -f2 -d "=")
-            echo -e " \033[104m[$L_AR_TITLE：$NowTime]\033[0m"
+            echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"

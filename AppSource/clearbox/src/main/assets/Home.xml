@@ -1,0 +1,125 @@
+cat <<w
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_SETTINGS" config-sh="cat Settings.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <action interruptible="false" auto-off="false" id="001">
+        <title>$L_CLEARALL</title>
+            <set>
+            "$home_dir/$core" "--clear-all"
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="002">
+        <title>$L_CUST_CLEAR</title>
+            <set>
+            "$home_dir/$core" "--clear-storage-cust"
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="003">
+        <title>$L_STORAGE_CLEAR</title>
+            <set>
+            "$home_dir/$core" "--clear-storage"
+            </set>
+    </action>
+    <action interruptible="false" auto-off="false" id="004">
+        <title>$L_CLEAR_ALL_APP_CACHE</title>
+            <set>
+            "$home_dir/$core" "--clear-app-cache"
+            </set>
+    </action>
+    <action warning="$L_FILE_SORT_DESC" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
+        <title>$L_FILE_ALL</title>
+            <set>
+            "$home_dir/$core" "--file-sort"
+            </set>
+    </action>
+    <page
+        config-sh="Print_FileClearXml.sh"
+        title="$L_FILE_CLEAR" />
+    <page
+        config-sh="Print_AppClearXml.sh"
+        title="$L_CUST_APP_CLEAR" />
+        <action shell="default" warning="$L_CLEAR_SYS_CACHE_DESC" interruptible="false" auto-off="false" auto-finish="false" id="006">
+            <title>$L_CLEAR_SYS_CACHE</title>
+                <set>
+                "$home_dir/$core" "--clear-system-cache"
+                </set>
+        </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_AUTO_CLEAR" config-sh="cat Timed_ProSettings.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <switch>
+        <title>$L_PATH_BIND</title>
+            <get>
+            if grep "clearbox_bind_path=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_bind_path=0" "$work_dir/settings.prop" >/dev/null; then
+                if "$home_dir/$core" "--storage-bind-custom" "MOUNT"; then
+                    sed -i 's/clearbox_bind_path=0/clearbox_bind_path=1/g' "$work_dir/settings.prop"
+                fi
+                echo " » $L_OPEND ~"
+            else
+                if "$home_dir/$core" "--storage-bind-custom" "UMOUNT"; then
+                    sed -i 's/clearbox_bind_path=1/clearbox_bind_path=0/g' "$work_dir/settings.prop"
+                fi
+                echo " » $L_CLOSED ~"
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <switch>
+        <title>$L_STOP_STORAGE</title>
+            <get>
+            if grep "clearbox_stop_storage=1" "$work_dir/settings.prop" >/dev/null; then
+                echo 1
+            else
+                echo 0
+            fi
+            </get>
+            <set>
+            if grep "clearbox_stop_storage=0" "$work_dir/settings.prop" >/dev/null; then
+                "$home_dir/$core" "--storage-lock" STOP
+            else
+                "$home_dir/$core" "--storage-lock" RESET
+            fi
+            </set>
+    </switch>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_SYSTEM_PLUS_FUN" config-sh="cat system_plus.xml" />
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
+    <pages>
+        <page title="$L_OTHER_FUN" config-sh="cat Other.xml" />
+    </pages>
+</group>
+<!-- END -->
+w

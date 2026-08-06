@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_AUTO_RUN $L_CLEARALL" config-sh="cat Timed_xml/Time_ClearAll.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_AUTO_RUN $L_CUST_CLEAR" config-sh="cat Timed_xml/Time_ListDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_AUTO_RUN $L_STORAGE_CLEAR" config-sh="cat Timed_xml/Time_ClearDir.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_AUTO_RUN $L_CLEAR_ALL_APP_CACHE" config-sh="cat Timed_xml/Time_ClearCache.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_AUTO_RUN $L_FILE_ALL" config-sh="cat Timed_xml/Time_FileAll.xml"/>
+    </pages>
+</group>
+<!-- END -->
+<!-- START -->
+<group title=" ">
+    <pages>
+        <page title="$L_AUTO_RUN $L_DISK_GC" config-sh="cat Timed_xml/Time_F2fsGc.xml"/>
+    </pages>
+</group>
+<!-- END -->

@@ -12,7 +12,8 @@ class KrScriptConfig {
     private val PAGE_LIST_CONFIG_DEFAULT = "file:///android_asset/more.xml"
     private val FAVORITE_CONFIG_DEFAULT = "file:///android_asset/favorites.xml"
     private val BEFORE_START_SH_DEFAULT = "" //"file:///android_asset/kr-script/before_start.sh";
-
+    private val DEFAULT_CONFIG = "Config.conf"
+    
     fun init(context: Context): KrScriptConfig {
         if (KrScriptConfig.configInfo == null) {
             KrScriptConfig.configInfo = HashMap()
@@ -23,7 +24,7 @@ class KrScriptConfig {
             KrScriptConfig.configInfo!!.put(BEFORE_START_SH, BEFORE_START_SH_DEFAULT)
 
             try {
-                val fileName = context.getString(R.string.config_name)
+                val fileName = DEFAULT_CONFIG 
                 var actualFileName = fileName
                 if (fileName.startsWith(ASSETS_FILE)) {
                     actualFileName = fileName.substring(ASSETS_FILE.length)

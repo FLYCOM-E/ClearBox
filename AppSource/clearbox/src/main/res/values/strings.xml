@@ -1,7 +1,4 @@
 <resources>
-    <!-- Config Name -->
-    <string name="config_name">Config-en_US.conf</string>
-    
     <!--Force ROOT acquisition-->
     <bool name="force_root">true</bool>
 
