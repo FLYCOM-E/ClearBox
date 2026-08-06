@@ -23,7 +23,7 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_DEXOAT" config-sh="sh . ./Dexoat.xml" />
+        <page title="$L_DEXOAT" config-sh="sh Dexoat.xml" />
     </pages>
 </group>
 <!-- END -->

@@ -10,24 +10,24 @@ echo '
 <?xml version="1.0" encoding="UTF-8" ?>
 <root>
 '
-echo '
+echo "
 <text>
     <slices>
         <title> </title>
-        <slice size="17" color="#FF9200">$L_FC_WARN</slice>
+        <slice size=\"17\" color=\"#FF9200\">$L_FC_WARN</slice>
     </slices>
 </text>
-'
+"
 
 if [ -z "$(ls "$work_dir/$file_config_dir/")" ]; then
-    echo '
+    echo "
     <text>
         <slices>
             <title> </title>
-            <slice size="30" color="#FF3E00">$L_FILE_CONFIG_NOT_FOUND</slice>
+            <slice size=\"30\" color=\"#FF3E00\">$L_FILE_CONFIG_NOT_FOUND</slice>
         </slices>
     </text>
-    '
+    "
     exit 0
 fi
 
