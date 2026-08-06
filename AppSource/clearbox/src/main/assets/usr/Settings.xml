@@ -10,7 +10,7 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_CONFIG_BACKUP" config-sh="cat BackupConfigs.xml"/>
+        <page title="$L_CONFIG_BACKUP" config-sh="sh BackupConfigs.xml"/>
     </pages>
 </group>
 <!-- END -->

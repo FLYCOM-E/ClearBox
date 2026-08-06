@@ -3,7 +3,7 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_EXTERNAL_SETTINGS" config-sh="cat CardSettings.xml"/>
+        <page title="$L_EXTERNAL_SETTINGS" config-sh="sh CardSettings.xml"/>
     </pages>
 </group>
 <!-- END -->
@@ -67,7 +67,7 @@ cat <<w
         <set>
         . ./rm_ClearCacheWhitelist.sh
         </set>
-        <param name="Package" type="app" multiple="true" separator=" " options-sh="cat $work_dir/ClearWhitelist.prop" />
+        <param name="Package" type="app" multiple="true" separator=" " options-sh="sh $work_dir/ClearWhitelist.prop" />
     </action>
 </group>
 <!-- END -->

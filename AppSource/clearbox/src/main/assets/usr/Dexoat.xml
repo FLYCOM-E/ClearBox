@@ -1,3 +1,4 @@
+cat <<w
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START -->
 <group title=" ">
@@ -12,7 +13,7 @@
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_CUST_DEXOAT" config-sh="cat . ./Dexoat_custom.xml" />
+        <page title="$L_CUST_DEXOAT" config-sh="sh . ./Dexoat_custom.xml" />
     </pages>
 </group>
 <!-- END -->
@@ -26,4 +27,4 @@
     </action>
 </group>
 <!-- END -->
-
+w

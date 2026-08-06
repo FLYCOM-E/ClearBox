@@ -56,7 +56,7 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_AUTO_CLEAR" config-sh="cat Timed_ProSettings.xml" />
+        <page title="$L_AUTO_CLEAR" config-sh="sh Timed_ProSettings.xml" />
     </pages>
 </group>
 <!-- END -->
@@ -111,14 +111,14 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_SYSTEM_PLUS_FUN" config-sh="cat system_plus.xml" />
+        <page title="$L_SYSTEM_PLUS_FUN" config-sh="sh system_plus.xml" />
     </pages>
 </group>
 <!-- END -->
 <!-- START -->
 <group title="">
     <pages>
-        <page title="$L_OTHER_FUN" config-sh="cat Other.xml" />
+        <page title="$L_OTHER_FUN" config-sh="sh Other.xml" />
     </pages>
 </group>
 <!-- END -->
