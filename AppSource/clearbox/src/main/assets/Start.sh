@@ -33,11 +33,11 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 local_lang="$(settings get system system_locales | cut -f1 -d ',')"
-if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
+if echo "$local_lang" | grep -E "zh-CN|Hans" >/dev/null 2>&1; then
     source "$home_dir/$lang_dir/zh_CN.conf"
-elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then
+elif echo "$local_lang" | grep -E "zh-TW|Hant" >/dev/null 2>&1; then
     source "$home_dir/$lang_dir/zh_TW.conf"
-elif echo "$local_lang" | grep -E "ru-RU" 2>/dev/null; then
+elif echo "$local_lang" | grep -E "ru-RU" >/dev/null 2>&1; then
     source "$home_dir/$lang_dir/ru_RU.conf"
 else
     source "$home_dir/$lang_dir/en_US.conf"
