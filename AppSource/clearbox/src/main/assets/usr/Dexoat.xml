@@ -13,7 +13,7 @@ cat <<w
 <!-- START -->
 <group title=" ">
     <pages>
-        <page title="$L_CUST_DEXOAT" config-sh="sh . ./Dexoat_custom.xml" />
+        <page title="$L_CUST_DEXOAT" config-sh="sh Dexoat_custom.xml" />
     </pages>
 </group>
 <!-- END -->
