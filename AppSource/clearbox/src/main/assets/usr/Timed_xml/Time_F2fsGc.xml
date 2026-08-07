@@ -7,7 +7,7 @@ cat <<w
         <summary sh="echo -n '$L_NUM_TIME_NOW '; grep 'time=' $work_dir/$timed_config_dir/F2fsGc.conf | cut -f2 -d '='" />
         <param name="day_num" max="30" min="1" type="seekbar" value="15" />
             <set>
-            echo -e "time=${day_num}/D\ndate=0\nrun=$home_dir/$core --disk-f2fs-gc\nin=0/5" > "$work_dir/$timed_config_dir/F2fsGc.conf"
+            echo -e "time=\${day_num}/D\ndate=0\nrun=$home_dir/$core --disk-f2fs-gc\nin=0/5" > "$work_dir/$timed_config_dir/F2fsGc.conf"
             echo " » $L_OPEND! "
             </set>
     </action>

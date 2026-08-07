@@ -16,7 +16,7 @@ cat <<w
         <title>RECOVER</title>
         <param name="config" label="File" type="file" editable="true" />
             <set>
-            "$home_dir/$core" "--config" recovery "$config"
+            "$home_dir/$core" "--config" recovery "\$config"
             </set>
     </action>
 </group>

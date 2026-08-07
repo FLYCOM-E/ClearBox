@@ -45,10 +45,39 @@ int disk_gc(char * argv[], int mode)
 */
 static int f2fs_gc(char * argv[])
 {
+    if (access(SYSFS_PATH, F_OK) != 0)
+    {
+        fprintf(stderr, L_FG_ERR_NOF2FS);
+        return -1;
+    }
+    
     char sysfs_name[PROP_VALUE_MAX] = {0};
     if (getprop(PROP, sysfs_name) <= 0)
     {
-        return -1;
+        struct dirent * entry;
+        DIR * sysfs_path_dp = opendir(SYSFS_PATH);
+        if (sysfs_path_dp == NULL)
+        {
+            write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, SYSFS_PATH, strerror(errno));
+            return -1;
+        }
+        while ((entry = readdir(sysfs_path_dp)))
+        {
+            if (strcmp(entry -> d_name, ".") == 0 ||
+               strcmp(entry -> d_name, "..") == 0)
+            {
+                continue;
+            }
+            
+            char test_path[PATH_MAX] = "";
+            snprintf(test_path, sizeof(test_path), "%s/%s/%s", SYSFS_PATH, entry -> d_name, SYSFS_FILE_NAME);
+            if (access(test_path, F_OK) == 0)
+            {
+                snprintf(sysfs_name, sizeof(sysfs_name), "%s", entry -> d_name);
+                break;
+            }
+        }
+        closedir(sysfs_path_dp);
     }
     
     char f2fs_sysfs_path[strlen(SYSFS_PATH) + strlen(sysfs_name) + 2];
@@ -60,13 +89,7 @@ static int f2fs_gc(char * argv[])
     char f2fs_sysfs_free_file[strlen(f2fs_sysfs_path) + sizeof(SYSFS_FREE_FILE) + 2];
     snprintf(f2fs_sysfs_free_file, sizeof(f2fs_sysfs_free_file), "%s/%s", f2fs_sysfs_path, SYSFS_FREE_FILE);
     
-    // 检测是否为 f2fs 文件系统
-    if (access(f2fs_sysfs_path, F_OK) != 0)
-    {
-        fprintf(stderr, L_FG_ERR_NOF2FS);
-        return -1;
-    }
-    // 检测是否支持当前 gc 方案
+    // 检查是否支持当前 gc 方案
     if (access(f2fs_sysfs_file, F_OK) != 0)
     {
         fprintf(stderr, L_FG_ERR_CHECK);

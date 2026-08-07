@@ -7,7 +7,7 @@ cat <<w
         <summary sh="echo -n '$L_NUM_TIME_NOW '; grep 'time=' $work_dir/$timed_config_dir/ClearDir.conf | cut -f2 -d '='" />
         <param name="minute_num" max="59" min="1" type="seekbar" value="10" />
             <set>
-            echo -e "time=${minute_num}/M\ndate=0\nrun=$home_dir/$core --clear-storage" > "$work_dir/$timed_config_dir/ClearDir.conf"
+            echo -e "time=\${minute_num}/M\ndate=0\nrun=$home_dir/$core --clear-storage" > "$work_dir/$timed_config_dir/ClearDir.conf"
             echo " » $L_OPEND! "
             </set>
     </action>
