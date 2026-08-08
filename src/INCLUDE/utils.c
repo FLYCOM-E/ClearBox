@@ -242,6 +242,7 @@ void write_log(const char * config_dir, const char * name_id, const char * text,
     va_list args;
     va_start(args, text);
     vsnprintf(buffer, sizeof(buffer), text, args);
+    buffer[strcspn(buffer, "\n")] = 0;
     va_end(args);
     
     //获取当前时间（用于log）
