@@ -63,11 +63,6 @@ int time_daemon(char * argv[])
         // 错误信息由 read_config 函数报告
         return -1;
     }
-    if (read_config_count == 0)
-    {
-        write_log(work_dir, SERVER_NAME, L_NOCONFIG);
-        return -1;
-    }
     
     // INOTIFY
     int inotify_fd = inotify_init1(IN_NONBLOCK);
@@ -150,103 +145,105 @@ int time_daemon(char * argv[])
             }
         }
         
-        time_t now_time = time(NULL);
-        struct tm now_time_local;
-        localtime_r(&now_time, &now_time_local);
-        
-        int i = 0;
-        while (i < read_config_count)
+        if (read_config_count != 0)
         {
-            // 检查停用状态
-            if (config[i].enable != 1)
+            time_t now_time = time(NULL);
+            struct tm now_time_local;
+            localtime_r(&now_time, &now_time_local);
+           
+            int i = 0;
+            while (i < read_config_count)
             {
-                i++;
-                continue;
-            }
-            
-            int run = 0;
-            if (config[i].in == 1)
-            {
-                if (!(now_time_local.tm_hour >= config[i].start_hour &&
-                    now_time_local.tm_hour <= config[i].end_hour))
+                // 检查停用状态
+                if (config[i].enable != 1)
                 {
                     i++;
                     continue;
                 }
-            }
-            switch (config[i].time_unit) // 匹配配置对应时间单位判断是否需要执行
-            {
-                case 'D':
-                    // day
-                    if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 86400))
-                    {
-                        run = 1;
-                    }
-                    break;
-                case 'H':
-                    // hour
-                    if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 3600))
-                    {
-                        run = 1;
-                    }
-                    break;
-                case 'M':
-                    // minute
-                    if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 60))
-                    {
-                        run = 1;
-                    }
-                    break;
-                default:
-                    break;
-            }
-            if (run == 1) // 执行并更新
-            {
-                running(config[i].run);
-                // 如果有设置通知则发送
-                if (config[i].post == 1)
+                
+                int run = 0;
+                if (config[i].in == 1)
                 {
-                    post(config[i].config_name, config[i].title, config[i].message);
+                    if (!(now_time_local.tm_hour >= config[i].start_hour &&
+                        now_time_local.tm_hour <= config[i].end_hour))
+                    {
+                        i++;
+                        continue;
+                    }
                 }
-                
-                // 配置文件
-                char config_file[strlen(config_dir) + strlen(config[i].config_name) + 2];
-                snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config[i].config_name);
-                
-                /* 
-                回写
-                如果配置存在则更新，否则设置为停用。
-                这是为了配合前端删掉配置即停用的设置。
-                */
-                if (access(config_file, F_OK) == 0)
+                switch (config[i].time_unit) // 匹配配置对应时间单位判断是否需要执行
                 {
-                    char line[128] = "";
-                    snprintf(line, sizeof(line), "date=%ld", now_time);
+                    case 'D':
+                        // day
+                        if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 86400))
+                        {
+                            run = 1;
+                        }
+                        break;
+                    case 'H':
+                        // hour
+                        if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 3600))
+                        {
+                            run = 1;
+                        }
+                        break;
+                    case 'M':
+                        // minute
+                        if (difftime(now_time, config[i].old_time) >= (double)(config[i].time_num * 60))
+                        {
+                            run = 1;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                if (run == 1) // 执行并更新
+                {
+                    running(config[i].run);
+                    // 如果有设置通知则发送
+                    if (config[i].post == 1)
+                    {
+                        post(config[i].config_name, config[i].title, config[i].message);
+                    }
                     
-                    // 更新 DATE
-                    inotify_rm_watch(inotify_fd, (uint32_t)inotify_wd);
-                    int success = s_sed(config_file, "date=", line, 1);
-                    inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
+                    // 配置文件
+                    char config_file[strlen(config_dir) + strlen(config[i].config_name) + 2];
+                    snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config[i].config_name);
                     
-                    // Check Errno
-                    if (success != 0 &&
-                        difftime(now_time, config[i].last_error_notify) >= 3600) // 1小时
+                    /* 
+                    回写
+                    如果配置存在则更新，否则设置为停用。
+                    这是为了配合前端删掉配置即停用的设置。
+                    */
+                    if (access(config_file, F_OK) == 0)
                     {
-                        post(SERVER_NAME, SERVER_NAME, L_TD_CONFIG_WRITE_ERROR, config[i].config_name);
-                        config[i].last_error_notify = now_time; // 记录上次通知时间，避免短时间多次通知
+                        char line[128] = "";
+                        snprintf(line, sizeof(line), "date=%ld", now_time);
+                        
+                        // 更新 DATE
+                        inotify_rm_watch(inotify_fd, (uint32_t)inotify_wd);
+                        int success = s_sed(config_file, "date=", line, 1);
+                        inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
+                        
+                        // Check Errno
+                        if (success != 0 &&
+                            difftime(now_time, config[i].last_error_notify) >= 3600) // 1小时
+                        {
+                            post(SERVER_NAME, SERVER_NAME, L_TD_CONFIG_WRITE_ERROR, config[i].config_name);
+                            config[i].last_error_notify = now_time; // 记录上次通知时间，避免短时间多次通知
+                        }
                     }
+                    else
+                    {
+                        config[i].enable = 0;
+                    }
+                    
+                    // 更新时间戳
+                    config[i].old_time = now_time;
                 }
-                else
-                {
-                    config[i].enable = 0;
-                }
-                
-                // 更新时间戳
-                config[i].old_time = now_time;
+                i++;
             }
-            i++;
         }
-        
         // 回收子进程
         while (waitpid(-1, NULL, WNOHANG) > 0);
         
