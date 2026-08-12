@@ -17,6 +17,7 @@
 #define MAX_TITLE_LEN 128                     // 通知标题最大长度
 #define MAX_MESSAGE_LEN 512                 // 通知内容最大长度
 #define CONFIG_PATH_NAME "TimedConfigs"    // 配置目录名
+#define SHELL "/system/bin/sh"                  // SHELL PATH
 
 struct config_struct
 {
@@ -427,12 +428,14 @@ static int get_config(char * config_file, char * config_file_name, struct config
     config[count].in = 0;
     
     // 非普通文件即失败，同时提示这里有非文件
-    FILE * config_fp = fopen(config_file, "r");
+    FILE * config_fp = fopen(config_file, "a+");
     if (config_fp == NULL)
     {
         write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file_name, strerror(errno));
         return -1;
     }
+    
+    fseek(config_fp, 0, SEEK_SET);
     while (fgets(line, sizeof(line), config_fp))
     {
         line_count++;
@@ -454,7 +457,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
         }
         
         // 匹配提取键值读入结构体
-        if (strcasecmp(key, "time") == 0)
+        if (strcasecmp(key, "TIME") == 0)
         {
             char * value_p = NULL;
             char * time_str = strtok_r(value, "/", &value_p);
@@ -462,8 +465,11 @@ static int get_config(char * config_file, char * config_file_name, struct config
             if (time_str && unit_str &&
                 strtol(time_str, NULL, 10) != 0 &&
                 (unit_str[0] == 'D' ||
+                unit_str[0] == 'd' ||
                 unit_str[0] == 'H' ||
-                unit_str[0] == 'M'))
+                unit_str[0] == 'h' ||
+                unit_str[0] == 'M'||
+                unit_str[0] == 'm'))
             {
                 config[count].time_unit = unit_str[0];
                 config[count].time_num = strtol(time_str, NULL, 10);
@@ -475,12 +481,13 @@ static int get_config(char * config_file, char * config_file_name, struct config
                 continue;
             }
         }
-        else if (strcasecmp(key, "date") == 0)
+        else if (strcasecmp(key, "DATE") == 0)
         {
             // 这里不做检查，如空则设置为当前时间
             config[count].old_time = (time_t)strtol(value, NULL, 10);
             if (config[count].old_time <= 0)
             {
+                // 设置 -1 则置上次执行时间为 0（立即运行），否则设置为当前时间等待下周期执行
                 if (config[count].old_time == -1)
                 {
                     config[count].old_time = 0;
@@ -492,7 +499,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
             }
             date_ = 1; // 已读取 DATE
         }
-        else if (strcasecmp(key, "run") == 0)
+        else if (strcasecmp(key, "RUN") == 0)
         {
             // 不检查命令（不好做检查）
             if (strlen(value) >= MAX_COMMAND_LEN)
@@ -503,7 +510,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
             snprintf(config[count].run, sizeof(config[count].run), "%s", value);
             run_ = 1;
         }
-        else if (strcasecmp(key, "in") == 0)
+        else if (strcasecmp(key, "IN") == 0)
         {
             config[count].start_hour = 0;
             config[count].end_hour = 0;
@@ -535,7 +542,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
                 continue;
             }
         }
-        else if (strcasecmp(key, "post") == 0)
+        else if (strcasecmp(key, "POST") == 0)
         {
             char * value_p = NULL;
             char * message = strchr(value, '/');
@@ -565,16 +572,21 @@ static int get_config(char * config_file, char * config_file_name, struct config
             write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_KEY, config_file_name, line_count, key);
         }
     }
-    fclose(config_fp);
     
+    // post、in 等非必须字段不检查
     if (time_ != 1 ||
-        date_ != 1 ||
-        run_ != 1) // post、in 非必须字段不检查
+       run_ != 1)
     {
         write_log(work_dir, SERVER_NAME, L_TD_CONFIG_ERROR, config_file_name);
+        fclose(config_fp);
         return -1;
     }
+    if (date_ != 1)
+    {
+        fprintf(config_fp, "\ndate=%lld\n", (long long)time(NULL));
+    }
     
+    fclose(config_fp);
     return 0;
 }
 
@@ -588,9 +600,8 @@ static int running(char * command)
     }
     if (new_pid == 0)
     {
-        execl("/bin/sh", "sh", "-c", command, NULL);
+        execl(SHELL, "sh", "-c", command, NULL);
         _exit(errno);
     }
-    // 这里不等待子进程，避免阻塞
     return 0;
 }

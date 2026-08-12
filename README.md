@@ -162,16 +162,17 @@ You can use the **Timed** module to run custom tasks! Follow the configuration b
 
 Config Directory: **`/data/adb/wipe_cache/TimedConfigs`**
 
-In this directory, create a **.conf** file with a custom name, then add and modify the following lines (some are optional):
+Create a custom-named **.conf** file in this directory, fill in and modify the following lines (some are optional)：
 
 ```conf
-time=Interval/Unit (Currently supports M/min, H/hour, D/day)
-date=0
-run=Program and arguments to execute; supports Shell syntax (parsed by Shell)
-in=Start Hour/End Hour (Runs between Hour X and Hour X. Optional; do not exceed 23. Note: non-daily tasks will run multiple times within this window)
-post=Notification Title/Content (Sends a notification. Optional; not recommended for minute-level tasks)
+time=interval/time unit (currently supports M/minutes, H/hours, D/days)
+date=last run time (timestamp number). This is an optional parameter. If not filled, the program will automatically set it to the current time. Set to -1 to execute immediately.
+run=program and parameters to execute, supports Shell syntax (parsed by Shell)
+in=start time/end time (only run between hour X and hour Y. This is an optional parameter)
+post=notification title/notification content (send notification. This is an optional parameter; not recommended for minute-level tasks)
 ```
 
+Among them, **time** and **run** are required fields, all **KEY**s are case-insensitive.
 Example:
 
 ```
