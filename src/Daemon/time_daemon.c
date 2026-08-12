@@ -464,14 +464,11 @@ static int get_config(char * config_file, char * config_file_name, struct config
             char * unit_str = strtok_r(NULL, "/", &value_p);
             if (time_str && unit_str &&
                 strtol(time_str, NULL, 10) != 0 &&
-                (unit_str[0] == 'D' ||
-                unit_str[0] == 'd' ||
-                unit_str[0] == 'H' ||
-                unit_str[0] == 'h' ||
-                unit_str[0] == 'M'||
-                unit_str[0] == 'm'))
+                (toupper(unit_str[0]) == 'D' ||
+                toupper(unit_str[0]) == 'H' ||
+                toupper(unit_str[0]) == 'M'))
             {
-                config[count].time_unit = unit_str[0];
+                config[count].time_unit = (char)toupper(unit_str[0]);
                 config[count].time_num = strtol(time_str, NULL, 10);
                 time_ = 1; // 已读取 TIME
             }
@@ -508,7 +505,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
                 continue;
             }
             snprintf(config[count].run, sizeof(config[count].run), "%s", value);
-            run_ = 1;
+            run_ = 1; // 已读取 RUN
         }
         else if (strcasecmp(key, "IN") == 0)
         {
