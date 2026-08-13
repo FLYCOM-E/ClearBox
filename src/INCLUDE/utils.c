@@ -134,45 +134,56 @@ int64_t get_path_size(char * path)
     }
     
     uint64_t size = 0;
-    struct dirent * entry;
+    
     struct stat file_stat;
-    DIR * path_dp = opendir(path);
-    if (path_dp == NULL)
+    if (lstat(path, &file_stat) == -1)
     {
-        write_log(work_dir, "get_path_size", L_OPEN_PATH_FAILED, path, strerror(errno));
         return 0;
     }
-    
-    while ((entry = readdir(path_dp)))
+    if (S_ISREG(file_stat.st_mode))
     {
-        if (strcmp(entry -> d_name, ".") == 0 ||
-           strcmp(entry -> d_name, "..") == 0)
-        {
-            continue;
-        }
-        
-        char dir[strlen(path) + strlen(entry -> d_name) + 2];
-        snprintf(dir, sizeof(dir), "%s/%s", path, entry -> d_name);
-        
-        if (lstat(dir, &file_stat) == -1)
-        {
-            continue;
-        }
-        if (S_ISLNK(file_stat.st_mode))
-        {
-            continue;
-        }
-        if (S_ISDIR(file_stat.st_mode))
-        {
-            size += (uint64_t)get_path_size(dir);
-        }
-        else
-        {
-            size += (uint64_t)file_stat.st_size;
-        }
+        size += (uint64_t)file_stat.st_size;
     }
-    closedir(path_dp);
-    
+    else
+    {
+        struct dirent * entry;
+        DIR * path_dp = opendir(path);
+        if (path_dp == NULL)
+        {
+            write_log(work_dir, "get_path_size", L_OPEN_PATH_FAILED, path, strerror(errno));
+            return 0;
+        }
+        
+        while ((entry = readdir(path_dp)))
+        {
+            if (strcmp(entry -> d_name, ".") == 0 ||
+               strcmp(entry -> d_name, "..") == 0)
+            {
+                continue;
+            }
+            
+            char dir[strlen(path) + strlen(entry -> d_name) + 2];
+            snprintf(dir, sizeof(dir), "%s/%s", path, entry -> d_name);
+            
+            if (lstat(dir, &file_stat) == -1)
+            {
+                continue;
+            }
+            if (S_ISLNK(file_stat.st_mode))
+            {
+                continue;
+            }
+            if (S_ISDIR(file_stat.st_mode))
+            {
+                size += (uint64_t)get_path_size(dir);
+            }
+            else
+            {
+                size += (uint64_t)file_stat.st_size;
+            }
+        }
+        closedir(path_dp);
+    }
     if (size > INT64_MAX)
     {
         return 0;

@@ -52,7 +52,7 @@ int s_chattr(char * path, int mode, int dir);
 int help(char * argv[]);
 int s_daemon(void);
 int s_signal(void);
-double byte_to_size(long byte, char * unit);
+double byte_to_size(int64_t byte, char * unit);
 void set_language(LangType * current_lang);
 
 int app_cache_clean(int mode);
