@@ -13,15 +13,15 @@
     char * path
     int all 是否删除目录本身，1删除，0跳过
 返回：
-    long 成功返回清理大小（字节），失败返回 -1
+    int64_t 成功返回清理大小（字节），失败返回 -1
 */
-long s_remove(char * path, int all)
+int64_t s_remove(char * path, int all)
 {
     if (access(path, F_OK) != 0)
     {
         return -1;
     }
-    long size_byte = 0;
+    uint64_t size_byte = 0;
     struct stat file_stat;
     if (lstat(path, &file_stat) == -1)
     {
@@ -43,7 +43,7 @@ long s_remove(char * path, int all)
                 }
                 char paths[PATH_MAX] = "";
                 snprintf(paths, sizeof(paths), "%s/%s", path, entry -> d_name);
-                size_byte += s_remove(paths, 1);
+                size_byte += (uint64_t)s_remove(paths, 1);
             }
             closedir(path_dp);
             if (all == 1)
@@ -60,10 +60,15 @@ long s_remove(char * path, int all)
     {
         if (remove(path) == 0)
         {
-            size_byte += file_stat.st_size;
+            size_byte += (uint64_t)file_stat.st_size;
         }
     }
-    return size_byte;
+    
+    if (size_byte > INT64_MAX)
+    {
+        return -1;
+    }
+    return (int64_t)size_byte;
 }
 
 /* 
@@ -118,16 +123,17 @@ int s_grep(char * file, char * text, int mode)
 接收：
     char * path 路径/文件
 返回：
-    long 大小，单位：字节（Byte）
+    int64_t 大小，单位：字节（Byte）
+    失败返回 0
 */
-long get_path_size(char * path)
+int64_t get_path_size(char * path)
 {
     if (access(path, F_OK) != 0)
     {
         return 0;
     }
     
-    long size = 0;
+    uint64_t size = 0;
     struct dirent * entry;
     struct stat file_stat;
     DIR * path_dp = opendir(path);
@@ -158,15 +164,20 @@ long get_path_size(char * path)
         }
         if (S_ISDIR(file_stat.st_mode))
         {
-            size += get_path_size(dir);
+            size += (uint64_t)get_path_size(dir);
         }
         else
         {
-            size += file_stat.st_size;
+            size += (uint64_t)file_stat.st_size;
         }
     }
     closedir(path_dp);
-    return size;
+    
+    if (size > INT64_MAX)
+    {
+        return 0;
+    }
+    return (int64_t)size;
 }
 
 /*
@@ -483,11 +494,12 @@ int s_daemon(void)
 /*
 字节单位识别与转换
 接收：
-    long byte      字节数
-    double * size  小数指针
+    int64_t byte      字节数
     char * unit    单位字符指针
+返回：
+    double 对应单位大小数值
 */
-double byte_to_size(long byte, char * unit)
+double byte_to_size(int64_t byte, char * unit)
 {
     double size = 0;
     if (byte < 1024)

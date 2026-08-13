@@ -22,7 +22,8 @@ BIN_C = src/main.c \
 		src/bmount.c \
 		src/Daemon/stop_cache_daemon.c \
 		src/Daemon/disk_gc.c \
-		src/Daemon/time_daemon.c
+		src/Daemon/time_daemon.c \
+		src/ncdu.c
 
 CORE_ELF = $(module_dir)/clearbox
 

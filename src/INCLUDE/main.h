@@ -39,9 +39,9 @@ extern char home_dir[128],
              settings_file[PATH_MAX];
 extern LangType current_lang;
 
-long s_remove(char * path, int all);
+int64_t s_remove(char * path, int all);
 int s_grep(char * file, char * text, int mode);
-long get_path_size(char * path);
+int64_t get_path_size(char * path);
 int post(const char * id, const char * title, const char * message, ...);
 void write_log(const char * config_dir, const char * name_id, const char * text, ...);
 int set_name_space(void);
@@ -68,3 +68,4 @@ int freezer_open(void);
 int stop_cache_daemon(char * argv[]);
 int time_daemon(char * argv[]);
 int bmount(char * mode_str);
+int ncdu(char * path);

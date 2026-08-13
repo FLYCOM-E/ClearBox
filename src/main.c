@@ -275,6 +275,17 @@ int main(int argc, char * argv[])
             exit_code = bmount(argv[2]);
         }
     }
+    else if (strcasecmp(argv[1], "--ncdu") == 0)
+    {
+        if (argc < 3)
+        {
+            fprintf(stderr, L_ARGS_FAILED);
+        }
+        else
+        {
+            exit_code = ncdu(argv[2]);
+        }
+    }
     else if (strcasecmp(argv[1], "--config") == 0)
     {
         if (argc < 3)
