@@ -54,6 +54,13 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
+<group>
+    <page
+        config-sh="Print_NcduXml.sh"
+        title="NCDU" />
+</group>
+<!-- END -->
+<!-- START -->
 <group title=" ">
     <pages>
         <page title="$L_AUTO_CLEAR" config-sh="sh Timed_ProSettings.xml" />
