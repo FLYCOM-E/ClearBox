@@ -22,15 +22,13 @@ echo '
 "$home_dir/$core" --ncdu "$DEF_DIR" | while IFS='|' read -r name dir size unit mode; do    
     if [ "$mode" == "F" ]; then
         echo "
-        <group title=\" \">
-            <action interruptible=\"false\" auto-off=\"false\" warning=\"$L_CLEAN $name? \">
-                <title>📄 $name</title>
-                <desc>$size $unit</desc>
-                    <set>
-                    rm -f \"$dir\"
-                    </set>
-            </action>
-        </group>
+        <action interruptible=\"false\" auto-off=\"false\" warning=\"$L_CLEAN $name? \">
+            <title>📄 $name</title>
+            <desc>$size $unit</desc>
+                <set>
+                rm -f \"$dir\"
+                </set>
+        </action>
         "
     elif [ "$mode" == "D" ]; then
         echo "
