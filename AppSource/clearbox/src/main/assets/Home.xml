@@ -54,10 +54,10 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group>
+<group title=" ">
     <page
         config-sh="Print_NcduXml.sh"
-        title="NCDU" />
+        title="$L_STORAGE_SCAN" />
 </group>
 <!-- END -->
 <!-- START -->

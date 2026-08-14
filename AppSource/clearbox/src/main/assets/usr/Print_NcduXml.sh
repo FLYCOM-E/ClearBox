@@ -19,6 +19,18 @@ echo '
 <root>
 '
 
+if [ ! -z "$(ls -A "$DEF_DIR/")" ]; then
+    echo "
+    <text>
+        <slices>
+            <title> </title>
+            <slice size=\"30\" color=\"#FF3E00\">$L_VOID_DIR</slice>
+        </slices>
+    </text>
+    "
+    exit 0
+fi
+
 "$home_dir/$core" --ncdu "$DEF_DIR" | while IFS='|' read -r name dir size unit mode; do    
     if [ "$mode" == "F" ]; then
         echo "
@@ -31,14 +43,12 @@ echo '
         </action>
         "
     elif [ "$mode" == "D" ]; then
-        if [ ! -z "$(ls -A "$dir/")" ]; then
-            echo "
-            <page
-                config-sh=\"$0 '$dir'\"
-                title=\"📂 $name\"
-                desc=\"$size $unit\" />
-            "
-        fi
+        echo "
+        <page
+            config-sh=\"$0 '$dir'\"
+            title=\"📂 $name\"
+            desc=\"$size $unit\" />
+        "
     fi
 done
 echo '

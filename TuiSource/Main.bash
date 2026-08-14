@@ -42,23 +42,40 @@ ncdu()
     DIR="$ncdu_default_path"
     while true; do
         clear
+        echo -e "\033[96m ==============================================\033[0m\n"
         
-        "$home_dir/$core" "--ncdu" "$DIR" | while IFS='|' read -r name dir size unit mode; do
-            if [ "$mode" == "F" ]; then
-                echo -e "📄 $size $unit \t $name"
-            elif [ "$mode" == "D" ]; then
-                if [ ! -z "$(ls -A "$dir")" ]; then
-                    echo -e "📂 $size $unit \t $name"
+        if [ ! -z "$(ls -A "$DIR")" ]; then
+            "$home_dir/$core" "--ncdu" "$DIR" | while IFS='|' read -r name dir size unit mode; do
+                if [ "$mode" == "F" ]; then
+                    echo -e "\033[93m 📄 $size $unit \t $name\033[0m\n"
+                elif [ "$mode" == "D" ]; then
+                    echo -e "\033[93m 📂 $size $unit \t $name\033[0m\n"
                 fi
+            done
+        else
+            echo " » $L_VOID_DIR"
+            sleep 1
+            ROOT_DIR=""
+            if [ "$ncdu_default_path" == "$DIR" ]; then
+                ROOT_DIR="$ncdu_default_path"
+            else
+                ROOT_DIR="$(dirname "$DIR")"
             fi
-        done
+            DIR="$ROOT_DIR"
+            continue
+        fi
         
-        echo -e "\n"
-        echo -en " $L_INPUT_PATH: "
+        echo -e "\033[96m ==============================================\033[0m"
+        
+        echo -e "\t\t   --- $L_HOME_EXIT_TITLE ---"
+        echo -en " » $L_INPUT_PATH: "
         read input
         case "$input" in
             Q | q)
               break
+              ;;
+            .)
+              continue
               ;;
             ..)
               ROOT_DIR=""
@@ -72,7 +89,7 @@ ncdu()
             *)
               NEW_PATH="$DIR/$input"
               if [ -f "$NEW_PATH" ]; then
-                  echo -en " $L_CLEAN $input? (y/N):"
+                  echo -en " » $L_CLEAN $input? (y/N):"
                   read ok_input
                   case "$ok_input" in
                       Y | y)
@@ -104,7 +121,7 @@ echo -e "\033[93m  5:\t$L_FILE_ALL\033[0m"
 echo -e "\033[93m  6:\t$L_FILE_CLEAR\033[0m"
 echo -e "\033[93m  7:\t$L_CUST_APP_CLEAR\033[0m"
 echo -e "\033[93m  8:\t$L_CLEAR_SYS_CACHE\033[0m"
-echo -e "\033[93m  9:\tNCDU\033[0m"
+echo -e "\033[93m  9:\t$L_STORAGE_SCAN\033[0m"
 echo -e "\033[93m  10:\t$L_AUTO_CLEAR\033[0m"
 echo -e "\033[93m  11:\t$L_STOP_INSTALL\033[0m"
 echo -e "\033[93m  12:\t$L_PATH_BIND\033[0m"
@@ -114,7 +131,7 @@ echo -e "\033[93m  15:\t$L_DISK_APP_PLUS\033[0m"
 echo -e "\033[93m  00:\t$L_SETTINGS\033[0m\n"
 echo -e "\033[96m ==============================================\033[0m"
 echo -e "\t\t   --- $L_HOME_EXIT_TITLE ---"
-echo -n " $L_PLEASE_INPUT: "
+echo -n " » $L_PLEASE_INPUT: "
 read input
 case "$input" in
     1)

@@ -60,13 +60,13 @@ Flash **ClearBox_aarch64_21.zip**
 
    # Brief functions:
    
-## **1**：One-click optimization & cleanup
+## One-click optimization & cleanup
 
 Perform fast one-click optimization/cleanup, the effect is equivalent to periodic optimization. Including cache cleanup, junk cleanup, fast disk **GC**, etc. According to module settings, file cleanup/organization can also be run
 
 
 
-## **2**：Clean/Kill custom directories
+## Clean/Kill custom directories
 
 This function is rule-based cleanup. You can add cleanup rules yourself in the **`/data/adb/wipe_cache/CleanConfigs`** directory.
 
@@ -78,19 +78,19 @@ One file/directory path per line. If you have specified the initial path, you ca
 
 
 
-## **3**：Clear junk files & empty folders
+## Clear junk files & empty folders
 
 Clean internal/external storage empty folders, multimedia cache, software cache, etc.
 
 
 
-## **4**：Clear all software cache
+## Clear all software cache
 
 Clears third-party application caches, excluding system application caches. If you have enabled external storage cache cleaning, it will also clean external storage.
 
 
 
-## **5**：Deep File Cleaning
+## Deep File Cleaning
 
 File cleaning function, comes with some built-in cleaning configurations, supports custom file format configurations, and supports external storage.
 
@@ -122,7 +122,7 @@ Scope： File cleaning, as well as file organization which will be covered later
 
 
 
-## **6**：Software rule cleanup
+## Software rule cleanup
 
 One of the rule cleanup functions, used to clean the internal private directory of software according to rules
 
@@ -144,13 +144,19 @@ The module will automatically check some configuration errors
 
 
 
-## **7**：Clear system cache
+## Clear system cache
 
 Clear system software cache, system cache, and also clear **MTP** host data (can solve **MTP** file transfer file list display abnormality)
 
 
 
-## 8: Auto Cleanup
+## [Beta] Storage Analysis (NCDU)
+
+Analyze storage directory usage – who ate my storage space?
+
+
+
+## Auto Cleanup
 
 Feature automation, driven by the **Timed** component (ultra-low overhead).
 
@@ -189,19 +195,19 @@ The above configuration will run the **/system/bin/sync** command once between *
 
 
 
-## **9**：Block All Software Update Installations
+## Block All Software Update Installations
 
 As the name implies, file system-level forced blocking of software installations, does not handle expanded storage, therefore if the software is installed on external storage, this item is invalid
 
 
 
-## **10**：Internal Storage Fix Function
+## Internal Storage Fix Function
 
 As the name implies, locks the internal storage root directory layout to prevent various applications from randomly creating files/folders, does not handle expanded storage
 
 
 
-## **11**：Block cache function
+## Block cache function
 
 This is an important function of the module, used to dynamically block foreground software from generating cache.
 
@@ -219,13 +225,13 @@ If some software is abnormal, please add it to the whitelist yourself!
 
 
 
-## **12**：Magnet (one-click file classification
+## Magnet (one-click file classification
 
 One-click organization of internal/external storage files, shares rules with file cleaning, supports custom organization directory
 
 
 
-## **13**：[Beta] Rule Directory Binding (Redirect)
+## Rule Directory Binding (Redirect)
 
 Configuration Directory：**`/data/adb/wipe_cache/BindConfigs`**
 
@@ -243,7 +249,7 @@ This feature cannot currently run on devices using **sdcardfs**, but don't worry
 
 
 
-## **14**：Disk & software optimization
+## Disk & software optimization
 
 This is an optimization function set, including disk optimization ( **f2fs-GC** ) and **Dexoat** (software pre-compilation) functions
 

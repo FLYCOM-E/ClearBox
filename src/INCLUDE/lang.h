@@ -46,6 +46,7 @@ typedef struct
     const char * l_stop_cache_daemon;
     const char * l_time_daemon;
     const char * l_path_bind;
+    const char * l_storage_scan;
     
     const char * l_scd_start_success;
     const char * l_scd_getapp_err_exit;
@@ -176,6 +177,7 @@ static const LangPack lang_packs[] =
         .l_stop_cache_daemon = "阻止缓存 (Daemon)\n",
         .l_time_daemon = "自动任务 (Daemon)\n",
         .l_path_bind = "规则目录绑定（重定向）\n",
+        .l_storage_scan = "储存分析（NCDU）\n",
         
         .l_scd_start_success = " » 缓存阻止已启动！#%u",
         .l_scd_getapp_err_exit = " » 进程已退出，原因：GETTOPAPP ERROR\n",
@@ -303,6 +305,7 @@ static const LangPack lang_packs[] =
         .l_stop_cache_daemon = "阻止快取 (Daemon)\n",
         .l_time_daemon = "自動任務 (Daemon)\n",
         .l_path_bind = "規則目錄綁定（重新導向）\n",
+        .l_storage_scan = "儲存分析（NCDU）\n",
         
         .l_scd_start_success = " » 快取阻止已啟動！#%u",
         .l_scd_getapp_err_exit = " » 進程已退出，原因：GETTOPAPP ERROR\n",
@@ -430,6 +433,7 @@ static const LangPack lang_packs[] =
         .l_stop_cache_daemon = "Блокировка кэша (демон)\n",
         .l_time_daemon = "Автоматические задачи (демон)\n",
         .l_path_bind = "Привязка каталога правил (перенаправление)\n",
+        .l_storage_scan = "Анализ хранилища (NCDU)\n",
     
         .l_scd_start_success = " » Блокировка кэша запущена！#%u",
         .l_scd_getapp_err_exit = " » Процесс завершен, причина: GETTOPAPP ERROR\n",
@@ -557,6 +561,7 @@ static const LangPack lang_packs[] =
         .l_stop_cache_daemon = "Cache blocking (Daemon)\n",
         .l_time_daemon = "Scheduled tasks (Daemon)\n",
         .l_path_bind = "Rule Directory Binding (Redirect)\n",
+        .l_storage_scan = "Storage Analysis (NCDU)\n",
         
         .l_scd_start_success = " » Cache blocking has been started! #%u",
         .l_scd_getapp_err_exit = " » Process has exited, reason: GETTOPAPP ERROR\n",
@@ -686,6 +691,7 @@ extern LangType current_lang;
 #define L_STOP_CACHE_DAEMON lang_packs[current_lang].l_stop_cache_daemon
 #define L_TIME_DAEMON lang_packs[current_lang].l_time_daemon
 #define L_PATH_BIND lang_packs[current_lang].l_path_bind
+#define L_STORAGE_SCAN lang_packs[current_lang].l_storage_scan
 
 #define L_SCD_START_SUCCESS lang_packs[current_lang].l_scd_start_success
 #define L_SCD_GETAPP_ERR_EXIT lang_packs[current_lang].l_scd_getapp_err_exit
