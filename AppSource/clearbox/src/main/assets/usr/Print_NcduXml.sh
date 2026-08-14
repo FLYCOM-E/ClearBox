@@ -25,7 +25,7 @@ echo '
         <group title=\" \">
             <action interruptible=\"false\" auto-off=\"false\" warning=\"$L_CLEAN $name? \">
                 <title>📄 $name</title>
-                <desc>=\"$size $unit\"</desc>
+                <desc>$size $unit</desc>
                     <set>
                     rm -f \"$dir\"
                     </set>
@@ -35,7 +35,7 @@ echo '
     elif [ "$mode" == "D" ]; then
         echo "
         <page
-            config-sh=\"$0 \"$dir\"\"
+            config-sh=\"$0 '$dir'\"
             title=\"📂 $name\"
             desc=\"$size $unit\" />
         "
