@@ -19,7 +19,7 @@ echo '
 <root>
 '
 
-if [ ! -z "$(ls -A "$DEF_DIR/")" ]; then
+if [ -z "$(ls -A "$DEF_DIR/")" ]; then
     echo "
     <text>
         <slices>
