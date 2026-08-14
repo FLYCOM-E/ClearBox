@@ -9,6 +9,9 @@ fi
 DEFAULT_PATH="/storage/emulated/0"
 ######
 DEF_DIR="$DEFAULT_PATH"
+if [ -d "$clearbox_storage_scan_dirname" ]; then
+    DEF_DIR="$clearbox_storage_scan_dirname"
+fi
 if [ -d "$1" ]; then
     DEF_DIR="$1"
 fi
@@ -31,7 +34,7 @@ if [ -z "$(ls -A "$DEF_DIR/")" ]; then
     exit 0
 fi
 
-"$home_dir/$core" --ncdu "$DEF_DIR" | while IFS='|' read -r name dir size unit mode; do    
+"$home_dir/$core" --ncdu "$DEF_DIR" | while IFS='|' read -r name dir size unit mode; do
     if [ "$mode" == "F" ]; then
         echo "
         <action interruptible=\"false\" auto-off=\"false\" warning=\"$L_CLEAN $name? \">

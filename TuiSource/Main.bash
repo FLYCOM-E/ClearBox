@@ -40,6 +40,9 @@ fi
 ncdu()
 {
     DIR="$ncdu_default_path"
+    if [ -d "$clearbox_storage_scan_dirname" ]; then
+        DIR="$clearbox_storage_scan_dirname"
+    fi
     while true; do
         clear
         echo -e "\033[96m ==============================================\033[0m\n"
@@ -71,7 +74,7 @@ ncdu()
         echo -en " » $L_INPUT_PATH: "
         read input
         case "$input" in
-            Q | q)
+            Q | q | E | e)
               break
               ;;
             .)
@@ -786,7 +789,8 @@ case "$input" in
             echo -e "\033[93m 5:\t$L_REMOVE_WHITELIST\033[0m\n"
             echo -e "\033[93m 6:\t$L_CACHE_SKIP_SIZE\033[0m\n"
             echo -e "\033[93m 7:\t$L_CUST_FILE_ALL_PATH\033[0m\n"
-            echo -e "\033[93m 8:\t$L_GC_SKIP_SIZE\033[0m\n"
+            echo -e "\033[93m 8:\t$L_CUST_STORAGE_SCAN_PATH\033[0m\n"
+            echo -e "\033[93m 9:\t$L_GC_SKIP_SIZE\033[0m\n"
             echo -e "\033[96m==============================================\033[0m\n"
             echo -n " $L_PLEASE_INPUT:"
             read clean_option_input
@@ -970,7 +974,7 @@ case "$input" in
                             echo -e "\033[1;92m » $L_CACHE_SKIP_MAX_ERR 100 $L_SIZE_M\033[0m"
                         else
                             sed -i 's/clearbox_clear_cache_size=[0-9]*/clearbox_clear_cache_size='"$size_input"'/g' "$work_dir/settings.prop"
-                            echo " » SUCCESSFUL!"
+                            echo " » $L_SET_SUCCESS"
                         fi
                         ;;
                       *)
@@ -985,9 +989,22 @@ case "$input" in
                   read path_input
                   [ -z "$path_input" ] && path_input="Documents"
                   sed -i 's|clearbox_file_all_dirname=.*|clearbox_file_all_dirname='"$path_input"'|g' "$work_dir/settings.prop"
-                  echo " » SUCCESSFUL!"
+                  echo " » $L_SET_SUCCESS"
                   ;;
                 8)
+                  clear
+                  echo " » PATH: $clearbox_storage_scan_dirname"
+                  echo -en " » $L_INPUT_PATH："
+                  read path_input
+                  [ -z "$path_input" ] && path_input="/storage/emulated/0"
+                  if [ -d "$path_input" ]; then
+                      sed -i 's|clearbox_storage_scan_dirname=.*|clearbox_storage_scan_dirname='"$path_input"'|g' "$work_dir/settings.prop"
+                      echo " » $L_SET_SUCCESS"
+                  else
+                      echo " » $L_PATH_NOT_FOUND!"
+                  fi
+                  ;;
+                9)
                   clear
                   echo " » $L_NUM_SIZE_NOW $clearbox_f2fs_gc_min_dirty"
                   echo -n " » $L_NUM_SIZE_ASK? (y/N):"
@@ -1000,7 +1017,7 @@ case "$input" in
                             echo -e "\033[1;92m » $L_INPUT_NOTIS_NUM\033[0m"
                         else
                             sed -i 's/clearbox_f2fs_gc_min_dirty=[0-9]*/clearbox_f2fs_gc_min_dirty='"$size_input"'/g' "$work_dir/settings.prop"
-                            echo " » SUCCESSFUL!"
+                            echo " » $L_SET_SUCCESS"
                         fi
                         ;;
                       *)
