@@ -31,15 +31,7 @@ echo '
         </action>
         "
     elif [ "$mode" == "D" ]; then
-        if [ -z "$(ls "$dir/")" ]; then
-            echo "
-            <items>
-                <text>
-                    <slice>📂 $name</slice>
-                </text>
-            </items>
-            "
-        else
+        if [ ! -z "$(ls "$dir/")" ]; then
             echo "
             <page
                 config-sh=\"$0 '$dir'\"
