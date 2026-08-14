@@ -31,12 +31,22 @@ echo '
         </action>
         "
     elif [ "$mode" == "D" ]; then
-        echo "
-        <page
-            config-sh=\"$0 '$dir'\"
-            title=\"📂 $name\"
-            desc=\"$size $unit\" />
-        "
+        if [ -z "$(ls "$dir/")" ]; then
+            echo "
+            <items>
+                <text>
+                    <slice>📂 $name</slice>
+                </text>
+            </items>
+            "
+        else
+            echo "
+            <page
+                config-sh=\"$0 '$dir'\"
+                title=\"📂 $name\"
+                desc=\"$size $unit\" />
+            "
+        fi
     fi
 done
 echo '
