@@ -31,7 +31,7 @@ echo '
         </action>
         "
     elif [ "$mode" == "D" ]; then
-        if [ ! -z "$(ls "$dir/")" ]; then
+        if [ ! -z "$(ls -A "$dir/")" ]; then
             echo "
             <page
                 config-sh=\"$0 '$dir'\"

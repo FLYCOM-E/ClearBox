@@ -76,7 +76,7 @@ StartSettings()
         done
         rm -f "$work_dir/$app_config_dir/AppList.txt"
     fi
-    if [ "$(ls "$work_dir/$file_config_dir/")" = "" ]; then
+    if [ "$(ls -A "$work_dir/$file_config_dir/")" = "" ]; then
         if [ -d "$home_dir/$file_config_dir" ]; then
             cp -r "$home_dir/$file_config_dir/"* "$work_dir/$file_config_dir/"
         fi

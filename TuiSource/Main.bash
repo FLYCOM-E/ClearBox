@@ -91,7 +91,7 @@ case "$input" in
       ;;
     6)
       clear
-      if [ -z "$(ls "$work_dir/$file_config_dir/")" ]; then
+      if [ -z "$(ls -A "$work_dir/$file_config_dir/")" ]; then
           echo -e "\033[91m » $L_FILE_CONFIG_NOT_FOUND\033[0m"
           return 1
       fi
@@ -131,7 +131,7 @@ case "$input" in
       ;;
     7)
       clear
-      if [ -z "$(ls "$work_dir/$app_config_dir/")" ]; then
+      if [ -z "$(ls -A "$work_dir/$app_config_dir/")" ]; then
           echo -e "\033[91m » $L_APP_CONFIG_NOT_FOUND\033[0m"
           return 1
       fi

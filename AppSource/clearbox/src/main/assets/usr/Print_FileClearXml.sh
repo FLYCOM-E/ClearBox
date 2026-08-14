@@ -19,7 +19,7 @@ echo "
 </text>
 "
 
-if [ -z "$(ls "$work_dir/$file_config_dir/")" ]; then
+if [ -z "$(ls -A "$work_dir/$file_config_dir/")" ]; then
     echo "
     <text>
         <slices>
