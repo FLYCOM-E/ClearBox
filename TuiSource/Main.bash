@@ -20,6 +20,7 @@ Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 app_config_dir="AppCleanRules"
 file_config_dir="FileConfigs"
 timed_config_dir="TimedConfigs"
+ncdu_default_path="/storage/emulated/0"
 core="clearbox"
 ######
 lang_dir="LANG"
@@ -33,6 +34,61 @@ elif echo "$local_lang" | grep -E "ru-RU" 2>/dev/null; then
 else
     source "$home_dir/$lang_dir/en_US.conf"
 fi
+######
+# NCDU FUNC
+# $1：目标目录
+ncdu()
+{
+    DIR="$ncdu_default_path"
+    while true; do
+        clear
+        
+        "$home_dir/$core" "--ncdu" "$DIR" | while IFS='|' read -r name dir size unit mode; do
+            if [ "$mode" == "F" ]; then
+                echo -e "📄 $size $unit \t $name"
+            elif [ "$mode" == "D" ]; then
+                if [ ! -z "$(ls -A "$dir")" ]; then
+                    echo -e "📂 $size $unit \t $name"
+                fi
+            fi
+        done
+        
+        echo -e "\n"
+        echo -en " $L_INPUT_PATH: "
+        read input
+        case "$input" in
+            Q | q)
+              break
+              ;;
+            ..)
+              ROOT_DIR=""
+              if [ "$ncdu_default_path" == "$DIR" ]; then
+                  ROOT_DIR="$ncdu_default_path"
+              else
+                  ROOT_DIR="$(dirname "$DIR")"
+              fi
+              DIR="$ROOT_DIR"
+              ;;
+            *)
+              NEW_PATH="$DIR/$input"
+              if [ -f "$NEW_PATH" ]; then
+                  echo -en " $L_CLEAN $input? (y/N):"
+                  read ok_input
+                  case "$ok_input" in
+                      Y | y)
+                        rm -f "$NEW_PATH"
+                        ;;
+                  esac
+              elif [ -d "$NEW_PATH" ]; then
+                  DIR="$NEW_PATH"
+              else
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
+                  sleep 1
+              fi
+              ;;
+        esac
+    done
+}
 ######
 # 菜单函数
 md_menu()
@@ -48,12 +104,13 @@ echo -e "\033[93m  5:\t$L_FILE_ALL\033[0m"
 echo -e "\033[93m  6:\t$L_FILE_CLEAR\033[0m"
 echo -e "\033[93m  7:\t$L_CUST_APP_CLEAR\033[0m"
 echo -e "\033[93m  8:\t$L_CLEAR_SYS_CACHE\033[0m"
-echo -e "\033[93m  9:\t$L_AUTO_CLEAR\033[0m"
-echo -e "\033[93m  10:\t$L_STOP_INSTALL\033[0m"
-echo -e "\033[93m  11:\t$L_PATH_BIND\033[0m"
-echo -e "\033[93m  12:\t$L_STOP_STORAGE\033[0m"
-echo -e "\033[93m  13:\t$L_STOP_APP_CACHE\033[0m"
-echo -e "\033[93m  14:\t$L_DISK_APP_PLUS\033[0m"
+echo -e "\033[93m  9:\tNCDU\033[0m"
+echo -e "\033[93m  10:\t$L_AUTO_CLEAR\033[0m"
+echo -e "\033[93m  11:\t$L_STOP_INSTALL\033[0m"
+echo -e "\033[93m  12:\t$L_PATH_BIND\033[0m"
+echo -e "\033[93m  13:\t$L_STOP_STORAGE\033[0m"
+echo -e "\033[93m  14:\t$L_STOP_APP_CACHE\033[0m"
+echo -e "\033[93m  15:\t$L_DISK_APP_PLUS\033[0m"
 echo -e "\033[93m  00:\t$L_SETTINGS\033[0m\n"
 echo -e "\033[96m ==============================================\033[0m"
 echo -e "\t\t   --- $L_HOME_EXIT_TITLE ---"
@@ -126,7 +183,7 @@ case "$input" in
                    ;;
              esac
          fi
-         [ "$count_2" = "$count" ] && echo -e "\033[91m » $L_INPUT_ERROR\033[0m" && break
+         [ "$count_2" = "$count" ] && echo -en "\033[91m » $L_INPUT_ERROR\033[0m" && break
       done
       ;;
     7)
@@ -157,7 +214,7 @@ case "$input" in
              "$home_dir/$core" "--clear-app-cust" "$app_package"
              break
          fi
-         [ "$count_2" = "$count" ] && echo -e "\033[91m » $L_INPUT_ERROR\033[0m" && break
+         [ "$count_2" = "$count" ] && echo -en "\033[91m » $L_INPUT_ERROR\033[0m" && break
       done
       ;;
     8)
@@ -174,6 +231,9 @@ case "$input" in
       esac
       ;;
     9)
+      ncdu
+      ;;
+    10)
       clear
       echo -e "\033[104m [$L_AUTO_CLEAR]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
@@ -219,7 +279,7 @@ case "$input" in
                   echo " » $L_CLOSED!"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
@@ -255,7 +315,7 @@ case "$input" in
                   echo " » $L_CLOSED!"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
@@ -291,7 +351,7 @@ case "$input" in
                   echo " » $L_CLOSED!"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
@@ -327,7 +387,7 @@ case "$input" in
                   echo " » $L_CLOSED!"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
@@ -363,7 +423,7 @@ case "$input" in
                   echo " » $L_CLOSED!"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
@@ -399,16 +459,16 @@ case "$input" in
                   echo " » $L_CLOSED!"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
           *)
-            echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+            echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
             ;;
       esac
       ;;
-    10)
+    11)
       clear
       if [ "$clearbox_stop_install" = 1 ]; then
           text_1="$L_CLOSE"
@@ -441,11 +501,11 @@ case "$input" in
             fi
             ;;
           *)
-            echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+            echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
             ;;
       esac
       ;;
-    11)
+    12)
       clear
       if [ "$clearbox_bind_path" = 1 ]; then
           text_1="$L_CLOSE"
@@ -482,11 +542,11 @@ case "$input" in
             fi
             ;;
           *)
-            echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+            echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
             ;;
       esac
       ;;
-    12)
+    13)
       clear
       if [ "$clearbox_stop_storage" = 1 ]; then
           text_1="$L_CLOSE"
@@ -519,11 +579,11 @@ case "$input" in
             fi
             ;;
           *)
-            echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+            echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
             ;;
       esac
       ;;
-    13)
+    14)
       clear
       if [ "$clearbox_stop_cache" = 1 ]; then
           text_1="$L_CLOSE"
@@ -596,11 +656,11 @@ case "$input" in
             done
             ;;
           *)
-            echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+            echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
             ;;
       esac
       ;;
-    14)
+    15)
       clear
       echo -e "\033[104m [$L_DISK_APP_PLUS]\033[0m"
       echo -e "\033[96m ==============================================\033[0m\n"
@@ -657,7 +717,7 @@ case "$input" in
                         "$home_dir/$core" "--dexoat-custom" everything
                         ;;
                       *)
-                        echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                        echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                         ;;
                   esac
                   ;;
@@ -665,12 +725,12 @@ case "$input" in
                   "$home_dir/$core" "--dexoat-reset"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
           *)
-            echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+            echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
             ;;
       esac
       ;;
@@ -932,7 +992,7 @@ case "$input" in
                   esac
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
               esac
               ;;
@@ -1013,7 +1073,7 @@ case "$input" in
                   fi
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
@@ -1038,7 +1098,7 @@ case "$input" in
                   "$home_dir/$core" "--config" recovery "$configFile"
                   ;;
                 *)
-                  echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+                  echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
                   ;;
             esac
             ;;
@@ -1064,7 +1124,7 @@ case "$input" in
             fi
             ;;
           *)
-            echo -e "\033[91m » $L_INPUT_ERROR\033[0m"
+            echo -en "\033[91m » $L_INPUT_ERROR\033[0m"
             ;;
         esac
         ;;
