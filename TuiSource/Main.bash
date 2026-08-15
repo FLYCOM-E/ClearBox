@@ -84,6 +84,8 @@ ncdu()
               ROOT_DIR=""
               if [ "$ncdu_default_path" == "$DIR" ]; then
                   ROOT_DIR="$ncdu_default_path"
+              elif [ "$clearbox_storage_scan_dirname" == "$DIR" ]; then
+                  ROOT_DIR="$clearbox_storage_scan_dirname"
               else
                   ROOT_DIR="$(dirname "$DIR")"
               fi
