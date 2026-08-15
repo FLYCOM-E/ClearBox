@@ -92,7 +92,7 @@ int cust_rule_clean(void)
             }
             else
             {
-                long clear_size = s_remove(path, 1); // 返回清理字节数
+                int64_t clear_size = s_remove(path, 1); // 返回清理字节数
                 if (clear_size != -1)
                 {
                     char unit = '\0';

@@ -134,7 +134,7 @@ jobs:
             echo "No changes to JSON files."
           else
             git add UpdateJson/
-            git commit -m "Update: Version $VERSION ($VERSION_CODE) Updatejson"
+            git commit -m "- Version $VERSION ($VERSION_CODE) UpdateJson"
             git push origin HEAD:main
           fi
         env:

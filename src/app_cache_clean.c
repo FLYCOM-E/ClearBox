@@ -21,7 +21,7 @@
 #define CLEAR_CACHE_SIZE_KEY "clearbox_clear_cache_size"     // 缓存清理限制大小设置储存 KEY
 #define CLEAR_DISK_KEY "clearbox_clear_disk"                  // 是否清理外部储存设置储存 KEY
 
-static long user_cache_clean(char * data_dir, int clear_cache_size,
+static int64_t user_cache_clean(char * data_dir, int clear_cache_size,
                              char package_list[][NAME_MAX + 1], int app_count,
                              char white_list[][NAME_MAX + 1], int whitelist_count);
 static int system_cache_clean(void);
@@ -85,7 +85,7 @@ int app_cache_clean(int mode)
         }
         
         // 调用处理函数
-        long clear_size = user_cache_clean(DATA_DIR, clear_cache_size, package_list, app_count, white_list, whitelist_count);
+        int64_t clear_size = user_cache_clean(DATA_DIR, clear_cache_size, package_list, app_count, white_list, whitelist_count);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
@@ -154,15 +154,15 @@ int app_cache_clean(int mode)
     char white_list[][]       白名单列表
     int whitelist_count      白名单 app 数量
 返回：
-    long 清理垃圾大小（单位：Byte），失败返回 -1
+    int64_t 清理垃圾大小（单位：Byte），失败返回 -1
 */
-static long user_cache_clean(char * data_dir, int clear_cache_size,
+static int64_t user_cache_clean(char * data_dir, int clear_cache_size,
                              char package_list[][NAME_MAX + 1], int app_count,
                              char white_list[][NAME_MAX + 1], int whitelist_count)
 {
     // 定义所需变量
     int count = 0, no_count = 0;
-    long clean_size = 0;
+    int64_t clean_size = 0;
     char app_cache_dir[512] = {0};
     
     // 打开 User ID 目录
@@ -212,7 +212,7 @@ static long user_cache_clean(char * data_dir, int clear_cache_size,
                 }
             }
             
-            long size = s_remove(app_cache_dir, 0);
+            int64_t size = s_remove(app_cache_dir, 0);
             if (size != -1)
             {
                 printf(L_CC_CLEAR, package_list[i]);

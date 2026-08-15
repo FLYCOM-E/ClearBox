@@ -13,7 +13,7 @@
 #define CONFIG_DIR_NAME "AppCleanRules"   // 配置目录名称
 #define CONFIG_FILE_END "conf"              // 配置文件后缀
 
-static int read_clear(char * config_file, int * success_config, int * failed_config, long * total_clear_size);
+static int read_clear(char * config_file, int * success_config, int * failed_config, int64_t * total_clear_size);
 
 int app_cust_rule_clean(char * app_package, int mode)
 {
@@ -23,7 +23,7 @@ int app_cust_rule_clean(char * app_package, int mode)
     
     int success_config = 0,   // 成功处理配置数量
         failed_config = 0;     // 处理失败配置数量
-    long total_clear_size = 0; // 总清理大小（单位 Byte）
+    int64_t total_clear_size = 0; // 总清理大小（单位 Byte）
     
     // mode 1 为全部清理模式
     if (mode == 1)
@@ -92,11 +92,11 @@ int app_cust_rule_clean(char * app_package, int mode)
     char * config_file 配置文件（完整路径）
     int * success_config 成功处理配置数量
     int * failed_config 处理失败配置数量
-    long * total_clear_size 总清理大小 (Byte)
+    int64_t * total_clear_size 总清理大小 (Byte)
 返回：
     0 成功，-1 失败
 */
-static int read_clear(char * config_file, int * success_config, int * failed_config, long * total_clear_size)
+static int read_clear(char * config_file, int * success_config, int * failed_config, int64_t * total_clear_size)
 {
     FILE * config_fp = fopen(config_file, "r");
     if (config_fp == NULL)
@@ -199,7 +199,7 @@ static int read_clear(char * config_file, int * success_config, int * failed_con
             continue;
         }
         
-        long clear_size = s_remove(app_cf_dir, 0);
+        int64_t clear_size = s_remove(app_cf_dir, 0);
         if (clear_size == -1)
         {
             fprintf(stderr, L_AC_CLEAR_PATH_ERR, line);
