@@ -272,4 +272,6 @@ post=Test Run/已執行 Sync
 
 ## 歡迎以任何形式參與開發、貢獻！
 
+歡迎各位對模組功能提出意見 & 建議，謝謝
+
 模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 項目製作而成，感謝該項目

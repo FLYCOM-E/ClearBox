@@ -272,4 +272,6 @@ post=Test Run/已运行 Sync
 
 ## 欢迎以任何形式参与开发、贡献！
 
+欢迎各位对模块功能提出意见 & 建议，谢谢
+
 模块 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目

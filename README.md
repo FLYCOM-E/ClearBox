@@ -272,4 +272,6 @@ Custom compilation mode：This mode supports manually specifying the compilation
 
 ## Welcome to contribute and participate in development in any form!
 
+Welcome everyone to share your feedback & suggestions on the module features. Thank you.
+
 The module **ClearBox App** is made using the [**Kr-Script**](https://github.com/helloklf/kr-scripts) project. Thanks to the project.
