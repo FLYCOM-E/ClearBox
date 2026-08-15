@@ -14,7 +14,7 @@ else
 fi
 ######
 if ! am start wipe.cache.module/wipe.cache.main.SplashActivity; then
-    "$home_dir/clearbox" ClearAll
+    "$home_dir/clearbox" --clear-all
     sleep 1
 fi
 

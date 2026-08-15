@@ -399,11 +399,12 @@ void set_server_name(char * argv[], char * new_name)
     char * target_line 目标行
     char * text 替换内容
     int mode 为 1 则模糊匹配（慎）
+    int add 为 1 时当指定字符串不存在时自动追加
 返回：
-    成功返回 0，失败返回 -1，未找到返回 2
+    成功返回 0，失败返回 -1
 全局替换
 */
-int s_sed(char * file, char * target_line, char * text, int mode)
+int s_sed(char * file, char * target_line, char * text, int mode, int add)
 {
     int found = 0;
     char line[PATH_MAX] = "";
@@ -425,6 +426,7 @@ int s_sed(char * file, char * target_line, char * text, int mode)
         return -1;
     }
     
+    fseek(file_fp, 0, SEEK_SET);
     while (fgets(line, sizeof(line), file_fp))
     {
         line[strcspn(line, "\n")] = 0;
@@ -454,20 +456,29 @@ int s_sed(char * file, char * target_line, char * text, int mode)
         }
     }
     
+    int rt = 0;
+    if (found == 0)
+    {
+        if (add == 1)
+        {
+            fprintf(tmp_fp, "\n%s\n", text);
+        }
+        else
+        {
+            rt = -1;
+        }
+    }
     fclose(tmp_fp);
     fclose(file_fp);
     
     if (rename(tmp_file, file) != 0)
     {
-        unlink(tmp_file);
         write_log(work_dir, "s_sed", L_MOVE_ERROR, file, strerror(errno));
-        return -1;
+        rt = -1;
     }
-    if (found == 0)
-    {
-        return 2;
-    }
-    return 0;
+    unlink(tmp_file);
+    
+    return rt;
 }
 
 /*

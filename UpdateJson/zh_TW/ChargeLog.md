@@ -1,4 +1,4 @@
-# Version 5.1.4-Beta (96)
+# Version 5.1.4-Beta (97)
 
 # ADD
 - [BETA] 新增儲存分析功能，可自訂儲存分析目錄

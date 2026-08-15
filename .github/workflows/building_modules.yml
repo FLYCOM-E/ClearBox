@@ -106,7 +106,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          LANGS=("zh_CN" "en_US" "zh_TW")
+          LANGS=("zh_CN" "en_US" "zh_TW" "ru_RU")
           ARCHS=("aarch64" "armv7a" "x86_64")
           
           VERSION=$(grep '^version=' ModuleFiles/module.prop | cut -f2 -d '=')

@@ -47,7 +47,7 @@ void write_log(const char * config_dir, const char * name_id, const char * text,
 int set_name_space(void);
 int get_settings_prop(char * settings_file, char * key, char * str, size_t str_len);
 void set_server_name(char * argv[], char * new_name);
-int s_sed(char * file, char * target_line, char * text, int mode);
+int s_sed(char * file, char * target_line, char * text, int mode, int add);
 int s_chattr(char * path, int mode, int dir);
 int help(char * argv[]);
 int s_daemon(void);

@@ -1,5 +1,9 @@
-CFLAGS = -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wformat=2 -Wunused -Wcast-qual -Wstrict-prototypes -Werror -Wno-format-nonliteral -Wno-format-security -fstack-protector-strong -D_GNU_SOURCE -D_FORTIFY_SOURCE=2
-LDFLAGS = -llog -s
+CFLAGS = -O2 -flto -fPIE -Werror -D_GNU_SOURCE
+CFLAGS += -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wformat=2 -Wunused -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wstrict-overflow=3 -Wnull-dereference
+CFLAGS += -fstack-protector-strong -D_FORTIFY_SOURCE=3
+CFLAGS += -Wno-format-nonliteral -Wno-format-security
+CFLAGS += -ffunction-sections -fdata-sections
+LDFLAGS = -Wl,--gc-sections -Wl,-z,relro,-z,now -Wl,-z,defs -Wl,--as-needed -pie -flto -fuse-ld=lld -llog -s
 
 module_dir = ModuleFiles
 app_dir = AppSource

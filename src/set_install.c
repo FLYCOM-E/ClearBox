@@ -22,7 +22,7 @@ int set_install(char * mode)
         if (s_chattr(DATA_DIR, 1, 0) == 0)
         {
             printf(L_SI_OPEN_SUCCESSFUL_STORAGE);
-            success = s_sed(settings_file, PROP_RESET, PROP_STOP, 0);
+            success = s_sed(settings_file, PROP_RESET, PROP_STOP, 0, 1);
         }
         else
         {
@@ -34,7 +34,7 @@ int set_install(char * mode)
         if (s_chattr(DATA_DIR, 0, 0) == 0)
         {
             printf(L_SI_OFF_SUCCESSFUL_STORAGE);
-            success = s_sed(settings_file, PROP_STOP, PROP_RESET, 0);
+            success = s_sed(settings_file, PROP_STOP, PROP_RESET, 0, 1);
         }
         else
         {

@@ -223,7 +223,7 @@ int time_daemon(char * argv[])
                         
                         // 更新 DATE
                         inotify_rm_watch(inotify_fd, (uint32_t)inotify_wd);
-                        int success = s_sed(config_file, "date=", line, 1);
+                        int success = s_sed(config_file, "date=", line, 1, 1);
                         inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
                         
                         // Check Errno
@@ -420,7 +420,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
 static int get_config(char * config_file, char * config_file_name, struct config_struct config[], int count)
 {
     int line_count = 0; // 行计数
-    int time_ = 0, date_ = 0, run_ = 0; // 记录是否解析标志位
+    int time_ = 0, run_ = 0; // 记录是否解析标志位
     char line[CONFIG_LINE_MAX_LEN] = {0};
     
     // 热更新 & 重置部分字段
@@ -428,14 +428,13 @@ static int get_config(char * config_file, char * config_file_name, struct config
     config[count].in = 0;
     
     // 非普通文件即失败，同时提示这里有非文件
-    FILE * config_fp = fopen(config_file, "a+");
+    FILE * config_fp = fopen(config_file, "r");
     if (config_fp == NULL)
     {
         write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file_name, strerror(errno));
         return -1;
     }
     
-    fseek(config_fp, 0, SEEK_SET);
     while (fgets(line, sizeof(line), config_fp))
     {
         line_count++;
@@ -445,6 +444,9 @@ static int get_config(char * config_file, char * config_file_name, struct config
         {
             continue;
         }
+        
+        // 这里预设置默认值，因为后面可能不处理
+        config[count].old_time = time(NULL);
         
         // 解析 KEY/VALUE
         char * line_p = NULL;
@@ -489,12 +491,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
                 {
                     config[count].old_time = 0;
                 }
-                else
-                {
-                    config[count].old_time = time(NULL);
-                }
             }
-            date_ = 1; // 已读取 DATE
         }
         else if (strcasecmp(key, "RUN") == 0)
         {
@@ -577,10 +574,6 @@ static int get_config(char * config_file, char * config_file_name, struct config
         write_log(work_dir, SERVER_NAME, L_TD_CONFIG_ERROR, config_file_name);
         fclose(config_fp);
         return -1;
-    }
-    if (date_ != 1)
-    {
-        fprintf(config_fp, "\ndate=%lld\n", (long long)time(NULL));
     }
     
     fclose(config_fp);
