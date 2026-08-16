@@ -39,12 +39,12 @@ __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**
 sudo apt install zip make
 
 git clone https://github.com/FLYCOM-E/ClearBox
-cd ClearBox && chmod +x *
+cd ClearBox/ && chmod +x *
 
-export TARGET_API=23 #(Can be adjusted according to the required target API version)
-export TARGET_ABI=aarch64 #(Options: aarch64, armv7a, x86_64, riscv64)
+export TARGET_API=23       #(Can be adjusted according to the required target API version)
+export TARGET_ABI=aarch64  #(Options: aarch64, armv7a, x86_64, riscv64)
 
-bash build.sh 
+./build.sh                 #(--build-apk: Options: release)
 ```
 
 
