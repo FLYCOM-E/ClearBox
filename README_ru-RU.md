@@ -46,7 +46,6 @@ export TARGET_ABI=aarch64 #(доступны aarch64、armv7a、x86_64、riscv64
 
 bash build.sh
 ```
-Установите **ClearBox_aarch64_21.zip**
 
 
 

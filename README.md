@@ -46,7 +46,6 @@ export TARGET_ABI=aarch64 #(Options: aarch64, armv7a, x86_64, riscv64)
 
 bash build.sh 
 ```
-Flash **ClearBox_aarch64_21.zip**
 
 
 
