@@ -39,7 +39,7 @@ fi
         echo "
         <action interruptible=\"false\" auto-off=\"false\" warning=\"$L_CLEAN $name? \">
             <title>📄 $name</title>
-            <desc>$size $unit | $history</desc>
+            <desc>$size $unit  $history</desc>
                 <set>
                 rm -f \"$dir\"
                 </set>
@@ -50,7 +50,7 @@ fi
         <page
             config-sh=\"$0 '$dir'\"
             title=\"📂 $name\"
-            desc=\"$size $unit\" />
+            desc=\"$size $unit  $history\" />
         "
     fi
 done
