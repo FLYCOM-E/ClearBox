@@ -34,12 +34,12 @@ if [ -z "$(ls -A "$DEF_DIR/")" ]; then
     exit 0
 fi
 
-"$home_dir/$core" --ncdu "$DEF_DIR" | while IFS='|' read -r name dir size unit mode; do
+"$home_dir/$core" --ncdu "$DEF_DIR" | while IFS='|' read -r name dir size unit history mode; do
     if [ "$mode" == "F" ]; then
         echo "
         <action interruptible=\"false\" auto-off=\"false\" warning=\"$L_CLEAN $name? \">
             <title>📄 $name</title>
-            <desc>$size $unit</desc>
+            <desc>$size $unit | $history</desc>
                 <set>
                 rm -f \"$dir\"
                 </set>

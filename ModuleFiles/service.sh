@@ -51,6 +51,7 @@ StartSettings()
     }
     ######
     touch "$work_dir/settings.prop" 2>/dev/null
+    touch "$work_dir/ncdu_history" 2>/dev/null
     source "$work_dir/settings.prop"
     PropInit
     ######

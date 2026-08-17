@@ -524,24 +524,34 @@ int s_daemon(void)
 double byte_to_size(int64_t byte, char * unit)
 {
     double size = 0;
-    if (byte < 1024)
+    int64_t abs_byte = 0;
+    if (byte >= 0)
     {
-        size = ((double)byte);
+        abs_byte = byte;
+    }
+    else
+    {
+        abs_byte = -byte;
+    }
+    
+    if (abs_byte < 1024)
+    {
+        size = ((double)abs_byte);
         * unit = 'B';
     }
-    else if (byte < 1048576)
+    else if (abs_byte < 1048576)
     {
-        size = ((double)byte / 1024.0);
+        size = ((double)abs_byte / 1024.0);
         * unit = 'K';
     }
-    else if (byte < 1073741824)
+    else if (abs_byte < 1073741824)
     {
-        size = ((double)byte / 1024.0 / 1024.0);
+        size = ((double)abs_byte / 1024.0 / 1024.0);
         * unit = 'M';
     }
     else
     {
-        size = ((double)byte / 1024.0 / 1024.0 / 1024.0);
+        size = ((double)abs_byte / 1024.0 / 1024.0 / 1024.0);
         * unit = 'G';
     }
     

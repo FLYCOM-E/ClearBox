@@ -21,6 +21,7 @@
 #include <sys/mount.h>
 #include <sys/inotify.h>
 #include <limits.h>
+#include <inttypes.h>
 
 // 多语言
 #include "lang.h"

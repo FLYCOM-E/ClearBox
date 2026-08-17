@@ -48,11 +48,11 @@ ncdu()
         echo -e "\033[96m ==============================================\033[0m\n"
         
         if [ ! -z "$(ls -A "$DIR")" ]; then
-            "$home_dir/$core" "--ncdu" "$DIR" | while IFS='|' read -r name dir size unit mode; do
+            "$home_dir/$core" "--ncdu" "$DIR" | while IFS='|' read -r name dir size unit history mode; do
                 if [ "$mode" == "F" ]; then
-                    echo -e "\033[93m 📄 $size $unit \t $name\033[0m\n"
+                    echo -e "\033[93m 📄 $size $unit | $history \t $name\033[0m\n"
                 elif [ "$mode" == "D" ]; then
-                    echo -e "\033[93m 📂 $size $unit \t $name\033[0m\n"
+                    echo -e "\033[93m 📂 $size $unit | $history \t $name\033[0m\n"
                 fi
             done
         else
