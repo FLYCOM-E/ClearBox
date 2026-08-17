@@ -98,7 +98,7 @@ int ncdu(char * path)
             }
             else
             {
-                math_unit = '^';
+                math_unit = '\0';
             }
             
             snprintf(path_info[count].history_size, sizeof(path_info[count].history_size), "%c%.2f%c",
