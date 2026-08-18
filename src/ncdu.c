@@ -8,7 +8,7 @@
 #include "INCLUDE/main.h"
 
 #define SERVER_NAME "ncdu"
-#define HISTORY_FILE_NAME "ncdu_history"
+#define HISTORY_FILE "ncdu.db"
 
 #define DIR_MAX 1024
 
@@ -24,13 +24,16 @@ struct info
 };
 
 static int cmp_byte(const void * a, const void * b);
-static int64_t read_history(char * history_file, char * path);
 
 int ncdu(char * path)
 {
     struct info path_info[DIR_MAX];
-    char history_file[strlen(work_dir) + sizeof(HISTORY_FILE_NAME) + 2];
-    snprintf(history_file, sizeof(history_file), "%s/%s", work_dir, HISTORY_FILE_NAME);
+    char history_file[strlen(work_dir) + sizeof(HISTORY_FILE) + 2];
+    snprintf(history_file, sizeof(history_file), "%s/%s", work_dir, HISTORY_FILE);
+    
+    sqlite3 * db;
+    sqlite3_open(history_file, &db);
+    sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS kv(key TEXT UNIQUE, value TEXT);", 0, 0, 0);
     
     struct dirent * entry;
     DIR * path_dp = opendir(path);
@@ -79,8 +82,21 @@ int ncdu(char * path)
         path_info[count].size = byte_to_size(path_info[count].byte, &path_info[count].unit);
         
         // HISTORY
+        char ** buffer;
+        int64_t history_size = 0;
+        int row = 0, col = 0;
+        char * sql_str = NULL;
+        
+        sql_str = sqlite3_mprintf("SELECT value FROM kv WHERE key = '%q';", path_info[count].path);
+        sqlite3_get_table(db, sql_str, &buffer, &row, &col, 0);
+        if (row > 0)
+        {
+            history_size = strtol(buffer[1], NULL, 10);
+        }
+        sqlite3_free(sql_str);
+        sqlite3_free_table(buffer);
+        
         path_info[count].history_size[0] = '\0';
-        int64_t history_size = read_history(history_file, path_info[count].path);
         if (history_size != -1)
         {
             char unit = '\0',
@@ -114,8 +130,6 @@ int ncdu(char * path)
     
     qsort(path_info, (size_t)count, sizeof(struct info), cmp_byte);
     
-    char target_line[PATH_MAX + 128] = "",
-         line[PATH_MAX + 128] = "";
     for (int i = 0; i < count; i++)
     {
         // PRINT:
@@ -128,11 +142,13 @@ int ncdu(char * path)
                 path_info[i].history_size,
                 path_info[i].mode
               );
-        snprintf(target_line, sizeof(target_line), "%s|%" PRId64, path_info[i].path, path_info[i].byte);
-        snprintf(line, sizeof(line), "%s|", path_info[i].path);
-        s_sed(history_file, line, target_line, 1, 1);
+        
+        char * sql_str = sqlite3_mprintf("INSERT OR REPLACE INTO kv(key, value) VALUES ('%q', '%lld');", path_info[i].path, path_info[i].byte);
+        sqlite3_exec(db, sql_str, 0, 0, 0);
+        sqlite3_free(sql_str);
     }
     
+    sqlite3_close(db);
     closedir(path_dp);
     return 0;
 }
@@ -151,49 +167,4 @@ static int cmp_byte(const void * a, const void * b)
         return 1;
     }
     return 0;
-}
-
-/*
-历史查找函数
-接收：
-    char * history_file
-    char * path
-返回：
-    int64_t 成功返回历史大小，失败返回 -1
-*/
-static int64_t read_history(char * history_file, char * path)
-{
-    int64_t rt = -1;
-    char line[PATH_MAX + 128] = "";
-    FILE * fp = fopen(history_file, "r");
-    if (fp == NULL)
-    {
-        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, history_file, strerror(errno));
-        return -1;
-    }
-    while (fgets(line, sizeof(line), fp))
-    {
-        if (strlen(line) <= 1)
-        {
-            continue;
-        }
-        
-        char * strtok_p = NULL,
-              * dir = NULL,
-              * size = NULL;
-        
-        dir = strtok_r(line, "|", &strtok_p);
-        size = strtok_r(NULL, "|", &strtok_p);
-        if (dir && size)
-        {
-            if (strcmp(path, dir) == 0)
-            {
-                rt = strtol(size, NULL, 10);
-                break;
-            }
-        }
-    }
-    fclose(fp);
-    
-    return rt;
 }

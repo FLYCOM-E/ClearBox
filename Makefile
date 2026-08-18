@@ -13,6 +13,7 @@ UTILS_C = src/INCLUDE/utils.c \
 			src/INCLUDE/s_signal.c \
 			src/INCLUDE/help.c \
 			src/INCLUDE/set_language.c
+SQLITE3_C = src/INCLUDE/sqlite3.c
 BIN_C = src/main.c \
 		src/app_cust_rule_clean.c \
 		src/app_cache_clean.c \
@@ -29,18 +30,39 @@ BIN_C = src/main.c \
 		src/Daemon/time_daemon.c \
 		src/ncdu.c
 
+UTILS_OBJ = $(UTILS_C:.c=.o)
+SQLITE3_OBJ = $(SQLITE3_C:.c=.o)
+BIN_OBJ = $(BIN_C:.c=.o)
+ALL_OBJ = $(UTILS_OBJ) $(SQLITE3_OBJ) $(BIN_OBJ)
+
 CORE_ELF = $(module_dir)/clearbox
 
 elf: $(CORE_ELF)
 .PHONY: elf
 
-$(CORE_ELF): $(BIN_C)
+$(SQLITE3_OBJ): $(SQLITE3_C)
 	@echo "  CC \t\t $@"
-	@$(CC) $(CFLAGS) $(BIN_C) $(UTILS_C) $(LDFLAGS) -o $(CORE_ELF)
+	@$(CC) -c $< -o $@ $(CFLAGS) -Wno-error \
+		-Wno-unused-variable \
+		-Wno-cast-qual \
+		-Wno-sign-conversion \
+		-Wno-implicit-float-conversion \
+		-Wno-implicit-int-float-conversion \
+		-Wno-incompatible-pointer-types-discards-qualifiers \
+		-Wno-conversion
+
+%.o: %.c
+	@echo "  CC \t\t $@"
+	@$(CC) -c $< -o $@ $(CFLAGS)
+
+$(CORE_ELF): $(ALL_OBJ)
+	@echo "  LD \t\t $@"
+	@$(CC) $^ $(LDFLAGS) -o $(CORE_ELF)
 
 clean: 
 	@echo "  CLEAN \t $@"
 	@rm $(CORE_ELF)
+	@rm -f $(ALL_OBJ)
 	@rm -f $(module_dir)/ClearBox.apk
 	@mv ./module.prop.bak $(module_dir)/module.prop
 	@mv ./ClearBox.bak $(module_dir)/system/bin/ClearBox
