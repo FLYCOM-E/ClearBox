@@ -103,7 +103,15 @@ static int f2fs_gc(char * argv[])
     fprintf(stderr, L_FG_DIRTY, f2fs_dirty);
     fprintf(stderr, L_FG_FREE, f2fs_free);
     
-    int min_dirty_size = get_settings_prop(settings_file, "clearbox_f2fs_gc_min_dirty", NULL, 0);
+    FILE * settings_file_fp = fopen(settings_file, "r");
+    if (settings_file_fp == NULL)
+    {
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, settings_file, strerror(errno));
+        return -1;
+    }
+    int min_dirty_size = get_settings_prop(settings_file_fp, "clearbox_f2fs_gc_min_dirty", NULL, 0);
+    fclose(settings_file_fp);
+    
     if (min_dirty_size != -1)
     {
         if (f2fs_dirty < min_dirty_size)

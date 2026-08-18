@@ -17,12 +17,21 @@ static int bind_mount(char * config_file, int mode);
 
 int bmount(char * mode_str)
 {
-    if (s_grep(MOUNTS, "sdcardfs", 0) == 1)
+    FILE * sys_mounts_fp = fopen(MOUNTS, "r");
+    if (sys_mounts_fp == NULL)
+    {
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, MOUNTS, strerror(errno));
+        return -1;
+    }
+    
+    if (s_grep(sys_mounts_fp, "sdcardfs", 0) == 1)
     {
         // sdcardfs 不兼容
         fprintf(stderr, L_BM_ERROR_IS_SDCARDFS);
+        fclose(sys_mounts_fp);
         return -1;
     }
+    fclose(sys_mounts_fp);
     
     // 设置命名空间
     if (set_name_space() != 0)
@@ -87,7 +96,7 @@ static int bind_mount(char * config_file, int mode)
     FILE * config_file_fp = fopen(config_file, "r");
     if (config_file_fp == NULL)
     {
-        write_log(work_dir, SERVER_NAME, config_file, strerror(errno));
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file, strerror(errno));
         return -1;
     }
     

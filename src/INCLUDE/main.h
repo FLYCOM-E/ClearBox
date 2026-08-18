@@ -41,12 +41,12 @@ extern char home_dir[128],
 extern LangType current_lang;
 
 int64_t s_remove(char * path, int all);
-int s_grep(char * file, char * text, int mode);
+int s_grep(FILE * file_fp, char * text, int mode);
 int64_t get_path_size(char * path);
 int post(const char * id, const char * title, const char * message, ...);
 void write_log(const char * config_dir, const char * name_id, const char * text, ...);
 int set_name_space(void);
-int get_settings_prop(char * settings_file, char * key, char * str, size_t str_len);
+int get_settings_prop(FILE * settings_file_fp, char * key, char * str, size_t str_len);
 void set_server_name(char * argv[], char * new_name);
 int s_sed(char * file, char * target_line, char * text, int mode, int add);
 int s_chattr(char * path, int mode, int dir);

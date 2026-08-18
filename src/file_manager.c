@@ -56,13 +56,22 @@ int file_manager(int mode, char * config_name)
     char file_dir_name[NAME_MAX + 1] = "";  // 归类目录名（可选）
     
     // 查找设置对应值
-    file_all_disk = get_settings_prop(settings_file, FILE_ALL_DISK_KEY, NULL, 0);
-    file_clear_disk = get_settings_prop(settings_file, FILE_CLEAR_DISK_KEY, NULL, 0);
-    get_settings_prop(settings_file, FILE_DIR_NAME_KEY, file_dir_name, sizeof(file_dir_name));
+    FILE * settings_file_fp = fopen(settings_file, "r");
+    if (settings_file_fp == NULL)
+    {
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, settings_file, strerror(errno));
+        return -1;
+    }
+    file_all_disk = get_settings_prop(settings_file_fp, FILE_ALL_DISK_KEY, NULL, 0);
+    fseek(settings_file_fp, 0, SEEK_SET);
+    file_clear_disk = get_settings_prop(settings_file_fp, FILE_CLEAR_DISK_KEY, NULL, 0);
+    fseek(settings_file_fp, 0, SEEK_SET);
+    get_settings_prop(settings_file_fp, FILE_DIR_NAME_KEY, file_dir_name, sizeof(file_dir_name));
     if (strlen(file_dir_name) <= 1)
     {
         snprintf(file_dir_name, sizeof(file_dir_name), "%s", F_DIR_NAME);
     }
+    fclose(settings_file_fp);
     
     int pid_c = 2;
     pid_t pids[pid_c];

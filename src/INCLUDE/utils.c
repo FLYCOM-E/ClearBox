@@ -74,18 +74,17 @@ int64_t s_remove(char * path, int all)
 /* 
 内容匹配/查找函数
 接收：
-    char * file 查找文件
+    FILE * file_fp 查找文件指针
     char * text 查找字符串
     int mode 是否精确匹配
 返回：
     找到返回 1，未找到返回 0，失败返回 -1
 */
-int s_grep(char * file, char * text, int mode)
+int s_grep(FILE * file_fp, char * text, int mode)
 {
     // 打开文件遍历查找
     int end = 0;
     char line[PATH_MAX] = "";
-    FILE * file_fp = fopen(file, "r");
     if (file_fp)
     {
         while (fgets(line, sizeof(line), file_fp))
@@ -108,11 +107,9 @@ int s_grep(char * file, char * text, int mode)
                 }
             }
         }
-        fclose(file_fp);
     }
     else
     {
-        write_log(work_dir, "s_grep", L_OPEN_FILE_FAILED, file, strerror(errno));
         end = -1;
     }
     return end;
@@ -316,25 +313,24 @@ int set_name_space(void)
 /*
 此函数用于获取模块 Settings 设置信息
 接收：
-    char * config_file 设置文件（完整路径）
+    FILE * settings_file_fp 设置文件指针
     char * key 具体 prop
     char * str 字符串指针。可选，如果目标是字符串则复制值至此字符串
         └── int str_len 如果传递 str 用于接收字符串则需要传递 str 大小
 返回：
     int 返回 -1 失败，否则返回具体 value
 */
-int get_settings_prop(char * config_file, char * key, char * str, size_t str_len)
+int get_settings_prop(FILE * settings_file_fp, char * key, char * str, size_t str_len)
 {
     int value = 0;
     char * line_key = NULL, * value_p = NULL, * ptr = NULL;
     char line[SETTINGS_FILE_MAX_LINE] = {0};
     
-    FILE * settings_file_fp = fopen(config_file, "r");
     if (settings_file_fp == NULL)
     {
-        write_log(work_dir, "get_settings_prop", L_OPEN_FILE_FAILED, config_file, strerror(errno));
         return -1;
     }
+    
     while (fgets(line, sizeof(line), settings_file_fp))
     {
         line[strcspn(line, "\n")] = 0;
@@ -369,7 +365,6 @@ int get_settings_prop(char * config_file, char * key, char * str, size_t str_len
             break;
         }
     }
-    fclose(settings_file_fp);
     return value;
 }
 

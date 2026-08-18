@@ -23,7 +23,14 @@ int storage_clean(void)
     int clean_count = 0;
     
     // 设置查找对应值
-    int clear_disk = get_settings_prop(settings_file, CLEAR_DISK_KEY, NULL, 0);
+    FILE * settings_file_fp = fopen(settings_file, "r");
+    if (settings_file_fp == NULL)
+    {
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, settings_file, strerror(errno));
+        return -1;
+    }
+    int clear_disk = get_settings_prop(settings_file_fp, CLEAR_DISK_KEY, NULL, 0);
+    fclose(settings_file_fp);
     
     // 处理内部储存
     storage_cache_clear(STORAGES_DIR);
@@ -104,12 +111,19 @@ static int storage_cache_clear(char * data_path)
     snprintf(app_data_path, sizeof(app_data_path), "%s/Android/data", data_path);
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST);
     
+    FILE * whitelist_file_fp = fopen(whitelist_file, "r");
+    if (whitelist_file_fp == NULL)
+    {
+        write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, whitelist_file, strerror(errno));
+    }
+    
     // 递归遍历目录
     struct dirent * entry;
     DIR * app_data_dir_dp = opendir(app_data_path);
     if (app_data_dir_dp == NULL)
     {
         write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, app_data_path, strerror(errno));
+        fclose(whitelist_file_fp);
         return -1;
     }
     while ((entry = readdir(app_data_dir_dp)))
@@ -128,10 +142,14 @@ static int storage_cache_clear(char * data_path)
             continue;
         }
         
-        // 白名单检查
-        if (s_grep(whitelist_file, entry -> d_name, 1) == 1)
+        // 白名单检查（白名单不存在则忽略）
+        if (whitelist_file_fp)
         {
-            continue;
+            if (s_grep(whitelist_file_fp, entry -> d_name, 1) == 1)
+            {
+                continue;
+            }
+            fseek(whitelist_file_fp, 0, SEEK_SET);
         }
         
         // Clear
@@ -146,7 +164,9 @@ static int storage_cache_clear(char * data_path)
         }
         fflush(stdout);
     }
+    
     closedir(app_data_dir_dp);
+    if (whitelist_file_fp) fclose(whitelist_file_fp);
     
     fprintf(stderr, L_SC_CLEAR_CACHE_DONE, clean_count);
     return 0;

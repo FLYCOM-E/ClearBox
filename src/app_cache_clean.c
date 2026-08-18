@@ -39,12 +39,21 @@ int app_cache_clean(int mode)
         // 获取设置值
         int clear_cache_size = 0,  // 缓存清理限制大小
            clear_disk = 0;         // 是否清理外部储存
-        clear_cache_size = get_settings_prop(settings_file, CLEAR_CACHE_SIZE_KEY, NULL, 0);
-        clear_disk = get_settings_prop(settings_file, CLEAR_DISK_KEY, NULL, 0);
+        
+        FILE * settings_file_fp = fopen(settings_file, "r");
+        if (settings_file_fp == NULL)
+        {
+            write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, settings_file, strerror(errno));
+            return -1;
+        }
+        clear_cache_size = get_settings_prop(settings_file_fp, CLEAR_CACHE_SIZE_KEY, NULL, 0);
+        fseek(settings_file_fp, 0, SEEK_SET);
+        clear_disk = get_settings_prop(settings_file_fp, CLEAR_DISK_KEY, NULL, 0);
         if (clear_cache_size == -1)
         {
             clear_cache_size = DEFAULT_CCS;
         }
+        fclose(settings_file_fp);
         
         // 获取第三方软件包名列表并储存
         int app_count = 0;
@@ -81,6 +90,7 @@ int app_cache_clean(int mode)
                     white_list[whitelist_count][strcspn(white_list[whitelist_count], "\n")] = '\0';
                     whitelist_count++;
                 }
+                fclose(whitelist_file_fp);
             }
         }
         
