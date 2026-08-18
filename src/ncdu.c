@@ -114,7 +114,8 @@ int ncdu(char * path)
     
     qsort(path_info, (size_t)count, sizeof(struct info), cmp_byte);
     
-    char target_line[PATH_MAX + 128] = "";
+    char target_line[PATH_MAX + 128] = "",
+         line[PATH_MAX + 128] = "";
     for (int i = 0; i < count; i++)
     {
         // PRINT:
@@ -128,7 +129,8 @@ int ncdu(char * path)
                 path_info[i].mode
               );
         snprintf(target_line, sizeof(target_line), "%s|%" PRId64, path_info[i].path, path_info[i].byte);
-        s_sed(history_file, path_info[i].path, target_line, 1, 1);
+        snprintf(line, sizeof(line), "%s|", path_info[i].path);
+        s_sed(history_file, line, target_line, 1, 1);
     }
     
     closedir(path_dp);
