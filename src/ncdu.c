@@ -88,13 +88,16 @@ int ncdu(char * path)
         char * sql_str = NULL;
         
         sql_str = sqlite3_mprintf("SELECT value FROM kv WHERE key = '%q';", path_info[count].path);
-        sqlite3_get_table(db, sql_str, &buffer, &row, &col, 0);
-        if (row > 0)
+        if (sql_str)
         {
-            history_size = strtol(buffer[1], NULL, 10);
+            sqlite3_get_table(db, sql_str, &buffer, &row, &col, 0);
+            if (row > 0)
+            {
+                history_size = strtol(buffer[1], NULL, 10);
+            }
+            sqlite3_free(sql_str);
+            sqlite3_free_table(buffer);
         }
-        sqlite3_free(sql_str);
-        sqlite3_free_table(buffer);
         
         path_info[count].history_size[0] = '\0';
         if (history_size != -1)

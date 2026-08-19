@@ -24,7 +24,7 @@
 #include <inttypes.h>
 
 #include "lang.h"
-#include "sqlite3.h"
+#include "../SQlite3/sqlite3.h"
 
 #define MAX_WORK_DIR_LEN 512            // 工作目录最大长度
 #define MAX_BIN_DIR_LEN 512              // 二进制目录最大长度

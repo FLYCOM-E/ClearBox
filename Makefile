@@ -1,9 +1,30 @@
-CFLAGS = -O2 -flto -fPIE -Werror -D_GNU_SOURCE
+CFLAGS = -Os -flto -fPIE -Werror -D_GNU_SOURCE
 CFLAGS += -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wformat=2 -Wunused -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wstrict-overflow=3 -Wnull-dereference
 CFLAGS += -fstack-protector-strong -D_FORTIFY_SOURCE=3
 CFLAGS += -Wno-format-nonliteral -Wno-format-security
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS = -Wl,--gc-sections -Wl,-z,relro,-z,now -Wl,-z,defs -Wl,--as-needed -pie -flto -fuse-ld=lld -llog -s
+SQLITE3_CFLAGS = $(CFLAGS) -Wno-error \
+                  -Wno-unused-variable \
+                  -Wno-cast-qual \
+                  -Wno-sign-conversion \
+                  -Wno-implicit-float-conversion \
+                  -Wno-implicit-int-float-conversion \
+                  -Wno-incompatible-pointer-types-discards-qualifiers \
+                  -Wno-conversion \
+                  -Wno-missing-field-initializers \
+                  -Wno-unused-parameter \
+                  -Wno-unused-but-set-variable \
+                  -Wno-unused-function \
+                  -Wno-undefined-internal \
+                  -Wno-unused-variable \
+                  -Wno-parentheses \
+                  -Wno-c11-extensions \
+                  -Wno-gnu \
+                  -DSQLITE_THREADSAFE=0 \
+                  -DSQLITE_OMIT_LOAD_EXTENSION \
+                  -DSQLITE_OMIT_DEPRECATED \
+                  -DSQLITE_OMIT_SHARED_CACHE
 
 module_dir = ModuleFiles
 app_dir = AppSource
@@ -13,7 +34,7 @@ UTILS_C = src/INCLUDE/utils.c \
 			src/INCLUDE/s_signal.c \
 			src/INCLUDE/help.c \
 			src/INCLUDE/set_language.c
-SQLITE3_C = src/INCLUDE/sqlite3.c
+SQLITE3_C = src/SQlite3/sqlite3.c
 BIN_C = src/main.c \
 		src/app_cust_rule_clean.c \
 		src/app_cache_clean.c \
@@ -42,15 +63,7 @@ elf: $(CORE_ELF)
 
 $(SQLITE3_OBJ): $(SQLITE3_C)
 	@echo "  CC \t\t $@"
-	@$(CC) -c $< -o $@ $(CFLAGS) -Wno-error \
-		-Wno-unused-variable \
-		-Wno-cast-qual \
-		-Wno-sign-conversion \
-		-Wno-implicit-float-conversion \
-		-Wno-implicit-int-float-conversion \
-		-Wno-incompatible-pointer-types-discards-qualifiers \
-		-Wno-conversion
-
+	@$(CC) -c $< -o $@ $(SQLITE3_CFLAGS)
 %.o: %.c
 	@echo "  CC \t\t $@"
 	@$(CC) -c $< -o $@ $(CFLAGS)
