@@ -83,7 +83,7 @@ int ncdu(char * path)
         
         // HISTORY
         char ** buffer;
-        int64_t history_size = 0;
+        int64_t history_size = -1;
         int row = 0, col = 0;
         char * sql_str = NULL;
         
