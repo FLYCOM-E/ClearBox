@@ -4,13 +4,18 @@
 #
 [ ! "$(whoami)" = "root" ] && echo " » 请授予root权限！Please grant root privileges!" && exit 1
 ######
-export home_dir="${0%/*}"
 app_config_dir="AppCleanRules"
 storage_config_dir="CleanConfigs"
 file_config_dir="FileConfigs"
 bind_config_dir="BindConfigs"
 timed_config_dir="TimedConfigs"
 core="clearbox"
+######
+export home_dir="${0%/*}"
+export work_dir="/data/adb/wipe_cache"
+######
+mkdir -p "$work_dir"
+echo -en "home_dir=$home_dir\nwork_dir=$work_dir\n" > "$work_dir/PATH"
 ###### The first stage. wait for boot = 1, timeout auto disable module
 first_stage=0
 set=0
@@ -23,10 +28,6 @@ while [ "$(getprop sys.boot_completed)" != 1 ]; do
     set=$((set + 1))
     sleep 5
 done
-######
-export work_dir="/data/adb/wipe_cache"
-mkdir -p "$work_dir"
-echo -en "home_dir=$home_dir\nwork_dir=$work_dir\n" > "$work_dir/PATH"
 ######
 sh "$home_dir/DirtyClear.sh"
 ######
@@ -50,9 +51,12 @@ StartSettings()
         [ -z "$clearbox_f2fs_gc_min_dirty" ] && echo "clearbox_f2fs_gc_min_dirty=100" >> "$work_dir/settings.prop"
     }
     ######
-    touch "$work_dir/settings.prop" 2>/dev/null
-    touch "$work_dir/ncdu_history" 2>/dev/null
-    source "$work_dir/settings.prop"
+    if [ -f "$work_dir/settings.prop" ]; then
+        source "$work_dir/settings.prop"
+    else
+        rm -r "$work_dir/settings.prop" # REMOVE DIR
+        touch "$work_dir/settings.prop"
+    fi
     PropInit
     ######
     mkdir -p "$work_dir/$app_config_dir"
