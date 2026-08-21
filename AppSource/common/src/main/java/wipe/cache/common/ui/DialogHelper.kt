@@ -489,7 +489,10 @@ class DialogHelper {
                 if (blurBitmap != null) {
                     setBackgroundDrawable(BitmapDrawable(activity.resources, blurBitmap))
                 } else {
-                    // setBackgroundDrawableResource(android.R.color.transparent)
+                    if (wallpaperMode) {
+                        setBackgroundDrawableResource(android.R.color.transparent)
+                        return
+                    }
                     try {
                         val bg = getWindowBackground(activity)
                         if (bg == Color.TRANSPARENT) {

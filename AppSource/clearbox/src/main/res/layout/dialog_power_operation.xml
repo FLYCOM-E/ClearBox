@@ -24,7 +24,7 @@
             <LinearLayout
                 android:layout_weight="1"
                 android:layout_height="65dp"
-                android:background="@drawable/krscript_item_ripple"
+                android:background="@drawable/power_item_ripple"
                 android:id="@+id/power_shutdown"
                 style="@style/ListCardItemSmall"
                 android:orientation="horizontal">
@@ -60,7 +60,7 @@
             <LinearLayout
                 android:layout_weight="1"
                 android:layout_height="65dp"
-                android:background="@drawable/krscript_item_ripple"
+                android:background="@drawable/power_item_ripple"
                 android:id="@+id/power_reboot"
                 style="@style/ListCardItemSmall"
                 android:orientation="horizontal">
@@ -98,7 +98,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/power_item_ripple"
             android:id="@+id/power_launcher"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">
@@ -135,7 +135,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/power_item_ripple"
             android:id="@+id/power_systemui"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">
@@ -172,7 +172,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/power_item_ripple"
             android:id="@+id/power_hot_reboot"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">
@@ -209,7 +209,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/power_item_ripple"
             android:id="@+id/power_safemode"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">
@@ -246,7 +246,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/power_item_ripple"
             android:id="@+id/power_recovery"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">
@@ -283,7 +283,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/power_item_ripple"
             android:id="@+id/power_fastboot"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">
@@ -320,7 +320,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/power_item_ripple"
             android:id="@+id/power_emergency"
             style="@style/ListCardItemSmall"
             android:orientation="horizontal">

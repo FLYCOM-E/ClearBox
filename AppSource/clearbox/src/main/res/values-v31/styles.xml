@@ -27,11 +27,13 @@
         <item name="android:navigationBarColor">#00FFFFFF</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="cardBg">@color/cardBgLightTransparent</item>
+        <item name="dialogBg">@color/dialogBgLightTransparent</item>
     </style>
     <style name="AppThemeWallpaper" parent="Theme.KrScript">
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="cardBg">@color/cardBgDarkTransparent</item>
+        <item name="dialogBg">@color/dialogBgDarkTransparent</item>
     </style>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="cardBg" format="color"/>
+    <attr name="dialogBg" format="color"/>
     <declare-styleable name="ProgressState">
         <attr name="total" format="integer" />
         <attr name="current" format="integer" />

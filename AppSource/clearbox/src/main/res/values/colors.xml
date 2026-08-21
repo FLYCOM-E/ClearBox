@@ -5,15 +5,17 @@
     <color name="status_bg_dark">#222222</color>
     <color name="status_bg_light">#FEF7FF</color>
     <color name="cardBgDark">#4C000000</color>
-    <color name="cardBgDarkTransparent">#4C000000</color>
     <color name="cardBgLight">#4CFFFFFF</color>
-    <color name="cardBgLightTransparent">#4CFFFFFF</color>
-
+    <color name="cardBgDarkTransparent">#58000000</color>
+    <color name="cardBgLightTransparent">#59FFFFFF</color>
+    <color name="dialogBgDarkTransparent">#B3000000</color>
+    <color name="dialogBgLightTransparent">#B3FFFFFF</color>
+    
     <color name="color_load_low">#02d98d</color>
     <color name="color_load_mid">#87cb00</color>
     <color name="color_load_hight">#fc8a1b</color>
     <color name="color_load_veryhight">#f9592f</color>
-
+    
     <color name="colorAccent">@color/md_primary</color>
     <color name="colorPrimary">#80B4DD</color>
     <color name="colorPrimaryDark">#3D9AE6</color>
