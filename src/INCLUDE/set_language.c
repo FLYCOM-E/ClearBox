@@ -20,6 +20,16 @@ void set_language(LangType * lang)
         }
         pclose(local_lang_p);
     }
+    if (strcmp(lang_str, "null") == 0 ||
+       strlen(lang_str) < 1)
+    {
+        int len = getprop("ro.product.locale", lang_str);
+        if (len <= 0)
+        {
+            lang_str[0] = '\0';
+        }
+    }
+    
     if (strstr(lang_str, "zh-CN") ||
        strstr(lang_str, "Hans"))
     {

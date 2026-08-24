@@ -25,6 +25,9 @@ core="clearbox"
 ######
 lang_dir="LANG"
 local_lang="$(settings get system system_locales | cut -f1 -d ',')"
+if [ "$local_lang" == "null" ] ||  [ "$local_lang" == "" ]; then
+    local_lang="$(getprop 'ro.product.locale')"
+fi
 if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
     source "$home_dir/$lang_dir/zh_CN.conf"
 elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then

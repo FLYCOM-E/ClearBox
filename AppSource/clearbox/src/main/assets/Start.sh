@@ -32,7 +32,11 @@ if [ ! -f "/data/adb/wipe_cache/PATH" ]; then
 else
     source "/data/adb/wipe_cache/PATH"
 fi
+######
 local_lang="$(settings get system system_locales | cut -f1 -d ',')"
+if [ "$local_lang" == "null" ] ||  [ "$local_lang" == "" ]; then
+    local_lang="$(getprop 'ro.product.locale')"
+fi
 if echo "$local_lang" | grep -E "zh-CN|Hans" >/dev/null 2>&1; then
     source "$home_dir/$lang_dir/zh_CN.conf"
 elif echo "$local_lang" | grep -E "zh-TW|Hant" >/dev/null 2>&1; then
