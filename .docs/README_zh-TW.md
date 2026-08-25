@@ -14,7 +14,7 @@
 
 
    # 🌍 ？
-> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-CN.md) **|** **正體中文** **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_ru-RU.md) **|**
+> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** **正體中文** **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|**
 
 
 
@@ -103,7 +103,7 @@ export TARGET_ABI=aarch64  #(可選 aarch64、armv7a、x86_64、riscv64)
 
 範例：
 
-```
+``` conf
 @MAX=1/G @MIN=10/M
 zip 7z
 @max=-1
@@ -169,7 +169,7 @@ iso img
 
 在此目錄下建立一個自訂名稱 **.conf** 檔案，填入並修改以下行（部分可選）：
 
-```conf
+``` conf
 time=間隔時間/時間單位（目前支援M/分、H/時、D/天）
 date=上次執行時間（時間戳數字）。這是一個可選參數，如果不填寫則程式會自動追加為目前時間，設為 -1 可立即執行
 run=要執行的程式及參數，支援 Shell 語法（交由 Shell 解析）
@@ -180,7 +180,7 @@ post=通知標題/通知內容（傳送通知。這是一個可選參數，不�
 其中 **time**、**run** 為必填項，所有 **KEY** 可忽略大小寫
 實例：
 
-```
+``` conf
 time=1/D
 date=0
 run=sync
@@ -236,7 +236,7 @@ post=Test Run/已執行 Sync
 
 在此目錄下建立一個自訂名稱 **.conf** 檔案，填入自訂掛載規則：
 
-```
+``` conf
 <綁定目錄> <目標目錄>
 ```
 

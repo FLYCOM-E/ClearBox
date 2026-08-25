@@ -44,6 +44,11 @@ void set_language(LangType * lang)
     {
         * lang = LANG_ru_RU;
     }
+    else if (strstr(lang_str, "ko-KR") ||
+            strstr(lang_str, "ko-KP"))
+    {
+        * lang = LANG_ko_KR;
+    }
     else
     {
         * lang = LANG_en_US;

@@ -14,7 +14,7 @@
 
 
    # 🌍 ？
-> **|** **English** **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_ru-RU.md) **|**
+> **|** **English** **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|**
 
 
 
@@ -103,7 +103,7 @@ Add **`@MAX=<size/B/K/M/G>`**、**`MIN=<size/B/K/M/G>`** within the file to spec
 
 Example：
 
-```
+``` conf
 @MAX=1/G @MIN=10/M
 zip 7z
 @max=-1
@@ -169,7 +169,7 @@ Config Directory: **`/data/adb/wipe_cache/TimedConfigs`**
 
 Create a custom-named **.conf** file in this directory, fill in and modify the following lines (some are optional)：
 
-```conf
+``` conf
 time=interval/time unit (currently supports M/minutes, H/hours, D/days)
 date=last run time (timestamp number). This is an optional parameter. If not filled, the program will automatically set it to the current time. Set to -1 to execute immediately.
 run=program and parameters to execute, supports Shell syntax (parsed by Shell)
@@ -180,7 +180,7 @@ post=notification title/notification content (send notification. This is an opti
 Among them, **time** and **run** are required fields, all **KEY**s are case-insensitive.
 Example:
 
-```
+``` conf
 time=1/D
 date=0
 run=sync
@@ -236,7 +236,7 @@ Configuration Directory：**`/data/adb/wipe_cache/BindConfigs`**
 
 Create a custom name **.conf** file in this directory and fill in custom mount rules：
 
-```
+``` conf
 <Bind Directory> <Target Directory>
 ```
 

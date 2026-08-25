@@ -14,7 +14,7 @@
 
 
    # 🌍 ？
-> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/README_zh-TW.md) **|** **Русский** **|**
+> **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** **Русский** **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|**
 
 
 
@@ -103,7 +103,7 @@ export TARGET_ABI=aarch64  #(доступны aarch64、armv7a、x86_64、riscv6
 
 Пример：
 
-```
+``` conf
 @MAX=1/G @MIN=10/M
 zip 7z
 @max=-1
@@ -169,7 +169,7 @@ iso img
 
 Создайте в этом каталоге файл с произвольным именем и расширением **.conf**, заполните и измените следующие строки (некоторые являются необязательными)：
 
-```conf
+``` conf
 time=интервал/единица времени (поддерживается: M/минуты, H/часы, D/дни)
 date=время последнего запуска (число-метка времени). Это необязательный параметр; если не указан, программа автоматически установит текущее время. Установите -1 для немедленного выполнения.
 run=программа и аргументы для выполнения, поддерживается синтаксис Shell (передаётся в Shell для обработки)
@@ -180,7 +180,7 @@ post=заголовок уведомления/текст уведомления
 Из них **time** и **run** являются обязательными полями, все **KEY** нечувствительны к регистру.
 Пример：
 
-```conf
+``` conf
 time=1/D
 date=0
 run=sync
@@ -236,7 +236,7 @@ post=Test Run/Запущен Sync
 
 Создайте в этом каталоге файл с любым именем и расширением **.conf** и укажите правила привязки：
 
-```
+``` conf
 <привязываемый_каталог> <целевой_каталог>
 ```
 

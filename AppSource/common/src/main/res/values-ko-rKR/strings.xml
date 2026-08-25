@@ -1,0 +1,14 @@
+<resources>
+    <string name="execute_success">실행 성공</string>
+    <string name="execute_fail">실행 실패</string>
+    <string name="execute_wait">실행 중입니다. 잠시만 기다려주세요...</string>
+    <string name="btn_confirm">확인</string>
+    <string name="app_chooser_search_hint">앱 이름 / 패키지 이름을 입력하여 검색</string>
+    <string name="item_chooser_search_hint">선택 가능한 항목 검색</string>
+    <string name="select_all">모두 선택</string>
+    <string name="help_title">설명 도움말</string>
+    <string name="info_title">정보</string>
+    <string name="info_text">내용</string>
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
+</resources>

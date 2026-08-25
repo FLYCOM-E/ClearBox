@@ -1,0 +1,65 @@
+<resources>
+    <string name="btn_confirm">확인</string>
+    <string name="shell_executor">스크립트 실행기</string>
+    <string name="btn_cancel">취소</string>
+    <string name="btn_skip">건너뛰기</string>
+    <string name="btn_exit">돌아가기</string>
+    <string name="btn_hide">숨기기</string>
+    <string name="btn_execute">실행</string>
+    <string name="onloading">:⁠-⁠)</string>
+    <string name="kr_shell_completed">All Done</string>
+    <string name="kr_shell_finish_error">Error</string>
+    <string name="script_losted">리소스 누락\n</string>
+    <string name="btn_copy_output">복사</string>
+    <string name="copy_success">출력 로그가 클립보드에 복사되었습니다</string>
+    <string name="copy_fail">복사 실패</string>
+    <string name="do_not_empty">비워둘 수 없음</string>
+    <string name="kr_param_load">상태 가져오기</string>
+    <string name="kr_param_options_load">불러오는 중 </string>
+    <string name="kr_params_render">인터페이스 렌더링 중...</string>
+    <string name="kr_please_choose_folder">디렉터리를 선택하세요</string>
+    <string name="kr_please_choose_file">파일을 선택하세요</string>
+    <string name="kr_please_choose_app">앱을 선택하세요</string>
+    <string name="kr_please_input_color">색상을 입력하세요</string>
+    <string name="kr_please_select">선택하세요</string>
+    <string name="kr_write_external_storage">외부 저장소 읽기/쓰기 권한이 필요합니다！</string>
+    <string name="kr_download_create_fail">다운로드 작업 생성 실패</string>
+    <string name="kr_download_create_success">파일 다운로드 시작</string>
+    <string name="kr_download_confirm">파일을 다운로드하시겠습니까?</string>
+    <string name="kr_download_completed">파일 다운로드 성공</string>
+    <string name="kr_download_downloading">파일 다운로드 중</string>
+    <string name="kr_color_picker">색상을 선택하세요</string>
+    <string name="kr_invalid_color">입력한 색상 값이 유효하지 않습니다. #ff88aa00 형식만 지원됩니다</string>
+
+    <string name="kr_shortcut_create_fail">바로가기 생성 실패</string>
+    <string name="kr_shortcut_create_success">바로가기 생성 요청이 전송되었습니다</string>
+    <string name="kr_shortcut_create">바로가기 추가</string>
+    <string formatted="false" name="kr_shortcut_create_desc">“%s”을(를) 홈 화면에 추가하여 빠르게 사용하시겠습니까?</string>
+    <string name="kr_ushortcut_nsupported">이 기능은 바로가기로 추가할 수 없습니다</string>
+    <string name="kr_script_task_notification">백그라운드 작업 알림</string>
+    <string name="kr_bg_task_start">백그라운드 작업 시작</string>
+    <string name="kr_script_task_running">실행 시작</string>
+    <string name="kr_script_task_has_error">오류 발생</string>
+    <string name="kr_script_task_finished">작업 완료</string>
+    <string name="kr_bg_task_start_desc">알림을 통해 작업 실행 상태를 확인할 수 있습니다</string>
+    <string name="kr_slice_script_result">스크립트 출력 내용</string>
+    <string name="kr_slice_activity_fail">액티비티를 열 수 없습니다~</string>
+
+    <string name="kr_page_before_load">구성 분석 준비 중</string>
+    <string name="kr_page_loading">(⁠・⁠∀⁠・⁠)</string>
+    <string name="kr_page_after_load">구성 분석 완료</string>
+    <string name="kr_page_sh_invalid">페이지 오류 발생</string>
+    <string name="kr_page_sh_file_permission">지정된 구성 파일이 존재하지 않거나 읽기 권한이 없습니다</string>
+    <string name="kr_page_load_fail">페이지 로드 실패</string>
+    <string name="kr_page_load_success">페이지 로드 성공</string>
+    <string name="kr_auto_run_item_losted">지정된 항목을 찾을 수 없습니다</string>
+    <string name="kr_hidden_task_running">너무 빠르네요! 이전 작업이 아직 완료되지 않았습니다!</string>
+    <string name="kr_lock_message">이 기능은 잠겨 있습니다</string>
+    <string name="kr_sdk_too_low">시스템 버전이 너무 낮습니다</string>
+    <string name="kr_sdk_overtop">시스템 버전이 너무 높습니다</string>
+    <string formatted="false" name="kr_sdk_message">이 기능은 SDK %d ~ %d 시스템에서만 실행할 수 있습니다</string>
+    <string name="kr_sdk_discrepancy">시스템 버전 불일치</string>
+    <string formatted="false" name="kr_sdk_discrepancy_message">이 기능은 SDK %d 시스템에서만 실행할 수 있습니다</string>
+    <string name="picker_not_item">사용 가능한 옵션이 없습니다！</string>
+    <string name="picker_select_none">선택된 항목이 없습니다！</string>
+</resources>
