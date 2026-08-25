@@ -10,6 +10,8 @@ typedef enum
 
 typedef struct
 {
+    const char * l_lang_name;
+    
     const char * l_not_use_root;
     const char * l_args_failed;
     const char * l_mode_err;
@@ -141,6 +143,8 @@ static const LangPack lang_packs[] =
 {
     [LANG_zh_CN] =
     {
+        .l_lang_name = "zh_CN",
+        
         .l_not_use_root = " » 请使用 Root 权限！#%u\n",
         .l_args_failed = " » 传入参数不足！\n",
         .l_mode_err = " » 未知模式！[%s]\n",
@@ -269,6 +273,8 @@ static const LangPack lang_packs[] =
     },
     [LANG_zh_TW] =
     {
+        .l_lang_name = "zh_TW",
+        
         .l_not_use_root = " » 請使用 Root 權限！#%u\n",
         .l_args_failed = " » 傳入參數不足！\n",
         .l_mode_err = " » 未知模式！[%s]\n",
@@ -397,6 +403,8 @@ static const LangPack lang_packs[] =
     },
     [LANG_ru_RU] =
     {
+        .l_lang_name = "ru_RU",
+        
         .l_not_use_root = " » Используйте права Root！#%u\n",
         .l_args_failed = " » Недостаточно аргументов！\n",
         .l_mode_err = " » Неизвестный режим！[%s]\n",
@@ -525,6 +533,8 @@ static const LangPack lang_packs[] =
     },
     [LANG_en_US] =
     {
+        .l_lang_name = "en_US",
+        
         .l_not_use_root = " » Please use Root permissions! #%u\n",
         .l_args_failed = " » Insufficient arguments provided!\n",
         .l_mode_err = " » Unknown mode! [%s]\n",
@@ -654,6 +664,8 @@ static const LangPack lang_packs[] =
 };
 
 extern LangType current_lang;
+
+#define L_LANG_NAME lang_packs[current_lang].l_lang_name
 
 #define L_NOT_USE_ROOT lang_packs[current_lang].l_not_use_root
 #define L_ARGS_FAILED lang_packs[current_lang].l_args_failed

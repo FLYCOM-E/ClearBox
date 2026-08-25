@@ -8,6 +8,7 @@ file_config_dir="FileConfigs"
 SHOUT_S="0.3"
 LONG_S="1"
 TIMEOUT_S="10"
+core="clearbox"
 ######
 update=0
 if [ -f "/data/adb/wipe_cache/PATH" ]; then
@@ -58,27 +59,16 @@ if ! unzip -oq "$ZIPFILE" -d "$MODPATH"; then
     exit 1
 fi
 ######
+chmod +x "$MODPATH/$core"
+######
 lang=""
 lang_dir="LANG"
-local_lang="$(settings get system system_locales | cut -f1 -d ',')"
-if [ "$local_lang" == "null" ] ||  [ "$local_lang" == "" ]; then
-    local_lang="$(getprop 'ro.product.locale')"
-fi
-if echo "$local_lang" | grep -E "zh-CN|Hans" 2>/dev/null; then
-    source "$MODPATH/$lang_dir/zh_CN.conf"
-    lang="zh_CN"
-elif echo "$local_lang" | grep -E "zh-TW|Hant" 2>/dev/null; then
-    source "$MODPATH/$lang_dir/zh_TW.conf"
-    lang="zh_TW"
-elif echo "$local_lang" | grep -E "ru-RU" 2>/dev/null; then
-    source "$home_dir/$lang_dir/ru_RU.conf"
-    lang="ru_RU"
-else
+local_lang="$($MODPATH/$core --get-lang)"
+if ! source "$MODPATH/$lang_dir/$local_lang.conf"; then
     source "$MODPATH/$lang_dir/en_US.conf"
-    lang="en_US"
+    local_lang="en_US"
 fi
-######
-sed -i "s|@LANG|$lang|g" "$MODPATH/module.prop"
+sed -i "s|@LANG|$local_lang|g" "$MODPATH/module.prop"
 ######
 echo -e "=====================================================\n"
 if [ -d "/data/adb/magisk" ]; then

@@ -308,6 +308,12 @@ int main(int argc, char * argv[])
             }
         }
     }
+    else if (strcasecmp(argv[1], "get-lang") == 0 ||
+            strcasecmp(argv[1], "-get-lang") == 0 ||
+            strcasecmp(argv[1], "--get-lang") == 0)
+    {
+        printf("%s\n", L_LANG_NAME);
+    }
     else if (strcasecmp(argv[1], "help") == 0 ||
             strcasecmp(argv[1], "-help") == 0 ||
             strcasecmp(argv[1], "--help") == 0)
