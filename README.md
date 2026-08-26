@@ -14,7 +14,7 @@
 
 
    # 🌍 ？
-> **|** **English** **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|**
+> **|** **English** **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|** [**日本語**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ja-JP.md) **|**
 
 
 
