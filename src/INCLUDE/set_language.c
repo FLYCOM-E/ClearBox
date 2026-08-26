@@ -49,6 +49,10 @@ void set_language(LangType * lang)
     {
         * lang = LANG_ko_KR;
     }
+    else if (strstr(lang_str, "ja-JP"))
+    {
+        * lang = LANG_ja_JP;
+    }
     else
     {
         * lang = LANG_en_US;

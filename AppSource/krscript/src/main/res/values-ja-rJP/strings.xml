@@ -1,0 +1,65 @@
+<resources>
+    <string name="btn_confirm">確認</string>
+    <string name="shell_executor">スクリプト実行器</string>
+    <string name="btn_cancel">キャンセル</string>
+    <string name="btn_skip">スキップ</string>
+    <string name="btn_exit">戻る</string>
+    <string name="btn_hide">隠す</string>
+    <string name="btn_execute">実行</string>
+    <string name="onloading">:⁠-⁠)</string>
+    <string name="kr_shell_completed">All Done</string>
+    <string name="kr_shell_finish_error">Error</string>
+    <string name="script_losted">リソースが失われました\n</string>
+    <string name="btn_copy_output">コピー</string>
+    <string name="copy_success">出力ログがクリップボードにコピーされました</string>
+    <string name="copy_fail">コピー失敗</string>
+    <string name="do_not_empty">空にできません</string>
+    <string name="kr_param_load">状態を取得</string>
+    <string name="kr_param_options_load">読み込み中 </string>
+    <string name="kr_params_render">インターフェースを描画中...</string>
+    <string name="kr_please_choose_folder">ディレクトリを選択してください</string>
+    <string name="kr_please_choose_file">ファイルを選択してください</string>
+    <string name="kr_please_choose_app">アプリを選択してください</string>
+    <string name="kr_please_input_color">色を入力してください</string>
+    <string name="kr_please_select">選択してください</string>
+    <string name="kr_write_external_storage">外部ストレージの読み書き権限が必要です！</string>
+    <string name="kr_download_create_fail">ダウンロードタスクの作成に失敗しました</string>
+    <string name="kr_download_create_success">ファイルのダウンロードを開始します</string>
+    <string name="kr_download_confirm">ファイルをダウンロードしますか？</string>
+    <string name="kr_download_completed">ファイルのダウンロードに成功しました</string>
+    <string name="kr_download_downloading">ファイルをダウンロード中</string>
+    <string name="kr_color_picker">色を選択してください</string>
+    <string name="kr_invalid_color">入力された色の値が無効です。#ff88aa00 のような形式のみサポートされます</string>
+
+    <string name="kr_shortcut_create_fail">ショートカットの作成に失敗しました</string>
+    <string name="kr_shortcut_create_success">ショートカット作成のリクエストを送信しました</string>
+    <string name="kr_shortcut_create">ショートカットを追加</string>
+    <string formatted="false" name="kr_shortcut_create_desc">“%s” をホーム画面に追加して、素早く使用できるようにしますか？</string>
+    <string name="kr_ushortcut_nsupported">この機能はショートカットとして追加できません</string>
+    <string name="kr_script_task_notification">バックグラウンドタスク通知</string>
+    <string name="kr_bg_task_start">バックグラウンドタスクが開始されました</string>
+    <string name="kr_script_task_running">実行中</string>
+    <string name="kr_script_task_has_error">エラーが発生しました</string>
+    <string name="kr_script_task_finished">タスクが終了しました</string>
+    <string name="kr_bg_task_start_desc">通知からタスクの実行状態を確認できます</string>
+    <string name="kr_slice_script_result">スクリプトの出力内容</string>
+    <string name="kr_slice_activity_fail">アクティビティを開けません~</string>
+
+    <string name="kr_page_before_load">設定の解析準備中</string>
+    <string name="kr_page_loading">(⁠・⁠∀⁠・⁠)</string>
+    <string name="kr_page_after_load">設定の解析が完了しました</string>
+    <string name="kr_page_sh_invalid">ページでエラーが発生しました</string>
+    <string name="kr_page_sh_file_permission">指定された設定ファイルが存在しないか、読み取り権限がありません</string>
+    <string name="kr_page_load_fail">ページの読み込みに失敗しました</string>
+    <string name="kr_page_load_success">ページの読み込みに成功しました</string>
+    <string name="kr_auto_run_item_losted">指定された項目が見つかりません</string>
+    <string name="kr_hidden_task_running">操作が速すぎます！前の操作がまだ完了していません！</string>
+    <string name="kr_lock_message">この機能はロックされています</string>
+    <string name="kr_sdk_too_low">システムのバージョンが低すぎます</string>
+    <string name="kr_sdk_overtop">システムのバージョンが高すぎます</string>
+    <string formatted="false" name="kr_sdk_message">この機能は SDK %d ～ %d のシステムでのみ実行できます</string>
+    <string name="kr_sdk_discrepancy">システムのバージョンが一致しません</string>
+    <string formatted="false" name="kr_sdk_discrepancy_message">この機能は SDK %d のシステムでのみ実行できます</string>
+    <string name="picker_not_item">利用可能なオプションがありません！</string>
+    <string name="picker_select_none">何も選択されていません！</string>
+</resources>
