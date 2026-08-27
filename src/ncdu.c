@@ -24,12 +24,18 @@ struct info
 };
 
 static int cmp_byte(const void * a, const void * b);
+static int history_clean(char * history_file);
 
 int ncdu(char * path)
 {
     struct info path_info[DIR_MAX];
     char history_file[strlen(work_dir) + sizeof(HISTORY_FILE) + 2];
     snprintf(history_file, sizeof(history_file), "%s/%s", work_dir, HISTORY_FILE);
+    
+    if (path == NULL)
+    {
+        return history_clean(history_file);
+    }
     
     sqlite3 * db;
     sqlite3_open(history_file, &db);
@@ -169,5 +175,43 @@ static int cmp_byte(const void * a, const void * b)
     {
         return 1;
     }
+    return 0;
+}
+
+static int history_clean(char * history_file)
+{
+    if (access(history_file, F_OK) != 0)
+    {
+        return 0;
+    }
+    
+    sqlite3 * db;
+    sqlite3_stmt * stmt;
+    sqlite3_stmt * delete_stmt;
+    
+    sqlite3_open(history_file, &db);
+    sqlite3_prepare_v2(db, "SELECT key FROM kv", -1, &stmt, NULL);
+    sqlite3_prepare_v2(db, "DELETE FROM kv WHERE key = ?", -1, &delete_stmt, NULL);
+    
+    sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, NULL);
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        const unsigned char * path = sqlite3_column_text(stmt, 0);
+        
+        if (access((const char *)path, F_OK) != 0)
+        {
+            sqlite3_bind_text(delete_stmt, 1, (const char *)path, -1, SQLITE_STATIC);
+            sqlite3_step(delete_stmt);
+            sqlite3_reset(delete_stmt);
+            
+            fprintf(stdout, " » DELETE: %s\n", path);
+        }
+    }
+    sqlite3_exec(db, "COMMIT", NULL, NULL, NULL);
+    
+    sqlite3_finalize(stmt);
+    sqlite3_finalize(delete_stmt);
+    sqlite3_close(db);
+    
     return 0;
 }

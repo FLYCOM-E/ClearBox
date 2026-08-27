@@ -283,7 +283,16 @@ int main(int argc, char * argv[])
         }
         else
         {
-            exit_code = ncdu(argv[2]);
+            if (strcasecmp(argv[2], "clean") == 0 ||
+               strcasecmp(argv[2], "-clean") == 0 ||
+               strcasecmp(argv[2], "--clean") == 0)
+            {
+                exit_code = ncdu(NULL);
+            }
+            else
+            {
+                exit_code = ncdu(argv[2]);
+            }
         }
     }
     else if (strcasecmp(argv[1], "--config") == 0)

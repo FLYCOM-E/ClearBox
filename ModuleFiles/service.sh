@@ -67,6 +67,9 @@ StartSettings()
     ######
     [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
     [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
+    if [ ! -f "$work_dir/$timed_config_dir/NCDU_HC.conf" ]; then
+        echo -e "date=0\ntime=3/D\nrun=$home_dir/$core --ncdu --clean\n" > "$work_dir/$timed_config_dir/NCDU_HC.conf"
+    fi
     ######
     if [ -d "$home_dir/AppConfigs" ]; then
         cp "$home_dir/AppConfigs/"* "$work_dir/$app_config_dir/"

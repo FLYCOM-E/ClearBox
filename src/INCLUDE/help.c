@@ -23,7 +23,6 @@ int help(char * argv[])
     printf(" \t--daemon-stop-cache\t%s", L_STOP_CACHE_DAEMON);
     printf(" \t--daemon-time\t\t%s", L_TIME_DAEMON);
     printf(" \t--storage-bind-custom\t%s", L_PATH_BIND);
-    printf(" \t--ncdu\t\t%s", L_STORAGE_SCAN);
-    
+    printf(" \t--ncdu\t\t\t%s", L_STORAGE_SCAN);
     return 0;
 }
