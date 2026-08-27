@@ -155,6 +155,7 @@ static int f2fs_gc(char * argv[])
         char page_size_str[64] = "";
         fgets(page_size_str, sizeof(page_size_str), page_size_p);
         page_size = strtol(page_size_str, NULL, 10);
+        pclose(page_size_p);
     }
     
     // Daemon

@@ -94,6 +94,7 @@ int stop_cache_daemon(char * argv[])
     int inotify_wd = inotify_add_watch(inotify_fd, rom_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
     if (inotify_wd == -1)
     {
+        close(inotify_fd);
         return -1;
     }
     char inotify_buffer[PATH_MAX] = "";
@@ -111,6 +112,7 @@ int stop_cache_daemon(char * argv[])
     // 设置命名空间
     if (set_name_space() != 0)
     {
+        close(inotify_fd);
         return -1;
     }
     
@@ -118,11 +120,13 @@ int stop_cache_daemon(char * argv[])
     if (s_daemon() != 0)
     {
         write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
+        close(inotify_fd);
         return -1;
     }
     if (s_signal() != 0)
     {
         write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
+        close(inotify_fd);
         return -1;
     }
     set_server_name(argv, SERVER_NAME);

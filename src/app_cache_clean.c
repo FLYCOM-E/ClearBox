@@ -9,7 +9,7 @@
 
 #define SERVER_NAME "CacheClean"
 
-#define MAX_APPLIST 3000                                     // 软件列表最大数量
+#define MAX_APPLIST 1000                                     // 软件列表最大数量
 #define DATA_DIR "/data/user"                                  // 软件数据根目录
 #define CARD_HOME "/mnt/expand"                             // 拓展储存根目录
 #define WHITELIST_FILE "ClearWhitelist.prop"                    // 白名单文件名

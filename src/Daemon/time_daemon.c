@@ -76,6 +76,7 @@ int time_daemon(char * argv[])
     if (inotify_wd == -1)
     {
         write_log(work_dir, SERVER_NAME, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
+        close(inotify_fd);
         return -1;
     }
     int watch = 1;
@@ -85,11 +86,13 @@ int time_daemon(char * argv[])
     if (s_daemon() != 0)
     {
         write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
+        close(inotify_fd);
         return -1;
     }
     if (s_signal() != 0)
     {
         write_log(work_dir, SERVER_NAME, L_SERVER_START_ERR, strerror(errno));
+        close(inotify_fd);
         return -1;
     }
     set_server_name(argv, SERVER_NAME);

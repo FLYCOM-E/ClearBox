@@ -46,6 +46,7 @@ int ncdu(char * path)
     if (path_dp == NULL)
     {
         write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, path, strerror(errno));
+        sqlite3_close(db);
         return -1;
     }
     
