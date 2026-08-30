@@ -1,15 +1,15 @@
-# Version 5.1.4-Beta (97)
+# Version 5.1.5 (98)
 
 # ADD
-- [BETA] Added storage analysis feature with custom storage analysis directory support
-- Added Russian language adaptation
+- NCDU history auto‑cleanup
+- Japanese language support
+- Korean language support
 
 # UPDATE
-- Timed no longer exits when no config is present at startup; it now sleeps and waits. The date KEY is no longer required in configs – it is automatically appended by the program. All fields are now case‑insensitive
-- App multilingual improvements: using global variables to dynamically replace UI text, reducing duplicate files
-- Improved F2FS GC node detection for better compatibility with more devices
-- Optimized file classification/cleaning with parallel processing for internal/external storage
+- NCDU history now uses SQLite3 for data storage
+- Optimized app wallpaper mode
+- Improved multi‑language matching and reduced redundant logic
 
 # FIX
-- Fixed excessive empty lines in LOG files
-- Fixed directory emptiness check errors in some scripts
+- Fixed language fallback on devices where `settings get system system_locales` returns null; now falls back to system default first
+- Fixed several memory leak issues

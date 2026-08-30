@@ -6,7 +6,7 @@ on:
       api_level:
         description: 'Android API Level'
         required: false
-        default: '23'
+        default: '27'
       ndk_version:
         description: 'NDK Version'
         required: false
@@ -106,7 +106,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          LANGS=("zh_CN" "en_US" "zh_TW" "ru_RU")
+          LANGS=("zh_CN" "en_US" "zh_TW" "ru_RU" "ko_KR" "ja_JP")
           ARCHS=("aarch64" "armv7a" "x86_64")
           
           VERSION=$(grep '^version=' ModuleFiles/module.prop | cut -f2 -d '=')
