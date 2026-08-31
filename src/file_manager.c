@@ -488,28 +488,36 @@ static int read_config(struct file_rules file_args[], char * config_file, int * 
     }
     
     long max = -1, min = -1;
-    // 循环读取文件格式配置每个后缀并放进数组
-    while (fscanf(config_file_fp, "%30s", file_args[* count].name) == 1)
+    char line[PATH_MAX] = "";
+    while (fgets(line, sizeof(line), config_file_fp))
     {
-        if (file_args[* count].name[0] == '#')
+        line[strcspn(line, "\n")] = 0;
+        if (strlen(line) < 1 ||
+           line[0] == '#')
         {
             continue;
         }
-        if (file_args[* count].name[0] == '@')
+        
+        int pos = 0, n = 0;
+        // 循环读取文件格式配置每个后缀并放进数组
+        while (* count < CONFIG_MAX_ARGS &&
+               sscanf(line + pos, "%30s%n", file_args[* count].name, &n) == 1)
         {
-            find_size(file_args, * count, &max, &min);
-            continue;
-        }
-        else
-        {
+            pos += n;
+            if (file_args[* count].name[0] == '#')
+            {
+                break;
+            }
+            if (file_args[* count].name[0] == '@')
+            {
+                find_size(file_args, * count, &max, &min);
+                continue;
+            }
+            
             file_args[* count].max_size = max;
             file_args[* count].min_size = min;
+            * count += 1;
         }
-        if (* count == CONFIG_MAX_ARGS)
-        {
-            break;
-        }
-        * count += 1;
     }
     fclose(config_file_fp);
     
@@ -542,7 +550,7 @@ static int find_size(struct file_rules file_args[], int index, long * max, long 
          * unit = NULL,
          * value_size = NULL;
     char str_cp[MAX_ARGS_SIZE] = "";
-    snprintf(str_cp, sizeof(str_cp), "%s", file_args[index].name);
+    snprintf(str_cp, sizeof(str_cp), "%s", file_args[index].name + 1);
     
     // === MAX ===
     key = strtok_r(file_args[index].name + 1, "=", &have);
@@ -596,7 +604,7 @@ static int find_size(struct file_rules file_args[], int index, long * max, long 
         }
     }
     
-    if ((* min) > (* max))
+    if ((* max) != -1 && (* min) > (* max))
     {
         fprintf(stderr, L_FM_MIN_SIZE_ERROR, now_config_name);
         (* min) = -1;

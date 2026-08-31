@@ -97,27 +97,38 @@ Configuration Method：
 
 Configuration Directory： **`/data/adb/wipe_cache/FileConfigs`**
 
-Configuration Approach： Create a **conf** document file in the configuration file directory. The file name will be displayed as the corresponding cleaning item name on the cleaning page. Fill in custom file extensions into this file, separated by spaces or line breaks. Comments are not supported.
+Configuration Approach： Create a **.conf** document file in the configuration file directory. The file name (without extension) will be displayed as the corresponding cleaning item name on the cleaning page. Fill in custom file extensions into this file, separated by spaces or line breaks. Lines beginning with `#` are comments.
 
-Add **`@MAX=<size/B/K/M/G>`**、**`MIN=<size/B/K/M/G>`** within the file to specify the target file size range. Parsing is overwritable — later declarations will override previous ones, allowing you to leverage this feature to create custom rules
+Add **`@MAX or MIN = < size / B or BYTE / K or KB / M or MB / G or GB >`** within the file to specify the target file size range. Parsing is overwritable — later declarations override previous ones, so you can leverage this to craft your own rules.
 
 Example：
 
 ``` conf
+# I am a comment
+
+# This declaration specifies to only organize zip and 7z files with a max of 1G and min of 10MB
+# but iso and img have no maximum size limit
+
 @MAX=1/G @MIN=10/M
+
 zip 7z
+
+# max -1 means unlimited (max no longer applies until the next declaration), but min still applies
+
 @max=-1
 iso img
+
+# Also supports KB, MB, GB &
+
 @MIN=10/KB exe
+@MIN=1/MB apk
 ```
 
-This declaration specifies to only organize **zip**、**7z** files with a maximum size of **1 G** and a minimum size of **10 MB**, while **iso**、**img** files have no maximum size restriction
+Note：**MIN** cannot be greater than **MAX**, otherwise **MIN** is automatically invalidated. Please reset **MAX** before setting a larger **MIN**. **MAX**, **MIN**, and size units are **case‑insensitive** (you may have noticed :⁠-⁠)），**Floating point numbers (decimals) are currently not supported**.
 
-Note: **-1** means unlimited. **MIN** cannot be greater than **MAX**, otherwise **MIN** will be automatically invalidated. **MAX**, **MIN**, and size units are **case-insensitive** (you may have already noticed :⁠-⁠)），**Floating point numbers (decimals) are currently not supported**
+The software/terminal cleaning page will be dynamically built based on the configuration files.
 
-The software/terminal cleaning page will be dynamically built based on the configuration files
-
-Scope： File cleaning, as well as file organization which will be covered later
+Scope： File cleaning, file organization.
 
 
 
