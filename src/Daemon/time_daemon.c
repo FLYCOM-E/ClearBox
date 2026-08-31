@@ -168,11 +168,23 @@ int time_daemon(char * argv[])
                 int run = 0;
                 if (config[i].in == 1)
                 {
-                    if (!(now_time_local.tm_hour >= config[i].start_hour &&
-                        now_time_local.tm_hour <= config[i].end_hour))
+                    if (config[i].start_hour > config[i].end_hour)
                     {
-                        i++;
-                        continue;
+                        if (!(now_time_local.tm_hour >= config[i].start_hour ||
+                            now_time_local.tm_hour <= config[i].end_hour))
+                        {
+                            i++;
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (!(now_time_local.tm_hour >= config[i].start_hour &&
+                            now_time_local.tm_hour <= config[i].end_hour))
+                        {
+                            i++;
+                            continue;
+                        }
                     }
                 }
                 switch (config[i].time_unit) // 匹配配置对应时间单位判断是否需要执行
