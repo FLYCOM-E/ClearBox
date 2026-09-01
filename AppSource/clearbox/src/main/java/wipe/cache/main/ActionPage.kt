@@ -35,6 +35,7 @@ import wipe.cache.krscript.ui.ParamsFileChooserRender
 import wipe.cache.krscript.ui.PageMenuLoader
 import android.os.Looper
 import android.os.Handler
+import android.util.Log
 
 class ActionPage : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)

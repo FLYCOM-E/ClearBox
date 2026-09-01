@@ -13,11 +13,11 @@ ext {
     
     kotlin_version = "2.3.0"
     kotlinx_coroutines_android = "1.11.0"
-    appcompat = "1.7.1"
+    appcompat = "1.8.0"
     legacy_support_v4 = "1.0.0"
     material = "1.14.0"
-    constraintlayout = "2.2.1"
-    core_ktx = "1.9.0"
+    constraintlayout = "2.2.2"
+    core_ktx = "1.19.0"
 }
 
 buildscript {
