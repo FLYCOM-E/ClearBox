@@ -1,3 +1,5 @@
+
+
 ![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/ClearBox.png)
 
 <div align="center">
@@ -235,7 +237,7 @@ If some software is abnormal, please add it to the whitelist yourself!
 
 
 
-## Magnet (one-click file classification
+## Magnet (one-click file classification)
 
 One-click organization of internal/external storage files, shares rules with file cleaning, supports custom organization directory
 
