@@ -134,5 +134,7 @@ Contributors will be listed here. Your name could be one of the first on this li
 ### Thanks to the following contributors:
 
 [**Amktiao**](https://www.coolapk.com/u/925348): indirectly provided the F2FS-GC principle
+
 [**Drsexo**](https://github.com/Drsexo): added the GitHub Action config
+
 [**Creeper005bili**](https://github.com/Creeper005bili): helped test the module early on

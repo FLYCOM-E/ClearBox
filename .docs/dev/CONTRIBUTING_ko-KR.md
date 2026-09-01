@@ -134,5 +134,7 @@ PR 요구사항: PR 하나 = 기능 하나 또는 수정 하나. 무엇을 변�
 ### 다음 기여자분들께 감사드립니다:
 
 [**Amktiao**](https://www.coolapk.com/u/925348): F2FS-GC 원리를 간접적으로 제공
+
 [**Drsexo**](https://github.com/Drsexo): Github Action 설정 추가
+
 [**Creeper005bili**](https://github.com/Creeper005bili): 모듈 초기 테스트에 도움

@@ -134,5 +134,7 @@ PR 要求：一個 PR = 一個功能或一個修復。請描述您更改了什�
 ### 感謝以下貢獻者：
 
 [**Amktiao**](https://www.coolapk.com/u/925348): 間接提供 F2FS-GC 原理
+
 [**Drsexo**](https://github.com/Drsexo): 添加 Github Action 設定
+
 [**Creeper005bili**](https://github.com/Creeper005bili): 在模組早期幫助測試

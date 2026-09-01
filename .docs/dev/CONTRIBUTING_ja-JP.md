@@ -134,5 +134,7 @@ PR 要件：PR 1 件 = 機能 1 つ、または修正 1 つ。何を変えたか
 ### 以下の貢献者に感謝します：
 
 [**Amktiao**](https://www.coolapk.com/u/925348): F2FS-GC の原理を間接的に提供
+
 [**Drsexo**](https://github.com/Drsexo): Github Action の設定を追加
+
 [**Creeper005bili**](https://github.com/Creeper005bili): モジュールの初期テストを支援

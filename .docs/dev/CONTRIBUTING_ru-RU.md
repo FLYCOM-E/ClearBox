@@ -134,5 +134,7 @@ export TARGET_ABI=aarch64   # на выбор: aarch64, armv7a, x86_64, riscv64
 ### Спасибо следующим контрибьюторам:
 
 [**Amktiao**](https://www.coolapk.com/u/925348): косвенно объяснил принцип F2FS-GC
+
 [**Drsexo**](https://github.com/Drsexo): добавил конфиг Github Action
+
 [**Creeper005bili**](https://github.com/Creeper005bili): помогал тестировать модуль на раннем этапе
