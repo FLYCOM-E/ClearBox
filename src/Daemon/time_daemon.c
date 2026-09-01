@@ -9,7 +9,6 @@
 
 #define SERVER_NAME "ClearBox Timed"
 
-#define WAIT_TIME 60                            // 单次循环等待秒数（自动对齐）
 #define MAX_CONFIG 512                         // 最大配置数量
 #define MAX_CONFIG_NAME 256                 // 配置文件名称最大长度
 #define CONFIG_LINE_MAX_LEN 512              // 配置文件行最大长度
@@ -57,16 +56,8 @@ int time_daemon(char * argv[])
     char config_dir[strlen(work_dir) + sizeof(CONFIG_PATH_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_PATH_NAME);
     
-    volatile int read_config_count = 0;
-    struct config_struct config[MAX_CONFIG] = {0}; // 创建结构体
-    if (read_config(config_dir, &read_config_count, config, "") != 0)
-    {
-        // 错误信息由 read_config 函数报告
-        return -1;
-    }
-    
     // INOTIFY
-    int inotify_fd = inotify_init1(IN_NONBLOCK);
+    int inotify_fd = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
     if (inotify_fd == -1)
     {
         write_log(work_dir, SERVER_NAME, L_TD_WATCH_CONFIG_DIR_ERROR, strerror(errno));
@@ -81,6 +72,14 @@ int time_daemon(char * argv[])
     }
     int watch = 1;
     char inotify_buffer[PATH_MAX] = "";
+    
+    volatile int read_config_count = 0;
+    struct config_struct config[MAX_CONFIG] = {0}; // 创建结构体
+    if (read_config(config_dir, &read_config_count, config, "") != 0)
+    {
+        close(inotify_fd);
+        return -1; // 错误信息由 read_config 函数报告
+    }
     
     // Daemon
     if (s_daemon() != 0)
@@ -143,7 +142,7 @@ int time_daemon(char * argv[])
         {
             if (access(config_dir, F_OK) == 0)
             {
-                inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
+                inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF | IN_MOVED_TO);
                 watch = 1;
                 continue;
             }
@@ -213,15 +212,8 @@ int time_daemon(char * argv[])
                     default:
                         break;
                 }
-                if (run == 1) // 执行并更新
+                if (run == 1) // 检查、更新并执行（如未停用）
                 {
-                    running(config[i].run);
-                    // 如果有设置通知则发送
-                    if (config[i].post == 1)
-                    {
-                        post(config[i].config_name, config[i].title, config[i].message);
-                    }
-                    
                     // 配置文件
                     char config_file[strlen(config_dir) + strlen(config[i].config_name) + 2];
                     snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, config[i].config_name);
@@ -239,7 +231,7 @@ int time_daemon(char * argv[])
                         // 更新 DATE
                         inotify_rm_watch(inotify_fd, (uint32_t)inotify_wd);
                         int success = s_sed(config_file, "date=", line, 1, 1);
-                        inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF);
+                        inotify_wd = inotify_add_watch(inotify_fd, config_dir, IN_CLOSE_WRITE | IN_CREATE | IN_DELETE_SELF | IN_MOVED_TO);
                         
                         // Check Errno
                         if (success != 0 &&
@@ -252,6 +244,15 @@ int time_daemon(char * argv[])
                     else
                     {
                         config[i].enable = 0;
+                        i++;
+                        continue;
+                    }
+                    
+                    running(config[i].run);
+                    // 如果有设置通知则发送
+                    if (config[i].post == 1)
+                    {
+                        post(config[i].config_name, config[i].title, config[i].message);
                     }
                     
                     // 更新时间戳
@@ -386,6 +387,7 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
             if (last_index == -1)
             {
                 write_log(work_dir, SERVER_NAME, L_TD_MAX_CONFIG, MAX_CONFIG);
+                closedir(config_dir_dp);
                 return -1;
             }
             else
@@ -435,12 +437,8 @@ static int read_config(char * config_dir, volatile int * read_config_count, stru
 static int get_config(char * config_file, char * config_file_name, struct config_struct config[], int count)
 {
     int line_count = 0; // 行计数
-    int time_ = 0, run_ = 0; // 记录是否解析标志位
+    int time_ = 0, date_ = 0, run_ = 0, in_ = 0, post_ = 0; // 记录是否解析标志位
     char line[CONFIG_LINE_MAX_LEN] = {0};
-    
-    // 热更新 & 重置部分字段
-    config[count].post = 0;
-    config[count].in = 0;
     
     // 非普通文件即失败，同时提示这里有非文件
     FILE * config_fp = fopen(config_file, "r");
@@ -449,6 +447,11 @@ static int get_config(char * config_file, char * config_file_name, struct config
         write_log(work_dir, SERVER_NAME, L_OPEN_FILE_FAILED, config_file_name, strerror(errno));
         return -1;
     }
+    
+    // 热更新 & 重置部分字段
+    config[count].post = 0;
+    config[count].in = 0;
+    config[count].old_time = time(NULL); // 这里预设置默认值，因为后面可能不处理
     
     while (fgets(line, sizeof(line), config_fp))
     {
@@ -459,9 +462,6 @@ static int get_config(char * config_file, char * config_file_name, struct config
         {
             continue;
         }
-        
-        // 这里预设置默认值，因为后面可能不处理
-        config[count].old_time = time(NULL);
         
         // 解析 KEY/VALUE
         char * line_p = NULL;
@@ -476,17 +476,25 @@ static int get_config(char * config_file, char * config_file_name, struct config
         // 匹配提取键值读入结构体
         if (strcasecmp(key, "TIME") == 0)
         {
+            if (time_ == 1)
+            {
+                continue;
+            }
+            
             char * value_p = NULL;
             char * time_str = strtok_r(value, "/", &value_p);
             char * unit_str = strtok_r(NULL, "/", &value_p);
             if (time_str && unit_str &&
-                strtol(time_str, NULL, 10) != 0 &&
                 (toupper(unit_str[0]) == 'D' ||
                 toupper(unit_str[0]) == 'H' ||
                 toupper(unit_str[0]) == 'M'))
             {
                 config[count].time_unit = (char)toupper(unit_str[0]);
                 config[count].time_num = strtol(time_str, NULL, 10);
+                if (config[count].time_num <= 0)
+                {
+                    continue;
+                }
                 time_ = 1; // 已读取 TIME
             }
             else
@@ -497,6 +505,11 @@ static int get_config(char * config_file, char * config_file_name, struct config
         }
         else if (strcasecmp(key, "DATE") == 0)
         {
+            if (date_ == 1)
+            {
+                continue;
+            }
+            
             // 这里不做检查，如空则设置为当前时间
             config[count].old_time = (time_t)strtol(value, NULL, 10);
             if (config[count].old_time <= 0)
@@ -506,10 +519,20 @@ static int get_config(char * config_file, char * config_file_name, struct config
                 {
                     config[count].old_time = 0;
                 }
+                else
+                {
+                    config[count].old_time = time(NULL);
+                }
             }
+            date_ = 1;
         }
         else if (strcasecmp(key, "RUN") == 0)
         {
+            if (run_ == 1)
+            {
+                continue;
+            }
+            
             // 不检查命令（不好做检查）
             if (strlen(value) >= MAX_COMMAND_LEN)
             {
@@ -517,12 +540,14 @@ static int get_config(char * config_file, char * config_file_name, struct config
                 continue;
             }
             snprintf(config[count].run, sizeof(config[count].run), "%s", value);
-            run_ = 1; // 已读取 RUN
+            run_ = 1;
         }
         else if (strcasecmp(key, "IN") == 0)
         {
-            config[count].start_hour = 0;
-            config[count].end_hour = 0;
+            if (in_ == 1)
+            {
+                continue;
+            }
             
             char * value_p = NULL;
             char * start_tm_str = strtok_r(value, "/", &value_p);
@@ -544,6 +569,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
                 config[count].start_hour = start_hour;
                 config[count].end_hour = end_hour;
                 config[count].in = 1;
+                in_ = 1;
             }
             else
             {
@@ -553,22 +579,40 @@ static int get_config(char * config_file, char * config_file_name, struct config
         }
         else if (strcasecmp(key, "POST") == 0)
         {
-            char * value_p = NULL;
-            char * message = strchr(value, '/');
-            char * title = strtok_r(value, "/", &value_p);
-            if (title && message)
+            if (post_ == 1)
+            {
+                continue;
+            }
+            
+            char * title = NULL;
+            char * message = NULL;
+            char * chr = strchr(value, '/');
+            if (chr != NULL)
+            {
+                * chr = '\0';
+                title = value;
+                message = chr + 1;
+            }
+            else
+            {
+                write_log(work_dir, SERVER_NAME, L_TD_LINE_ERR_VALUE, config_file_name, line_count, key);
+                continue;
+            }
+            
+            if (strlen(title) > 0 && strlen(message) > 0)
             {
                 if (strlen(title) > MAX_TITLE_LEN)
                 {
                     write_log(work_dir, SERVER_NAME, L_TD_W_POST_TITLE_TOOLONG, config_file_name);
                 }
-                if (strlen(message + 1) > MAX_MESSAGE_LEN)
+                if (strlen(message) > MAX_MESSAGE_LEN)
                 {
                     write_log(work_dir, SERVER_NAME, L_TD_W_POST_MESSAGE_TOOLONG, config_file_name);
                 }
                 snprintf(config[count].title, sizeof(config[count].title), "%s", title);
-                snprintf(config[count].message, sizeof(config[count].message), "%s", message + 1);
+                snprintf(config[count].message, sizeof(config[count].message), "%s", message);
                 config[count].post = 1;
+                post_ = 1;
             }
             else
             {
@@ -587,6 +631,7 @@ static int get_config(char * config_file, char * config_file_name, struct config
        run_ != 1)
     {
         write_log(work_dir, SERVER_NAME, L_TD_CONFIG_ERROR, config_file_name);
+        config[count].enable = 0;
         fclose(config_fp);
         return -1;
     }
