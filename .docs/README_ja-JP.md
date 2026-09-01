@@ -284,4 +284,6 @@ post=Test Run/Sync が実行されました
 
 モジュールの機能に関するご意見・ご提案をお待ちしております。ありがとうございます。
 
+[**👉 開発ガイド**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_ja-JP.md)
+
 モジュール **ClearBox App** は [**Kr-Script**](https://github.com/helloklf/kr-scripts) プロジェクトをベースに作成されました。このプロジェクトに感謝します。

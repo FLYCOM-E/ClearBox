@@ -284,4 +284,6 @@ post=Test Run/已运行 Sync
 
 欢迎各位对模块功能提出意见 & 建议，谢谢
 
+[**👉 开发指南**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_zh-CN.md)
+
 模块 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 项目制作而成，感谢该项目

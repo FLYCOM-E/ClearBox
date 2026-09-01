@@ -284,4 +284,6 @@ post=Test Run/Sync 실행됨
 
 모듈 기능에 대한 의견 & 제안을 환영합니다. 감사합니다.
 
+[**👉 개발 가이드**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_ko-KR.md)
+
 모듈 **ClearBox App**은 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 프로젝트를 기반으로 제작되었으며, 이 프로젝트에 감사드립니다.

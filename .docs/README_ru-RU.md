@@ -284,4 +284,6 @@ post=Test Run/Запущен Sync
 
 Приветствуем ваши замечания и предложения по функциям модуля. Спасибо.
 
+[**👉 Руководство для разработчиков**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_ru-RU.md)
+
 Приложение **ClearBox App** использует [**Kr-Script**](https://github.com/helloklf/kr-scripts) — спасибо этому проекту！

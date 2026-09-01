@@ -284,4 +284,6 @@ post=Test Run/已執行 Sync
 
 歡迎各位對模組功能提出意見 & 建議，謝謝
 
+[**👉 开发指南**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_zh-TW.md)
+
 模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 項目製作而成，感謝該項目
