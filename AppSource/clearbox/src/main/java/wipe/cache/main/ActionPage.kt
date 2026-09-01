@@ -413,13 +413,25 @@ class ActionPage : AppCompatActivity() {
     }
     
     private fun setExcludeFromRecents() {
-        if (isTaskRoot) {
-            try {
-                val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                for (task in service.appTasks) {
-                    if (task.taskInfo?.taskId == this.taskId) task.setExcludeFromRecents(true)
+        if (!isTaskRoot) return
+        try {
+            val service = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val currentId = taskId
+            for (task in service.appTasks) {
+                val info = task.taskInfo ?: continue
+                val match = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    info.taskId == currentId
+                } else {
+                    @Suppress("DEPRECATION")
+                    info.persistentId == currentId
                 }
-            } catch (ex: Exception) {}
+                if (match) {
+                    @Suppress("DEPRECATION")
+                    task.setExcludeFromRecents(true)
+                }
+            }
+        } catch (t: Throwable) {
+            Log.e("ActionPage", "setExcludeFromRecents failed", t)
         }
     }
 }
