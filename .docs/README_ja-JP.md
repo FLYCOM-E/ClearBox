@@ -24,7 +24,7 @@
 
 実行時間は市販の一般的なクリーンアプリに比べて✈️のように速く、自動化機能は非常に低消費の **Timed** コンポーネントが担当し、オーバーヘッドは無視できます。バックグラウンドプロセスはなく、アプリへの強制バインドも不要で、フル機能のターミナル **TUI** をサポートしています。
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home_clean.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_pages.png)
 
 __[**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) および各種フォークと互換性があります__
 
@@ -169,8 +169,6 @@ iso img
 ## 自動クリーン
 
 機能の自動化は、**Timed** コンポーネントによって超低消費電力で実行されます。
-
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/auto_clean.png)
 
 ### **•  知っていますか？**
 

@@ -24,7 +24,7 @@
 
 Время выполнения по сравнению с обычными приложениями-чистильщиками на рынке — быстрее чем ✈️. Автоматизация обеспечивается компонентом **Timed** с минимальным потреблением ресурсов — его можно просто игнорировать. Нет фоновых процессов, нет принудительной привязки к приложению, поддерживается полнофункциональный терминальный интерфейс **TUI**.
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home_clean.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_pages.png)
 
 __Совместим с [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://github.com/bmax121/APatch)、[**KernelSU**](https://github.com/tiann/KernelSU) и их различными форками__
 
@@ -169,8 +169,6 @@ iso img
 ## Автоматическая очистка
 
 Автоматизация функций — выполняется компонентом **Timed** с крайне низким потреблением ресурсов.
-
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/auto_clean.png)
 
 ### **•  Знаете ли вы？**
 

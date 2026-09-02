@@ -24,7 +24,7 @@
 
 실행 시간은 일반적인 클리닝 앱에 비해 ✈️처럼 빠르며, 자동화 기능은 극도로 낮은 점유율의 **Timed** 구성 요소 하나만으로 작동하므로 오버헤드는 무시할 수 있습니다. 백그라운드 프로세스가 없고, 앱을 강제로 바인딩하지 않으며, 완전한 기능의 터미널 **TUI**를 지원합니다.
 
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_home_clean.png)
+![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/app_pages.png)
 
 __[**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**](https://github.com/bmax121/APatch), [**KernelSU**](https://github.com/tiann/KernelSU) 및 다양한 포크와 호환됩니다.__
 
@@ -169,8 +169,6 @@ iso img
 ## 자동 정리
 
 기능 자동화는 **Timed** 구성 요소에 의해 구동되며 초저전력으로 작동합니다.
-
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/.Images/auto_clean.png)
 
 ### **•  알고 계셨나요？**
 
