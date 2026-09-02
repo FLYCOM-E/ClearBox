@@ -35,7 +35,7 @@ __Совместим с [**Magisk**](https://github.com/topjohnwu/Magisk)、[**A
 
 ### [**Релизы**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-### [**CI-сборки**](https://github.com/FLYCOM-E/ClearBox/actions)
+### [**CI-сборки**](https://github.com/FLYCOM-E/ClearBox/actions/workflows/building_modules.yml)
 
 
 

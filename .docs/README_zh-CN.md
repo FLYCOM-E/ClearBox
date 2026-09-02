@@ -35,7 +35,7 @@ __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 ### [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-### [**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions)
+### [**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions/workflows/building_modules.yml)
 
 
 

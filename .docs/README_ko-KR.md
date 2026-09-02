@@ -35,7 +35,7 @@ __[**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**](https://github
 
 ### [**릴리스 버전**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-### [**CI 빌드**](https://github.com/FLYCOM-E/ClearBox/actions)
+### [**CI 빌드**](https://github.com/FLYCOM-E/ClearBox/actions/workflows/building_modules.yml)
 
 
 
