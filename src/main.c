@@ -38,6 +38,13 @@ int main(int argc, char * argv[])
         help(argv);
         return -1;
     }
+    if (strcasecmp(argv[1], "get-lang") == 0 ||
+       strcasecmp(argv[1], "-get-lang") == 0 ||
+       strcasecmp(argv[1], "--get-lang") == 0)
+    {
+        printf("%s\n", L_LANG_NAME);
+        return 0;
+    }
     
     // 设置命名空间
     if (set_name_space() != 0)
@@ -316,12 +323,6 @@ int main(int argc, char * argv[])
                 exit_code = module_config(argv[2], argv[3]);
             }
         }
-    }
-    else if (strcasecmp(argv[1], "get-lang") == 0 ||
-            strcasecmp(argv[1], "-get-lang") == 0 ||
-            strcasecmp(argv[1], "--get-lang") == 0)
-    {
-        printf("%s\n", L_LANG_NAME);
     }
     else if (strcasecmp(argv[1], "help") == 0 ||
             strcasecmp(argv[1], "-help") == 0 ||
