@@ -13,12 +13,13 @@
 
 
 
-   # 🌍 ？
+# 🌍 ？
+
 > **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** **Русский** **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|** [**日本語**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ja-JP.md) **|**
 
 
 
-   # Что такое **ClearBox**？
+# Что такое **ClearBox**？
 
 **ClearBox** — это многофункциональный, глубокий и быстрый инструмент-«коробка» для очистки, который позволяет одним нажатием освободить место на устройстве, упорядочить и заблокировать хранилище, удалить кэш приложений, установочные пакеты, архивы, мусор, пустые папки, а также подавить создание кэша, классифицировать и очищать файлы, блокировать обновления и установку приложений. Поддерживаются пользовательские правила очистки, классификации файлов и белые списки, а также автоматизация задач через встроенную систему модуля.
 
@@ -30,26 +31,15 @@ __Совместим с [**Magisk**](https://github.com/topjohnwu/Magisk)、[**A
 
 
 
-   # Установка？
+# Установка？
 
-   ## [**Релизы**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI-сборки**](https://github.com/FLYCOM-E/ClearBox/actions) или ручная сборка：
-``` shell
-#(Настройте NDK и установите переменную $ANDROID_NDK_HOME в корневой каталог NDK)
+### [**Релизы**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-sudo apt install zip make
-
-git clone https://github.com/FLYCOM-E/ClearBox
-cd ClearBox/ && chmod +x *
-
-export TARGET_API=23       #(можно изменить под нужную версию API)
-export TARGET_ABI=aarch64  #(доступны aarch64、armv7a、x86_64、riscv64)
-
-./build.sh                 #(--build-apk: доступны release)
-```
+### [**CI-сборки**](https://github.com/FLYCOM-E/ClearBox/actions)
 
 
 
-   # Способ использования：
+# Способ использования：
 
 > ：Установите приложение модуля **ClearBox** (спросят во время установки)
 
@@ -57,8 +47,10 @@ export TARGET_ABI=aarch64  #(доступны aarch64、armv7a、x86_64、riscv6
 
 
 
-   # Краткое описание функций：
-   
+# Краткое описание функций：
+
+
+
 ## Оптимизация и очистка в один клик
 
 Быстрая оптимизация и очистка в один клик — эффект аналогичен регулярной оптимизации. Включает очистку кэша, мусора, быструю дисковую **GC** и другое. В зависимости от настроек модуля также может выполнять очистку и классификацию файлов.

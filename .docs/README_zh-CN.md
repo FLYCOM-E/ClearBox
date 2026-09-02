@@ -13,12 +13,13 @@
 
 
 
-   # 🌍 ？
+# 🌍 ？
+
 > **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** **简体中文** **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|** [**日本語**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ja-JP.md) **|**
 
 
 
-   # 什么是 **ClearBox** ？
+# 什么是 **ClearBox** ？
 
 **ClearBox** 是一个多功能、深度、快速的清理盒子，可为您的设备一键腾空空间、储存整理、锁定，软件缓存、安装包、压缩包、垃圾、空文件夹，压制缓存、文件归类、清空，阻止软件更新/安装一网打尽，自动优化/清理、文件归类功能，支持添加自定义清理规则和文件清理/整理归类、白名单等各种规则，支持利用模块自动化系统添加自定义任务
 
@@ -30,26 +31,15 @@ __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 
-   # 安装？
+# 安装？
 
-   ## [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手动构建：
-``` shell
-#(请配置 NDK 并设置变量 $ANDROID_NDK_HOME 为 NDK 根目录路径)
+### [**发行版本**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-sudo apt install zip make
-
-git clone https://github.com/FLYCOM-E/ClearBox
-cd ClearBox/ && chmod +x *
-
-export TARGET_API=23       #(可以自行根据需要调整目标api版本)
-export TARGET_ABI=aarch64  #(可选aarch64、armv7a、x86_64、riscv64)
-
-./build.sh                 #(--build-apk: 可选: release)
-```
+### [**CI构建**](https://github.com/FLYCOM-E/ClearBox/actions)
 
 
 
-   # 操作方式：
+# 操作方式：
 
 > ：安装使用模块 **ClearBox** 软件（会在模块安装时询问
 
@@ -57,7 +47,9 @@ export TARGET_ABI=aarch64  #(可选aarch64、armv7a、x86_64、riscv64)
 
 
 
-   # 简介功能：
+# 简介功能：
+
+
    
 ## 一键优化清理
 

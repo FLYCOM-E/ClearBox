@@ -13,7 +13,8 @@
 
 
 
-   # 🌍 ？
+# 🌍 ？
+
 > **|** **English** **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|** [**日本語**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ja-JP.md) **|**
 
 
@@ -30,26 +31,15 @@ __Compatible with [**Magisk**](https://github.com/topjohnwu/Magisk), [**APatch**
 
 
 
-   # Installation?
+# Installation?
 
-   ## [**Release Version**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI Build**](https://github.com/FLYCOM-E/ClearBox/actions) or Manual Build：
-``` shell
-#(Please configure the NDK and set the variable $ANDROID_NDK_HOME to the NDK root directory path)
+### [**Release Version**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-sudo apt install zip make
-
-git clone https://github.com/FLYCOM-E/ClearBox
-cd ClearBox/ && chmod +x *
-
-export TARGET_API=23       #(Can be adjusted according to the required target API version)
-export TARGET_ABI=aarch64  #(Options: aarch64, armv7a, x86_64, riscv64)
-
-./build.sh                 #(--build-apk: Options: release)
-```
+### [**CI Build**](https://github.com/FLYCOM-E/ClearBox/actions)
 
 
 
-   # How to use:
+# How to use:
 
 > ：Install and use the module **ClearBox** app (asked during module installation
 
@@ -57,8 +47,10 @@ export TARGET_ABI=aarch64  #(Options: aarch64, armv7a, x86_64, riscv64)
 
 
 
-   # Brief functions:
-   
+# Brief functions:
+
+
+
 ## One-click optimization & cleanup
 
 Perform fast one-click optimization/cleanup, the effect is equivalent to periodic optimization. Including cache cleanup, junk cleanup, fast disk **GC**, etc. According to module settings, file cleanup/organization can also be run

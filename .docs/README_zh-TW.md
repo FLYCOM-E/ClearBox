@@ -13,7 +13,8 @@
 
 
 
-   # 🌍 ？
+# 🌍 ？
+
 > **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** **正體中文** **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|** [**日本語**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ja-JP.md) **|**
 
 
@@ -30,26 +31,15 @@ __兼容 [**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https:
 
 
 
-   # 安裝？
+# 安裝？
 
-   ## [**發行版本**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CI建構**](https://github.com/FLYCOM-E/ClearBox/actions) 或 手動建構：
-``` shell
-#(請先安裝並設定 NDK，將變數 $ANDROID_NDK_HOME 指向 NDK 根目錄)
+### [**發行版本**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-sudo apt install zip make
-
-git clone https://github.com/FLYCOM-E/ClearBox
-cd ClearBox/ && chmod +x *
-
-export TARGET_API=23       #(可依需求自行調整目標 API 版本)
-export TARGET_ABI=aarch64  #(可選 aarch64、armv7a、x86_64、riscv64)
-
-./build.sh                 #(--build-apk: 可選: release)
-```
+### [**CI建構**](https://github.com/FLYCOM-E/ClearBox/actions)
 
 
 
-   # 操作方式：
+# 操作方式：
 
 > ：安裝使用模組 **ClearBox** 軟體（會在模組安裝時詢問
 
@@ -57,7 +47,9 @@ export TARGET_ABI=aarch64  #(可選 aarch64、armv7a、x86_64、riscv64)
 
 
 
-   # 簡介功能：
+# 簡介功能：
+
+
    
 ## 一鍵最佳化清理
 

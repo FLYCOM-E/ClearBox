@@ -13,12 +13,13 @@
 
 
 
-   # 🌍 ？
+# 🌍 ？
+
 > **|** [**English**](https://github.com/FLYCOM-E/ClearBox/blob/main/README.md) **|** [**简体中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-CN.md) **|** [**正體中文**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_zh-TW.md) **|** [**Русский**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ru-RU.md) **|** [**한국어**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/README_ko-KR.md) **|** **日本語** **|**
 
 
 
-   # **ClearBox** とは？
+# **ClearBox** とは？
 
 **ClearBox** は多機能で深い、高速なクリーンボックスです。ワンクリックでデバイスの空き容量を増やし、ストレージを整理・ロックし、アプリのキャッシュ、インストールパッケージ、圧縮ファイル、ゴミ、空フォルダを削除し、キャッシュの生成を抑制し、ファイルを分類・クリアし、アプリの更新やインストールをブロックします。自動最適化・クリーン、ファイル分類機能も備え、カスタムクリーンルールやファイルクリーン/整理ルール、ホワイトリストなどを追加でき、モジュールの自動化システムを活用してカスタムタスクも追加可能です。
 
@@ -30,26 +31,15 @@ __[**Magisk**](https://github.com/topjohnwu/Magisk)、[**APatch**](https://githu
 
 
 
-   # インストール方法？
+# インストール方法？
 
-   ## [**リリース版**](https://github.com/FLYCOM-E/ClearBox/releases)、[**CIビルド**](https://github.com/FLYCOM-E/ClearBox/actions) または手動ビルド：
-``` shell
-#（NDK を設定し、変数 $ANDROID_NDK_HOME を NDK のルートディレクトリパスに設定してください）
+### [**リリース版**](https://github.com/FLYCOM-E/ClearBox/releases)
 
-sudo apt install zip make
-
-git clone https://github.com/FLYCOM-E/ClearBox
-cd ClearBox/ && chmod +x *
-
-export TARGET_API=23       #（必要に応じてターゲット API バージョンを調整してください）
-export TARGET_ABI=aarch64  #（オプション：aarch64、armv7a、x86_64、riscv64）
-
-./build.sh                 #（--build-apk：オプション：release）
-```
+### [**CIビルド**](https://github.com/FLYCOM-E/ClearBox/actions)
 
 
 
-   # 操作方法：
+# 操作方法：
 
 > ：モジュール ClearBox アプリをインストールして使用します（モジュールインストール時に確認があります）
 
@@ -57,8 +47,10 @@ export TARGET_ABI=aarch64  #（オプション：aarch64、armv7a、x86_64、ris
 
 
 
-   # 機能紹介：
-   
+# 機能紹介：
+
+
+
 ## ワンクリック最適化＆クリーン
 
 迅速なワンクリック最適化／クリーンを実行し、定期最適化と同等の効果を発揮します。キャッシュクリア、ゴミクリア、高速ディスク **GC** などを含み、モジュール設定に応じてファイルクリーン／分類も実行できます。
