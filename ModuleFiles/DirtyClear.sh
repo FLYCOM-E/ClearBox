@@ -35,6 +35,7 @@ mv "$work_dir/文件格式配置" "$work_dir/$file_config_dir"
 mv "$work_dir/清理规则" "$work_dir/$app_config_dir"
 mv "$work_dir/清理配置" "$work_dir/$storage_config_dir"
 mv "$work_dir/TimedConfig" "$work_dir/$timed_config_dir"
+mv "$work_dir/RunStart" "$work_dir/LockCacheList"
 
 rm -f "$work_dir/$file_config_dir/安装包.conf"
 rm -f "$work_dir/$file_config_dir/压缩包.conf"

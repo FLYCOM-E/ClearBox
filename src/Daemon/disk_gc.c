@@ -148,16 +148,6 @@ static int f2fs_gc(char * argv[])
         return -1;
     }
     
-    long page_size = 4096;
-    FILE * page_size_p = popen("getconf PAGE_SIZE", "r");
-    if (page_size_p)
-    {
-        char page_size_str[64] = "";
-        fgets(page_size_str, sizeof(page_size_str), page_size_p);
-        page_size = strtol(page_size_str, NULL, 10);
-        pclose(page_size_p);
-    }
-    
     // Daemon
     if (s_daemon() != 0)
     {
@@ -195,7 +185,7 @@ static int f2fs_gc(char * argv[])
         {
             fgets(cache, sizeof(cache), sysfs_file_fp);
             fclose(sysfs_file_fp);
-            if (strtol(cache, NULL, 10) == 0)
+            if (strtol(cache, NULL, 10) == 0 || get_f2fs_dirty(f2fs_sysfs_dirty_file) <= min_dirty_size)
             {
                 post(SERVER_NAME, SERVER_NAME, L_FG_END);
                 break; // GC 完成
@@ -222,24 +212,13 @@ static int f2fs_gc(char * argv[])
     f2fs_dirty = get_f2fs_dirty(f2fs_sysfs_dirty_file);
     f2fs_free = get_f2fs_free(f2fs_sysfs_free_file);
     
-    // 如果脏段反增说明可能此设备不支持或 GC 未完全完成
     if (old_f2fs_dirty > f2fs_dirty)
     {
-        long byte_size = 0;
-        if (page_size == 4096)
-        {
-            byte_size = (((old_f2fs_dirty - f2fs_dirty) * 2) * 1024 * 1024);
-        }
-        else
-        {
-            byte_size = (((old_f2fs_dirty - f2fs_dirty) * 8) * 1024 * 1024);
-        }
-        
         char unit = '\0';
-        double size = byte_to_size(byte_size, &unit);
+        double size = byte_to_size((((old_f2fs_dirty - f2fs_dirty) * 2) * 1024 * 1024), &unit);
         post(SERVER_NAME, SERVER_NAME, L_FG_END_DIRTY, (old_f2fs_dirty - f2fs_dirty), size, unit);
     }
-    else
+    else // 如果脏段反增说明可能此设备不支持或 GC 未完全完成
     {
         post(SERVER_NAME, SERVER_NAME, L_FG_END_DIRTY_2, (f2fs_dirty - old_f2fs_dirty));
     }

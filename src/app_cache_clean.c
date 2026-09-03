@@ -70,7 +70,7 @@ int app_cache_clean(int mode)
             {
                 while (app_count < MAX_APPLIST && fgets(package_buffer, sizeof(package_buffer), package_list_fp))
                 {
-                    snprintf(package_list[app_count], sizeof(package_list[app_count]), package_buffer + 8);
+                    snprintf(package_list[app_count], sizeof(package_list[app_count]), "%s", package_buffer + 8);
                     package_list[app_count][strcspn(package_list[app_count], "\n")] = 0;
                     app_count++;
                 }
@@ -85,7 +85,7 @@ int app_cache_clean(int mode)
             FILE * whitelist_file_fp = fopen(whitelist_file, "r");
             if (whitelist_file_fp)
             {
-                while (fgets(white_list[whitelist_count], sizeof(white_list[whitelist_count]), whitelist_file_fp))
+                while (whitelist_count < MAX_APPLIST && fgets(white_list[whitelist_count], sizeof(white_list[whitelist_count]), whitelist_file_fp))
                 {
                     white_list[whitelist_count][strcspn(white_list[whitelist_count], "\n")] = '\0';
                     whitelist_count++;
@@ -149,6 +149,11 @@ int app_cache_clean(int mode)
     else if (mode == 1) // 系统缓存清理
     {
         return system_cache_clean();
+    }
+    else
+    {
+        fprintf(stderr, L_MODE_ERR, "NULL");
+        return -1;
     }
     
     return 0;
@@ -263,7 +268,8 @@ static int system_cache_clean(void)
     while ((uid_dir = readdir(uid_dir_dp)))
     {
         if (strcmp(uid_dir -> d_name, ".") == 0 ||
-           strcmp(uid_dir -> d_name, "..") == 0)
+           strcmp(uid_dir -> d_name, "..") == 0 ||
+           strspn(uid_dir -> d_name, "0123456789") != strlen(uid_dir -> d_name))
         {
             continue;
         }

@@ -10,70 +10,69 @@
 #define SERVER_NAME "StopCached"
 
 #define DATA_DIR "/data/data"               // 软件数据根目录
-#define ROM_NAME "RunStart"               // 储存文件名
+#define ROM_NAME "LockCacheList"         // 储存文件名
 #define WHITELIST_NAME "whitelist.prop"    // 白名单文件名
-#define MAX_WHITELIST_APP 512            // 最大白名单数量
+#define MAX_WHITELIST_APP 512           // 最大白名单数量
 
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
 
-static void set_app_cache(char * top_app,
-                        char * reset_app,
-                        int skip_reset,
-                        char whitelist[][NAME_MAX]);
-static int read_whitelist(char * whitelist_file,
-                          char whitelist[][NAME_MAX],
-                          int * read_whitelist_app);
+static void set_app_cache(char * top_app, char * reset_app, int skip_reset, char whitelist[][NAME_MAX], int read_whitelist_app);
+static int read_whitelist(char * whitelist_file, char whitelist[][NAME_MAX], int * read_whitelist_app);
 
 int stop_cache_daemon(char * argv[])
 {
-    // 定义储存文件
+    // 定义配置文件
     char rom_file[strlen(work_dir) + sizeof(ROM_NAME) + 2],
          whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 2];
     snprintf(rom_file, sizeof(rom_file), "%s/%s", work_dir, ROM_NAME);
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);
     
-    // 定义待处理 app 临时储存变量
     char top_app_list[5][NAME_MAX] = {0},
          reset_app[NAME_MAX] = "",
          whitelist[MAX_WHITELIST_APP][NAME_MAX] = {0};
     
-    // 提取 RunStart 储存值
+    // 提取 LockCacheList 储存值
     if (access(rom_file, F_OK) == 0)
     {
-        char tmp[16] = "";
-        char rom_key_line[NAME_MAX] = "";
-        char * rom_key_line_p = NULL;
-        FILE * rom_file_fp_r = fopen(rom_file, "r");
-        if (rom_file_fp_r)
+        char line[NAME_MAX] = "",
+             tmp_key[16] = "";
+        char * key = NULL,
+             * line_p = NULL;
+        
+        FILE * rom_file_fp = fopen(rom_file, "r");
+        if (rom_file_fp)
         {
-            while (fgets(rom_key_line, sizeof(rom_key_line), rom_file_fp_r) != NULL)
+            while (fgets(line, sizeof(line), rom_file_fp) != NULL)
             {
-                rom_key_line[strcspn(rom_key_line, "\n")] = 0;
-                // 如没找到对应值或值为空则跳过（保持原空值）
-                int i = 0;
-                while (i <= 4)
+                line[strcspn(line, "\n")] = 0;
+                
+                key = line;
+                line_p = strchr(line, '=');
+                if (line_p)
                 {
-                    snprintf(tmp, sizeof(tmp), "%d=", i + 1);
-                    if (strstr(rom_key_line, tmp))
-                    {
-                        rom_key_line_p = strchr(rom_key_line, '=');
-                        if (rom_key_line_p)
-                        {
-                            snprintf(top_app_list[i], sizeof(top_app_list[i]), "%s", rom_key_line_p + 1);
-                        }
-                    }
-                    i++;
+                    * line_p = '\0';
                 }
-                if (strstr(rom_key_line, "reset="))
+                else
                 {
-                    rom_key_line_p = strchr(rom_key_line, '=');
-                    if (rom_key_line_p)
+                    write_log(work_dir, SERVER_NAME, "ERROR: %s", line);
+                    continue;
+                }
+                
+                // 如没找到对应值或值为空则跳过（保持原空值）
+                for (int i = 0; i <= 4; i++) // 4: 储存最大数量
+                {
+                    snprintf(tmp_key, sizeof(tmp_key), "%d", i + 1);
+                    if (strcmp(key, tmp_key) == 0)
                     {
-                        snprintf(reset_app, sizeof(reset_app), "%s", rom_key_line_p + 1);
+                        snprintf(top_app_list[i], sizeof(top_app_list[i]), "%s", line_p + 1);
                     }
+                }
+                if (strcmp(key, "reset") == 0)
+                {
+                    snprintf(reset_app, sizeof(reset_app), "%s", line_p + 1);
                 }
             }
-            fclose(rom_file_fp_r);
+            fclose(rom_file_fp);
         }
         else
         {
@@ -91,7 +90,7 @@ int stop_cache_daemon(char * argv[])
     {
         return -1;
     }
-    int inotify_wd = inotify_add_watch(inotify_fd, rom_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
+    int inotify_wd = inotify_add_watch(inotify_fd, whitelist_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
     if (inotify_wd == -1)
     {
         close(inotify_fd);
@@ -196,9 +195,9 @@ int stop_cache_daemon(char * argv[])
         }
         else
         {
-            if (access(rom_file, F_OK) == 0)
+            if (access(whitelist_file, F_OK) == 0)
             {
-                inotify_add_watch(inotify_fd, rom_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
+                inotify_add_watch(inotify_fd, whitelist_file, IN_DELETE_SELF | IN_CLOSE_WRITE);
                 watch = 1;
             }
         }
@@ -245,11 +244,11 @@ int stop_cache_daemon(char * argv[])
         snprintf(top_app_list[1], sizeof(top_app_list[1]), "%s", top_app_list[0]);
         snprintf(top_app_list[0], sizeof(top_app_list[0]), "%s", top_app);
         
-        FILE * rom_file_fp_w = fopen(rom_file, "w");
-        if (rom_file_fp_w)
+        FILE * rom_file_fp = fopen(rom_file, "w");
+        if (rom_file_fp)
         {
             // 写入失败不检查
-            fprintf(rom_file_fp_w,
+            fprintf(rom_file_fp,
                     "1=%s\n2=%s\n3=%s\n4=%s\n5=%s\nreset=%s",
                     top_app_list[0],
                     top_app_list[1],
@@ -257,7 +256,7 @@ int stop_cache_daemon(char * argv[])
                     top_app_list[3],
                     top_app_list[4],
                     reset_app);
-            fclose(rom_file_fp_w);
+            fclose(rom_file_fp);
         }
         
         // 这个逻辑目标为跳过不必要的缓存加解锁
@@ -286,7 +285,7 @@ int stop_cache_daemon(char * argv[])
         // 调用处理函数，这里配合前面检查，skip_stop 为 1 则跳过
         if (skip_stop == 0)
         {
-            set_app_cache(top_app_list[0], reset_app, skip_reset, whitelist);
+            set_app_cache(top_app_list[0], reset_app, skip_reset, whitelist, read_whitelist_app);
         }
         
         // 语言更新
@@ -314,11 +313,9 @@ int stop_cache_daemon(char * argv[])
     char * reset_app 待恢复App包名
     int skip_reset 是否跳过恢复
     char whitelist[][NAME_MAX] 白名单列表
+    int read_whitelist_app 白名单软件数量
 */
-static void set_app_cache(char * top_app,
-                        char * reset_app,
-                        int skip_reset,
-                        char whitelist[][NAME_MAX])
+static void set_app_cache(char * top_app, char * reset_app, int skip_reset, char whitelist[][NAME_MAX], int read_whitelist_app)
 {
     char top_app_dir[sizeof(DATA_DIR) + strlen(top_app) + 16],
          reset_app_dir[sizeof(DATA_DIR) + strlen(reset_app) + 16];
@@ -327,12 +324,8 @@ static void set_app_cache(char * top_app,
     
     // WHITELIST CHECK
     int in_whitelist = 0;
-    for (int i = 0; i < MAX_WHITELIST_APP; i++)
+    for (int i = 0; i < read_whitelist_app; i++)
     {
-        if (strcmp(whitelist[i], "END") == 0)
-        {
-            break;
-        }
         if (strcmp(whitelist[i], top_app) == 0)
         {
             in_whitelist = 1;
@@ -388,16 +381,8 @@ static void set_app_cache(char * top_app,
 返回：
     成功返回 0，失败返回 -1
 */
-static int read_whitelist(char * whitelist_file,
-                          char whitelist[][NAME_MAX],
-                          int * read_whitelist_app)
+static int read_whitelist(char * whitelist_file, char whitelist[][NAME_MAX], int * read_whitelist_app)
 {
-    int update = 0;
-    if (* read_whitelist_app != 0)
-    {
-        update = 1;
-    }
-    
     FILE * fp = fopen(whitelist_file, "r");
     if (fp == NULL)
     {
@@ -416,8 +401,8 @@ static int read_whitelist(char * whitelist_file,
                 continue;
             }
             
-            // 如果为更新并且当前行 App 与上次记录不一致则解锁此 App
-            if (update == 1 && strcmp(whitelist[count], line) != 0)
+            // 当前行 App 与上次记录不一致则解锁此 App
+            if (strcmp(whitelist[count], line) != 0)
             {
                 // TODO：这里有点开销，怎么优化呢...目前规模不大，如果以后拓展，这里最好改成哈希计算
                 int is_new = 1;
@@ -460,10 +445,6 @@ static int read_whitelist(char * whitelist_file,
         fclose(fp);
         
         * read_whitelist_app = count;
-        if ((count + 1) != MAX_WHITELIST_APP)
-        {
-            snprintf(whitelist[count + 1], sizeof(whitelist[count + 1]), "END");
-        }
     }
     
     return 0;
