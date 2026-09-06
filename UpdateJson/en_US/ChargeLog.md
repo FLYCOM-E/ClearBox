@@ -1,15 +1,10 @@
-# Version 5.1.5 (98)
-
-# ADD
-- NCDU history auto‑cleanup
-- Japanese language support
-- Korean language support
+# Version 5.1.6 (99)
 
 # UPDATE
-- NCDU history now uses SQLite3 for data storage
-- Optimized app wallpaper mode
-- Improved multi‑language matching and reduced redundant logic
+- FileManager supports parsing line‑comments and no longer supports trailing inline comments. Fixed MIN limit invalidation bug
+- App: Upgraded dependency versions, fixed compilation
 
 # FIX
-- Fixed language fallback on devices where `settings get system system_locales` returns null; now falls back to system default first
-- Fixed several memory leak issues
+- App: Fixed crash issue that may occur when repeatedly tapping the back button on Android 10 and below
+- Fixed bug causing failure on first module installation
+- Fixed Timed time window feature

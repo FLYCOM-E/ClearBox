@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 ext {
     applicationId = "wipe.cache.module"
-    versionCode = 98
-    versionName = "V5.1.5"
+    versionCode = 99
+    versionName = "V5.1.6"
     
     compileSdk = 37
     minSdk = 23

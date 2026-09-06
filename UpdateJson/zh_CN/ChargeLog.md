@@ -1,15 +1,10 @@
-# Version 5.1.5 (98)
-
-# ADD
-- NCDU 历史自动清理
-- 适配日语
-- 适配韩语
+# Version 5.1.6 (99)
 
 # UPDATE
-- NCDU 历史功能改为 SQlite3 储存数据
-- 优化 App 壁纸模式
-- 优化多语言匹配，减少重复逻辑
+- FileManager 支持解析行注释，不再支持同行单后缀注释。修复 MIN 限制失效的 Bug
+- App: 升级依赖版本，修复编译
 
 # FIX
-- 部分设备 settings get system system_locales 返回 null 导致语言回退，现在会优先回退至系统默认值
-- 修复一些内存泄漏问题
+- App: 修复 Android 10 以下连点返回按钮概率导致崩溃的问题
+- 修复当模块首次安装会失败的 Bug
+- 修复 Timed 时间窗口功能
