@@ -239,8 +239,9 @@ static int storage_clear(char * dir, int home)
         }
         else
         {
-            // 文件大小小于1，空文件
-            if (file_stat.st_size < 1)
+            // 空文件
+            if (file_stat.st_size < 1 &&
+               strcmp(entry -> d_name, ".nomedia") != 0)
             {
                 if (remove(path) == 0)
                 {
@@ -252,8 +253,8 @@ static int storage_clear(char * dir, int home)
             char * str = strrchr(entry -> d_name, '.');
             if (str)
             {
-                // Log文件
-                if (strcmp(str + 1, "log") == 0)
+                // 日志文件
+                if (strcmp(str, ".log") == 0)
                 {
                     if (remove(path) == 0)
                     {

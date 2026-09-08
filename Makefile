@@ -1,4 +1,4 @@
-CFLAGS = -Os -flto -fPIE -Werror -D_GNU_SOURCE
+CFLAGS = -Os -flto -fPIE -pipe -Werror -D_GNU_SOURCE
 CFLAGS += -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Wformat=2 -Wunused -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wstrict-overflow=3 -Wnull-dereference
 CFLAGS += -fstack-protector-strong -D_FORTIFY_SOURCE=3
 CFLAGS += -Wno-format-nonliteral -Wno-format-security
