@@ -9,33 +9,27 @@ if [ "$TARGET_API" = "" ]; then
     echo "Failed: \$TARGET_API is space."
     exit 1
 fi
-if [ "$TARGET_ABI" = "" ]; then
-    echo "Failed: \$TARGET_ABI is space."
-    exit 1
-elif [ "$TARGET_ABI" = "aarch64" ]; then
-    export TARGET=aarch64-linux-android
-elif [ "$TARGET_ABI" = "armv7a" ]; then
-    export TARGET=armv7a-linux-androideabi
-elif [ "$TARGET_ABI" = "x86_64" ]; then
-    export TARGET=x86_64-linux-android
-elif [ "$TARGET_ABI" = "riscv64" ]; then
-    export TARGET=riscv64-linux-android
-else
-    echo "TARGET_ABI Error! "
-    exit 1
-fi
 
-export NDKTOOL="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
-export CC="$NDKTOOL/bin/${TARGET}${TARGET_API}-clang"
-export AR="$NDKTOOL/bin/llvm-ar"
-export STRIP="$NDKTOOL/bin/llvm-strip"
-export CFLAGS="-target ${TARGET}${TARGET_API} -fPIC -D__ANDROID_API__=$TARGET_API"
-export CXXFLAGS="$CFLAGS"
-export LDFLAGS="-target ${TARGET}${TARGET_API}"
+export module_dir="ModuleFiles"
+export app_dir="AppSource"
+export tui_dir="TuiSource"
+export file_config="FileConfigs"
+export app_config="AppConfigs"
+export lang_config="LangConfigs"
+TARGET_LIST="
+aarch64-linux-android:arm64
+armv7a-linux-androideabi:arm
+x86_64-linux-android:x64
+"
 
-make -j$(nproc)
 if [ "$1" = "-build-apk" ] || [ "$1" = "--build-apk" ]; then
-    cd AppSource/
+    if [ "$2" = "" ]; then
+        echo -e "  BUILD APK \t\t debug"
+    else
+        echo -e "  BUILD APK \t\t $2"
+    fi
+    
+    cd "$app_dir"
     chmod +x ./gradlew
     if [ "$2" = "release" ]; then
         ./gradlew assembleRelease --no-daemon
@@ -45,5 +39,41 @@ if [ "$1" = "-build-apk" ] || [ "$1" = "--build-apk" ]; then
     cd ..
 fi
 
-make module_tar
-make clean
+echo "$TARGET_LIST" | while IFS=':' read -r abi abi_name; do
+    [ -z "$abi" ] && continue
+    echo -e "  BUILD ELF \t\t $abi_name"
+    
+    export NDKTOOL="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
+    export CC="$NDKTOOL/bin/${abi}${TARGET_API}-clang"
+    export AR="$NDKTOOL/bin/llvm-ar"
+    export STRIP="$NDKTOOL/bin/llvm-strip"
+    export CFLAGS="-target ${abi}${TARGET_API} -fPIC -D__ANDROID_API__=$TARGET_API"
+    export CXXFLAGS="$CFLAGS"
+    export LDFLAGS="-target ${abi}${TARGET_API}"
+    
+    make -j$(nproc) # ERROR: top set -e
+    
+    mkdir -p "$module_dir/bin/$abi_name"
+    cp "$module_dir/clearbox" "$module_dir/bin/$abi_name/clearbox"
+    
+    make clean
+done
+
+echo -e "  ZIP \t ClearBox_$TARGET_API.zip"
+
+find "$app_dir" -name "*.apk" -exec cp {} "$module_dir/ClearBox.apk" \;
+cp "$module_dir/system/bin/ClearBox" ./ClearBox.bak
+cp "$tui_dir/Main.bash" "$module_dir/system/bin/ClearBox"
+cp -r "$lang_config" "$module_dir/LANG"
+cp -r "$app_config" "$module_dir/"
+cp -r "$file_config" "$module_dir/"
+
+cd "$module_dir"
+zip -rq ../"ClearBox_$TARGET_API.zip" *
+cd -
+
+rm -f "$module_dir/ClearBox.apk"
+mv ./ClearBox.bak "$module_dir/system/bin/ClearBox"
+rm -r "$module_dir/LANG"
+rm -r "$module_dir/$app_config"
+rm -r "$module_dir/$file_config"

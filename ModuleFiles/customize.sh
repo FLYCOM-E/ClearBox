@@ -17,12 +17,6 @@ if [ -f "/data/adb/wipe_cache/PATH" ]; then
     update=1
 fi
 ######
-uninstall()
-{
-    rm "$ZIPFILE"
-    rm -r "$MODPATH"
-}
-###
 reinstall()
 {
     sleep "$SHOUT_S"
@@ -31,15 +25,14 @@ reinstall()
     echo -e " » $INSTALL_APP_TRY\n"
     sleep "$SHOUT_S"
     if [ ! -f "$MODPATH/ClearBox.apk" ]; then
-        echo -e " » $APKNOTFIND\n"
-        uninstall; exit 1
+        abort " » $APKNOTFIND\n"
     elif [ ! -f "$TMPDIR/ClearBox.apk" ]; then
         echo -e " » $APKUNUP\n"
         rm -r "$TMPDIR"
         mkdir -p "$TMPDIR"
         cp "$MODPATH/ClearBox.apk" "$TMPDIR"
         chmod +x "$TMPDIR/ClearBox.apk"
-        [ ! -f "$TMPDIR/ClearBox.apk" ] && echo -e " » $APKGETERR\n"; uninstall; exit 1
+        [ ! -f "$TMPDIR/ClearBox.apk" ] && abort " » $APKGETERR\n"
     fi
     pm uninstall "wipe.cache.module" >/dev/null
     if pm install -r "$TMPDIR/ClearBox.apk" >/dev/null; then
@@ -54,9 +47,14 @@ reinstall()
 }
 ######
 if ! unzip -oq "$ZIPFILE" -d "$MODPATH"; then
-    uninstall
-    echo -e " » 模块解压发生错误！An error occurred while extracting the module!\n"
-    exit 1
+    abort " » 模块解压发生错误！\n » An error occurred while extracting the module! \n"
+else
+    if [ -f "$MODPATH/bin/$ARCH/$core" ]; then
+        cp "$MODPATH/bin/$ARCH/$core" "$MODPATH/$core"
+        rm -r "$MODPATH/bin"
+    else
+        abort " » 设备架构未知/未适配 $ARCH \n » Device architecture unknown/not supported $ARCH \n"
+    fi
 fi
 ######
 chmod +x "$MODPATH/$core"
@@ -80,9 +78,7 @@ elif [ -d "/data/adb/ksu" ]; then
 else
     echo -e " » $CHECKROOTERROR! \n"
     sleep "$SHOUT_S"
-    echo -e " » $INSTALLERROR❗\n"
-    uninstall
-    exit 1
+    abort " » $INSTALLERROR❗\n"
 fi
 ######
 sleep "$SHOUT_S"

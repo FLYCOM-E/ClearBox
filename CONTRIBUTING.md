@@ -94,7 +94,6 @@ git clone https://github.com/FLYCOM-E/ClearBox
 cd ClearBox/ && chmod +x *
 
 export TARGET_API=23         # adjust the target API version as needed
-export TARGET_ABI=aarch64   # currently: aarch64, armv7a, x86_64, riscv64
 ```
 
 Build the core

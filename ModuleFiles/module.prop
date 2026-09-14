@@ -4,4 +4,5 @@ version=V5.2.0
 versionCode=100
 author=FlyCome
 description=A Cleaner & More...
+updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update.json
 str=Are You,| OK 🍀？

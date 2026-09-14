@@ -6,7 +6,7 @@ on:
       api_level:
         description: 'Android API Level'
         required: false
-        default: '27'
+        default: '23'
       ndk_version:
         description: 'NDK Version'
         required: false
@@ -23,11 +23,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [aarch64, armv7a, x86_64]
     
     steps:
       - name: Checkout repository
@@ -62,26 +57,26 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "versionCode=$VERSION_CODE" >> $GITHUB_OUTPUT
       
-      - name: Build ${{ matrix.target }}
+      - name: Build APK & ELF
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > AppSource/release.keystore
           echo -e "storeFile=$(pwd)/AppSource/release.keystore\nstorePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=${{ secrets.KEY_ALIAS }}\nkeyPassword=${{ secrets.KEY_PASSWORD }}" > AppSource/keystore.properties
           export ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}
           export TARGET_API=${{ github.event.inputs.api_level || '23' }}
-          export TARGET_ABI=${{ matrix.target }}
+          
           bash build.sh --build-apk release
-          rm -f release.keystore keystore.properties
+          rm -f AppSource/release.keystore AppSource/keystore.properties
       
       - name: Unzip artifact for re-packaging
         run: |
-          ZIP_FILE=$(ls *.zip | head -n 1)
+          ZIP_FILE=$(ls ClearBox_*.zip | head -n 1)
           unzip -o "$ZIP_FILE" -d temp
           rm "$ZIP_FILE"
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ClearBox-${{ steps.get_version.outputs.version }}-${{ steps.get_version.outputs.versionCode }}-${{ matrix.target }}
+          name: ClearBox-${{ steps.get_version.outputs.version }}-${{ steps.get_version.outputs.versionCode }}
           path: temp/
           if-no-files-found: error
   
@@ -107,27 +102,23 @@ jobs:
           git config --local user.name "GitHub Action"
           
           LANGS=("zh_CN" "en_US" "zh_TW" "ru_RU" "ko_KR" "ja_JP")
-          ARCHS=("aarch64" "armv7a" "x86_64")
-          
           VERSION=$(grep '^version=' ModuleFiles/module.prop | cut -f2 -d '=')
           VERSION_CODE=$(grep '^versionCode=' ModuleFiles/module.prop | cut -f2 -d '=')
           
           echo "Updating JSON files with version $VERSION..."
           
           for lang in "${LANGS[@]}"; do
-            for arch in "${ARCHS[@]}"; do
-              JSON_PATH="UpdateJson/$lang/update_$arch.json"
+            JSON_PATH="UpdateJson/$lang/update.json"
+            
+            if [ -f "$JSON_PATH" ]; then
+              ZIP_NAME="ClearBox-$VERSION-$VERSION_CODE.zip"
+              ZIP_URL="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/$ZIP_NAME"
               
-              if [ -f "$JSON_PATH" ]; then
-                ZIP_NAME="ClearBox-$VERSION-$VERSION_CODE-$arch.zip"
-                ZIP_URL="https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/$ZIP_NAME"
-                
-                sed -i "s|\"zipUrl\": \".*\"|\"zipUrl\": \"$ZIP_URL\"|g" "$JSON_PATH"
-                sed -i "s|\"version\": \".*\"|\"version\": \"$VERSION\"|g" "$JSON_PATH"
-                sed -i "s|\"versionCode\": .*|\"versionCode\": $VERSION_CODE,|g" "$JSON_PATH"
-                echo "Updated $JSON_PATH with $ZIP_URL"
-              fi
-            done
+              sed -i "s|\"zipUrl\": \".*\"|\"zipUrl\": \"$ZIP_URL\"|g" "$JSON_PATH"
+              sed -i "s|\"version\": \".*\"|\"version\": \"$VERSION\"|g" "$JSON_PATH"
+              sed -i "s|\"versionCode\": .*|\"versionCode\": $VERSION_CODE,|g" "$JSON_PATH"
+              echo "Updated $JSON_PATH with $ZIP_URL"
+            fi
           done
           
           if git diff --quiet UpdateJson/; then

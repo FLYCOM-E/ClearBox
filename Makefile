@@ -26,10 +26,6 @@ SQLITE3_CFLAGS = $(CFLAGS) -Wno-error \
                   -DSQLITE_OMIT_DEPRECATED \
                   -DSQLITE_OMIT_SHARED_CACHE
 
-module_dir = ModuleFiles
-app_dir = AppSource
-tui_dir = TuiSource
-
 UTILS_C = src/INCLUDE/utils.c \
 			src/INCLUDE/s_signal.c \
 			src/INCLUDE/help.c \
@@ -76,26 +72,3 @@ clean:
 	@echo "  CLEAN \t $@"
 	@rm $(CORE_ELF)
 	@rm -f $(ALL_OBJ)
-	@rm -f $(module_dir)/ClearBox.apk
-	@mv ./module.prop.bak $(module_dir)/module.prop
-	@mv ./ClearBox.bak $(module_dir)/system/bin/ClearBox
-	@rm -r $(module_dir)/LANG
-	@rm -r $(module_dir)/AppConfigs
-	@rm -r $(module_dir)/FileConfigs
-
-module_tar: 
-	@echo "  ZIP \t\t $@"
-	@find $(app_dir) -name "*.apk" -exec cp {} $(module_dir)/ClearBox.apk \;
-	
-	@cp $(module_dir)/system/bin/ClearBox ./ClearBox.bak
-	@cp $(tui_dir)/Main.bash $(module_dir)/system/bin/ClearBox
-	
-	@cp $(module_dir)/module.prop ./module.prop.bak
-	@echo "updateJson=https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/@LANG/update_$(TARGET_ABI).json" >> $(module_dir)/module.prop
-	
-	@cp -r LangConfigs $(module_dir)/LANG
-	@cp -r AppConfigs $(module_dir)/AppConfigs
-	@cp -r FileConfigs $(module_dir)/FileConfigs
-	
-	@cd $(module_dir) && zip -rq ../ClearBox_$(TARGET)_$(TARGET_API).zip *
-	@echo "  OUTPUT \t ClearBox_$(TARGET)_$(TARGET_API).zip"
