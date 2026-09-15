@@ -2,11 +2,11 @@
 set -e
 
 if [ ! -d "$ANDROID_NDK_HOME" ]; then
-    echo "Failed: \$ANDROID_NDK_HOME is space."
+    echo "  Failed: \$ANDROID_NDK_HOME is space."
     exit 1
 fi
 if [ "$TARGET_API" = "" ]; then
-    echo "Failed: \$TARGET_API is space."
+    echo "  Failed: \$TARGET_API is space."
     exit 1
 fi
 
@@ -24,9 +24,9 @@ x86_64-linux-android:x64
 
 if [ "$1" = "-build-apk" ] || [ "$1" = "--build-apk" ]; then
     if [ "$2" = "" ]; then
-        echo -e "  BUILD APK \t\t debug"
+        echo "  BUILD APK \t\t debug"
     else
-        echo -e "  BUILD APK \t\t $2"
+        echo "  BUILD APK \t\t $2"
     fi
     
     cd "$app_dir"
@@ -41,7 +41,7 @@ fi
 
 echo "$TARGET_LIST" | while IFS=':' read -r abi abi_name; do
     [ -z "$abi" ] && continue
-    echo -e "  BUILD ELF \t\t $abi_name"
+    echo "  BUILD ELF \t\t $abi_name"
     
     export NDKTOOL="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
     export CC="$NDKTOOL/bin/${abi}${TARGET_API}-clang"
@@ -59,7 +59,7 @@ echo "$TARGET_LIST" | while IFS=':' read -r abi abi_name; do
     make clean
 done
 
-echo -e "  ZIP \t ClearBox_$TARGET_API.zip"
+echo "  ZIP \t ClearBox_$TARGET_API.zip"
 
 find "$app_dir" -name "*.apk" -exec cp {} "$module_dir/ClearBox.apk" \;
 cp "$module_dir/system/bin/ClearBox" ./ClearBox.bak
@@ -77,3 +77,4 @@ mv ./ClearBox.bak "$module_dir/system/bin/ClearBox"
 rm -r "$module_dir/LANG"
 rm -r "$module_dir/$app_config"
 rm -r "$module_dir/$file_config"
+rm -r "$module_dir/bin"
