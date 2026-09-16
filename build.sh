@@ -15,6 +15,7 @@ export app_dir="AppSource"
 export tui_dir="TuiSource"
 export file_config="FileConfigs"
 export app_config="AppConfigs"
+export storage_config="StorageConfigs"
 export lang_config="LangConfigs"
 TARGET_LIST="
 aarch64-linux-android:arm64
@@ -66,6 +67,7 @@ cp "$module_dir/system/bin/ClearBox" ./ClearBox.bak
 cp "$tui_dir/Main.bash" "$module_dir/system/bin/ClearBox"
 cp -r "$lang_config" "$module_dir/LANG"
 cp -r "$app_config" "$module_dir/"
+cp -r "$storage_config" "$module_dir/"
 cp -r "$file_config" "$module_dir/"
 
 cd "$module_dir"
