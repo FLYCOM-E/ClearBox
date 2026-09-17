@@ -42,7 +42,7 @@ fi
 
 echo "$TARGET_LIST" | while IFS=':' read -r abi abi_name; do
     [ -z "$abi" ] && continue
-    echo "  BUILD ELF \t\t $abi_name"
+    echo "  BUILD ELF \t $abi_name"
     
     export NDKTOOL="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64"
     export CC="$NDKTOOL/bin/${abi}${TARGET_API}-clang"
@@ -78,5 +78,6 @@ rm -f "$module_dir/ClearBox.apk"
 mv ./ClearBox.bak "$module_dir/system/bin/ClearBox"
 rm -r "$module_dir/LANG"
 rm -r "$module_dir/$app_config"
+rm -r "$module_dir/$storage_config"
 rm -r "$module_dir/$file_config"
 rm -r "$module_dir/bin"

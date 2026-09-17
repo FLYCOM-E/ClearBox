@@ -85,10 +85,13 @@ StartSettings()
         done
         rm -f "$work_dir/$app_config_dir/AppList.txt"
     fi
-    if [ "$(ls -A "$work_dir/$file_config_dir/")" = "" ]; then
-        if [ -d "$home_dir/$file_config_dir" ]; then
-            cp -r "$home_dir/$file_config_dir/"* "$work_dir/$file_config_dir/"
-        fi
+    ######
+    if [ -d "$home_dir/StorageConfigs" ]; then
+        cp -r "$home_dir/StorageConfigs/"* "$work_dir/$storage_config_dir/"
+    fi
+    ######
+    if [ -d "$home_dir/$file_config_dir" ]; then
+        cp -r "$home_dir/$file_config_dir/"* "$work_dir/$file_config_dir/"
     fi
     for file in "$work_dir/$file_config_dir/"*; do
         name1=$(echo "$file" | cut -f1 -d '.')
