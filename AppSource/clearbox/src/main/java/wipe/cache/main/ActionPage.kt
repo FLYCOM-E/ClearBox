@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import wipe.cache.common.shared.FilePathResolver
+import wipe.cache.common.ui.SpringUtils
 import wipe.cache.common.ui.ProgressBarDialog
 import wipe.cache.krscript.TryOpenActivity
 import wipe.cache.krscript.config.IconPathAnalysis
@@ -70,6 +71,9 @@ class ActionPage : AppCompatActivity() {
 
         mainList = findViewById(R.id.main_list)
         actionPageFab = findViewById(R.id.action_page_fab)
+
+        SpringUtils.addPressSpring(actionPageFab)
+        SpringUtils.springEntrance(mainList)
 
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

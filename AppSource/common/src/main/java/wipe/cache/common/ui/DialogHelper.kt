@@ -140,6 +140,7 @@ class DialogHelper {
                 it.setOnClickListener {
                     d.dismiss()
                 }
+                SpringUtils.addPressSpring(it)
             }
 
             return d
@@ -157,6 +158,8 @@ class DialogHelper {
                 dialog.dismiss()
                 onConfirm?.run()
             }
+
+            SpringUtils.addPressSpring(view.findViewById(R.id.btn_confirm))
 
             return dialog
         }
@@ -225,6 +228,9 @@ class DialogHelper {
                 onConfirm?.run()
             }
 
+            SpringUtils.addPressSpring(view.findViewById(R.id.btn_cancel))
+            SpringUtils.addPressSpring(view.findViewById(R.id.btn_confirm))
+
             return dialog
         }
 
@@ -276,6 +282,9 @@ class DialogHelper {
                     dialog.dismiss()
                 }
             }
+
+            btnConfirm?.let { SpringUtils.addPressSpring(it) }
+            btnCancel?.let { SpringUtils.addPressSpring(it) }
 
             return dialog
         }
@@ -329,11 +338,11 @@ class DialogHelper {
         }
 
         private fun openContinueAlert(context: Context,
-                                      layout: Int,
-                                      title: String = "",
-                                      message: String = "",
-                                      onConfirm: Runnable? = null,
-                                      onCancel: Runnable? = null): DialogWrap {
+                                       layout: Int,
+                                       title: String = "",
+                                       message: String = "",
+                                       onConfirm: Runnable? = null,
+                                       onCancel: Runnable? = null): DialogWrap {
             val view = getCustomDialogView(context, layout, title, message, null)
 
             val dialog = customDialog(context, view)
@@ -345,6 +354,9 @@ class DialogHelper {
                 dialog.dismiss()
                 onConfirm?.run()
             }
+
+            view.findViewById<View?>(R.id.btn_cancel)?.let { SpringUtils.addPressSpring(it) }
+            view.findViewById<View?>(R.id.btn_confirm)?.let { SpringUtils.addPressSpring(it) }
 
             return dialog
         }
@@ -376,6 +388,8 @@ class DialogHelper {
                 dialog.dismiss()
                 onConfirm?.run()
             }
+
+            SpringUtils.addPressSpring(view.findViewById(R.id.btn_confirm))
 
             return dialog
         }

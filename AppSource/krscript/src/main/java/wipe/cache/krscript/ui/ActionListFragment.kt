@@ -27,6 +27,7 @@ import wipe.cache.krscript.shortcut.ActionShortcutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.content.res.Configuration
 import android.os.Looper
+import wipe.cache.common.ui.SpringUtils
 
 class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
@@ -425,6 +426,9 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                     Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
                                 }
                             }
+
+                            SpringUtils.addPressSpring(dialogView.findViewById(R.id.btn_cancel))
+                            SpringUtils.addPressSpring(dialogView.findViewById(R.id.btn_confirm))
                         }
                     }
                 }).start()

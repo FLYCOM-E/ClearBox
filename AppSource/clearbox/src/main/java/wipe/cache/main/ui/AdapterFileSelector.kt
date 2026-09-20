@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import wipe.cache.common.ui.DialogHelper.Companion.confirm
 import wipe.cache.common.ui.ProgressBarDialog
+import wipe.cache.common.ui.SpringUtils
 import wipe.cache.main.R
 import java.io.File
 import java.io.FileFilter
@@ -205,6 +206,7 @@ class AdapterFileSelector private constructor(
             }
         }
         (view.findViewById<View>(R.id.ItemTitle) as TextView).text = file.name
+        SpringUtils.addPressSpring(view)
         return view
     }
     

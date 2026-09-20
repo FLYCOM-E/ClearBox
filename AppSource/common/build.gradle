@@ -33,6 +33,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${rootProject.ext.appcompat}"
     implementation "com.google.android.material:material:${rootProject.ext.material}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${rootProject.ext.kotlin_version}"
+    implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
 }
 
 repositories {

@@ -4,11 +4,22 @@ import android.app.Activity
 import android.view.View
 import wipe.cache.common.shell.KeepShellPublic
 import wipe.cache.common.ui.DialogHelper
+import wipe.cache.common.ui.SpringUtils
 
 class DialogPower(var context: Activity) {
     fun showPowerMenu() {
         val view = context.layoutInflater.inflate(R.layout.dialog_power_operation, null)
         val dialog = DialogHelper.customDialog(context, view)
+
+        val powerIds = intArrayOf(
+            R.id.power_shutdown, R.id.power_reboot, R.id.power_launcher,
+            R.id.power_systemui, R.id.power_hot_reboot, R.id.power_safemode,
+            R.id.power_recovery, R.id.power_fastboot, R.id.power_emergency
+        )
+        for (id in powerIds) {
+            SpringUtils.addPressSpring(view.findViewById(id))
+        }
+
         view.findViewById<View>(R.id.power_shutdown).setOnClickListener {
             dialog.dismiss()
             KeepShellPublic.doCmdSync(context.getString(R.string.power_shutdown_cmd))

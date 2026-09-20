@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import wipe.cache.krscript.R
+import wipe.cache.common.ui.SpringUtils
 import wipe.cache.krscript.config.IconPathAnalysis
 import wipe.cache.krscript.model.ClickableNode
 
@@ -35,6 +36,8 @@ open class ListItemClickable(context: Context,
         title = config.title
         desc = config.desc
         summary = config.summary
+
+        SpringUtils.addPressSpring(this.layout)
 
         this.layout.setOnClickListener {
             this.mOnClickListener?.onClick(this)

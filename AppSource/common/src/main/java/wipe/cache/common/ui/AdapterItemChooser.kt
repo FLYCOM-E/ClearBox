@@ -157,6 +157,8 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
             selectStateListener?.onSelectChange(getSelectedItems())
         }
 
+        SpringUtils.addPressSpring(convertView)
+
         viewHolder.itemTitle?.text = item.title
         viewHolder.itemDesc?.run{
             if (item.title.isNullOrEmpty()) {

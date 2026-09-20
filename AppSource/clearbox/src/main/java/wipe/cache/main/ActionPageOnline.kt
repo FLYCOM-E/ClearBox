@@ -24,6 +24,7 @@ import android.widget.TextView
 import android.widget.Toast
 import wipe.cache.common.ui.DialogHelper
 import wipe.cache.common.ui.ProgressBarDialog
+import wipe.cache.common.ui.SpringUtils
 import wipe.cache.common.ui.ThemeMode
 import wipe.cache.krscript.WebViewInjector
 import wipe.cache.krscript.ui.ParamsFileChooserRender
@@ -57,6 +58,7 @@ class ActionPageOnline : AppCompatActivity() {
 
         krOnlineRoot = findViewById(R.id.kr_online_root)
         krOnlineWebview = findViewById(R.id.kr_online_webview)
+        SpringUtils.springEntrance(krOnlineRoot)
         
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

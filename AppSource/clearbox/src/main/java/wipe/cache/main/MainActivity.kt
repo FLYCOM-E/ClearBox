@@ -26,6 +26,7 @@ import androidx.core.content.PermissionChecker
 import wipe.cache.common.shared.FilePathResolver
 import wipe.cache.common.ui.DialogHelper
 import wipe.cache.common.ui.ProgressBarDialog
+import wipe.cache.common.ui.SpringUtils
 import wipe.cache.krscript.config.PageConfigReader
 import wipe.cache.krscript.config.PageConfigSh
 import wipe.cache.krscript.model.*
@@ -59,6 +60,9 @@ class MainActivity : AppCompatActivity() {
         mainTabhost = findViewById(R.id.main_tabhost)
         mainTabhost2 = findViewById(R.id.main_tabhost_2)
         mainTabhost3 = findViewById(R.id.main_tabhost_3)
+
+        SpringUtils.springEntrance(mainTabhost2)
+        SpringUtils.springEntrance(mainTabhost3)
 
         krScriptConfig = KrScriptConfig()
         

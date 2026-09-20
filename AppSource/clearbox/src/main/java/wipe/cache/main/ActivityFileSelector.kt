@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import wipe.cache.common.ui.ProgressBarDialog
+import wipe.cache.common.ui.SpringUtils
 import wipe.cache.main.ui.AdapterFileSelector
 import java.io.File
 import wipe.cache.common.shell.RootFile
@@ -48,6 +49,7 @@ class ActivityFileSelector : AppCompatActivity() {
 
         fileSelectorList = findViewById(R.id.file_selector_list)
         btnSelectDir = findViewById(R.id.btn_select_dir)
+        SpringUtils.addPressSpring(btnSelectDir)
 
         val extras = intent.extras
         if (extras != null) {

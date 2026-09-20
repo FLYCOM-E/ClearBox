@@ -15,6 +15,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import wipe.cache.common.shell.ShellExecutor
+import wipe.cache.common.ui.SpringUtils
 import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.main.permissions.CheckRootStatus
 import java.io.BufferedReader
@@ -43,6 +44,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         startLogo = findViewById(R.id.start_logo)
         startStateText = findViewById(R.id.start_state_text)
+        SpringUtils.springScaleEntrance(startLogo)
         checkPermissions()
     }
     
