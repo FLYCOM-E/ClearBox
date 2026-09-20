@@ -5,6 +5,6 @@
     <translate
         android:duration="400"
         android:fromXDelta="100%p"
-        android:interpolator="@android:anim/overshoot_interpolator"
+        android:interpolator="@anim/overshoot_half"
         android:toXDelta="0%p" />
 </set>
