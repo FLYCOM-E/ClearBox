@@ -380,6 +380,27 @@ class DialogHelper {
             return dialog
         }
 
+        fun loadingDialog(context: Activity, view: View): DialogWrap {
+            val dialog = MaterialAlertDialogBuilder(context, R.style.loading_dialog)
+                .setView(view)
+                .setCancelable(false)
+                .create()
+
+            dialog.show()
+            dialog.window?.run {
+                setBackgroundDrawableResource(android.R.color.transparent)
+                clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                setDimAmount(0f)
+                setLayout(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT
+                )
+                setGravity(Gravity.CENTER)
+            }
+
+            return DialogWrap(dialog).setCancelable(false)
+        }
+
         fun customDialog(context: Context, view: View, cancelable: Boolean = true): DialogWrap {
             val useBlur = (
                         context is Activity &&

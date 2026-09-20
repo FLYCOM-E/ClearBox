@@ -10,7 +10,6 @@ import android.widget.TextView
 import android.widget.Toast
 import wipe.cache.common.R
 import wipe.cache.common.shell.AsynSuShellUnit
-import java.util.LinkedHashSet
 
 open class ProgressBarDialog(private var context: Activity, private var uniqueId: String? = null) {
     private var alert: DialogHelper.DialogWrap? = null
@@ -60,8 +59,7 @@ open class ProgressBarDialog(private var context: Activity, private var uniqueId
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = context.getString(R.string.execute_wait)
-        alert = DialogHelper.customDialog(context, dialog, false)
-        // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
+        alert = DialogHelper.loadingDialog(context, dialog)
         if (handler == null) {
             AsynSuShellUnit(DefaultHandler(alert)).exec(cmd).waitFor()
         } else {
@@ -86,6 +84,7 @@ open class ProgressBarDialog(private var context: Activity, private var uniqueId
             }
         } catch (ex: Exception) {
         }
+        textView = null
 
         uniqueId?.run {
             if (dialogs.containsKey(this)) {
@@ -104,8 +103,7 @@ open class ProgressBarDialog(private var context: Activity, private var uniqueId
             val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
             textView = (dialog.findViewById(R.id.dialog_text) as TextView)
             textView!!.text = text
-            alert = DialogHelper.customDialog(context, dialog, false)
-            // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
+            alert = DialogHelper.loadingDialog(context, dialog)
         }
 
         uniqueId?.run {

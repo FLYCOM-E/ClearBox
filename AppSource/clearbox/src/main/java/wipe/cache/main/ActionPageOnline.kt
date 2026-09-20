@@ -43,6 +43,7 @@ class ActionPageOnline : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PageTransition.prepareOpen(this)
         themeMode = ThemeModeState.switchTheme(this)
 
         setContentView(R.layout.activity_action_page_online)
@@ -69,6 +70,10 @@ class ActionPageOnline : AppCompatActivity() {
         })
         
         loadIntentData()
+    }
+
+    override fun finish() {
+        PageTransition.finish(this) { super.finish() }
     }
     
     private fun hideWindowTitle() {

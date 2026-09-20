@@ -49,6 +49,7 @@ class ActionPage : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PageTransition.prepareOpen(this)
 
         if (!ScriptEnvironment.isInited) {
             val initIntent = Intent(this.applicationContext, SplashActivity::class.java)
@@ -101,10 +102,12 @@ class ActionPage : AppCompatActivity() {
 
                     if (page.onlineHtmlPage.isNotEmpty()) {
                         try {
-                            startActivity(Intent(this, ActionPageOnline::class.java).apply {
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                putExtra("config", page.onlineHtmlPage)
-                            })
+                            PageTransition.start(
+                                this,
+                                Intent(this, ActionPageOnline::class.java).apply {
+                                    putExtra("config", page.onlineHtmlPage)
+                                }
+                            )
                         } catch (ex: Exception) {}
                     }
 
@@ -121,6 +124,14 @@ class ActionPage : AppCompatActivity() {
             setResult(2)
             finish()
         }
+    }
+
+    override fun finish() {
+        PageTransition.finish(this) { super.finish() }
+    }
+
+    override fun finishAndRemoveTask() {
+        PageTransition.finish(this) { super.finishAndRemoveTask() }
     }
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
