@@ -243,7 +243,7 @@ static int storage_clear(char * dir, int home)
             if (file_stat.st_size < 1 &&
                strcmp(entry -> d_name, ".nomedia") != 0)
             {
-                if (remove(path) == 0)
+                if (s_remove(path, 1) == 0)
                 {
                     count++;
                     count_all--;
@@ -256,7 +256,7 @@ static int storage_clear(char * dir, int home)
                 // 日志文件
                 if (strcmp(str, ".log") == 0)
                 {
-                    if (remove(path) == 0)
+                    if (s_remove(path, 1) == 0)
                     {
                         count++;
                         count_all--;
@@ -273,7 +273,7 @@ static int storage_clear(char * dir, int home)
     {
         if (count_all == 0)
         {
-            if (remove(dir) == 0)
+            if (s_remove(dir, 1) == 0)
             {
                 count++;
             }

@@ -427,7 +427,7 @@ static int find_file(char * storage, char * file_dir, struct file_rules file_arg
                 
                 if (file_clear == 1)
                 {
-                    if (remove(path) == 0)
+                    if (s_remove(path, 1) == 0)
                     {
                         file_count++;
                     }
