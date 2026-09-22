@@ -6,8 +6,9 @@
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg?logo=opensourceinitiative)](LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4&logo=github)](https://github.com/FLYCOM-E/ClearBox/releases)
 
-[![Telegram](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/clearbox_update)
-[![THChat](https://img.shields.io/badge/YHchat-8068E2.svg?logo=icloud&logoColor=white)](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
+[![Telegram](https://img.shields.io/badge/Telegram-blue?logo=telegram&logoColor=white)](https://t.me/clearbox_update)
+[![QQ](https://img.shields.io/badge/QQ-12B7F5?logo=qq&logoColor=white)](https://qm.qq.com/q/GpE08mrl2G)
+[![YHChat](https://img.shields.io/badge/YHChat-8068E2?logo=icloud&logoColor=white)](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
 
 </div>
 
