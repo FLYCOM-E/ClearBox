@@ -21,21 +21,38 @@
 #define CLEAR_CACHE_SIZE_KEY "clearbox_clear_cache_size"     // 缓存清理限制大小设置储存 KEY
 #define CLEAR_DISK_KEY "clearbox_clear_disk"                  // 是否清理外部储存设置储存 KEY
 
-static int64_t user_cache_clean(char * data_dir, int clear_cache_size,
-                             char package_list[][NAME_MAX + 1], int app_count,
-                             char white_list[][NAME_MAX + 1], int whitelist_count);
-static int system_cache_clean(void);
+static int64_t cache_clean(char * data_dir, int clear_cache_size,
+                           char package_list[][NAME_MAX + 1], int app_count,
+                           char white_list[][NAME_MAX + 1], int whitelist_count);
 static int whitelist_check(char * package, char white_list[][NAME_MAX + 1], int whitelist_count);
 
 int app_cache_clean(int mode)
 {
+    int app_count = 0;
+    char package_list[MAX_APPLIST][NAME_MAX + 1];
+    
+    // 获取白名单列表并储存
+    char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_FILE) + 2];
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
+    
+    int whitelist_count = 0;
+    char white_list[MAX_APPLIST][NAME_MAX + 1];
+    {
+        FILE * whitelist_file_fp = fopen(whitelist_file, "r");
+        if (whitelist_file_fp)
+        {
+            while (whitelist_count < MAX_APPLIST && fgets(white_list[whitelist_count], sizeof(white_list[whitelist_count]), whitelist_file_fp))
+            {
+                white_list[whitelist_count][strcspn(white_list[whitelist_count], "\n")] = '\0';
+                whitelist_count++;
+            }
+            fclose(whitelist_file_fp);
+        }
+    }
+    
     // 用户软件缓存清理
     if (mode == 0)
     {
-        // whiteList定义
-        char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_FILE) + 2];
-        snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
-        
         // 获取设置值
         int clear_cache_size = 0,  // 缓存清理限制大小
            clear_disk = 0;         // 是否清理外部储存
@@ -56,8 +73,6 @@ int app_cache_clean(int mode)
         fclose(settings_file_fp);
         
         // 获取第三方软件包名列表并储存
-        int app_count = 0;
-        char package_list[MAX_APPLIST][NAME_MAX + 1];
         {
             char package_buffer[NAME_MAX + 1] = "";
             FILE * package_list_fp = popen(GET_APPLIST, "r");
@@ -78,24 +93,8 @@ int app_cache_clean(int mode)
             }
         }
         
-        // 获取白名单列表并储存
-        int whitelist_count = 0;
-        char white_list[MAX_APPLIST][NAME_MAX + 1];
-        {
-            FILE * whitelist_file_fp = fopen(whitelist_file, "r");
-            if (whitelist_file_fp)
-            {
-                while (whitelist_count < MAX_APPLIST && fgets(white_list[whitelist_count], sizeof(white_list[whitelist_count]), whitelist_file_fp))
-                {
-                    white_list[whitelist_count][strcspn(white_list[whitelist_count], "\n")] = '\0';
-                    whitelist_count++;
-                }
-                fclose(whitelist_file_fp);
-            }
-        }
-        
         // 调用处理函数
-        int64_t clear_size = user_cache_clean(DATA_DIR, clear_cache_size, package_list, app_count, white_list, whitelist_count);
+        int64_t clear_size = cache_clean(DATA_DIR, clear_cache_size, package_list, app_count, white_list, whitelist_count);
         if (clear_size == -1)
         {
             fprintf(stderr, L_CC_CLEAR_FAILED);
@@ -132,7 +131,7 @@ int app_cache_clean(int mode)
             
             snprintf(micro_dir, sizeof(micro_dir), "%s/%s/user", CARD_HOME, entry -> d_name);
             
-            clear_size = user_cache_clean(micro_dir, clear_cache_size, package_list, app_count, white_list, whitelist_count);
+            clear_size = cache_clean(micro_dir, clear_cache_size, package_list, app_count, white_list, whitelist_count);
             if (clear_size == -1)
             {
                 fprintf(stderr, L_CC_CLEAR_FAILED_SD);
@@ -148,7 +147,44 @@ int app_cache_clean(int mode)
     }
     else if (mode == 1) // 系统缓存清理
     {
-        return system_cache_clean();
+        // 获取系统软件包名列表并储存
+        {
+            char package_buffer[NAME_MAX + 1] = "";
+            FILE * package_list_fp = popen(GET_S_APPLIST, "r");
+            if (package_list_fp == NULL)
+            {
+                fprintf(stderr, L_GET_APPLIST_ERROR);
+                return -1;
+            }
+            else
+            {
+                while (app_count < MAX_APPLIST && fgets(package_buffer, sizeof(package_buffer), package_list_fp))
+                {
+                    snprintf(package_list[app_count], sizeof(package_list[app_count]), "%s", package_buffer + 8);
+                    package_list[app_count][strcspn(package_list[app_count], "\n")] = 0;
+                    app_count++;
+                }
+                pclose(package_list_fp);
+            }
+        }
+        
+        (void)cache_clean(DATA_DIR, 0, package_list, app_count, white_list, whitelist_count);
+        
+        // 清除 “MTP主机” 系统组件数据可解决 MTP 连接文件显示不全的问题
+        system("pm clear com.android.mtp >/dev/null 2>&1");
+        
+        // 清空系统缓存
+        s_remove("/cache", 0);
+        s_remove("/data/resource-cache", 0);
+        s_remove("/data/system/package_cache", 0);
+        s_remove("/data/dalvik-cache", 0);
+        
+        // 清空崩溃/无响应日志
+        s_remove("/data/tombstones", 0);
+        s_remove("/data/anr", 0);
+        s_remove("/data/system/dropbox", 0);
+        
+        fprintf(stderr, L_CC_CLEAR_SYSTEMCACHE);
     }
     else
     {
@@ -163,17 +199,17 @@ int app_cache_clean(int mode)
 此函数用于清理软件缓存，返回总清理大小
 接收：
     char * data_dir         软件数据目录，自动处理多用户 ID，兼容拓展储存
-    int * clear_cache_size   缓存清理限制大小
+    int clear_cache_size    缓存清理限制大小（可传 0 ）
     char package_list[][]    app 列表
     int app_count           app 数量
-    char white_list[][]       白名单列表
-    int whitelist_count      白名单 app 数量
+    char white_list[][]      白名单列表
+    int whitelist_count     白名单 app 数量
 返回：
     int64_t 清理垃圾大小（单位：Byte），失败返回 -1
 */
-static int64_t user_cache_clean(char * data_dir, int clear_cache_size,
-                             char package_list[][NAME_MAX + 1], int app_count,
-                             char white_list[][NAME_MAX + 1], int whitelist_count)
+static int64_t cache_clean(char * data_dir, int clear_cache_size,
+                           char package_list[][NAME_MAX + 1], int app_count,
+                           char white_list[][NAME_MAX + 1], int whitelist_count)
 {
     // 定义所需变量
     int count = 0, no_count = 0;
@@ -199,12 +235,15 @@ static int64_t user_cache_clean(char * data_dir, int clear_cache_size,
             continue;
         }
         
-        // 遍历第三方用户软件包名列表
+        // 遍历软件包名列表
         for (int i = 0; i < app_count; i++)
         {
             // 白名单检查
             if (whitelist_check(package_list[i], white_list, whitelist_count) == 0)
             {
+                no_count++;
+                printf(L_CC_CLEAR_SKIP, package_list[i]);
+                fflush(stdout);
                 continue;
             }
             
@@ -246,80 +285,6 @@ static int64_t user_cache_clean(char * data_dir, int clear_cache_size,
     fprintf(stderr, L_CC_CLEAR_APPCACHE_DONE, count, no_count);
     
     return clean_size;
-}
-
-/* 
-此函数用于清理系统缓存
-返回：
-    int 成功返回 0，失败返回 -1
-*/
-static int system_cache_clean(void)
-{
-    char app_cache_path[sizeof(DATA_DIR) + NAME_MAX + 16],
-         package_list_line[NAME_MAX + 1] = "";
-    
-    struct dirent * uid_dir = NULL;
-    DIR * uid_dir_dp = opendir(DATA_DIR);
-    if (uid_dir_dp == NULL)
-    {
-        write_log(work_dir, SERVER_NAME, L_OPEN_PATH_FAILED, DATA_DIR, strerror(errno));
-        return -1;
-    }
-    while ((uid_dir = readdir(uid_dir_dp)))
-    {
-        if (strcmp(uid_dir -> d_name, ".") == 0 ||
-           strcmp(uid_dir -> d_name, "..") == 0 ||
-           strspn(uid_dir -> d_name, "0123456789") != strlen(uid_dir -> d_name))
-        {
-            continue;
-        }
-        
-        // 遍历清空系统组件 cache 文件夹
-        FILE * package_list = popen(GET_S_APPLIST, "r");
-        if (package_list == NULL)
-        {
-            fprintf(stderr, L_GET_APPLIST_ERROR);
-            closedir(uid_dir_dp);
-            return -1;
-        }
-        while (fgets(package_list_line, sizeof(package_list_line), package_list))
-        {
-            if (strlen(package_list_line) < 9)
-            {
-                continue;
-            }
-            package_list_line[strcspn(package_list_line, "\n")] = 0;
-            
-            snprintf(app_cache_path, sizeof(app_cache_path), "%s/%s/%s/cache", DATA_DIR, uid_dir -> d_name, package_list_line + 8);
-            if (access(app_cache_path, F_OK) != 0)
-            {
-                continue;
-            }
-            else
-            {
-                if (s_remove(app_cache_path, 0) != -1)
-                {
-                    printf(L_CC_CLEAR, package_list_line + 8);
-                    fflush(stdout);
-                }
-            }
-        }
-        pclose(package_list);
-    }
-    closedir(uid_dir_dp);
-    
-    // 清除 “MTP主机” 系统组件数据可解决 MTP 连接文件显示不全的问题
-    system("pm clear com.android.mtp >/dev/null 2>&1");
-    s_remove("/cache", 0);
-    s_remove("/data/resource-cache", 0);
-    s_remove("/data/system/package_cache", 0);
-    s_remove("/data/dalvik-cache", 0);
-    s_remove("/data/tombstones", 0);
-    s_remove("/data/anr", 0);
-    s_remove("/data/system/dropbox", 0);
-    
-    fprintf(stderr, L_CC_CLEAR_SYSTEMCACHE);
-    return 0;
 }
 
 /* 列表匹配函数 */
