@@ -6,7 +6,6 @@
 
 <div align="center">
 
-![✨Clean✨](https://img.shields.io/badge/MagiskModule-blue.svg?logo=android)
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg?logo=opensourceinitiative)](LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4&logo=github)](https://github.com/FLYCOM-E/ClearBox/releases)
 
