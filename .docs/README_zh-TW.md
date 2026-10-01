@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".Images/ClearBox.png" width="130" alt="ClearBox">
+  <img src="../.Images/ClearBox.png" width="130" alt="ClearBox">
 </p>
 
 <h1 align="center">ClearBox</h1>
