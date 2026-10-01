@@ -1,7 +1,10 @@
-![image](https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/ClearBox.png)
+<p align="center">
+  <img src=".Images/ClearBox.png" width="119" alt="ClearBox">
+</p>
+
+<h1 align="center">ClearBox</h1>
 
 <div align="center">
-
 ![✨Clean✨](https://img.shields.io/badge/MagiskModule-blue.svg?logo=android)
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg?logo=opensourceinitiative)](LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4&logo=github)](https://github.com/FLYCOM-E/ClearBox/releases)
@@ -9,7 +12,6 @@
 [![Telegram](https://img.shields.io/badge/Telegram-blue?logo=telegram&logoColor=white)](https://t.me/clearbox_update)
 [![QQ](https://img.shields.io/badge/QQ-12B7F5?logo=qq&logoColor=white)](https://qm.qq.com/q/GpE08mrl2G)
 [![YHChat](https://img.shields.io/badge/YHChat-8068E2?logo=icloud&logoColor=white)](https://yhfx.jwznb.com/share?key=yigOTedUjh62&ts=1747355950)
-
 </div>
 
 
