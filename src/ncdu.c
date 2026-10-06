@@ -186,9 +186,13 @@ static int history_clean(char * history_file)
         return 0;
     }
     
+    write_log(work_dir, SERVER_NAME, " » HISTORY CLEAN: ");
+    
     sqlite3 * db;
     sqlite3_stmt * stmt;
     sqlite3_stmt * delete_stmt;
+    const unsigned char * path = NULL;
+    int count = 0;
     
     sqlite3_open(history_file, &db);
     sqlite3_prepare_v2(db, "SELECT key FROM kv", -1, &stmt, NULL);
@@ -197,7 +201,7 @@ static int history_clean(char * history_file)
     sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, NULL);
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        const unsigned char * path = sqlite3_column_text(stmt, 0);
+        path = sqlite3_column_text(stmt, 0);
         
         if (access((const char *)path, F_OK) != 0)
         {
@@ -205,7 +209,8 @@ static int history_clean(char * history_file)
             sqlite3_step(delete_stmt);
             sqlite3_reset(delete_stmt);
             
-            fprintf(stdout, " » DELETE: %s\n", path);
+            write_log(work_dir, SERVER_NAME, " » DELETE: %s", path);
+            count++;
         }
     }
     sqlite3_exec(db, "COMMIT", NULL, NULL, NULL);
@@ -213,6 +218,8 @@ static int history_clean(char * history_file)
     sqlite3_finalize(stmt);
     sqlite3_finalize(delete_stmt);
     sqlite3_close(db);
+    
+    write_log(work_dir, SERVER_NAME, " » TOTAL CLEAN: %d", count);
     
     return 0;
 }
