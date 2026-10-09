@@ -29,6 +29,7 @@ typedef struct
     const char * l_delete_error;
     const char * l_server_start_err;
     const char * l_path_file_error;
+    const char * l_fork_error;
     
     const char * l_clear_all;
     const char * l_clear_cache;
@@ -162,6 +163,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » 删除 %s 失败: %s\n",
         .l_server_start_err = " » 进程启动失败: %s\n",
         .l_path_file_error = " » PATH 配置错误，自动重写 ... 请您重新尝试，如失败请删除 %s 后更新配置再试\n",
+        .l_fork_error = " » 创建进程失败: %s\n",
         
         .l_clear_all = "一键优化清理\n",
         .l_clear_cache = "清理软件缓存\n",
@@ -292,6 +294,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » 刪除 %s 失敗: %s\n",
         .l_server_start_err = " » 進程啟動失敗: %s\n",
         .l_path_file_error = " » PATH 配置錯誤，自動重寫 ... 請您重新嘗試，如失敗請刪除 %s 後更新配置再試\n",
+        .l_fork_error = " » 建立進程失敗: %s\n",
         
         .l_clear_all = "一鍵優化清理\n",
         .l_clear_cache = "清理軟體快取\n",
@@ -422,6 +425,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » Не удалось удалить %s: %s\n",
         .l_server_start_err = " » Не удалось запустить процесс: %s\n",
         .l_path_file_error = " » Ошибка конфигурации PATH, автоматическая перезапись... Попробуйте снова, если не удастся, удалите %s и обновите конфигурацию\n",
+        .l_fork_error = " » Не удалось создать процесс: %s\n",
     
         .l_clear_all = "Оптимизация и очистка в один клик\n",
         .l_clear_cache = "Очистка кэша приложений\n",
@@ -552,6 +556,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » Failed to delete %s: %s\n",
         .l_server_start_err = " » Process startup failed: %s\n",
         .l_path_file_error = " » PATH configuration error, automatically rewriting ... Please try again. If it fails, please delete %s and update the configuration before retrying\n",
+        .l_fork_error = " » Failed to create process: %s\n",
         
         .l_clear_all = "One-click optimize & cleanup\n",
         .l_clear_cache = "Clear app cache\n",
@@ -682,6 +687,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » %s 삭제 실패: %s\n",
         .l_server_start_err = " » 프로세스 시작 실패: %s\n",
         .l_path_file_error = " » PATH 구성 오류, 자동 재작성 중... 다시 시도하세요. 실패 시 %s을(를) 삭제한 후 구성을 업데이트하세요\n",
+        .l_fork_error = " » 프로세스 생성 실패: %s\n",
         
         .l_clear_all = "원클릭 최적화 및 정리\n",
         .l_clear_cache = "앱 캐시 정리\n",
@@ -812,6 +818,7 @@ static const LangPack lang_packs[] =
         .l_delete_error = " » %s の削除に失敗しました: %s\n",
         .l_server_start_err = " » プロセスの起動に失敗しました: %s\n",
         .l_path_file_error = " » PATH 設定エラー、自動的に書き換え中... 再度お試しください。失敗した場合は %s を削除して設定を更新してから再試行してください\n",
+        .l_fork_error = " » プロセスの作成に失敗しました: %s\n",
         
         .l_clear_all = "ワンクリック最適化＆クリーン\n",
         .l_clear_cache = "アプリキャッシュをクリア\n",
@@ -944,6 +951,7 @@ extern LangType current_lang;
 #define L_DELETE_ERROR lang_packs[current_lang].l_delete_error
 #define L_SERVER_START_ERR lang_packs[current_lang].l_server_start_err
 #define L_PATH_FILE_ERROR lang_packs[current_lang].l_path_file_error
+#define L_FORK_ERROR lang_packs[current_lang].l_fork_error
 
 #define L_CLEAR_ALL lang_packs[current_lang].l_clear_all
 #define L_CLEAR_CACHE lang_packs[current_lang].l_clear_cache

@@ -13,6 +13,7 @@
 #define MAX_ARGS_SIZE 32                                // 后缀名称长度限制
 #define MAX_CONFIG_LINE 512                             // 最大配置行长（仅用于识别大小声明行）
 #define CONFIG_MAX_ARGS 5000                          // 单个文件格式配置最多允许的后缀数量
+#define MAX_FORK 64                                     // 允许并行运行的最大归类任务数
 #define F_DIR_NAME "Documents"                          // 默认归类目录名称
 #define CONFIG_DIR_NAME "FileConfigs"                    // 配置文件夹名称
 #define CARD_HOME "/mnt/media_rw"                      // 外置储存根目录
@@ -23,7 +24,7 @@
 #define FILE_CLEAR_DISK_KEY "clearbox_file_clear_disk"     // 是否清理拓展储存文件 - 设置 KEY
 #define FILE_DIR_NAME_KEY "clearbox_file_all_dirname"     // 归类目录名（可选） - 设置 KEY
 
-static int file_clear = 0;                                       // 全局 mode
+static int file_clear = 0;                                      // 全局 mode
 
 struct file_rules
 {
@@ -268,6 +269,9 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
     }
     else
     {
+        int pid_count = 0;
+        pid_t pids[MAX_FORK];
+        
         // 遍历配置目录
         struct dirent * entry;
         DIR * config_dir_dp = opendir(config_dir);
@@ -321,11 +325,39 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
             printf(L_FM_ALL_START, config_file_name_p);
             fflush(stdout);
             
-            int all_count = find_file(storage_dir, file_dir, file_args, count);
+            // 超出进程数量限制: 阻塞等待最后一个进程退出
+            if (pid_count >= MAX_FORK)
+            {
+                pid_count--;
+                waitpid(pids[pid_count], NULL, 0);
+            }
             
-            fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
+            pids[pid_count] = fork();
+            if (pids[pid_count] == 0)
+            {
+                int all_count = find_file(storage_dir, file_dir, file_args, count);
+                fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
+                _exit(0);
+            }
+            else
+            {
+                if (pids[pid_count] == -1)
+                {
+                    write_log(work_dir, SERVER_NAME, L_FORK_ERROR, strerror(errno));
+                    
+                    // 串行运行
+                    int all_count = find_file(storage_dir, file_dir, file_args, count);
+                    fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
+                }
+                else
+                {
+                    pid_count++;
+                }
+            }
         }
         closedir(config_dir_dp);
+        
+        for (int i = 0; i < pid_count; i++) waitpid(pids[i], NULL, 0);
     }
     return 0;
 }
