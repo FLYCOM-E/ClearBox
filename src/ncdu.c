@@ -61,23 +61,21 @@ int ncdu(char * path)
         
         // NAME
         snprintf(path_info[count].name, sizeof(path_info[count].name), "%s", entry -> d_name);
-        
         // PATH
         snprintf(path_info[count].path, sizeof(path_info[count].path), "%s/%s", path, entry -> d_name);
         
         // MODE
-        struct stat st;
-        if (lstat(path_info[count].path, &st) == -1)
-        {
-            continue;
-        }
-        if (S_ISREG(st.st_mode))
+        if (entry -> d_type == DT_REG)
         {
             path_info[count].mode = 'F';
         }
-        else if (S_ISDIR(st.st_mode))
+        else if (entry -> d_type == DT_DIR)
         {
             path_info[count].mode = 'D';
+        }
+        else if (entry -> d_type == DT_LNK)
+        {
+            path_info[count].mode = 'L';
         }
         else
         {
