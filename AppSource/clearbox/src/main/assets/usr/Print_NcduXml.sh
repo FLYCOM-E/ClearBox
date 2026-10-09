@@ -52,6 +52,15 @@ fi
             title=\"📂 $name\"
             desc=\"$size $unit  $history\" />
         "
+    elif [ "$mode" == "L" ]; then
+        echo "
+        <action interruptible=\"false\" auto-off=\"false\" warning=\"$L_CLEAN $name? \">
+            <title>📎 $name</title>
+                <set>
+                rm -f \"$dir\"
+                </set>
+        </action>
+        "
     fi
 done
 echo '
