@@ -141,7 +141,7 @@ int64_t get_path_size(char * path)
     {
         size += (uint64_t)file_stat.st_size;
     }
-    else
+    else if (S_ISDIR(file_stat.st_mode))
     {
         struct dirent * entry;
         DIR * path_dp = opendir(path);
