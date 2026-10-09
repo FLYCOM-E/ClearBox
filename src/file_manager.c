@@ -23,8 +23,7 @@
 #define FILE_CLEAR_DISK_KEY "clearbox_file_clear_disk"     // 是否清理拓展储存文件 - 设置 KEY
 #define FILE_DIR_NAME_KEY "clearbox_file_all_dirname"     // 归类目录名（可选） - 设置 KEY
 
-static int file_clear = 0;                                   // 全局 mode
-static char * now_config_name = NULL;                   // 配置文件名（为避免配置名跨多函数传）
+static int file_clear = 0;                                       // 全局 mode
 
 struct file_rules
 {
@@ -36,8 +35,8 @@ struct file_rules
 static int clear_service(char * storage_dir, char * config_name, char * dir_name);
 static int find_file(char * storage, char * file_dir, struct file_rules file_args[], int count);
 static int read_config(struct file_rules file_args[], char * config_file, int * count);
-static int find_size(struct file_rules file_args[], int index, long * max, long * min);
-static long get_size(char * value, char * unit);
+static int find_size(char * config_file, struct file_rules file_args[], int index, long * max, long * min);
+static long get_size(char * config_file, char * value, char * unit);
 
 int file_manager(int mode, char * config_name)
 {
@@ -237,8 +236,6 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
     // 文件清理模式
     if (file_clear == 1)
     {
-        now_config_name = config_name; // 设置全局变量
-        
         // 这里仍然定义归类目录，用于清理时跳过避免被清理
         char file_dir[PATH_MAX] = "";
         if (all_path == 1)
@@ -291,8 +288,6 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
                  config_file_name[strlen(entry -> d_name) + 16];                 // 配置文件名
             snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
             snprintf(config_file_name, sizeof(config_file_name), "%s", entry -> d_name);
-            
-            now_config_name = config_file_name; // 设置全局变量
             
             // 提取文件名用于创建最终归类目录
             char * have_p = NULL;
@@ -510,7 +505,7 @@ static int read_config(struct file_rules file_args[], char * config_file, int * 
             }
             if (file_args[* count].name[0] == '@')
             {
-                find_size(file_args, * count, &max, &min);
+                find_size(config_file, file_args, * count, &max, &min);
                 continue;
             }
             
@@ -527,14 +522,15 @@ static int read_config(struct file_rules file_args[], char * config_file, int * 
 /*
 文件配置 MAX MIN 声明识别函数
 接收：
+    char * config_file                  配置文件（目前仅用于 Log 打印）
     struct file_rules file_args[index]   后缀字符串
-    int index                       索引
-    long * max                    最大大小
-    long * min                     最小大小
+    int index                           索引
+    long * max                        最大大小
+    long * min                        最小大小
 返回：
     成功返回 0，失败置 max / min -1
 */
-static int find_size(struct file_rules file_args[], int index, long * max, long * min)
+static int find_size(char * config_file, struct file_rules file_args[], int index, long * max, long * min)
 {
     /*
     格式：
@@ -569,11 +565,11 @@ static int find_size(struct file_rules file_args[], int index, long * max, long 
         
         if (value_size && unit)
         {
-            (* max) = get_size(value_size, unit);
+            (* max) = get_size(config_file, value_size, unit);
         }
         else
         {
-            fprintf(stderr, L_FM_SIZE_MAX_ERROR, now_config_name);
+            fprintf(stderr, L_FM_SIZE_MAX_ERROR, config_file);
         }
     }
     
@@ -596,17 +592,17 @@ static int find_size(struct file_rules file_args[], int index, long * max, long 
         
         if (value_size && unit)
         {
-            (* min) = get_size(value_size, unit);
+            (* min) = get_size(config_file, value_size, unit);
         }
         else
         {
-            fprintf(stderr, L_FM_SIZE_MIN_ERROR, now_config_name);
+            fprintf(stderr, L_FM_SIZE_MIN_ERROR, config_file);
         }
     }
     
     if ((* max) != -1 && (* min) > (* max))
     {
-        fprintf(stderr, L_FM_MIN_SIZE_ERROR, now_config_name);
+        fprintf(stderr, L_FM_MIN_SIZE_ERROR, config_file);
         (* min) = -1;
     }
     
@@ -616,12 +612,13 @@ static int find_size(struct file_rules file_args[], int index, long * max, long 
 /*
 此函数为 find_size() 辅助函数，用于根据单位转换并返回对应值
 接收：
-    char * value 值字符串
-    char * unit 单位字符串
+    char * config_file       配置文件（目前仅用于 Log 打印）
+    char * value            值字符串
+    char * unit              单位字符串
 返回：
     long 对应值，单位错误则默认 Byte 返回
 */
-static long get_size(char * value, char * unit)
+static long get_size(char * config_file, char * value, char * unit)
 {
     if (* unit == 'B' ||
         * unit == 'b' ||
@@ -653,7 +650,7 @@ static long get_size(char * value, char * unit)
     }
     else
     {
-        fprintf(stderr, L_FM_SIZE_ERROR, now_config_name);
+        fprintf(stderr, L_FM_SIZE_ERROR, config_file);
     }
     
     return strtol(value, NULL, 10);
