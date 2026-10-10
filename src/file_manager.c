@@ -13,7 +13,7 @@
 #define MAX_ARGS_SIZE 32                                // 后缀名称长度限制
 #define MAX_CONFIG_LINE 512                             // 最大配置行长（仅用于识别大小声明行）
 #define CONFIG_MAX_ARGS 5000                          // 单个文件格式配置最多允许的后缀数量
-#define MAX_FORK 64                                     // 允许并行运行的最大归类任务数
+#define MIN_SCHED_COUNT 4                              // 最小并行任务数
 #define F_DIR_NAME "Documents"                          // 默认归类目录名称
 #define CONFIG_DIR_NAME "FileConfigs"                    // 配置文件夹名称
 #define CARD_HOME "/mnt/media_rw"                      // 外置储存根目录
@@ -269,8 +269,22 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
     }
     else
     {
+        int core_count = 0;
+        cpu_set_t mask;
+        if (sched_getaffinity(0, sizeof(mask), &mask) == -1)
+        {
+            write_log(work_dir, SERVER_NAME, L_GET_CPU_MASK_ERROR, strerror(errno));
+            
+            // 回退
+            core_count = get_nprocs();
+        }
+        else
+        {
+            core_count = CPU_COUNT(&mask);
+        }
+        if (core_count < MIN_SCHED_COUNT) core_count = MIN_SCHED_COUNT;
+        
         int pid_count = 0;
-        pid_t pids[MAX_FORK];
         
         // 遍历配置目录
         struct dirent * entry;
@@ -325,15 +339,15 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
             printf(L_FM_ALL_START, config_file_name_p);
             fflush(stdout);
             
-            // 超出进程数量限制: 阻塞等待最后一个进程退出
-            if (pid_count >= MAX_FORK)
+            // 超出进程数量限制: 阻塞等待一个进程结束
+            if (pid_count >= core_count)
             {
+                waitpid(-1, NULL, 0);
                 pid_count--;
-                waitpid(pids[pid_count], NULL, 0);
             }
             
-            pids[pid_count] = fork();
-            if (pids[pid_count] == 0)
+            pid_t new_pid = fork();
+            if (new_pid == 0)
             {
                 int all_count = find_file(storage_dir, file_dir, file_args, count);
                 fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
@@ -341,7 +355,7 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
             }
             else
             {
-                if (pids[pid_count] == -1)
+                if (new_pid == -1)
                 {
                     write_log(work_dir, SERVER_NAME, L_FORK_ERROR, strerror(errno));
                     
@@ -357,7 +371,7 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
         }
         closedir(config_dir_dp);
         
-        for (int i = 0; i < pid_count; i++) waitpid(pids[i], NULL, 0);
+        for (int i = 0; i < pid_count; i++) waitpid(-1, NULL, 0);
     }
     return 0;
 }

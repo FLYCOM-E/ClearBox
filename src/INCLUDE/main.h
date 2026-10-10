@@ -22,6 +22,7 @@
 #include <sys/inotify.h>
 #include <limits.h>
 #include <inttypes.h>
+#include <sys/sysinfo.h>
 
 #include "lang.h"
 #include "../SQlite3/sqlite3.h"
