@@ -306,6 +306,25 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
                 continue;
             }
             
+            // 超出进程数量限制: 阻塞等待一个进程结束
+            if (pid_count >= core_count)
+            {
+                waitpid(-1, NULL, 0);
+                pid_count--;
+            }
+            
+            pid_t new_pid = fork();
+            
+            if (new_pid == -1)
+            {
+                write_log(work_dir, SERVER_NAME, L_FORK_ERROR, strerror(errno));
+            }
+            else if (new_pid != 0)
+            {
+                pid_count++;
+                continue;
+            }
+            
             char config_file[strlen(config_dir) + strlen(entry -> d_name) + 2],  // 配置文件
                  config_file_name[strlen(entry -> d_name) + 16];                 // 配置文件名
             snprintf(config_file, sizeof(config_file), "%s/%s", config_dir, entry -> d_name);
@@ -328,7 +347,14 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
                 if (mkdir(file_dir, 0775) != 0)
                 {
                     write_log(work_dir, SERVER_NAME, L_MKDIR_ERROR, file_dir, strerror(errno));
-                    continue;
+                    if (new_pid == 0)
+                    {
+                        _exit(1);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
             }
             
@@ -337,41 +363,23 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
             
             if (read_config(file_args, config_file, &count) != 0)
             {
-                continue;
+                if (new_pid == 0)
+                {
+                    _exit(1);
+                }
+                else
+                {
+                    continue;
+                }
             }
             
             printf(L_FM_ALL_START, config_file_name_p);
             fflush(stdout);
             
-            // 超出进程数量限制: 阻塞等待一个进程结束
-            if (pid_count >= core_count)
-            {
-                waitpid(-1, NULL, 0);
-                pid_count--;
-            }
+            int all_count = find_file(storage_dir, file_dir, file_args, count);
+            fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
             
-            pid_t new_pid = fork();
-            if (new_pid == 0)
-            {
-                int all_count = find_file(storage_dir, file_dir, file_args, count);
-                fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
-                _exit(0);
-            }
-            else
-            {
-                if (new_pid == -1)
-                {
-                    write_log(work_dir, SERVER_NAME, L_FORK_ERROR, strerror(errno));
-                    
-                    // 串行运行
-                    int all_count = find_file(storage_dir, file_dir, file_args, count);
-                    fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
-                }
-                else
-                {
-                    pid_count++;
-                }
-            }
+            if (new_pid == 0) _exit(0);
         }
         closedir(config_dir_dp);
         
