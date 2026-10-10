@@ -282,6 +282,10 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
         {
             core_count = CPU_COUNT(&mask);
         }
+        
+        // 一核最多分配两个进程
+        core_count *= 2;
+        // 核心获取异常，回退默认并发
         if (core_count < MIN_SCHED_COUNT) core_count = MIN_SCHED_COUNT;
         
         int pid_count = 0;
