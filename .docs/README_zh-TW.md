@@ -281,3 +281,14 @@ post=Test Run/已執行 Sync
 [**👉 开发指南**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_zh-TW.md)
 
 模組 **ClearBox App** 使用 [**Kr-Script**](https://github.com/helloklf/kr-scripts) 項目製作而成，感謝該項目
+
+
+
+<div align="center">
+
+# Star History
+
+![Star History](https://api.star-history.com/svg?repos=FLYCOM-E/ClearBox&type=Date&theme=dark)
+
+</div>
+

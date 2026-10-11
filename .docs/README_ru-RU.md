@@ -274,10 +274,21 @@ post=Test Run/Запущен Sync
 
 
 
-## Приветствуется любое участие в разработке и вклад в проект！
+# Приветствуется любое участие в разработке и вклад в проект！
 
 Приветствуем ваши замечания и предложения по функциям модуля. Спасибо.
 
 [**👉 Руководство для разработчиков**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_ru-RU.md)
 
 Приложение **ClearBox App** использует [**Kr-Script**](https://github.com/helloklf/kr-scripts) — спасибо этому проекту！
+
+
+
+<div align="center">
+
+# Star History
+
+![Star History](https://api.star-history.com/svg?repos=FLYCOM-E/ClearBox&type=Date&theme=dark)
+
+</div>
+

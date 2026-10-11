@@ -274,10 +274,21 @@ post=Test Run/Sync が実行されました
 
 
 
-## あらゆる形式の開発・貢献を歓迎します！
+# あらゆる形式の開発・貢献を歓迎します！
 
 モジュールの機能に関するご意見・ご提案をお待ちしております。ありがとうございます。
 
 [**👉 開発ガイド**](https://github.com/FLYCOM-E/ClearBox/blob/main/.docs/dev/CONTRIBUTING_ja-JP.md)
 
 モジュール **ClearBox App** は [**Kr-Script**](https://github.com/helloklf/kr-scripts) プロジェクトをベースに作成されました。このプロジェクトに感謝します。
+
+
+
+<div align="center">
+
+# Star History
+
+![Star History](https://api.star-history.com/svg?repos=FLYCOM-E/ClearBox&type=Date&theme=dark)
+
+</div>
+

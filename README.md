@@ -274,10 +274,21 @@ Custom compilation mode：This mode supports manually specifying the compilation
 
 
 
-## Welcome to contribute and participate in development in any form!
+# Welcome to contribute and participate in development in any form!
 
 Welcome everyone to share your feedback & suggestions on the module features. Thank you.
 
 [**👉 Development Guide**](https://github.com/FLYCOM-E/ClearBox/blob/main/CONTRIBUTING.md)
 
 The module **ClearBox App** is made using the [**Kr-Script**](https://github.com/helloklf/kr-scripts) project. Thanks to the project.
+
+
+
+<div align="center">
+
+# Star History
+
+![Star History](https://api.star-history.com/svg?repos=FLYCOM-E/ClearBox&type=Date&theme=dark)
+
+</div>
+
