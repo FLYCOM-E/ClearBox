@@ -284,9 +284,9 @@ post=Test Run/Sync が実行されました
 
 
 
-<div align="center">
-
 # Star History
+
+<div align="center">
 
 ![Star History](https://api.star-history.com/svg?repos=FLYCOM-E/ClearBox&type=Date&theme=dark)
 

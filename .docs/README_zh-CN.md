@@ -284,9 +284,9 @@ post=Test Run/已运行 Sync
 
 
 
-<div align="center">
-
 # Star History
+
+<div align="center">
 
 ![Star History](https://api.star-history.com/svg?repos=FLYCOM-E/ClearBox&type=Date&theme=dark)
 

@@ -284,9 +284,9 @@ The module **ClearBox App** is made using the [**Kr-Script**](https://github.com
 
 
 
-<div align="center">
-
 # Star History
+
+<div align="center">
 
 ![Star History](https://api.star-history.com/svg?repos=FLYCOM-E/ClearBox&type=Date&theme=dark)
 
