@@ -17,7 +17,8 @@ ext {
     legacy_support_v4 = "1.0.0"
     material = "1.14.0"
     constraintlayout = "2.2.2"
-    core_ktx = "1.19.0"
+    core_ktx = "1.19.1"
+    dynamicanimation = "1.1.0"
 }
 
 buildscript {
@@ -28,7 +29,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.2.1'
+        classpath 'com.android.tools.build:gradle:9.4.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
