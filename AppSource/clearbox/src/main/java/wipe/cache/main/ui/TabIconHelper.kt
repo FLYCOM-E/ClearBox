@@ -2,11 +2,11 @@ package wipe.cache.main.ui
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
-import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TabHost
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import wipe.cache.main.R
 
 class TabIconHelper(private var tabHost: TabHost, private var activity: Activity) {
@@ -32,19 +32,5 @@ class TabIconHelper(private var tabHost: TabHost, private var activity: Activity
         tabHost.addTab(tabHost.newTabSpec(tabId).setContent(content).setIndicator(layout))
 
         return tabId
-    }
-
-    fun getColorAccent(): Int {
-        val typedValue = TypedValue()
-        this.activity.theme.resolveAttribute(android.R.attr.md_primary, typedValue, true)
-        return typedValue.data
-    }
-
-    fun updateHighlight() {
-        for (i in 0 until tabHost.tabWidget.tabCount) {
-            val tab = tabHost.tabWidget.getChildAt(i)
-            if (i == tabHost.currentTab) tab.alpha = 1f
-            else tab.alpha = 0.3f
-        }
     }
 }
