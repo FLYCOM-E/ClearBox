@@ -13,4 +13,5 @@ authors:
     url: https://github.com/FLYCOM-E
 compatibility:
   androidMinApi: 23
-
+release:
+  assetPattern: "ClearBox-*-aarch64.zip"
