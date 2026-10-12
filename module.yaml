@@ -1,0 +1,16 @@
+schemaVersion: 1
+id: wipe_cache
+name: ClearBox
+summary: A Magisk module dedicated to automatic cleaning and optimization of Android
+description: README.md
+license: GPL-3.0-only
+homepage: https://github.com/FLYCOM-E/ClearBox
+support: https://github.com/FLYCOM-E/ClearBox/issues
+icon: .Images/ClearBox.png
+metamodule: false
+authors:
+  - name: FlyCome
+    url: https://github.com/FLYCOM-E
+compatibility:
+  androidMinApi: 23
+
