@@ -28,7 +28,6 @@
         <item name="android:statusBarColor">#00000000</item>
         <item name="colorPrimary">@color/md_primary</item>
         <item name="colorPrimaryDark">@color/md_primary</item>
-        <item name="colorAccent">@color/md_primary</item>
         <item name="android:colorForegroundInverse">#a0000000</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="cardBg">@color/cardBgDarkTransparent</item>

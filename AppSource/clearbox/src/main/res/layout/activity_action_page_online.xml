@@ -50,7 +50,7 @@
                 android:padding="5dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/copy"
-                android:tint="@color/colorAccent" />
+                android:tint="@color/md_primary" />
         </LinearLayout>
 
         <LinearLayout
@@ -77,7 +77,7 @@
                 android:padding="5dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/copy"
-                android:tint="@color/colorAccent" />
+                android:tint="@color/md_primary" />
         </LinearLayout>
 
         <ProgressBar
