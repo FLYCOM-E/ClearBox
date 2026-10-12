@@ -104,34 +104,6 @@ object ThemeModeState {
             controller.isAppearanceLightNavigationBars = !nightMode
         }
     }
-    
-    @Suppress("unused")
-    private fun isDarkColor(wallPaper: Drawable): Boolean {
-        val bitmap = (wallPaper as BitmapDrawable).bitmap
-        val h = bitmap.height - 1
-        val w = bitmap.width - 1
-
-        var darkPoint = 0
-        var lightPoint = 0
-        val pointCount = if (h > 24 && w > 24) 24 else 1
-
-        for (i in 0..pointCount) {
-            val y = h / pointCount * i
-            val x = w / pointCount * i
-            val pixel = bitmap.getPixel(x, y)
-
-            val redValue = Color.red(pixel)
-            val blueValue = Color.blue(pixel)
-            val greenValue = Color.green(pixel)
-
-            if (redValue > 150 && blueValue > 150 && greenValue > 150) {
-                lightPoint += 1
-            } else {
-                darkPoint += 1
-            }
-        }
-        return darkPoint > lightPoint
-    }
 
     fun getThemeMode(): ThemeMode = themeMode
 }
