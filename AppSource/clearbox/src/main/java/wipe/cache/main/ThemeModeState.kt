@@ -41,11 +41,7 @@ object ThemeModeState {
                     activity.setTheme(R.style.AppThemeWallpaperLight)
                 }
             } else {
-                if (nightMode) {
-                    activity.setTheme(R.style.AppThemeDark)
-                } else {
-                    activity.setTheme(R.style.AppTheme)
-                }
+                activity.setTheme(R.style.Theme_KrScript)
             }
             DynamicColors.applyToActivityIfAvailable(activity)
             

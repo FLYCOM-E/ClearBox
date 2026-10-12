@@ -12,7 +12,7 @@
         <item name="android:drawableTint">?android:textColorPrimary</item>
     </style>
 
-    <style name="AppThemeWallpaperLight" parent="AppTheme">
+    <style name="AppThemeWallpaperLight" parent="Theme.KrScript">
         <item name="android:navigationBarColor">#00FFFFFF</item>
         <item name="android:statusBarColor">#00FFFFFF</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -23,7 +23,7 @@
         <item name="colorPrimary">@color/md_primary</item>
     </style>
 
-    <style name="AppThemeWallpaper" parent="AppThemeDark">
+    <style name="AppThemeWallpaper" parent="Theme.KrScript">
         <item name="android:navigationBarColor">#00000000</item>
         <item name="android:statusBarColor">#00000000</item>
         <item name="colorPrimary">@color/md_primary</item>
