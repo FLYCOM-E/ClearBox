@@ -15,6 +15,7 @@ import androidx.core.content.PermissionChecker
 import wipe.cache.common.ui.ThemeMode
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.color.DynamicColors
+import androidx.core.view.WindowInsetsControllerCompat
 
 object ThemeModeState {
     private var themeMode: ThemeMode = ThemeMode()
@@ -79,29 +80,15 @@ object ThemeModeState {
                     }
                 }
             }
-
+            
             activity.window.run {
                 clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-
-                if (nightMode) {
-                    statusBarColor = Color.argb(128, 0, 0, 0)
-                    navigationBarColor = Color.argb(128, 0, 0, 0)
-                } else {
-                    statusBarColor = Color.argb(128, 255, 255, 255)
-                    navigationBarColor = Color.argb(128, 255, 255, 255)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                    } else {
-                        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    }
-                }
+            
+                val controller = WindowInsetsControllerCompat(this, decorView)
+                controller.isAppearanceLightStatusBars = !nightMode
+                controller.isAppearanceLightNavigationBars = !nightMode
             }
-
         } catch (e: Exception) {
             applySystemBars(activity, nightMode)
         }
