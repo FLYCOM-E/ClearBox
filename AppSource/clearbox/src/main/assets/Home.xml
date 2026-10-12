@@ -33,6 +33,10 @@ cat <<w
             "$home_dir/$core" "--clear-app-cache"
             </set>
     </action>
+</group>
+<!-- END -->
+<!-- START -->
+<group title="">
     <action warning="$L_FILE_SORT_DESC" interruptible="false" shell="default" auto-off="false" auto-finish="false" id="005">
         <title>$L_FILE_ALL</title>
             <set>
@@ -61,7 +65,7 @@ cat <<w
 </group>
 <!-- END -->
 <!-- START -->
-<group title=" ">
+<group title="">
     <pages>
         <page title="$L_AUTO_CLEAR" config-sh="sh Timed_ProSettings.xml" />
     </pages>
