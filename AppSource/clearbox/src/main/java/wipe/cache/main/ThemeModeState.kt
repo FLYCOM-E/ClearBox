@@ -95,26 +95,13 @@ object ThemeModeState {
     }
     
     private fun applySystemBars(activity: Activity, nightMode: Boolean) {
-        val colorSurface = MaterialColors.getColor(activity, com.google.android.material.R.attr.colorSurface, Color.WHITE)
-        
         activity.window.run {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-    
-            statusBarColor = colorSurface
-            navigationBarColor = colorSurface
-    
-            if (!nightMode) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    decorView.systemUiVisibility = decorView.systemUiVisibility or
-                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                            View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    decorView.systemUiVisibility = decorView.systemUiVisibility or
-                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-            }
+            
+            val controller = WindowInsetsControllerCompat(this, decorView)
+            controller.isAppearanceLightStatusBars = !nightMode
+            controller.isAppearanceLightNavigationBars = !nightMode
         }
     }
     
