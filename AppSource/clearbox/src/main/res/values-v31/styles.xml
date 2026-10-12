@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.KrScript" parent="Theme.Material3.DayNight">
-        <item name="android:statusBarColor">?attr/colorSurface</item>
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:statusBarColor">?attr/colorSurfaceDim</item>
+        <item name="android:navigationBarColor">?attr/colorSurfaceDim</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
@@ -10,12 +10,12 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="actionBarTheme">@style/Theme.KrScript.AppBarOverlay</item>
-        <item name="cardBg">?attr/colorSurfaceContainerHigh</item>
-        <item name="dialogBg">?attr/colorSurfaceContainerHigh</item>
+        <item name="cardBg">@android:color/system_accent1_900</item>
+        <item name="dialogBg">@android:color/system_accent1_900</item>
         <item name="switchStyle">@style/Widget.Material3.CompoundButton.Switch</item>
         <item name="checkboxStyle">@style/Widget.Material3.CompoundButton.CheckBox</item>
         <item name="radioButtonStyle">@style/Widget.Material3.CompoundButton.RadioButton</item>
-        <item name="android:windowBackground">?attr/colorSurface</item>
+        <item name="android:windowBackground">?attr/colorSurfaceDim</item>
         <item name="krSwitchThumColor">@color/switch_thumb_color</item>
     </style>
     <style name="AppThemeWallpaperLight" parent="Theme.KrScript">
