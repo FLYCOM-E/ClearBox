@@ -14,4 +14,4 @@ authors:
 compatibility:
   androidMinApi: 23
 release:
-  assetPattern: "ClearBox-*-aarch64.zip"
+  assetPattern: "ClearBox-*.zip"
