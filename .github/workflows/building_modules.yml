@@ -15,10 +15,10 @@ on:
         description: 'JDK Version'
         required: false
         default: '17'
-    
+  
   push:
     tags:
-      - 'V*'
+      - '**'
 
 jobs:
   build:
