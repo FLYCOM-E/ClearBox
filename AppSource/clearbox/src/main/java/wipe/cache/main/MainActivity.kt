@@ -77,7 +77,13 @@ class MainActivity : AppCompatActivity() {
             val favoritesConfig = krScriptConfig.getFavoriteConfig()
             
             val pages = cachedPages ?: run {
-                handler.post { progressBarDialog.showDialog(getString(R.string.please_wait)) }
+                handler.post {
+                    window.decorView.post {
+                        if (!isFinishing && !isDestroyed) {
+                            progressBarDialog.showDialog(getString(R.string.please_wait))
+                        }
+                    }
+                }
                 getItems(page2Config!!)
             }
             val favorites = PageCache.homeItems ?: getItems(favoritesConfig!!)
@@ -283,16 +289,22 @@ class MainActivity : AppCompatActivity() {
                     if (isChecked) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                             themeConfig.setAllowTransparentUI(true)
+                            finish()
+                            startActivity(intent)
                         } else {
                             if (!checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                                 it.isChecked = false
                                 Toast.makeText(this@MainActivity, KR.string.kr_write_external_storage, Toast.LENGTH_SHORT).show()
                             } else {
                                 themeConfig.setAllowTransparentUI(true)
+                                finish()
+                                startActivity(intent)
                             }
                         }
                     } else {
                         themeConfig.setAllowTransparentUI(false)
+                        finish()
+                        startActivity(intent)
                     }
                 }
                 transparentUi.isChecked = themeConfig.getAllowTransparentUI()
