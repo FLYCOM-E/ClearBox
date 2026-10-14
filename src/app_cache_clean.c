@@ -9,10 +9,11 @@
 
 #define SERVER_NAME "CacheClean"
 
-#define MAX_APPLIST 1000                                     // 软件列表最大数量
-#define DATA_DIR "/data/user"                                  // 软件数据根目录
-#define CARD_HOME "/mnt/expand"                             // 拓展储存根目录
-#define WHITELIST_FILE "ClearWhitelist.prop"                    // 白名单文件名
+#define MAX_APPLIST 1000                                     // 软件列表最大容量
+#define MAX_WHITE_LIST 1000                                 // 白名单列表最大容量
+#define DATA_DIR "/data/user"                                 // 软件数据根目录
+#define CARD_HOME "/mnt/expand"                           // 拓展储存根目录
+#define WHITELIST_FILE "ClearWhitelist.prop"                  // 白名单文件名
 #define DEFAULT_CCS 5                                       // 缓存清理限制大小回退
 
 #define GET_APPLIST "pm list package -3 2>/dev/null"
@@ -36,7 +37,7 @@ int app_cache_clean(int mode)
     snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
     
     int whitelist_count = 0;
-    char white_list[MAX_APPLIST][NAME_MAX + 1];
+    char white_list[MAX_WHITE_LIST][NAME_MAX + 1];
     {
         FILE * whitelist_file_fp = fopen(whitelist_file, "r");
         if (whitelist_file_fp)
@@ -168,6 +169,7 @@ int app_cache_clean(int mode)
             }
         }
         
+        // 忽略返回
         (void)cache_clean(DATA_DIR, 0, package_list, app_count, white_list, whitelist_count);
         
         // 清除 “MTP主机” 系统组件数据可解决 MTP 连接文件显示不全的问题
@@ -214,7 +216,7 @@ static int64_t cache_clean(char * data_dir, int clear_cache_size,
     // 定义所需变量
     int count = 0, no_count = 0;
     int64_t clean_size = 0;
-    char app_cache_dir[512] = {0};
+    char app_cache_dir[strlen(data_dir) + 256];
     
     // 打开 User ID 目录
     struct dirent * uid_dir;
@@ -255,7 +257,7 @@ static int64_t cache_clean(char * data_dir, int clear_cache_size,
             }
             
             // 获取/比较缓存大小
-            if (clear_cache_size >= 0)
+            if (clear_cache_size > 0)
             {
                 if ((get_path_size(app_cache_dir) / 1024 / 1024) < clear_cache_size)
                 {

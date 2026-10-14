@@ -12,7 +12,7 @@
 #define DATA_DIR "/data/data"               // 软件数据根目录
 #define ROM_NAME "LockCacheList"         // 储存文件名
 #define WHITELIST_NAME "whitelist.prop"    // 白名单文件名
-#define MAX_WHITELIST_APP 512           // 最大白名单数量
+#define MAX_WHITELIST_APP 1000           // 最大白名单数量
 
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
 

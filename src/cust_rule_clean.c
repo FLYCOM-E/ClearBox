@@ -13,7 +13,11 @@
 
 int cust_rule_clean(void)
 {
-    /// 配置目录
+    // 清理统计
+    int total_config = 0;
+    int64_t total_clear_size = 0;
+    
+    // 配置目录
     char config_dir[strlen(work_dir) + strlen(CONFIG_DIR_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_DIR_NAME);
     
@@ -44,6 +48,7 @@ int cust_rule_clean(void)
             continue;
         }
         
+        total_config += 1;
         printf(L_SR_START, config_file_name -> d_name);
         fflush(stdout);
         
@@ -85,8 +90,8 @@ int cust_rule_clean(void)
                 snprintf(path, sizeof(path), "%s/%s", dir, config_file_line);
             }
             
-            // 判断存在 & 路径逃逸
-            if (access(path, F_OK) == 0 && strstr(path, "/../"))
+            // 检查路径逃逸
+            if (strstr(path, "/../"))
             {
                 fprintf(stderr, L_SR_LINE_FAILED_PATH_ERR, count);
             }
@@ -95,6 +100,8 @@ int cust_rule_clean(void)
                 int64_t clear_size = s_remove(path, 1); // 返回清理字节数
                 if (clear_size != -1)
                 {
+                    total_clear_size += clear_size;
+                    
                     char unit = '\0';
                     double size = byte_to_size(clear_size, &unit);
                     fprintf(stderr, L_SR_CLEAR_SUCCESSFUL, path, size, unit);
@@ -109,6 +116,10 @@ int cust_rule_clean(void)
     }
     closedir(config_dir_dp);
     
-    fprintf(stderr, L_SR_END);
+    
+    char unit = '\0';
+    double size = byte_to_size(total_clear_size, &unit);
+    fprintf(stderr, L_SR_END, total_config, size, unit);
+    
     return 0;
 }
