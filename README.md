@@ -7,7 +7,7 @@
 <div align="center">
 
 [![License](https://img.shields.io/badge/License-GPL--3.0-red.svg?logo=opensourceinitiative)](LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4&logo=github)](https://github.com/FLYCOM-E/ClearBox/releases)
+[![Downloads](https://img.shields.io/github/downloads/FLYCOM-E/ClearBox/total?color=00D2C4&logo=github&label=Downloads)](https://github.com/FLYCOM-E/ClearBox/releases)
 
 [![Telegram](https://img.shields.io/badge/Telegram-blue?logo=telegram&logoColor=white)](https://t.me/clearbox_update)
 [![QQ](https://img.shields.io/badge/QQ-12B7F5?logo=qq&logoColor=white)](https://qm.qq.com/q/GpE08mrl2G)
