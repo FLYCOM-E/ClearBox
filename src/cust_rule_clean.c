@@ -104,7 +104,7 @@ int cust_rule_clean(void)
                     
                     char unit = '\0';
                     double size = byte_to_size(clear_size, &unit);
-                    fprintf(stderr, L_SR_CLEAR_SUCCESSFUL, path, size, unit);
+                    printf(L_SR_CLEAR_SUCCESSFUL, path, size, unit);
                 }
                 else
                 {
