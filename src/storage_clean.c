@@ -34,7 +34,7 @@ int storage_clean(void)
     
     // 处理内部储存
     storage_cache_clear(STORAGES_DIR);
-    clean_count = storage_clear(STORAGES_DIR, 1);
+    clean_count = storage_clear(STORAGES_DIR, 0);
     
     if (clean_count == -1)
     {
@@ -71,7 +71,7 @@ int storage_clean(void)
         
         // 调用函数（外部储存
         storage_cache_clear(sdcard_dir);
-        clean_count = storage_clear(sdcard_dir, 1);
+        clean_count = storage_clear(sdcard_dir, 0);
         
         if (clean_count == -1)
         {
@@ -134,9 +134,11 @@ static int storage_cache_clear(char * data_path)
             continue;
         }
         
-        // 完整缓存路径
         char app_path[strlen(entry -> d_name) + strlen(app_data_path) + 32];
-        snprintf(app_path, sizeof(app_path), "%s/%s/cache", app_data_path, entry -> d_name);
+        char app_cache_path[strlen(entry -> d_name) + strlen(app_data_path) + 32];
+        snprintf(app_path, sizeof(app_path), "%s/%s", app_data_path, entry -> d_name);
+        snprintf(app_cache_path, sizeof(app_cache_path), "%s/%s/cache", app_data_path, entry -> d_name);
+        
         if (access(app_path, F_OK) != 0)
         {
             continue;
@@ -153,7 +155,9 @@ static int storage_cache_clear(char * data_path)
         }
         
         // Clear
-        if (s_remove(app_path, 0) != -1)
+        storage_clear(app_path, 0);
+        
+        if (s_remove(app_cache_path, 0) != -1)
         {
             printf(L_SC_CLEAR, entry -> d_name);
             clean_count++;
@@ -175,8 +179,8 @@ static int storage_cache_clear(char * data_path)
 /*
 递归清理函数
 接收：
-    char * dir 储存根目录
-    int home 如果外置储存根目录为空是否删除该根目录，默认使用1（跳过删除）
+    char * dir 储存目录
+    int home 如果储存根为空是否删除该根目录，默认使用 0（跳过删除）
 返回：
     int 成功返回清理空文件夹/文件数量，失败返回 -1
 */
@@ -209,6 +213,12 @@ static int storage_clear(char * dir, int home)
             continue;
         }
         
+        // 跳过内部储存 Android 目录，软件私有目录由缓存清理函数校验白名单后调用
+        if (home == 0 && strcmp(entry -> d_name, "Android") == 0)
+        {
+            continue;
+        }
+        
         count_all++;
         char path[strlen(dir) + strlen(entry -> d_name) + 32];
         snprintf(path, sizeof(path), "%s/%s", dir, entry -> d_name);
@@ -234,7 +244,7 @@ static int storage_clear(char * dir, int home)
                     continue;
                 }
             }
-            count += storage_clear(path, 0);
+            count += storage_clear(path, 1);
             if (access(path, F_OK) != 0) count_all--;
         }
         else
