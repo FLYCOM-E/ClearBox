@@ -109,7 +109,7 @@ static int storage_cache_clear(char * data_path)
     char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_DIR) + sizeof(WHITELIST_FILE) + 2],
          app_data_path[strlen(data_path) + 32];
     snprintf(app_data_path, sizeof(app_data_path), "%s/Android/data", data_path);
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_DIR, WHITELIST_FILE);
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s/%s", work_dir, WHITELIST_DIR, WHITELIST_FILE);
     
     FILE * whitelist_file_fp = fopen(whitelist_file, "r");
     if (whitelist_file_fp == NULL)
