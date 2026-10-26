@@ -217,7 +217,7 @@ post=Test Run/已运行 Sync
 
 打开该功能后重启激活，自动缓存前台最近5款软件并阻止缓存，可自定义添加白名单。
 
-名单位置： **`/data/adb/wipe_cache/whitelist.prop`** 或在模块 **ClearBox** 软件中添加。
+名单位置： **`/data/adb/wipe_cache/WhiteLists/StopCache.conf`** 或在模块 **ClearBox** 软件中添加。
 
 **Other**：模块采取动态等待更新的方式（10s ＆ 30s），一方面避免持续资源占用，一方面部分软件在阻止缓存状态下启动会异常，进入软件后延迟启动阻止缓存是最优解。
 

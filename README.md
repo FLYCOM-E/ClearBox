@@ -217,7 +217,7 @@ This is an important function of the module, used to dynamically block foregroun
 
 After turning on this function and restarting to activate, it will automatically cache the latest 5 foreground software and block cache. You can customize and add a whitelist.
 
-Whitelist location： **`/data/adb/wipe_cache/whitelist.prop`** or add it in the module **ClearBox** app.
+Whitelist location： **`/data/adb/wipe_cache/WhiteLists/StopCache.conf`** or add it in the module **ClearBox** app.
 
 **Other**：The module adopts a dynamic wait update method (10s & 30s), on the one hand to avoid continuous resource occupation, on the other hand, some software will be abnormal when launched under the cache block state. Delayed activation of cache blocking after entering the software is the optimal solution.
 

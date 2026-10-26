@@ -9,10 +9,10 @@
 
 #define SERVER_NAME "StopCached"
 
-#define DATA_DIR "/data/data"               // 软件数据根目录
-#define ROM_NAME "LockCacheList"         // 储存文件名
-#define WHITELIST_NAME "whitelist.prop"    // 白名单文件名
-#define MAX_WHITELIST_APP 1000           // 最大白名单数量
+#define DATA_DIR "/data/data"                 // 软件数据根目录
+#define ROM_NAME "LockCacheList"            // 储存文件名
+#define WHITELIST_FILE "StopCache.conf"      // 白名单文件名
+#define MAX_WHITELIST_APP 1000             // 最大白名单数量
 
 #define GET_TOPAPP "dumpsys activity lru | grep TOP | head -n 1 | cut -f3 -d ':' | cut -f1 -d '/'"
 
@@ -23,9 +23,9 @@ int stop_cache_daemon(char * argv[])
 {
     // 定义配置文件
     char rom_file[strlen(work_dir) + sizeof(ROM_NAME) + 2],
-         whitelist_file[strlen(work_dir) + strlen(WHITELIST_NAME) + 2];
+         whitelist_file[strlen(work_dir) + sizeof(WHITELIST_DIR) + sizeof(WHITELIST_FILE) + 2];
     snprintf(rom_file, sizeof(rom_file), "%s/%s", work_dir, ROM_NAME);
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_NAME);
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s/%s", work_dir, WHITELIST_DIR, WHITELIST_FILE);
     
     char top_app_list[5][NAME_MAX] = {0},
          reset_app[NAME_MAX] = "",

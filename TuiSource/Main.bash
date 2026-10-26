@@ -20,6 +20,7 @@ Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
 app_config_dir="AppCleanRules"
 file_config_dir="FileConfigs"
 timed_config_dir="TimedConfigs"
+white_lists="WhiteLists"
 ncdu_default_path="/storage/emulated/0"
 core="clearbox"
 ######
@@ -648,14 +649,14 @@ case "$input" in
             read packages_input
             [ -z "$packages_input" ] && packages_input="null"
             for package in $packages_input; do
-                if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
+                if grep "$package\$" "$work_dir/$white_lists/StopCache.conf" >> /dev/null; then
                     echo " » $package $L_ISIN_WHITELIST"
                     continue
                 elif ! pm list package -3 | grep "package:$package\$" >> /dev/null; then
                     echo " » $package $L_NOTIN_PACKAGE_LIST!"
                     continue
                 else
-                    echo "$package" >> "$work_dir/whitelist.prop"
+                    echo "$package" >> "$work_dir/$white_lists/StopCache.conf"
                     echo " » $package $L_ADD_WHITELIST_SUCCESS!"
                 fi
             done
@@ -666,8 +667,8 @@ case "$input" in
             read packages_input
             [ -z "$packages_input" ] && packages_input="null"
             for package in $packages_input; do
-                if grep "$package\$" "$work_dir/whitelist.prop" >> /dev/null; then
-                    sed -i /"$package"/d "$work_dir/whitelist.prop"
+                if grep "$package\$" "$work_dir/$white_lists/StopCache.conf" >> /dev/null; then
+                    sed -i /"$package"/d "$work_dir/$white_lists/StopCache.conf"
                     echo " $package $L_REMOVE_WHITELIST_SUCCESS!"
                 else
                     echo " $package $L_NOTIN_WHITRLIST!"
@@ -931,14 +932,14 @@ case "$input" in
                   read packages_input
                   [ -z "$packages_input" ] && packages_input="null"
                   for package in $packages_input; do
-                      if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
+                      if grep "$package\$" "$work_dir/$white_lists/CacheClean.conf" >> /dev/null; then
                           echo " » $package $L_ISIN_WHITELIST"
                           continue
                       elif ! pm list package -3 | grep "package:$package\$" >> /dev/null; then
                           echo " » $package $L_NOTIN_PACKAGE_LIST!"
                           continue
                       fi
-                      echo "$package" >> "$work_dir/ClearWhitelist.prop"
+                      echo "$package" >> "$work_dir/$white_lists/CacheClean.conf"
                       echo " » $package $L_ADD_WHITELIST_SUCCESS!"
                   done
                   ;;
@@ -948,8 +949,8 @@ case "$input" in
                   read packages_input
                   [ -z "$packages_input" ] && packages_input="null"
                   for package in $packages_input; do
-                      if grep "$package\$" "$work_dir/ClearWhitelist.prop" >> /dev/null; then
-                          sed -i /"$package"/d "$work_dir/ClearWhitelist.prop"
+                      if grep "$package\$" "$work_dir/$white_lists/CacheClean.conf" >> /dev/null; then
+                          sed -i /"$package"/d "$work_dir/$white_lists/CacheClean.conf"
                           echo " $package $L_REMOVE_WHITELIST_SUCCESS!"
                       else
                           echo " $package $L_NOTIN_WHITRLIST!"

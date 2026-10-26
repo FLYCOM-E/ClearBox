@@ -13,7 +13,7 @@
 #define MAX_WHITE_LIST 1000                                 // 白名单列表最大容量
 #define DATA_DIR "/data/user"                                 // 软件数据根目录
 #define CARD_HOME "/mnt/expand"                           // 拓展储存根目录
-#define WHITELIST_FILE "ClearWhitelist.prop"                  // 白名单文件名
+#define WHITELIST_FILE "CacheClean.conf"                    // 白名单文件名
 #define DEFAULT_CCS 5                                       // 缓存清理限制大小回退
 
 #define GET_APPLIST "pm list package -3 2>/dev/null"
@@ -33,8 +33,8 @@ int app_cache_clean(int mode)
     char package_list[MAX_APPLIST][NAME_MAX + 1];
     
     // 获取白名单列表并储存
-    char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_FILE) + 2];
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_FILE);
+    char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_DIR) + sizeof(WHITELIST_FILE) + 2];
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s/%s", work_dir, WHITELIST_DIR, WHITELIST_FILE);
     
     int whitelist_count = 0;
     char white_list[MAX_WHITE_LIST][NAME_MAX + 1];

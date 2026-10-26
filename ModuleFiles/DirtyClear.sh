@@ -18,6 +18,7 @@ app_config_dir="AppCleanRules"
 storage_config_dir="CleanConfigs"
 file_config_dir="FileConfigs"
 timed_config_dir="TimedConfigs"
+white_lists="WhiteLists"
 source "$work_dir/settings.prop"
 exec 2>>/dev/null
 ######
@@ -69,5 +70,9 @@ done
 
 [ "$clearbox_clear_cache_size" -gt 100 ] && sed -i 's|clearbox_clear_cache_size=[0-9]*|clearbox_clear_cache_size=5|g' "$work_dir/settings.prop"
 sed -i '/^$/d' "$work_dir/settings.prop"
+
+mkdir "$work_dir/$white_lists"
+[ -f "$work_dir/ClearWhitelist.prop" ] && mv "$work_dir/ClearWhitelist.prop" "$work_dir/$white_lists/CacheClean.conf"
+[ -f "$work_dir/whitelist.prop" ] && mv "$work_dir/whitelist.prop" "$work_dir/$white_lists/StopCache.conf"
 
 true

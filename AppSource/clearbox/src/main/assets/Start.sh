@@ -24,6 +24,7 @@ lang_dir="LANG"
 app_config_dir="AppCleanRules"
 file_config_dir="FileConfigs"
 timed_config_dir="TimedConfigs"
+white_lists="WhiteLists"
 core="clearbox"
 
 if [ ! -f "/data/adb/wipe_cache/PATH" ]; then

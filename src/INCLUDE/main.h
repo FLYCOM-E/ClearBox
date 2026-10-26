@@ -28,10 +28,11 @@
 #include "../SQlite3/sqlite3.h"
 
 #define MAX_WORK_DIR_LEN 512            // 工作目录最大长度
-#define MAX_BIN_DIR_LEN 512              // 二进制目录最大长度
+#define MAX_BIN_DIR_LEN 512               // 二进制目录最大长度
 #define LOG_FILE_NAME "LOG.log"           // 日志文件名
 #define SETTINGS_FILE "settings.prop"       // 设置信息文件名
-#define SETTINGS_FILE_MAX_LINE 256      // 设置信息文件最大行长
+#define WHITELIST_DIR "WhiteLists"         // 白名单文件夹名
+#define SETTINGS_FILE_MAX_LINE 256       // 设置信息文件最大行长
 #define getprop __system_property_get
 #define print_log __android_log_print
 

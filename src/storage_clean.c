@@ -9,7 +9,7 @@
 
 #define SERVER_NAME "StorageClean"
 
-#define WHITELIST "ClearWhitelist.prop"          // 白名单文件名
+#define WHITELIST_FILE "StopCache.conf"        // 白名单文件名
 #define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录
 #define STORAGES_DIR "/storage/emulated/0"   // 储存目录
 
@@ -106,10 +106,10 @@ static int storage_cache_clear(char * data_path)
     
     // 拼接路径/白名单文件
     int clean_count = 0;
-    char whitelist_file[strlen(work_dir) + strlen(WHITELIST) + 2],
+    char whitelist_file[strlen(work_dir) + sizeof(WHITELIST_DIR) + sizeof(WHITELIST_FILE) + 2],
          app_data_path[strlen(data_path) + 32];
     snprintf(app_data_path, sizeof(app_data_path), "%s/Android/data", data_path);
-    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST);
+    snprintf(whitelist_file, sizeof(whitelist_file), "%s/%s", work_dir, WHITELIST_DIR, WHITELIST_FILE);
     
     FILE * whitelist_file_fp = fopen(whitelist_file, "r");
     if (whitelist_file_fp == NULL)

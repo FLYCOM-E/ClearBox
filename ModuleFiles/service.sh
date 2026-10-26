@@ -9,6 +9,7 @@ storage_config_dir="CleanConfigs"
 file_config_dir="FileConfigs"
 bind_config_dir="BindConfigs"
 timed_config_dir="TimedConfigs"
+white_lists="WhiteLists"
 core="clearbox"
 ######
 export home_dir="${0%/*}"
@@ -65,25 +66,40 @@ StartSettings()
     mkdir -p "$work_dir/$timed_config_dir"
     mkdir -p "$work_dir/$bind_config_dir"
     ######
-    [ ! -f "$work_dir/whitelist.prop" ] && touch "$work_dir/whitelist.prop"
-    [ ! -f "$work_dir/ClearWhitelist.prop" ] && touch "$work_dir/ClearWhitelist.prop"
+    # 临时保存 App 列表方便后续使用
+    pm list package -a | cut -f2 -d ':' > "$work_dir/.tmp_AppList.txt"
+    ######
+    [ ! -f "$work_dir/$white_lists/CacheClean.conf" ] && touch "$work_dir/$white_lists/CacheClean.conf"
+    [ ! -f "$work_dir/$white_lists/StopCache.conf" ] && touch "$work_dir/$white_lists/StopCache.conf"
+    
+    if [ -d "$home_dir/$white_lists" ]; then
+        cat "$home_dir/$white_lists/CacheClean.conf" | while read package; do
+            if ! grep ^"$package" "$work_dir/$white_lists/CacheClean.conf" >/dev/null 2>&1; then
+                echo "$package" >> "$work_dir/$white_lists/CacheClean.conf"
+            fi
+        done
+        cat "$home_dir/$white_lists/StopCache.conf" | while read package; do
+            if ! grep ^"$package" "$work_dir/$white_lists/StopCache.conf" >/dev/null 2>&1; then
+                echo "$package" >> "$work_dir/$white_lists/StopCache.conf"
+            fi
+        done
+    fi
+    ######
     if [ ! -f "$work_dir/$timed_config_dir/NCDU_HC.conf" ]; then
         echo -e "date=0\ntime=3/D\nrun=$home_dir/$core --ncdu --clean\n" > "$work_dir/$timed_config_dir/NCDU_HC.conf"
     fi
     ######
     if [ -d "$home_dir/AppConfigs" ]; then
         cp "$home_dir/AppConfigs/"* "$work_dir/$app_config_dir/"
-        pm list package -a | cut -f2 -d ':' >"$work_dir/$app_config_dir/AppList.txt"
         for file in "$work_dir/$app_config_dir/"*; do
             name="$(basename $file | sed 's/\.[^.]*$//')"
             if [ "$name" = "AppList" ]; then
                 continue
             fi
-            if ! grep "$name" "$work_dir/$app_config_dir/AppList.txt" >/dev/null 2>&1; then
+            if ! grep "$name" "$work_dir/.tmp_AppList.txt" >/dev/null 2>&1; then
                 rm -f "$file"
             fi
         done
-        rm -f "$work_dir/$app_config_dir/AppList.txt"
     fi
     ######
     if [ -d "$home_dir/StorageConfigs" ]; then
@@ -100,6 +116,8 @@ StartSettings()
             mv "$work_dir/$file_config_dir/$name1.$name2" "$work_dir/$file_config_dir/$name1.conf"
         fi
     done
+    ######
+    rm "$work_dir/.tmp_AppList.txt"
     ######
     source "$work_dir/settings.prop"
 }

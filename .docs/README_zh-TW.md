@@ -217,7 +217,7 @@ post=Test Run/已執行 Sync
 
 開啟該功能後重啟啟用，自動快取前台最近5款軟體並阻止快取，可自訂新增白名單。
 
-名單位置： **`/data/adb/wipe_cache/whitelist.prop`** 或在模組 **ClearBox** 軟體中新增。
+名單位置： **`/data/adb/wipe_cache/WhiteLists/StopCache.conf`** 或在模組 **ClearBox** 軟體中新增。
 
 **Other**：模組採取動態等待更新的方式（10s ＆ 30s），一方面避免持續資源佔用，一方面部分軟體在阻止快取狀態下啟動會異常，進入軟體後延遲啟動阻止快取是最優解。
 
