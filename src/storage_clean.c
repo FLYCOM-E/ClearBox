@@ -147,11 +147,11 @@ static int storage_cache_clear(char * data_path)
         // 白名单检查（白名单不存在则忽略）
         if (whitelist_file_fp)
         {
+            fseek(whitelist_file_fp, 0, SEEK_SET);
             if (s_grep(whitelist_file_fp, entry -> d_name, 1) == 1)
             {
                 continue;
             }
-            fseek(whitelist_file_fp, 0, SEEK_SET);
         }
         
         // Clear

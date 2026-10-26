@@ -24,6 +24,7 @@ int bmount(char * mode_str)
         return -1;
     }
     
+    fseek(sys_mounts_fp, 0, SEEK_SET);
     if (s_grep(sys_mounts_fp, "sdcardfs", 0) == 1)
     {
         // sdcardfs 不兼容
