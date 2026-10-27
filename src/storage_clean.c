@@ -162,10 +162,6 @@ static int storage_cache_clear(char * data_path)
             printf(L_SC_CLEAR, entry -> d_name);
             clean_count++;
         }
-        else
-        {
-            fprintf(stderr, L_SC_CLEAR_ERR, entry -> d_name);
-        }
         fflush(stdout);
     }
     

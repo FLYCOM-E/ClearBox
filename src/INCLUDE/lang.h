@@ -130,7 +130,6 @@ typedef struct
     const char * l_sc_successful_storage;
     const char * l_sc_successful_sd;
     const char * l_sc_clear;
-    const char * l_sc_clear_err;
     const char * l_sc_clear_cache_done;
     const char * l_sc_clear_dirty_err;
     const char * l_sr_start;
@@ -265,7 +264,6 @@ static const LangPack lang_packs[] =
         .l_sc_successful_storage = " » 内部储存垃圾清理完成！\n » 共清理 %d 个空文件/文件夹及Log文件\n",
         .l_sc_successful_sd = " » 外部储存 %s 垃圾清理完成！\n » 共清理 %d 个空文件/文件夹及Log文件\n",
         .l_sc_clear = " » 清理 %s 储存缓存\n",
-        .l_sc_clear_err = " » 清理 %s 储存缓存失败！\n",
         .l_sc_clear_cache_done = " » 共清理 %d 个软件缓存！\n",
         .l_sc_clear_dirty_err = " » 空文件/夹及Log文件清理失败！\n",
         .l_sr_start = " » 处理 %s 配置📍\n",
@@ -397,7 +395,6 @@ static const LangPack lang_packs[] =
         .l_sc_successful_storage = " » 內部儲存空間清理完成！\n » 共清理 %d 個空檔案/資料夾及 Log 檔案\n",
         .l_sc_successful_sd = " » 外部儲存裝置 %s 清理完成！\n » 共清理 %d 個空檔案/資料夾及 Log 檔案\n",
         .l_sc_clear = " » 正在清理 %s 儲存快取\n",
-        .l_sc_clear_err = " » 清理 %s 儲存快取失敗！\n",
         .l_sc_clear_cache_done = " » 共清理 %d 個應用程式快取！\n",
         .l_sc_clear_dirty_err = " » 空檔案/資料夾及 Log 檔案清理失敗！\n",
         .l_sr_start = " » 處理 %s 配置📍\n",
@@ -529,7 +526,6 @@ static const LangPack lang_packs[] =
         .l_sc_successful_storage = " » Очистка мусора во внутреннем хранилище завершена！\n » Очищено %d пустых файлов/папок и Log-файлов\n",
         .l_sc_successful_sd = " » Очистка мусора во внешнем хранилище %s завершена！\n » Очищено %d пустых файлов/папок и Log-файлов\n",
         .l_sc_clear = " » Очистка кэша хранилища %s\n",
-        .l_sc_clear_err = " » Не удалось очистить кэш хранилища %s！\n",
         .l_sc_clear_cache_done = " » Очищено кэшей %d приложений！\n",
         .l_sc_clear_dirty_err = " » Не удалось очистить пустые файлы/папки и Log-файлы！\n",
         .l_sr_start = " » Обработка конфигурации %s📍\n",
@@ -661,7 +657,6 @@ static const LangPack lang_packs[] =
         .l_sc_successful_storage = " » Internal storage cleanup complete!\n » Total cleaned: %d empty files/folders and log files\n",
         .l_sc_successful_sd = " » External storage %s cleanup complete!\n » Total cleaned: %d empty files/folders and log files\n",
         .l_sc_clear = " » Cleaning %s storage cache\n",
-        .l_sc_clear_err = " » Failed to clean %s storage cache!\n",
         .l_sc_clear_cache_done = " » Total cleaned: %d app caches!\n",
         .l_sc_clear_dirty_err = " » Failed to clean empty files/folders and log files!\n",
         .l_sr_start = " » Processing %s configuration📍\n",
@@ -793,7 +788,6 @@ static const LangPack lang_packs[] =
         .l_sc_successful_storage = " » 내부 저장소 쓰레기 정리 완료！\n » 총 %d개의 빈 파일/폴더 및 로그 파일 정리\n",
         .l_sc_successful_sd = " » 외부 저장소 %s 쓰레기 정리 완료！\n » 총 %d개의 빈 파일/폴더 및 로그 파일 정리\n",
         .l_sc_clear = " » %s 저장소 캐시 정리\n",
-        .l_sc_clear_err = " » %s 저장소 캐시 정리 실패！\n",
         .l_sc_clear_cache_done = " » 총 %d개의 앱 캐시 정리！\n",
         .l_sc_clear_dirty_err = " » 빈 파일/폴더 및 로그 파일 정리 실패！\n",
         .l_sr_start = " » %s 구성 처리 중📍\n",
@@ -925,7 +919,6 @@ static const LangPack lang_packs[] =
         .l_sc_successful_storage = " » 内部ストレージのゴミクリーンが完了しました！\n » 合計 %d 個の空ファイル/フォルダおよびログファイルをクリーンしました\n",
         .l_sc_successful_sd = " » 外部ストレージ %s のゴミクリーンが完了しました！\n » 合計 %d 個の空ファイル/フォルダおよびログファイルをクリーンしました\n",
         .l_sc_clear = " » %s のストレージキャッシュをクリーン中\n",
-        .l_sc_clear_err = " » %s のストレージキャッシュクリーンに失敗しました！\n",
         .l_sc_clear_cache_done = " » 合計 %d 個のアプリキャッシュをクリーンしました！\n",
         .l_sc_clear_dirty_err = " » 空ファイル/フォルダおよびログファイルのクリーンに失敗しました！\n",
         .l_sr_start = " » %s 設定を処理中📍\n",
@@ -1059,7 +1052,6 @@ extern LangType current_lang;
 #define L_SC_SUCCESSFUL_STORAGE lang_packs[current_lang].l_sc_successful_storage
 #define L_SC_SUCCESSFUL_SD lang_packs[current_lang].l_sc_successful_sd
 #define L_SC_CLEAR lang_packs[current_lang].l_sc_clear
-#define L_SC_CLEAR_ERR lang_packs[current_lang].l_sc_clear_err
 #define L_SC_CLEAR_CACHE_DONE lang_packs[current_lang].l_sc_clear_cache_done
 #define L_SC_CLEAR_DIRTY_ERR lang_packs[current_lang].l_sc_clear_dirty_err
 #define L_SR_START lang_packs[current_lang].l_sr_start
