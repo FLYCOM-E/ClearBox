@@ -9,9 +9,9 @@
 
 #define SERVER_NAME "StorageClean"
 
-#define WHITELIST_FILE "StopCache.conf"        // 白名单文件名
+#define WHITELIST_FILE "CacheClean.conf"    // 白名单文件名
 #define CARD_HOME "/mnt/media_rw"           // 外置 SD 卡根目录
-#define STORAGES_DIR "/storage/emulated/0"   // 储存目录
+#define STORAGES_DIR "/storage/emulated/0"  // 储存目录
 
 #define CLEAR_DISK_KEY "clearbox_clear_disk"   // 是否清理外部储存设置储存 KEY
 
@@ -279,7 +279,7 @@ static int storage_clear(char * dir, int home)
     closedir(dir_dp);
     
     // 检查是否应该删除目录本身（递归时删除空目录）
-    if (home == 0)
+    if (home == 1)
     {
         if (count_all == 0)
         {
