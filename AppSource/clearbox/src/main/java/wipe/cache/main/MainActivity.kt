@@ -1,7 +1,6 @@
 package wipe.cache.main
 
 import wipe.cache.krscript.R as KR
-import wipe.cache.common.R as CommonR
 import android.Manifest
 import android.app.Activity
 import android.content.ComponentName
@@ -21,7 +20,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import wipe.cache.common.shared.FilePathResolver
 import wipe.cache.common.ui.DialogHelper
@@ -32,17 +30,13 @@ import wipe.cache.krscript.config.PageConfigSh
 import wipe.cache.krscript.model.*
 import wipe.cache.krscript.ui.ActionListFragment
 import wipe.cache.krscript.ui.ParamsFileChooserRender
-import wipe.cache.main.ui.TabIconHelper
 import android.os.Looper
 
 class MainActivity : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
     private val handler = Handler(Looper.getMainLooper())
     private var krScriptConfig = KrScriptConfig()
-    
-    // TODO 这个底栏目前只是显示固定图标，实际未在使用
-    @Suppress("DEPRECATION")
-    private lateinit var mainTabhost: android.widget.TabHost
+
     private lateinit var mainTabhost2: View
     private lateinit var mainTabhost3: View
 
@@ -57,7 +51,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
 
-        mainTabhost = findViewById(R.id.main_tabhost)
         mainTabhost2 = findViewById(R.id.main_tabhost_2)
         mainTabhost3 = findViewById(R.id.main_tabhost_3)
 
@@ -65,11 +58,7 @@ class MainActivity : AppCompatActivity() {
         SpringUtils.springEntrance(mainTabhost3)
 
         krScriptConfig = KrScriptConfig()
-        
-        @Suppress("DEPRECATION")
-        mainTabhost.setup()
-        val tabIconHelper = TabIconHelper(mainTabhost, this)
-        
+
         Thread(Runnable {
             val cachedPages = PageCache.pageItems
             val cachedFavorites = PageCache.homeItems
@@ -96,14 +85,12 @@ class MainActivity : AppCompatActivity() {
 
                 if (favorites != null && favorites.size > 0) {
                     updateFavoritesTab(favorites, favoritesConfig!!)
-                    tabIconHelper.newTabSpec(getString(R.string.tab_favorites), ContextCompat.getDrawable(this, CommonR.drawable.function)!!, R.id.main_tabhost_2)
                 } else {
                     mainTabhost2.visibility = View.GONE
                 }
 
                 if (pages != null && pages.size > 0) {
                     updateMoreTab(pages, page2Config!!)
-                    tabIconHelper.newTabSpec(getString(R.string.tab_pages), ContextCompat.getDrawable(this, CommonR.drawable.function)!!, R.id.main_tabhost_3)
                 } else {
                     mainTabhost3.visibility = View.GONE
                 }

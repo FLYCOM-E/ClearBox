@@ -11,9 +11,6 @@
     <string name="appliction_name">歡迎使用 · ClearBox</string>
     <string name="engine_version_name">Powered By Kr-Script</string>
     
-    <string name="tab_home">首頁</string>
-    <string name="tab_favorites"></string>
-    <string name="tab_pages">全部</string>
 
     <string name="copy_success">已複製</string>
     <string name="btn_retry">再試試</string>

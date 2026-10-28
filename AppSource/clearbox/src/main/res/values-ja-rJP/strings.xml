@@ -11,9 +11,6 @@
     <string name="appliction_name">ClearBox をご利用ください</string>
     <string name="engine_version_name">Powered By Kr-Script</string>
     
-    <string name="tab_home">ホーム</string>
-    <string name="tab_favorites"></string>
-    <string name="tab_pages">すべて</string>
 
     <string name="copy_success">コピーしました</string>
     <string name="btn_retry">もう一度</string>

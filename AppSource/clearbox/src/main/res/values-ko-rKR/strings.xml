@@ -11,9 +11,6 @@
     <string name="appliction_name">ClearBox · 사용을 환영합니다</string>
     <string name="engine_version_name">Powered By Kr-Script</string>
     
-    <string name="tab_home">홈</string>
-    <string name="tab_favorites"></string>
-    <string name="tab_pages">전체</string>
 
     <string name="copy_success">복사됨</string>
     <string name="btn_retry">다시 시도</string>

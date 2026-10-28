@@ -11,9 +11,6 @@
     <string name="appliction_name">Добро пожаловать · ClearBox</string>
     <string name="engine_version_name">Работает на Kr-Script</string>
     
-    <string name="tab_home">Главная</string>
-    <string name="tab_favorites"></string>
-    <string name="tab_pages">Все</string>
 
     <string name="copy_success">Скопировано</string>
     <string name="btn_retry">Попробовать снова</string>

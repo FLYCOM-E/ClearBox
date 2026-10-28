@@ -11,9 +11,6 @@
     <string name="appliction_name">Welcome to · ClearBox</string>
     <string name="engine_version_name">Powered By Kr-Script</string>
     
-    <string name="tab_home">Home</string>
-    <string name="tab_favorites"></string>
-    <string name="tab_pages">All</string>
 
     <string name="copy_success">Copied</string>
     <string name="btn_retry">Try Again</string>
