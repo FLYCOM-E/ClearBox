@@ -44,11 +44,10 @@ class AdapterAppChooser(
         }
 
         private fun searchStr(valueText: String, keyword: String): Boolean {
-            // First match against the whole, non-splitted value
             if (valueText.contains(keyword)) {
                 return true
             } else {
-                val words = valueText.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                val words = valueText.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val wordCount = words.size
 
                 // Start at index 0, in case valueText starts with space(s)
@@ -62,8 +61,8 @@ class AdapterAppChooser(
         }
 
         override fun performFiltering(constraint: CharSequence?): FilterResults {
-            val results = Filter.FilterResults()
-            val prefix: String = if (constraint == null) "" else constraint.toString()
+            val results = FilterResults()
+            val prefix: String = constraint?.toString() ?: ""
 
             if (prefix.isEmpty()) {
                 val list: ArrayList<AppInfo>
@@ -132,20 +131,21 @@ class AdapterAppChooser(
         return position.toLong()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun loadIcon(app: AppInfo): Deferred<Drawable?> {
         return GlobalScope.async(Dispatchers.IO) {
             val packageName = app.packageName
             val icon: Drawable? = iconCaches.get(packageName)
             if (icon == null && !app.notFound) {
                 try {
-                    val appInfo = context.packageManager.getPackageInfo(packageName, 0)
                     iconCaches.put(
                         packageName,
                         context.packageManager.getApplicationIcon(packageName)
                     )
-                } catch (ex: Exception) {
+                } catch (_: Exception) {
                     app.notFound = true
                 } finally {
+                    // .
                 }
                 return@async iconCaches.get(packageName)
             } else {
@@ -172,15 +172,16 @@ class AdapterAppChooser(
             val visibleFirstPosi = listView.firstVisiblePosition
             val visibleLastPosi = listView.lastVisiblePosition
 
-            if (position >= visibleFirstPosi && position <= visibleLastPosi) {
+            if (position in visibleFirstPosi..visibleLastPosi) {
                 filterApps[position] = AppInfo
                 val view = listView.getChildAt(position - visibleFirstPosi)
                 updateRow(position, view)
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
 
@@ -244,7 +245,7 @@ class AdapterAppChooser(
         return apps.filter { it.selected }
     }
 
-    inner class ViewHolder {
+    class ViewHolder {
         internal var packageName: String? = null
 
         internal var itemTitle: TextView? = null

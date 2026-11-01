@@ -4,7 +4,6 @@ import wipe.cache.krscript.R as KR
 import android.content.DialogInterface
 import android.Manifest
 import android.content.Context
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.PermissionChecker
@@ -22,7 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class CheckRootStatus(var context: Context, private var next: Runnable? = null) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
 
-    var therad: Thread? = null
+    var thread: Thread? = null
 
     fun forceGetRoot() {
         if (lastCheckResult) {
@@ -32,7 +31,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
             }
         } else {
             var completed = false
-            therad = Thread {
+            thread = Thread {
                 rootStatus = KeepShellPublic.checkRoot()
                 if (completed) return@Thread
 
@@ -50,16 +49,16 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                                 .setTitle(R.string.error_root)
                                 .setPositiveButton(R.string.btn_retry) { _: DialogInterface, _: Int ->
                                     KeepShellPublic.tryExit()
-                                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                                        therad!!.interrupt()
-                                        therad = null
+                                    if (thread != null && thread!!.isAlive && !thread!!.isInterrupted) {
+                                        thread!!.interrupt()
+                                        thread = null
                                     }
                                     forceGetRoot()
                                 }
                                 .setNegativeButton(R.string.btn_exit) { _: DialogInterface, _: Int ->
                                     (context as? Activity)?.finish()
                                 }
-                        if (context.resources.getBoolean(R.bool.force_root) != true) {
+                        if (!context.resources.getBoolean(R.bool.force_root)) {
                             builder.setNeutralButton(KR.string.btn_skip) { _: DialogInterface, _: Int ->
                                 val nextRunnable = next
                                 if (nextRunnable != null) {
@@ -71,30 +70,32 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                     }
                 }
             }
-            therad!!.start()
-            Thread(Runnable {
+            thread!!.start()
+            Thread {
                 Thread.sleep(1000 * 15)
 
                 if (!completed) {
                     KeepShellPublic.tryExit()
                     myHandler.post {
-                        DialogHelper.confirm(context,
-                                context.getString(R.string.error_root),
-                                context.getString(R.string.error_su_timeout),
-                                null,
-                                DialogHelper.DialogButton(context.getString(R.string.btn_retry), {
-                                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                                        therad!!.interrupt()
-                                        therad = null
-                                    }
-                                    forceGetRoot()
-                                }),
-                                DialogHelper.DialogButton(context.getString(R.string.btn_exit), {
-                                    (context as? Activity)?.finish()
-                                }))
+                        DialogHelper.confirm(
+                            context,
+                            context.getString(R.string.error_root),
+                            context.getString(R.string.error_su_timeout),
+                            null,
+                            DialogHelper.DialogButton(context.getString(R.string.btn_retry), {
+                                if (thread != null && thread!!.isAlive && !thread!!.isInterrupted) {
+                                    thread!!.interrupt()
+                                    thread = null
+                                }
+                                forceGetRoot()
+                            }),
+                            DialogHelper.DialogButton(context.getString(R.string.btn_exit), {
+                                (context as? Activity)?.finish()
+                            })
+                        )
                     }
                 }
-            }).start()
+            }.start()
         }
     }
 
@@ -104,13 +105,11 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                 PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
 
         fun grantPermission(context: Context) {
-            val cmds = StringBuilder()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!checkPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)) {
-                    cmds.append("dumpsys deviceidle whitelist +${context.packageName};\n")
-                }
+            val cmd = StringBuilder()
+            if (!checkPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)) {
+                cmd.append("dumpsys deviceidle whitelist +${context.packageName};\n")
             }
-            KeepShellPublic.doCmdSync(cmds.toString())
+            KeepShellPublic.doCmdSync(cmd.toString())
         }
 
         val lastCheckResult: Boolean

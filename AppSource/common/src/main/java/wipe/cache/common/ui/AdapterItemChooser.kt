@@ -1,8 +1,6 @@
 package wipe.cache.common.ui
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.util.LruCache
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -31,7 +29,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
         }
 
         override fun performFiltering(constraint: CharSequence?): FilterResults {
-            val results = Filter.FilterResults()
+            val results = FilterResults()
             val prefix: String = constraint?.toString() ?: ""
 
             if (prefix.isEmpty()) {
@@ -60,11 +58,11 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
                     } else {
                         val valueText = if (value.title == null) "" else value.title!!.lowercase()
 
-                        // First match against the whole, non-splitted value
                         if (valueText.contains(prefixString)) {
                             newValues.add(value)
                         } else {
-                            val words = valueText.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                            val words = valueText.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+                                .toTypedArray()
                             val wordCount = words.size
 
                             // Start at index 0, in case valueText starts with space(s)
@@ -123,12 +121,12 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
             val visibleFirstPosi = listView.firstVisiblePosition
             val visibleLastPosi = listView.lastVisiblePosition
 
-            if (position >= visibleFirstPosi && position <= visibleLastPosi) {
+            if (position in visibleFirstPosi..visibleLastPosi) {
                 filterItems[position] = SelectItem
                 val view = listView.getChildAt(position - visibleFirstPosi)
                 updateRow(position, view)
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
         }
     }
 
@@ -189,7 +187,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
         return items.map { it.selected }.toBooleanArray()
     }
 
-    inner class ViewHolder {
+    class ViewHolder {
         internal var itemTitle: TextView? = null
         internal var itemDesc: TextView? = null
         internal var imgView: ImageView? = null

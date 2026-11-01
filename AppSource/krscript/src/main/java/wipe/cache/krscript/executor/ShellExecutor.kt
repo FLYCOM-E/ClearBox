@@ -24,7 +24,6 @@ class ShellExecutor {
             String.format("kill -s 1 `pgrep -f %s`", sessionTag),
             null
         )
-        // KeepShellPublic.INSTANCE.doCmdSync(String.format("kill -s 1 `pgrep -f %s`", sessionTag));
     }
 
     /**
@@ -33,7 +32,7 @@ class ShellExecutor {
     fun execute(
         context: Context,
         nodeInfo: RunnableNode,
-        cmds: String?,
+        cmd: String?,
         onExit: Runnable?,
         params: HashMap<String?, String?>?,
         shellHandlerBase: ShellHandlerBase
@@ -45,60 +44,45 @@ class ShellExecutor {
         val process = runtime
         if (process == null) {
             Toast.makeText(context, "START ERR", Toast.LENGTH_SHORT).show()
-            if (onExit != null) {
-                onExit.run()
-            }
+            onExit?.run()
         } else {
             val forceStopRunnable: Runnable? =
-                if (nodeInfo.interruptable || nodeInfo.shell == shellModeBgTask) (object :
-                    Runnable {
-                    override fun run() {
-                        /*
-                    // 没啥用，这个pid和在shell创建的子进程不是父子关系，杀死此进程对shell里创建的进程毫无影响
-                    int pid = -1;
-                    if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
-                        try {
-                            Class cl = process.getClass();
-                            Field field = cl.getDeclaredField("pid");
-                            field.setAccessible(true);
-                            Object pidObject = field.get(process);
-                            pid = (Integer) pidObject;
-                        } catch (Exception ignored) {}
+                if (nodeInfo.interruptable || nodeInfo.shell == shellModeBgTask) (Runnable {
+                    killProcess(context)
+
+                    try {
+                        process.inputStream.close()
+                    } catch (_: Exception) {
+                        // .
                     }
-                    */
-                        killProcess(context)
+                    try {
+                        process.outputStream.close()
+                    } catch (_: Exception) {
+                        // .
+                    }
+                    try {
+                        process.errorStream.close()
+                    } catch (_: Exception) {
+                        // .
+                    }
 
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         try {
-                            process.getInputStream().close()
-                        } catch (ignored: Exception) {
+                            process.destroyForcibly()
+                        } catch (ex: Exception) {
+                            Log.e("KrScriptError", "" + ex.message)
                         }
+                    } else {
                         try {
-                            process.getOutputStream().close()
-                        } catch (ignored: Exception) {
-                        }
-                        try {
-                            process.getErrorStream().close()
-                        } catch (ignored: Exception) {
-                        }
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            try {
-                                process.destroyForcibly()
-                            } catch (ex: Exception) {
-                                Log.e("KrScriptError", "" + ex.message)
-                            }
-                        } else {
-                            try {
-                                process.destroy()
-                            } catch (ex: Exception) {
-                                Log.e("KrScriptError", "" + ex.message)
-                            }
+                            process.destroy()
+                        } catch (ex: Exception) {
+                            Log.e("KrScriptError", "" + ex.message)
                         }
                     }
                 }) else null
             SimpleShellWatcher().setHandler(context, process, shellHandlerBase, onExit)
 
-            val outputStream = process.getOutputStream()
+            val outputStream = process.outputStream
             val dataOutputStream = DataOutputStream(outputStream)
             try {
                 shellHandlerBase.sendMessage(
@@ -110,14 +94,14 @@ class ShellExecutor {
                 shellHandlerBase.sendMessage(
                     shellHandlerBase.obtainMessage(
                         ShellHandlerBase.EVENT_START,
-                        cmds + "\n\n"
+                        cmd + "\n\n"
                     )
                 )
                 shellHandlerBase.onStart(forceStopRunnable)
                 dataOutputStream.writeBytes("sleep 0.2;\n")
 
-                executeShell(context, dataOutputStream, cmds, params, nodeInfo, sessionTag)
-            } catch (ex: Exception) {
+                executeShell(context, dataOutputStream, cmd, params, nodeInfo, sessionTag)
+            } catch (_: Exception) {
                 process.destroy()
             }
             started = true

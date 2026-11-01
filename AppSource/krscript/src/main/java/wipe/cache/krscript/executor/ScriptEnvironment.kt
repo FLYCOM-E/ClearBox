@@ -18,6 +18,7 @@ import java.io.File
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import androidx.core.content.edit
 
 object ScriptEnvironment {
     private const val ASSETS_FILE = "file:///android_asset/"
@@ -34,7 +35,7 @@ object ScriptEnvironment {
     private fun init(context: Context): Boolean {
         val configSpf = context.getSharedPreferences("kr-script-config", Context.MODE_PRIVATE)
 
-        return ScriptEnvironment.init(
+        return init(
             context,
             configSpf.getString("executor", "kr-script/executor.sh")!!,
             configSpf.getString("toolkitDir", "kr-script/toolkit")
@@ -53,11 +54,11 @@ object ScriptEnvironment {
             return true
         }
 
-        shellTranslation = ShellTranslation(context.getApplicationContext())
+        shellTranslation = ShellTranslation(context.applicationContext)
         rooted = checkRoot()
 
         try {
-            if (toolkitDir != null && !toolkitDir.isEmpty()) {
+            if (!toolkitDir.isNullOrEmpty()) {
                 TOOKIT_DIR = ExtractAssets(context).extractResources(toolkitDir)
             }
 
@@ -66,18 +67,17 @@ object ScriptEnvironment {
                 fileName = fileName.substring(ASSETS_FILE.length)
             }
 
-            val inputStream = context.getAssets().open(fileName)
+            val inputStream = context.assets.open(fileName)
             val bytes = ByteArray(inputStream.available())
-            val length = inputStream.read(bytes, 0, bytes.size).toLong()
             var envShell = String(bytes, Charset.defaultCharset()).replace("\r".toRegex(), "")
 
             val environment = getEnvironment(context)
             for (key in environment.keys) {
-                var value = environment.get(key)
+                var value = environment[key]
                 if (value == null) {
                     value = ""
                 }
-                envShell = envShell.replace("$({" + key + "})", value)
+                envShell = envShell.replace("$({$key})", value)
             }
             val outputPathAbs = getPrivateFilePath(context, fileName)
             envShell = envShell.replace("$({EXECUTOR_PATH})", outputPathAbs)
@@ -89,16 +89,15 @@ object ScriptEnvironment {
                 environmentPath = outputPathAbs
             }
 
-            val configSpf =
-                context.getSharedPreferences("kr-script-config", Context.MODE_PRIVATE).edit()
-            configSpf.putString("executor", executor)
-            configSpf.putString("toolkitDir", toolkitDir)
-            configSpf.apply()
+            context.getSharedPreferences("kr-script-config", Context.MODE_PRIVATE).edit {
+                putString("executor", executor)
+                putString("toolkitDir", toolkitDir)
+            }
 
-            privateShell = if (rooted) getDefaultInstance() else KeepShell(rooted)
+            privateShell = if (rooted) getDefaultInstance() else KeepShell(false)
 
             return isInited
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             return false
         }
     }
@@ -108,7 +107,7 @@ object ScriptEnvironment {
             return ""
         }
 
-        var md5: MessageDigest? = null
+        var md5: MessageDigest?
         try {
             md5 = MessageDigest.getInstance("MD5")
             val bytes = md5.digest(string.toByteArray())
@@ -116,7 +115,7 @@ object ScriptEnvironment {
             for (b in bytes) {
                 var temp = Integer.toHexString(b.toInt() and 0xff)
                 if (temp.length == 1) {
-                    temp = "0" + temp
+                    temp = "0$temp"
                 }
                 result.append(temp)
             }
@@ -137,12 +136,12 @@ object ScriptEnvironment {
      */
     private fun createShellCache(context: Context, script: String): String {
         val md5 = md5(script)
-        val outputPath = "kr-script/cache/" + md5 + ".sh"
+        val outputPath = "kr-script/cache/$md5.sh"
         if (File(outputPath).exists()) {
             return outputPath
         }
 
-        val bytes = ("#!/system/bin/env sh\n\n" + script)
+        val bytes = ("#!/system/bin/env sh\n\n$script")
             .replace("\r\n".toRegex(), "\n")
             .replace("\r\t".toRegex(), "\t")
             .replace("\r".toRegex(), "\n")
@@ -174,16 +173,15 @@ object ScriptEnvironment {
             init(context)
         }
 
-        if (script == null || script.isEmpty()) {
+        if (script.isNullOrEmpty()) {
             return ""
         }
 
         val script2 = script.trim { it <= ' ' }
-        var path: String? = ""
-        if (script2.startsWith(ASSETS_FILE)) {
-            path = extractScript(context, script2)
+        val path: String? = if (script2.startsWith(ASSETS_FILE)) {
+            extractScript(context, script2)
         } else {
-            path = createShellCache(context, script)
+            createShellCache(context, script)
         }
 
         if (!isInited) {
@@ -193,7 +191,7 @@ object ScriptEnvironment {
         val stringBuilder = StringBuilder()
 
         stringBuilder.append("\n")
-        if (nodeInfoBase != null && !nodeInfoBase.currentPageConfigPath.isEmpty()) {
+        if (nodeInfoBase != null && nodeInfoBase.currentPageConfigPath.isNotEmpty()) {
             val parentPageConfigDir = nodeInfoBase.pageConfigDir
             val currentPageConfigPath = nodeInfoBase.currentPageConfigPath
             stringBuilder.append("export PAGE_CONFIG_DIR='").append(parentPageConfigDir)
@@ -222,13 +220,13 @@ object ScriptEnvironment {
         }
 
         stringBuilder.append("\n\n")
-        stringBuilder.append(environmentPath + " \"" + path + "\"")
-        if (shellTranslation != null) {
-            return shellTranslation!!.resolveRow(
+        stringBuilder.append("$environmentPath \"$path\"")
+        return if (shellTranslation != null) {
+            shellTranslation!!.resolveRow(
                 privateShell!!.doCmdSync(stringBuilder.toString())
             )
         } else {
-            return privateShell!!.doCmdSync(stringBuilder.toString())
+            privateShell!!.doCmdSync(stringBuilder.toString())
         }
     }
 
@@ -249,45 +247,42 @@ object ScriptEnvironment {
     private fun getEnvironment(context: Context): HashMap<String?, String?> {
         val params = HashMap<String?, String?>()
 
-        params.put("TOOLKIT", TOOKIT_DIR)
-        params.put("START_DIR", getStartPath(context))
-        // params.put("EXECUTOR_PATH", environmentPath);
-        params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath())
+        params["TOOLKIT"] = TOOKIT_DIR
+        params["START_DIR"] = getStartPath(context)
+        params["TEMP_DIR"] = context.cacheDir.absolutePath
 
         val fileOwner = FileOwner(context)
         val androidUid = fileOwner.userId
-        params.put("ANDROID_UID", "" + androidUid)
+        params["ANDROID_UID"] = "" + androidUid
 
         try {
             // @ https://blog.csdn.net/Gaugamela/article/details/78689580
-            params.put("APP_USER_ID", fileOwner.fileOwner)
-            // params.put("APP_UID", "" + android.os.Process.myPid());
-            // params.put("APP_PID", "" + android.os.Process.myPid());
-            // params.put("APP_TID", "" + android.os.Process.myTid());
-        } catch (ignored: Exception) {
+            params["APP_USER_ID"] = fileOwner.fileOwner
+        } catch (_: Exception) {
+            // .
         }
 
-        params.put("ANDROID_SDK", "" + Build.VERSION.SDK_INT)
-        // params.put("ROOT_PERMISSION", rooted ? "granted" : "denied");
-        params.put("ROOT_PERMISSION", if (rooted) "true" else "false")
-        params.put("SDCARD_PATH", Environment.getExternalStorageDirectory().getAbsolutePath())
+        params["ANDROID_SDK"] = "" + Build.VERSION.SDK_INT
+        params["ROOT_PERMISSION"] = if (rooted) "true" else "false"
+        params["SDCARD_PATH"] = Environment.getExternalStorageDirectory().absolutePath
         val busyboxPath = getPrivateFilePath(context, "busybox")
         if (File(getPrivateFilePath(context, "busybox")).exists()) {
-            params.put("BUSYBOX", busyboxPath)
+            params["BUSYBOX"] = busyboxPath
         } else {
-            params.put("BUSYBOX", "busybox")
+            params["BUSYBOX"] = "busybox"
         }
         try {
             val packageInfo =
-                context.getPackageManager().getPackageInfo(context.getPackageName(), 0)
-            params.put("PACKAGE_NAME", context.getPackageName())
-            params.put("PACKAGE_VERSION_NAME", packageInfo.versionName)
+                context.packageManager.getPackageInfo(context.packageName, 0)
+            params["PACKAGE_NAME"] = context.packageName
+            params["PACKAGE_VERSION_NAME"] = packageInfo.versionName
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                params.put("PACKAGE_VERSION_CODE", "" + packageInfo.getLongVersionCode())
+                params["PACKAGE_VERSION_CODE"] = "" + packageInfo.longVersionCode
             } else {
-                params.put("PACKAGE_VERSION_CODE", "" + packageInfo.versionCode)
+                params["PACKAGE_VERSION_CODE"] = "" + packageInfo.versionCode
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
+            // .
         }
 
         return params
@@ -298,19 +293,19 @@ object ScriptEnvironment {
      * @return
      */
     private fun getVariables(params: HashMap<String?, String?>?): ArrayList<String?> {
-        val envp = ArrayList<String?>()
+        val envy = ArrayList<String?>()
 
         if (params != null) {
             for (key in params.keys) {
-                var value = params.get(key)
+                var value = params[key]
                 if (value == null) {
                     value = ""
                 }
-                envp.add(key + "='" + value.replace("'".toRegex(), "'\\\\''") + "'")
+                envy.add(key + "='" + value.replace("'".toRegex(), "'\\\\''") + "'")
             }
         }
 
-        return envp
+        return envy
     }
 
     private fun getExecuteScript(context: Context, script: String?, tag: String?): String {
@@ -318,38 +313,36 @@ object ScriptEnvironment {
             init(context)
         }
 
-        if (script == null || script.isEmpty()) {
+        if (script.isNullOrEmpty()) {
             return ""
         }
 
         val script2 = script.trim { it <= ' ' }
-        var cachePath: String? = ""
+        var cachePath: String?
         if (script2.startsWith(ASSETS_FILE)) {
             cachePath = extractScript(context, script2)
             if (cachePath == null) {
                 cachePath = script
-                // String error = context.getString(R.string.script_losted) + setState;
-                // Toast.makeText(context, error, Toast.LENGTH_LONG).show();
             }
         } else {
             cachePath = createShellCache(context, script)
         }
 
 
-        return environmentPath + " \"" + cachePath + "\" \"" + tag + "\""
+        return "$environmentPath \"$cachePath\" \"$tag\""
     }
 
     @JvmStatic
     val runtime: Process?
         get() {
-            try {
+            return try {
                 if (rooted) {
-                    return Runtime.getRuntime().exec("su")
+                    Runtime.getRuntime().exec("su")
                 } else {
-                    return Runtime.getRuntime().exec("sh")
+                    Runtime.getRuntime().exec("sh")
                 }
-            } catch (ex: Exception) {
-                return null
+            } catch (_: Exception) {
+                null
             }
         }
 
@@ -358,63 +351,57 @@ object ScriptEnvironment {
      * 
      * @param context          Context
      * @param dataOutputStream Runtime进程的输出流
-     * @param cmds             要执行的脚本
+     * @param cmd             要执行的脚本
      * @param params           参数类别
      */
     @JvmStatic
     fun executeShell(
         context: Context,
         dataOutputStream: DataOutputStream,
-        cmds: String?,
+        cmd: String?,
         params: HashMap<String?, String?>?,
         nodeInfo: NodeInfoBase?,
         tag: String?
     ) {
         var params = params
         if (params == null) {
-            params = HashMap<String?, String?>()
+            params = HashMap()
         }
 
         // 页面配置文件路径
         if (nodeInfo != null) {
             val parentPageConfigDir = nodeInfo.pageConfigDir
             val currentPageConfigPath = nodeInfo.currentPageConfigPath
-            params.put("PAGE_CONFIG_DIR", parentPageConfigDir)
-            params.put("PAGE_CONFIG_FILE", currentPageConfigPath)
+            params["PAGE_CONFIG_DIR"] = parentPageConfigDir
+            params["PAGE_CONFIG_FILE"] = currentPageConfigPath
             if (currentPageConfigPath.startsWith("file:///android_asset/")) {
-                params.put(
-                    "PAGE_WORK_DIR",
-                    ExtractAssets(context).getExtractPath(parentPageConfigDir)
-                )
-                params.put(
-                    "PAGE_WORK_FILE",
-                    ExtractAssets(context).getExtractPath(currentPageConfigPath)
-                )
+                params["PAGE_WORK_DIR"] = ExtractAssets(context).getExtractPath(parentPageConfigDir)
+                params["PAGE_WORK_FILE"] = ExtractAssets(context).getExtractPath(currentPageConfigPath)
             } else {
-                params.put("PAGE_WORK_DIR", parentPageConfigDir)
-                params.put("PAGE_WORK_FILE", currentPageConfigPath)
+                params["PAGE_WORK_DIR"] = parentPageConfigDir
+                params["PAGE_WORK_FILE"] = currentPageConfigPath
             }
         } else {
-            params.put("PAGE_CONFIG_DIR", "")
-            params.put("PAGE_CONFIG_FILE", "")
-            params.put("PAGE_WORK_DIR", "")
-            params.put("PAGE_WORK_FILE", "")
+            params["PAGE_CONFIG_DIR"] = ""
+            params["PAGE_CONFIG_FILE"] = ""
+            params["PAGE_WORK_DIR"] = ""
+            params["PAGE_WORK_FILE"] = ""
         }
 
-        val envp = getVariables(params)
-        val envpCmds = StringBuilder()
-        if (envp.size > 0) {
-            for (param in envp) {
-                envpCmds.append("export ").append(param).append("\n")
+        val envy = getVariables(params)
+        val envyCmds = StringBuilder()
+        if (envy.isNotEmpty()) {
+            for (param in envy) {
+                envyCmds.append("export ").append(param).append("\n")
             }
         }
         try {
-            dataOutputStream.write(envpCmds.toString().toByteArray(charset("UTF-8")))
+            dataOutputStream.write(envyCmds.toString().toByteArray(charset("UTF-8")))
 
             dataOutputStream.write(
                 getExecuteScript(
                     context,
-                    cmds,
+                    cmd,
                     tag
                 ).toByteArray(charset("UTF-8"))
             )
@@ -424,8 +411,8 @@ object ScriptEnvironment {
             dataOutputStream.writeBytes("exit\n")
             dataOutputStream.writeBytes("exit\n")
             dataOutputStream.flush()
-        } catch (ignored: Exception) {
+        } catch (_: Exception) {
+            // .
         }
     }
 }
-

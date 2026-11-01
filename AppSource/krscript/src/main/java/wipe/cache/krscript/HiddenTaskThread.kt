@@ -12,7 +12,8 @@ class HiddenTaskThread(private var process: Process) : Thread() {
     override fun run() {
         try {
             process.waitFor()
-        } catch (ex: java.lang.Exception) {
+        } catch (_: java.lang.Exception) {
+            // .
         }
     }
 
@@ -42,7 +43,7 @@ class HiddenTaskThread(private var process: Process) : Thread() {
 
         override fun onExit(msg: Any?) {
             isFinished = true
-            if (errorRows.size > 0) {
+            if (errorRows.isNotEmpty()) {
                 Toast.makeText(
                         context,
                         context.getString(R.string.kr_script_task_has_error) + "\n\n" +
@@ -80,7 +81,7 @@ class HiddenTaskThread(private var process: Process) : Thread() {
                         try {
                             onExit.run()
                             onDismiss.run()
-                        } catch (ex: Exception) {
+                        } catch (_: Exception) {
                         }
                     },
                     params as HashMap<String?, String?>?,

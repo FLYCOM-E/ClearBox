@@ -14,6 +14,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import androidx.core.net.toUri
 
 class FilePathResolver {
     /**
@@ -28,7 +29,6 @@ class FilePathResolver {
         // DocumentProvider
         if (DocumentsContract.isDocumentUri(context, uri)) {
             // ExternalStorageProvider
-
             if (isExternalStorageDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split: Array<String?> =
@@ -41,9 +41,9 @@ class FilePathResolver {
                 }
             } else if (isDownloadsDocument(uri)) {
                 val id = DocumentsContract.getDocumentId(uri)
-                if (Regex("^[0-9]{1,}").matches(id)) {
+                if (Regex("^[0-9]+").matches(id)) {
                     val contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"),
+                        "content://downloads/public_downloads".toUri(),
                         id.toLong()
                     )
                     return getDataColumn(context, contentUri, null, null)
@@ -54,7 +54,7 @@ class FilePathResolver {
                     val file: File? = generateFileName(fileName, cacheDir)
                     var destinationPath: String? = null
                     if (file != null) {
-                        destinationPath = file.getAbsolutePath()
+                        destinationPath = file.absolutePath
                         saveFileFromUri(context, uri, destinationPath)
                     }
 
@@ -67,30 +67,33 @@ class FilePathResolver {
                 val type = split[0]
 
                 var contentUri: Uri? = null
-                if ("image" == type) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                } else if ("video" == type) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                } else if ("audio" == type) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                when (type) {
+                    "image" -> {
+                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    }
+                    "video" -> {
+                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    }
+                    "audio" -> {
+                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    }
                 }
 
                 val selection = "_id=?"
-                val selectionArgs = arrayOf<String?>(split[1])
+                val selectionArgs = arrayOf(split[1])
 
                 return getDataColumn(
                     context, contentUri!!, selection,
                     selectionArgs
                 )
             }
-        } else if ("content".equals(uri.getScheme(), ignoreCase = true)) {
+        } else if ("content".equals(uri.scheme, ignoreCase = true)) {
             // Return the remote address
-
-            if (isGooglePhotosUri(uri)) return uri.getLastPathSegment()
+            if (isGooglePhotosUri(uri)) return uri.lastPathSegment
 
             return getDataColumn(context, uri, null, null)
-        } else if ("file".equals(uri.getScheme(), ignoreCase = true)) {
-            return uri.getPath()
+        } else if ("file".equals(uri.scheme, ignoreCase = true)) {
+            return uri.path
         }
 
         return null
@@ -115,7 +118,7 @@ class FilePathResolver {
         val projection = arrayOf<String?>(column)
 
         try {
-            cursor = context.getContentResolver().query(
+            cursor = context.contentResolver.query(
                 uri, projection,
                 selection, selectionArgs, null
             )
@@ -123,9 +126,9 @@ class FilePathResolver {
                 val index = cursor.getColumnIndexOrThrow(column)
                 return cursor.getString(index)
             }
-        } catch (ignored: Exception) {
+        } catch (_: Exception) {
         } finally {
-            if (cursor != null) cursor.close()
+            cursor?.close()
         }
         return null
     }
@@ -136,7 +139,7 @@ class FilePathResolver {
      */
     private fun isExternalStorageDocument(uri: Uri): Boolean {
         return "com.android.externalstorage.documents" == uri
-            .getAuthority()
+            .authority
     }
 
     /**
@@ -145,7 +148,7 @@ class FilePathResolver {
      */
     private fun isDownloadsDocument(uri: Uri): Boolean {
         return "com.android.providers.downloads.documents" == uri
-            .getAuthority()
+            .authority
     }
 
     /**
@@ -154,7 +157,7 @@ class FilePathResolver {
      */
     private fun isMediaDocument(uri: Uri): Boolean {
         return "com.android.providers.media.documents" == uri
-            .getAuthority()
+            .authority
     }
 
     /**
@@ -163,11 +166,11 @@ class FilePathResolver {
      */
     private fun isGooglePhotosUri(uri: Uri): Boolean {
         return "com.google.android.apps.photos.content" == uri
-            .getAuthority()
+            .authority
     }
 
     fun getFileName(context: Context, uri: Uri): String? {
-        val mimeType = context.getContentResolver().getType(uri)
+        val mimeType = context.contentResolver.getType(uri)
         var filename: String? = null
         if (mimeType == null) {
             val path = getPath(context, uri)
@@ -175,10 +178,10 @@ class FilePathResolver {
                 filename = getName(uri.toString())
             } else {
                 val file = File(path)
-                filename = file.getName()
+                filename = file.name
             }
         } else {
-            val returnCursor = context.getContentResolver().query(
+            val returnCursor = context.contentResolver.query(
                 uri, null,
                 null, null, null
             )
@@ -203,7 +206,7 @@ class FilePathResolver {
 
     companion object {
         fun getDocumentCacheDir(context: Context): File {
-            val dir = File(context.getCacheDir(), "documents")
+            val dir = File(context.cacheDir, "documents")
             if (!dir.exists()) {
                 dir.mkdirs()
             }
@@ -212,10 +215,7 @@ class FilePathResolver {
         }
 
         fun generateFileName(name: String?, directory: File?): File? {
-            var name = name
-            if (name == null) {
-                return null
-            }
+            var name = name ?: return null
 
             var file = File(directory, name)
 
@@ -232,7 +232,7 @@ class FilePathResolver {
 
                 while (file.exists()) {
                     index++
-                    name = fileName + '(' + index + ')' + extension
+                    name = "$fileName($index)$extension"
                     file = File(directory, name)
                 }
             }
@@ -241,7 +241,7 @@ class FilePathResolver {
                 if (!file.createNewFile()) {
                     return null
                 }
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 return null
             }
 
@@ -253,18 +253,18 @@ class FilePathResolver {
             var `is`: InputStream? = null
             var bos: BufferedOutputStream? = null
             try {
-                `is` = context.getContentResolver().openInputStream(uri)
+                `is` = context.contentResolver.openInputStream(uri)
                 bos = BufferedOutputStream(FileOutputStream(destinationPath, false))
                 val buf = ByteArray(1024)
                 `is`!!.read(buf)
                 do {
                     bos.write(buf)
                 } while (`is`.read(buf) != -1)
-            } catch (ignored: IOException) {
+            } catch (_: IOException) {
             } finally {
                 try {
-                    if (`is` != null) `is`.close()
-                    if (bos != null) bos.close()
+                    `is`?.close()
+                    bos?.close()
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }

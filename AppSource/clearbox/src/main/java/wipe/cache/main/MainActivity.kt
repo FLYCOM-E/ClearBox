@@ -2,7 +2,6 @@ package wipe.cache.main
 
 import wipe.cache.krscript.R as KR
 import android.Manifest
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -59,12 +57,11 @@ class MainActivity : AppCompatActivity() {
 
         krScriptConfig = KrScriptConfig()
 
-        Thread(Runnable {
+        Thread {
             val cachedPages = PageCache.pageItems
-            val cachedFavorites = PageCache.homeItems
             val page2Config = krScriptConfig.getPageListConfig()
             val favoritesConfig = krScriptConfig.getFavoriteConfig()
-            
+
             val pages = cachedPages ?: run {
                 handler.post {
                     window.decorView.post {
@@ -76,26 +73,26 @@ class MainActivity : AppCompatActivity() {
                 getItems(page2Config!!)
             }
             val favorites = PageCache.homeItems ?: getItems(favoritesConfig!!)
-            
+
             PageCache.homeItems = null
             PageCache.pageItems = null
-            
+
             handler.post {
                 progressBarDialog.hideDialog()
 
-                if (favorites != null && favorites.size > 0) {
+                if (!favorites.isNullOrEmpty()) {
                     updateFavoritesTab(favorites, favoritesConfig!!)
                 } else {
                     mainTabhost2.visibility = View.GONE
                 }
 
-                if (pages != null && pages.size > 0) {
+                if (!pages.isNullOrEmpty()) {
                     updateMoreTab(pages, page2Config!!)
                 } else {
                     mainTabhost3.visibility = View.GONE
                 }
             }
-        }).start()
+        }.start()
         
         if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 111)
@@ -124,23 +121,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun reloadFavoritesTab() {
-        Thread(Runnable {
+        Thread {
             val favoritesConfig = krScriptConfig.getFavoriteConfig()
             val favorites = getItems(favoritesConfig!!)
             favorites?.run {
                 handler.post { updateFavoritesTab(this, favoritesConfig) }
             }
-        }).start()
+        }.start()
     }
 
     private fun reloadMoreTab() {
-        Thread(Runnable {
+        Thread {
             val page2Config = krScriptConfig.getPageListConfig()
             val pages = getItems(page2Config!!)
             pages?.run {
                 handler.post { updateMoreTab(this, page2Config) }
             }
-        }).start()
+        }.start()
     }
 
     private fun getKrScriptActionHandler(pageNode: PageNode, isFavoritesTab: Boolean): KrScriptActionHandler {
@@ -154,9 +151,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
-                val page = if (clickableNode is PageNode) clickableNode
-                else if (clickableNode is RunnableNode) pageNode
-                else return
+                val page = clickableNode as? PageNode
+                    ?: if (clickableNode is RunnableNode) pageNode
+                    else return
 
                 val intent = Intent()
                 intent.component = ComponentName(this@MainActivity.applicationContext, ActionPage::class.java)
@@ -167,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                 addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
             }
 
-            override fun onSubPageClick(pageNode: PageNode) { _openPage(pageNode) }
+            override fun onSubPageClick(pageNode: PageNode) { openPage(pageNode) }
 
             override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                 return chooseFilePath(fileSelectedInterface)
@@ -184,7 +181,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ActivityFileSelector::class.java)
             intent.putExtra("extension", extension)
             startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER_INNER)
-        } catch (ex: java.lang.Exception) {
+        } catch (_: java.lang.Exception) {
             Toast.makeText(this, R.string.start_file_manager_error, Toast.LENGTH_SHORT).show()
         }
     }
@@ -193,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             return try {
                 val suffix = fileSelectedInterface.suffix()
-                if (suffix != null && suffix.isNotEmpty()) {
+                if (!suffix.isNullOrEmpty()) {
                     chooseFilePath(suffix)
                 } else {
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -204,18 +201,18 @@ class MainActivity : AppCompatActivity() {
                 }
                 this.fileSelectedInterface = fileSelectedInterface
                 true
-            } catch (ex: java.lang.Exception) {
+            } catch (_: java.lang.Exception) {
                 false
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, getString(KR.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2)
             return false
         }
         return try {
             val suffix = fileSelectedInterface.suffix()
-            if (suffix != null && suffix.isNotEmpty()) {
+            if (!suffix.isNullOrEmpty()) {
                 chooseFilePath(suffix)
             } else {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -226,21 +223,21 @@ class MainActivity : AppCompatActivity() {
             }
             this.fileSelectedInterface = fileSelectedInterface
             true
-        } catch (ex: java.lang.Exception) {
+        } catch (_: java.lang.Exception) {
             false
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == ACTION_FILE_PATH_CHOOSER) {
-            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
+            val result = if (data == null || resultCode != RESULT_OK) null else data.data
             if (fileSelectedInterface != null) {
                 if (result != null) fileSelectedInterface?.onFileSelected(getPath(result))
                 else fileSelectedInterface?.onFileSelected(null)
             }
             this.fileSelectedInterface = null
         } else if (requestCode == ACTION_FILE_PATH_CHOOSER_INNER) {
-            val absPath = if (data == null || resultCode != Activity.RESULT_OK) null else data.getStringExtra("file")
+            val absPath = if (data == null || resultCode != RESULT_OK) null else data.getStringExtra("file")
             fileSelectedInterface?.onFileSelected(absPath)
             this.fileSelectedInterface = null
         }
@@ -248,16 +245,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPath(uri: Uri): String? {
-        return try { FilePathResolver().getPath(this, uri) } catch (ex: Exception) { null }
+        return try { FilePathResolver().getPath(this, uri) } catch (_: Exception) { null }
     }
 
-    fun _openPage(pageNode: PageNode) { OpenPageHelper(this).openPage(pageNode) }
-
-    private fun getDensity(): Int {
-        val dm = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(dm)
-        return dm.densityDpi
-    }
+    fun openPage(pageNode: PageNode) { OpenPageHelper(this).openPage(pageNode) }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)

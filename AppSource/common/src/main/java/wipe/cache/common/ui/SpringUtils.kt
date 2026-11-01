@@ -63,7 +63,7 @@ object SpringUtils {
             }
         }
 
-        view.setOnClickListener { v ->
+        view.setOnClickListener {
             scaleX.animateToFinalPosition(0.88f)
             scaleY.animateToFinalPosition(0.88f)
             view.postOnAnimationDelayed({
@@ -71,17 +71,6 @@ object SpringUtils {
                 scaleY.animateToFinalPosition(1f)
             }, 50)
             view.performClick()
-        }
-    }
-
-    fun springBounceY(view: View, from: Float, to: Float) {
-        SpringAnimation(view, DynamicAnimation.TRANSLATION_Y, to).apply {
-            spring = SpringForce(to).apply {
-                stiffness = STIFFNESS_MEDIUM
-                dampingRatio = DAMPING_RATIO_MEDIUM
-            }
-            setStartVelocity(from - to)
-            start()
         }
     }
 

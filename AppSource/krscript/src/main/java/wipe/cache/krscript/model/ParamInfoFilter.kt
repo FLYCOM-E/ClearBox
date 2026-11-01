@@ -16,13 +16,13 @@ class ParamInfoFilter(private val paramInfo: ActionParamInfo) : InputFilter {
 
         if (paramInfo.type != null && paramInfo.type != "" && source != null) {
             if (paramInfo.type == "int") {
-                val regex = Pattern.compile("^[0-9]{0,}$")
+                val regex = Pattern.compile("^[0-9]*$")
                 val matcher = regex.matcher(source.toString())
                 if (!matcher.matches()) {
                     return ""
                 }
             } else if (paramInfo.type == "number") {
-                val regex = Pattern.compile("^[\\-.,0-9]{0,}$")
+                val regex = Pattern.compile("^[\\-.,0-9]*$")
                 val matcher = regex.matcher(source.toString())
                 if (!matcher.matches()) {
                     return ""

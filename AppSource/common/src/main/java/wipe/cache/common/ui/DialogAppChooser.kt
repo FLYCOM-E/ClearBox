@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import android.widget.CompoundButton
@@ -13,7 +12,7 @@ import android.widget.Filterable
 import wipe.cache.common.R
 
 class DialogAppChooser(
-        private val darkMode: Boolean,
+        darkMode: Boolean,
         private var packages: ArrayList<AdapterAppChooser.AppInfo>,
         private val multiple: Boolean = false,
         private var callback: Callback? = null) : DialogFullScreen(R.layout.dialog_app_chooser, darkMode) {
@@ -65,11 +64,11 @@ class DialogAppChooser(
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun afterTextChanged(s: Editable?) {
                     if (s != null) {
-                        clearBtn.visibility = if (s.length > 0) View.VISIBLE else View.GONE
+                        clearBtn.visibility = if (s.isNotEmpty()) View.VISIBLE else View.GONE
                     }
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    (absListView.adapter as Filterable).getFilter().filter(if (s == null) "" else s.toString())
+                    (absListView.adapter as Filterable).filter.filter(s?.toString() ?: "")
                 }
             })
         }
@@ -88,22 +87,6 @@ class DialogAppChooser(
         fun onConfirm(apps: List<AdapterAppChooser.AppInfo>)
     }
 
-    public fun setExcludeApps(apps: Array<String>): DialogAppChooser {
-        this.excludeApps = apps
-        if (this.view != null) {
-            Log.e("@DialogAppChooser", "Unable to set the exclusion list, The list has been loaded")
-        }
-
-        return this
-    }
-
-    public fun setAllowAllSelect(allow: Boolean): DialogAppChooser {
-        this.allowAllSelect = allow
-        view?.findViewById<CompoundButton?>(R.id.select_all)?.visibility = if (allow) View.VISIBLE else View.GONE
-
-        return this
-    }
-
     private fun onConfirm(gridView: AbsListView) {
         val apps = (gridView.adapter as AdapterAppChooser).getSelectedItems()
 
@@ -112,6 +95,7 @@ class DialogAppChooser(
         this.dismiss()
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("super.onActivityCreated(savedInstanceState)"))
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
     }

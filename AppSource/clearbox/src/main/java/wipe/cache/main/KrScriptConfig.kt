@@ -11,17 +11,17 @@ class KrScriptConfig {
     private val EXECUTOR_CORE_DEFAULT = "file:///android_asset/executor.sh"
     private val PAGE_LIST_CONFIG_DEFAULT = "file:///android_asset/more.xml"
     private val FAVORITE_CONFIG_DEFAULT = "file:///android_asset/favorites.xml"
-    private val BEFORE_START_SH_DEFAULT = "" //"file:///android_asset/kr-script/before_start.sh";
+    private val BEFORE_START_SH_DEFAULT = ""
     private val DEFAULT_CONFIG = "Config.conf"
     
     fun init(context: Context): KrScriptConfig {
-        if (KrScriptConfig.configInfo == null) {
-            KrScriptConfig.configInfo = HashMap()
-            KrScriptConfig.configInfo!!.put(EXECUTOR_CORE, EXECUTOR_CORE_DEFAULT)
-            KrScriptConfig.configInfo!!.put(PAGE_LIST_CONFIG, PAGE_LIST_CONFIG_DEFAULT)
-            KrScriptConfig.configInfo!!.put(FAVORITE_CONFIG, FAVORITE_CONFIG_DEFAULT)
-            KrScriptConfig.configInfo!!.put(TOOLKIT_DIR, TOOLKIT_DIR_DEFAULT)
-            KrScriptConfig.configInfo!!.put(BEFORE_START_SH, BEFORE_START_SH_DEFAULT)
+        if (configInfo == null) {
+            configInfo = HashMap()
+            configInfo!![EXECUTOR_CORE] = EXECUTOR_CORE_DEFAULT
+            configInfo!![PAGE_LIST_CONFIG] = PAGE_LIST_CONFIG_DEFAULT
+            configInfo!![FAVORITE_CONFIG] = FAVORITE_CONFIG_DEFAULT
+            configInfo!![TOOLKIT_DIR] = TOOLKIT_DIR_DEFAULT
+            configInfo!![BEFORE_START_SH] = BEFORE_START_SH_DEFAULT
 
             try {
                 val fileName = DEFAULT_CONFIG 
@@ -39,8 +39,8 @@ class KrScriptConfig {
                         val separator = rowText.indexOf("=")
                         val key = rowText.substring(0, separator).trim()
                         val value = rowText.substring(separator + 2, rowText.length - 1).trim()
-                        KrScriptConfig.configInfo!!.remove(key)
-                        KrScriptConfig.configInfo!!.put(key, value)
+                        configInfo!!.remove(key)
+                        configInfo!![key] = value
                     }
                 }
             } catch (_: Exception) {
@@ -53,11 +53,11 @@ class KrScriptConfig {
     }
 
     fun getVariables(): HashMap<String, String>? {
-        return KrScriptConfig.configInfo
+        return configInfo
     }
 
     private fun getExecutorCore(): String {
-        val info = KrScriptConfig.configInfo
+        val info = configInfo
         if (info != null && info.containsKey(EXECUTOR_CORE)) {
             return info[EXECUTOR_CORE] ?: EXECUTOR_CORE_DEFAULT
         }
@@ -65,7 +65,7 @@ class KrScriptConfig {
     }
 
     private fun getToolkitDir(): String {
-        val info = KrScriptConfig.configInfo
+        val info = configInfo
         if (info != null && info.containsKey(TOOLKIT_DIR)) {
             return info[TOOLKIT_DIR] ?: BEFORE_START_SH_DEFAULT
         }
@@ -73,7 +73,7 @@ class KrScriptConfig {
     }
 
     fun getPageListConfig(): PageNode? {
-        val info = KrScriptConfig.configInfo
+        val info = configInfo
         if (info != null) {
             val pageInfo = PageNode("")
             if (info.containsKey(PAGE_LIST_CONFIG_SH)) {
@@ -88,7 +88,7 @@ class KrScriptConfig {
     }
 
     fun getFavoriteConfig(): PageNode? {
-        val info = KrScriptConfig.configInfo
+        val info = configInfo
         if (info != null) {
             val pageInfo = PageNode("")
             if (info.containsKey(FAVORITE_CONFIG_SH)) {
@@ -103,7 +103,7 @@ class KrScriptConfig {
     }
 
     fun getBeforeStartSh(): String? {
-        val info = KrScriptConfig.configInfo
+        val info = configInfo
         if (info != null && info.containsKey(BEFORE_START_SH)) {
             return info[BEFORE_START_SH]
         }
@@ -112,17 +112,14 @@ class KrScriptConfig {
 
     companion object {
         private const val ASSETS_FILE = "file:///android_asset/"
-
         private const val TOOLKIT_DIR = "toolkit_dir"
         private const val TOOLKIT_DIR_DEFAULT = "file:///android_asset/toolkit"
-
         private const val EXECUTOR_CORE = "executor_core"
         private const val PAGE_LIST_CONFIG = "page_list_config"
         private const val PAGE_LIST_CONFIG_SH = "page_list_config_sh"
         private const val FAVORITE_CONFIG = "favorite_config"
         private const val FAVORITE_CONFIG_SH = "favorite_config_sh"
         private const val BEFORE_START_SH = "Start_sh"
-
         private var configInfo: HashMap<String, String>? = null
     }
 }

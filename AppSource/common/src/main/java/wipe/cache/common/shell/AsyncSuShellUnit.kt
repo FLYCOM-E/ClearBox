@@ -7,10 +7,10 @@ import java.nio.charset.Charset
  * Created by helloklf on 2017/12/01.
  */
 
-class AsynSuShellUnit(var handler: Handler) {
+class AsyncSuShellUnit(var handler: Handler) {
     var process: Process? = null
 
-    private fun start(): AsynSuShellUnit {
+    private fun start(): AsyncSuShellUnit {
         try {
             if (process == null)
                 process = ShellExecutor.getSuperUserRuntime()
@@ -29,7 +29,7 @@ class AsynSuShellUnit(var handler: Handler) {
                     print(ex.message)
                 }
             }).start()
-            Thread(Runnable {
+            Thread {
                 try {
                     var line: String
                     val reader = process!!.errorStream.bufferedReader()
@@ -41,9 +41,9 @@ class AsynSuShellUnit(var handler: Handler) {
                 } catch (ex: Exception) {
                     print(ex.message)
                 }
-            }).start()
+            }.start()
             handler.sendMessage(handler.obtainMessage(0, true))
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             handler.sendMessage(handler.obtainMessage(0, false))
         }
         return this
@@ -55,12 +55,12 @@ class AsynSuShellUnit(var handler: Handler) {
                 process!!.outputStream.close()
                 process!!.destroy()
             }
-        } catch (ex: Exception) {
-
+        } catch (_: Exception) {
+            // .
         }
     }
 
-    fun exec(cmd: String): AsynSuShellUnit {
+    fun exec(cmd: String): AsyncSuShellUnit {
         if (process == null) {
             start()
         }
@@ -85,30 +85,13 @@ class AsynSuShellUnit(var handler: Handler) {
         writer.write("exit\nexit\nexit\n")
         writer.write("\n\n")
         writer.flush()
-        Thread(Runnable {
+        Thread {
             if (process!!.waitFor() == 0) {
                 handler.sendMessage(handler.obtainMessage(10, true))
             } else {
                 handler.sendMessage(handler.obtainMessage(10, false))
             }
             destroy()
-        }).start()
-    }
-
-    fun waitFor(next: Runnable) {
-        if (process == null)
-            return
-
-        val outputStream = process!!.outputStream
-        val writer = outputStream.bufferedWriter()
-        writer.write("exit\nexit\nexit\n")
-        writer.write("\n\n")
-        writer.flush()
-        Thread(Runnable {
-            process!!.waitFor()
-            destroy()
-            handler.sendMessage(handler.obtainMessage(10, true))
-            next.run()
-        }).start()
+        }.start()
     }
 }

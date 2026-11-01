@@ -14,7 +14,7 @@ class FileOwner(private val context: Context) {
             var value = 0
             try {
                 value = um.getSerialNumberForUser(userHandle).toInt()
-            } catch (ignored: Exception) {
+            } catch (_: Exception) {
             }
             return value
         }

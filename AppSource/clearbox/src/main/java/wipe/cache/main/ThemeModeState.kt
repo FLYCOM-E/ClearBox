@@ -5,17 +5,14 @@ import android.app.Activity
 import android.app.UiModeManager
 import android.app.WallpaperManager
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
-import android.view.View
+import android.util.Log
 import android.view.WindowManager
+import androidx.annotation.RequiresPermission
 import androidx.core.content.PermissionChecker
-import wipe.cache.common.ui.ThemeMode
-import com.google.android.material.color.MaterialColors
-import com.google.android.material.color.DynamicColors
 import androidx.core.view.WindowInsetsControllerCompat
+import com.google.android.material.color.DynamicColors
+import wipe.cache.common.ui.ThemeMode
 
 object ThemeModeState {
     private var themeMode: ThemeMode = ThemeMode()
@@ -23,6 +20,7 @@ object ThemeModeState {
     private fun checkPermission(context: Context, permission: String): Boolean = 
         PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
 
+    @RequiresPermission(anyOf = ["android.permission.READ_WALLPAPER_INTERNAL", Manifest.permission.MANAGE_EXTERNAL_STORAGE])
     fun switchTheme(activity: Activity? = null): ThemeMode {
         if (activity != null) {
             val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
@@ -57,17 +55,18 @@ object ThemeModeState {
         return themeMode
     }
 
+    @RequiresPermission(anyOf = ["android.permission.READ_WALLPAPER_INTERNAL", Manifest.permission.MANAGE_EXTERNAL_STORAGE])
     private fun applyWallpaperBackground(activity: Activity, nightMode: Boolean) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
                 activity.window.setBackgroundDrawable(null)
-                android.util.Log.d("Wallpaper", "Android 13+: FLAG_SHOW_WALLPAPER")
+                Log.d("Wallpaper", "Android 13+: FLAG_SHOW_WALLPAPER")
             } else {
                 val wallpaper = WallpaperManager.getInstance(activity)
                 val wallpaperInfo = wallpaper.wallpaperInfo
 
-                if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
+                if (wallpaperInfo?.packageName != null) {
                     activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
                     activity.window.setBackgroundDrawable(null)
                 } else {

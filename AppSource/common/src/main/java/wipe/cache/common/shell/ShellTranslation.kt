@@ -38,7 +38,7 @@ class ShellTranslation(val context: Context) {
                         return resources.getDimension(id).toString()
                     }
                 }
-            } catch (ex: Exception) {
+            } catch (_: Exception) {
                 if (row.contains("[(") && row.contains(")]")) {
                     return row.substring(row.indexOf("[(") + 2, row.indexOf(")]"))
                 }
@@ -50,24 +50,12 @@ class ShellTranslation(val context: Context) {
 
     fun resolveRows(rows: List<String>): String {
         val builder = StringBuilder()
-        var rowIndex = 0
-        for (row in rows) {
+        for ((rowIndex, row) in rows.withIndex()) {
             if (rowIndex > 0) {
                 builder.append("\n")
             }
             builder.append(resolveRow(row))
-            rowIndex ++
         }
         return builder.toString()
-    }
-
-    fun getTranslatedResult(shellCommand: String, executor: KeepShell?): String {
-        val shell = executor?: KeepShellPublic.getDefaultInstance()
-        val rows = shell.doCmdSync(shellCommand).split("\n")
-        if (rows.isNotEmpty()) {
-            return resolveRows(rows)
-        } else {
-            return ""
-        }
     }
 }

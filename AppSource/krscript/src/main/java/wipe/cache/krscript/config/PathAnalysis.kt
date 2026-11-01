@@ -1,6 +1,7 @@
 package wipe.cache.krscript.config
 
 import android.content.Context
+import android.util.Log
 import wipe.cache.common.shared.FileWrite
 import wipe.cache.common.shell.KeepShellPublic
 import wipe.cache.common.shell.RootFile
@@ -26,7 +27,7 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
             } else {
                 return getFileByPath(filePath)
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }
@@ -35,17 +36,17 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
         val isAssets = parent.startsWith(ASSETS_FILE)
         val pureParent = if (isAssets) parent.substring(ASSETS_FILE.length) else parent
         try {
-            val parentFile = java.io.File(pureParent)
-            val targetFile = java.io.File(target)
+            val parentFile = File(pureParent)
+            val targetFile = File(target)
             val combinedFile = if (targetFile.isAbsolute) {
                 targetFile
             } else {
-                java.io.File(parentFile, target)
+                File(parentFile, target)
             }
             val canonicalPath = combinedFile.canonicalPath
             val parentCanonical = parentFile.canonicalPath
             if (!canonicalPath.startsWith(parentCanonical)) {
-                android.util.Log.w("PathAnalysis", "Path traversal attempt blocked: $parent + $target")
+                Log.w("PathAnalysis", "Path traversal attempt blocked: $parent + $target")
             }
             return if (isAssets) {
                 ASSETS_FILE + canonicalPath
@@ -54,7 +55,7 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
             }
 
         } catch (e: Exception) {
-            android.util.Log.e("PathAnalysis", "Path concat failed", e)
+            Log.e("PathAnalysis", "Path concat failed", e)
             val separator = if (pureParent.endsWith("/")) "" else "/"
             return if (isAssets) {
                 ASSETS_FILE + pureParent + separator + target
@@ -98,14 +99,14 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
                     currentAbsPath = relativePath
                     return this
                 }
-            } catch (ex: java.lang.Exception) {
+            } catch (_: java.lang.Exception) {
                 // 然后再尝试再assets里查找绝对路径
                 context.assets.open(filePath).run {
                     currentAbsPath = ASSETS_FILE + filePath
                     return this
                 }
             }
-        } catch (ex: java.lang.Exception) {
+        } catch (_: java.lang.Exception) {
             return null
         }
     }
@@ -147,17 +148,17 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
             if (filePath.startsWith("/")) {
                 currentAbsPath = filePath
                 val javaFileInfo = File(filePath)
-                if (javaFileInfo.exists() && javaFileInfo.canRead()) {
-                    return javaFileInfo.inputStream()
+                return if (javaFileInfo.exists() && javaFileInfo.canRead()) {
+                    javaFileInfo.inputStream()
                 } else {
-                    return useRootOpenFile(filePath)
+                    useRootOpenFile(filePath)
                 }
             } else {
                 // 如果当前配置文件来源于 assets，则查找依赖资源时也只去assets查找
-                if (parentDir.isNotEmpty() && parentDir.startsWith(ASSETS_FILE)) {
-                    return findAssetsResource(filePath)
+                return if (parentDir.isNotEmpty() && parentDir.startsWith(ASSETS_FILE)) {
+                    findAssetsResource(filePath)
                 } else {
-                    return findDiskResource(filePath)
+                    findDiskResource(filePath)
                 }
             }
         } catch (ex: java.lang.Exception) {

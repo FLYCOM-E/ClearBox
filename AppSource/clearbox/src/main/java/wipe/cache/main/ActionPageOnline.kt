@@ -3,8 +3,6 @@ package wipe.cache.main
 import wipe.cache.krscript.R as KR
 import android.content.DialogInterface
 import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,15 +10,11 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.webkit.*
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import wipe.cache.common.ui.DialogHelper
 import wipe.cache.common.ui.ProgressBarDialog
@@ -28,12 +22,12 @@ import wipe.cache.common.ui.SpringUtils
 import wipe.cache.common.ui.ThemeMode
 import wipe.cache.krscript.WebViewInjector
 import wipe.cache.krscript.ui.ParamsFileChooserRender
-import java.util.*
 import androidx.activity.OnBackPressedCallback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import wipe.cache.common.shared.FilePathResolver
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.net.toUri
 
 class ActionPageOnline : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -77,15 +71,7 @@ class ActionPageOnline : AppCompatActivity() {
     override fun finish() {
         PageTransition.finish(this) { super.finish() }
     }
-    
-    private fun hideWindowTitle() {
-        if (Build.VERSION.SDK_INT >= 21) {
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.statusBarColor = Color.TRANSPARENT
-        }
-        supportActionBar?.hide()
-    }
-    
+
     private fun setWindowTitleBar() {
         val window = window
         
@@ -168,12 +154,12 @@ class ActionPageOnline : AppCompatActivity() {
                 return try {
                     val requestUrl = request?.url
                     if (requestUrl != null && requestUrl.scheme?.startsWith("http") != true) {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(requestUrl.toString())))
+                        startActivity(Intent(Intent.ACTION_VIEW, requestUrl.toString().toUri()))
                         true
                     } else {
                         super.shouldOverrideUrlLoading(view, request)
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     super.shouldOverrideUrlLoading(view, request)
                 }
             }
@@ -181,12 +167,8 @@ class ActionPageOnline : AppCompatActivity() {
 
         krOnlineWebview.loadUrl(url ?: return)
 
-        WebViewInjector(krOnlineWebview,
-                object : ParamsFileChooserRender.FileChooserInterface {
-                    override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
-                        return chooseFilePath(fileSelectedInterface)
-                    }
-                }).inject(this, url.startsWith("file:///android_asset"))
+        WebViewInjector(krOnlineWebview
+        ).inject(url.startsWith("file:///android_asset"))
     }
 
     private var fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface? = null
@@ -201,11 +183,11 @@ class ActionPageOnline : AppCompatActivity() {
                 startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER)
                 this.fileSelectedInterface = fileSelectedInterface
                 true
-            } catch (ex: java.lang.Exception) {
+            } catch (_: java.lang.Exception) {
                 false
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
             Toast.makeText(this, getString(KR.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             return false
@@ -217,7 +199,7 @@ class ActionPageOnline : AppCompatActivity() {
                 startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER)
                 this.fileSelectedInterface = fileSelectedInterface
                 true
-            } catch (ex: java.lang.Exception) {
+            } catch (_: java.lang.Exception) {
                 false
             }
         }
@@ -225,7 +207,7 @@ class ActionPageOnline : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == ACTION_FILE_PATH_CHOOSER) {
-            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
+            val result = if (data == null || resultCode != RESULT_OK) null else data.data
             if (fileSelectedInterface != null) {
                 if (result != null) fileSelectedInterface?.onFileSelected(getPath(result))
                 else fileSelectedInterface?.onFileSelected(null)
@@ -236,7 +218,7 @@ class ActionPageOnline : AppCompatActivity() {
     }
 
     private fun getPath(uri: Uri): String? {
-        return try { FilePathResolver().getPath(this, uri) } catch (ex: java.lang.Exception) { null }
+        return try { FilePathResolver().getPath(this, uri) } catch (_: java.lang.Exception) { null }
     }
 
     override fun onDestroy() {

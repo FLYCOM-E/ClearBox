@@ -11,12 +11,12 @@ import wipe.cache.common.shared.FileWrite.writePrivateShellFile
 class ExtractAssets(private val context: Context) {
     private fun extractScript(fileName: String?): String? {
         var fileName = fileName
-        if (fileName == null || fileName.isEmpty()) {
+        if (fileName.isNullOrEmpty()) {
             return null
         }
 
-        if (extractHisotry.containsKey(fileName)) {
-            return extractHisotry.get(fileName)
+        if (extractHistory.containsKey(fileName)) {
+            return extractHistory[fileName]
         }
 
         if (fileName.startsWith("file:///android_asset/")) {
@@ -26,7 +26,7 @@ class ExtractAssets(private val context: Context) {
         val filePath = writePrivateShellFile(fileName, fileName, context)
 
         if (filePath != null) {
-            extractHisotry.put(fileName, filePath)
+            extractHistory[fileName] = filePath
         }
 
         return filePath
@@ -34,12 +34,12 @@ class ExtractAssets(private val context: Context) {
 
     fun extractResource(fileName: String?): String? {
         var fileName = fileName
-        if (fileName == null || fileName.isEmpty()) {
+        if (fileName.isNullOrEmpty()) {
             return null
         }
 
-        if (extractHisotry.containsKey(fileName)) {
-            return extractHisotry.get(fileName)
+        if (extractHistory.containsKey(fileName)) {
+            return extractHistory[fileName]
         }
 
         if (fileName.endsWith(".sh")) {
@@ -48,10 +48,10 @@ class ExtractAssets(private val context: Context) {
         if (fileName.startsWith("file:///android_asset/")) {
             fileName = fileName.substring("file:///android_asset/".length)
         }
-        val filePath = writePrivateFile(context.getAssets(), fileName, fileName, context)
+        val filePath = writePrivateFile(context.assets, fileName, fileName, context)
 
         if (filePath != null) {
-            extractHisotry.put(fileName, filePath)
+            extractHistory[fileName] = filePath
         }
 
         return filePath
@@ -59,12 +59,12 @@ class ExtractAssets(private val context: Context) {
 
     fun extractResources(dir: String?): String? {
         var dir = dir
-        if (dir == null || dir.isEmpty()) {
+        if (dir.isNullOrEmpty()) {
             return null
         }
 
-        if (extractHisotry.containsKey(dir)) {
-            return extractHisotry.get(dir)
+        if (extractHistory.containsKey(dir)) {
+            return extractHistory[dir]
         }
 
         if (dir.startsWith("file:///android_asset/")) {
@@ -74,19 +74,20 @@ class ExtractAssets(private val context: Context) {
         }
 
         try {
-            val files = context.getAssets().list(dir)
+            val files = context.assets.list(dir)
             if (files != null && files.size > 0) {
                 for (file in files) {
-                    val relativePath = dir + "/" + file
+                    val relativePath = "$dir/$file"
                     extractResources(relativePath)
                 }
                 val outputDir = getExtractPath(dir)
-                extractHisotry.put(dir, outputDir)
+                extractHistory[dir] = outputDir
                 return outputDir
             } else {
                 return extractResource(dir)
             }
-        } catch (ignored: Exception) {
+        } catch (_: Exception) {
+            // .
         }
 
         return ""
@@ -101,6 +102,6 @@ class ExtractAssets(private val context: Context) {
 
     companion object {
         // 用于记录已经提取过的资源，避免重复提取浪费性能
-        private val extractHisotry = HashMap<String?, String?>()
+        private val extractHistory = HashMap<String?, String?>()
     }
 }

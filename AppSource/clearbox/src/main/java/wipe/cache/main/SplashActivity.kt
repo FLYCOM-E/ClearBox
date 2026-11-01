@@ -4,14 +4,11 @@ import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
-import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import wipe.cache.common.shell.ShellExecutor
@@ -50,50 +47,40 @@ class SplashActivity : AppCompatActivity() {
     
     private fun checkPermissions() {
         startLogo.visibility = View.VISIBLE
-        checkRoot(Runnable {
+        checkRoot {
             startStateText.text = getString(R.string.permission_checking)
             hasRoot = true
-            checkFileWrite(Runnable {
+            checkFileWrite {
                 startToFinish()
-            })
-        })
+            }
+        }
     }
 
     private fun checkPermission(permission: String): Boolean = PermissionChecker.checkSelfPermission(this.applicationContext, permission) == PermissionChecker.PERMISSION_GRANTED
 
     private fun checkFileWrite(next: Runnable) {
-        Thread(Runnable {
+        Thread {
             CheckRootStatus.grantPermission(this)
-            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ActivityCompat.requestPermissions(
-                            this@SplashActivity,
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                    Manifest.permission.WAKE_LOCK
-                            ),
-                            0x11
-                    )
-                } else {
-                    ActivityCompat.requestPermissions(
-                            this@SplashActivity,
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                    Manifest.permission.WAKE_LOCK
-                            ),
-                            0x11
-                    )
-                }
+            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ))
+            ) {
+                ActivityCompat.requestPermissions(
+                    this@SplashActivity,
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                        Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        Manifest.permission.WAKE_LOCK
+                    ),
+                    0x11
+                )
             }
             myHandler.post {
                 next.run()
             }
-        }).start()
+        }.start()
     }
 
     private var hasRoot = false
@@ -108,9 +95,9 @@ class SplashActivity : AppCompatActivity() {
     
         val config = KrScriptConfig().init(this)
         if (config.getBeforeStartSh()!!.isNotEmpty()) {
-            BeforeStartThread(this, config, UpdateLogViewHandler(startStateText, Runnable {
+            BeforeStartThread(this, config, UpdateLogViewHandler(startStateText) {
                 preloadAndGotoHome(config)
-            })).start()
+            }).start()
         } else {
             preloadAndGotoHome(config)
         }
@@ -161,7 +148,8 @@ class SplashActivity : AppCompatActivity() {
                         someIgnored = true
                     }
                     notificationMessageRows.add(log)
-                    logView.setText(notificationMessageRows.joinToString("\n", if (someIgnored) "……\n" else "").trim())
+                    logView.text =
+                        notificationMessageRows.joinToString("\n", if (someIgnored) "……\n" else "").trim()
                 }
             }
         }
@@ -177,24 +165,20 @@ class SplashActivity : AppCompatActivity() {
         override fun run() {
             try {
                 val process = if (CheckRootStatus.lastCheckResult) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
-                if (process != null) {
-                    val outputStream = DataOutputStream(process.outputStream)
-                    ScriptEnvironment.executeShell(
-                        context,
-                        outputStream,
-                        config.getBeforeStartSh(),
-                        params as HashMap<String?, String?>?,
-                        null,
-                        "splash"
-                    )
-                    StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
-                    StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()
-                    process.waitFor()
-                    updateLogViewHandler.onExit()
-                } else {
-                    updateLogViewHandler.onExit()
-                }
-            } catch (ex: Exception) {
+                val outputStream = DataOutputStream(process.outputStream)
+                ScriptEnvironment.executeShell(
+                    context,
+                    outputStream,
+                    config.getBeforeStartSh(),
+                    params as HashMap<String?, String?>?,
+                    null,
+                    "splash"
+                )
+                StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
+                StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()
+                process.waitFor()
+                updateLogViewHandler.onExit()
+            } catch (_: Exception) {
                 updateLogViewHandler.onExit()
             }
         }

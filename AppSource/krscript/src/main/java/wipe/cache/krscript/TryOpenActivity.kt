@@ -18,23 +18,22 @@ class TryOpenActivity(private val context:  Context, private val activity:String
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             return intent
-        } catch (ex: java.lang.Exception) {
+        } catch (_: java.lang.Exception) {
             return null
         }
     }
     fun tryOpen(): Boolean {
         if (activity.startsWith("am ")) {
             return KeepShellPublic.doCmdSync(activity).contains("Start")
-            // am start -W -n com.miui.voiceassist/com.xiaomi.voiceassistant.AiSettings.AiShortcutActivity -a action.intent.action.VIEW
         } else {
             try {
                 context.startActivity(getIntent())
                 return true
-            } catch (ex: SecurityException) {
+            } catch (_: SecurityException) {
                 val success = if (activity.contains("/")) {
-                    KeepShellPublic.doCmdSync("am start-activity -W -n " + activity).contains("ok")
+                    KeepShellPublic.doCmdSync("am start-activity -W -n $activity").contains("ok")
                 } else {
-                    KeepShellPublic.doCmdSync("am start-activity -W -a " + activity).contains("ok")
+                    KeepShellPublic.doCmdSync("am start-activity -W -a $activity").contains("ok")
                 }
                 if (success) {
                     return true
@@ -42,7 +41,7 @@ class TryOpenActivity(private val context:  Context, private val activity:String
                     Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
                     return false
                 }
-            } catch (ex: Exception) {
+            } catch (_: Exception) {
                 Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
                 return false
             }

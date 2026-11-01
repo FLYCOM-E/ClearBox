@@ -11,14 +11,15 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import wipe.cache.common.shared.ObjectStorage
 import wipe.cache.krscript.model.NodeInfoBase
 import wipe.cache.krscript.model.PageNode
 import java.util.*
 
 class ActionShortcutManager(private var context: Context) {
-    @TargetApi(Build.VERSION_CODES.O)
-    public fun addShortcut(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addShortcut(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         // 因为添加快捷方式时无法处理SerializableExtra，所以不得不通过应用本身存储pageNode信息
         if (intent.hasExtra("page")) {
             val pageNode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -31,39 +32,7 @@ class ActionShortcutManager(private var context: Context) {
             intent.removeExtra("page")
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return createShortcutOreo(intent, drawable, config)
-        } else {
-            return addShortcutNougat(intent, drawable, config)
-        }
-    }
-
-    private fun addShortcutNougat(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
-        try {
-            val shortcut = Intent("com.android.launcher.action.INSTALL_SHORTCUT")
-            val id = "addin_" + config.index
-
-            //快捷方式的名称
-            shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, config.title)//快捷方式的名字
-            shortcut.putExtra("duplicate", false) // 是否允许重复创建
-
-            //快捷方式的图标
-            shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON, (drawable as BitmapDrawable).bitmap)
-
-            val shortcutIntent = Intent(Intent.ACTION_MAIN)
-            shortcutIntent.setClassName(context.getApplicationContext(), intent.component!!.className)
-            shortcutIntent.putExtras(intent)
-
-            shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent)
-            shortcutIntent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-
-            context.sendBroadcast(shortcut)
-
-            return true
-        } catch (ex: Exception) {
-            return false
-        }
-
+        return createShortcutOreo(intent, drawable, config)
     }
 
     // 存储快捷方式的页面信息对象
@@ -74,18 +43,18 @@ class ActionShortcutManager(private var context: Context) {
     }
 
     // 读取快捷方式的页面信息对象
-    public fun getShortcutTarget(shortcutId: String): PageNode? {
+    fun getShortcutTarget(shortcutId: String): PageNode? {
         return ObjectStorage<PageNode>(context).load(shortcutId)
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
-    public fun createShortcutOreo(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun createShortcutOreo(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         try {
             val shortcutManager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
             if (shortcutManager.isRequestPinShortcutSupported) {
                 val id = "addin_" + config.index
                 val shortcutIntent = Intent(Intent.ACTION_MAIN)
-                shortcutIntent.setClassName(context.getApplicationContext(), intent.component!!.className)
+                shortcutIntent.setClassName(context.applicationContext, intent.component!!.className)
                 shortcutIntent.putExtras(intent)
                 shortcutIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 shortcutIntent.action = Intent.ACTION_MAIN

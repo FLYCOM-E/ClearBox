@@ -1,20 +1,16 @@
 package wipe.cache.common.ui
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import androidx.core.graphics.createBitmap
 
 object FastBlurUtility {
     /**
@@ -28,30 +24,6 @@ object FastBlurUtility {
         return startBlurBackground(bmp)
     }
 
-
-    // 实测RenderScript做模糊性能反而更低...
-    private fun blur(bitmap: Bitmap?, context: Context?): Bitmap? {
-        if (bitmap == null) {
-            return bitmap
-        }
-
-        //使用RenderScript对图片进行高斯模糊处理
-        val output = Bitmap.createBitmap(bitmap) // 创建输出图片
-        val rs = RenderScript.create(context) // 构建一个RenderScript对象
-        val gaussianBlue = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs)) //
-        // 创建高斯模糊脚本
-        val allIn = Allocation.createFromBitmap(rs, bitmap) // 开辟输入内存
-        val allOut = Allocation.createFromBitmap(rs, output) // 开辟输出内存
-        val radius = 10f //设置模糊半径
-        gaussianBlue.setRadius(radius) // 设置模糊半径，范围0f<radius<=25f
-        gaussianBlue.setInput(allIn) // 设置输入内存
-        gaussianBlue.forEach(allOut) // 模糊编码，并将内存填入输出内存
-        allOut.copyTo(output) // 将输出内存编码为Bitmap，图片大小必须注意
-        rs.destroy()
-        //rs.releaseAllContexts(); // 关闭RenderScript对象，API>=23则使用rs.releaseAllContexts()
-        return output
-    }
-
     /**
      * 截屏
      * 
@@ -59,21 +31,21 @@ object FastBlurUtility {
      * @return 截屏图片
      */
     private fun takeScreenShot(activity: Activity): Bitmap? {
-        val view = activity.getWindow().getDecorView()
+        val view = activity.window.decorView
         view.setDrawingCacheEnabled(true)
         view.buildDrawingCache()
         val b1 = view.getDrawingCache()
 
         if (b1 != null) {
             // 获取屏幕长和高
-            val width = activity.getResources().getDisplayMetrics().widthPixels
-            val height = activity.getResources().getDisplayMetrics().heightPixels
+            val width = activity.resources.displayMetrics.widthPixels
+            val height = activity.resources.displayMetrics.heightPixels
 
             try {
                 val bmp = Bitmap.createBitmap(b1, 0, 0, width, height)
                 view.destroyDrawingCache()
                 return bmp
-            } catch (ignored: Exception) {
+            } catch (_: Exception) {
             }
         }
         return null
@@ -85,12 +57,12 @@ object FastBlurUtility {
             return null
         }
 
-        val width = bitmap.getWidth()
-        val height = bitmap.getHeight()
-        val bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val width = bitmap.width
+        val height = bitmap.height
+        val bmpGrayscale = createBitmap(width, height)
         val c = Canvas(bmpGrayscale)
         val paint = Paint()
-        paint.setAntiAlias(true)
+        paint.isAntiAlias = true
         val cm = ColorMatrix()
         val contrast = 0.95f
         cm.set(
@@ -102,7 +74,7 @@ object FastBlurUtility {
             )
         )
         val f = ColorMatrixColorFilter(cm)
-        paint.setColorFilter(f)
+        paint.colorFilter = f
         c.drawBitmap(bitmap, 0f, 0f, paint)
         return bmpGrayscale
     }
@@ -131,8 +103,8 @@ object FastBlurUtility {
             bitmap,
             0,
             0,
-            bitmap.getWidth(),
-            bitmap.getHeight(),
+            bitmap.width,
+            bitmap.height,
             matrix,
             true
         )
@@ -151,8 +123,8 @@ object FastBlurUtility {
             bitmap,
             0,
             0,
-            bitmap.getWidth(),
-            bitmap.getHeight(),
+            bitmap.width,
+            bitmap.height,
             matrix,
             true
         )
@@ -166,14 +138,14 @@ object FastBlurUtility {
      * @return 模糊后的图片
      */
     private fun fastBlur(sentBitmap: Bitmap, radius: Int): Bitmap? {
-        val bitmap = sentBitmap.copy(sentBitmap.getConfig()!!, true)
+        val bitmap = sentBitmap.copy(sentBitmap.config!!, true)
 
         if (radius < 1) {
             return (null)
         }
 
-        val w = bitmap.getWidth()
-        val h = bitmap.getHeight()
+        val w = bitmap.width
+        val h = bitmap.height
 
         val pix = IntArray(w * h)
         bitmap.getPixels(pix, 0, w, 0, 0, w, h)
@@ -195,7 +167,6 @@ object FastBlurUtility {
         var p: Int
         var yp: Int
         var yi: Int
-        var yw: Int
         val vmin = IntArray(max(w, h))
 
         var divsum = (div + 1) shr 1
@@ -208,7 +179,7 @@ object FastBlurUtility {
         }
 
         yi = 0
-        yw = yi
+        var yw: Int = 0
 
         val stack = Array(div) { IntArray(3) }
         var stackpointer: Int
@@ -226,14 +197,14 @@ object FastBlurUtility {
         y = 0
         while (y < h) {
             bsum = 0
-            gsum = bsum
-            rsum = gsum
-            boutsum = rsum
-            goutsum = boutsum
-            routsum = goutsum
-            binsum = routsum
-            ginsum = binsum
-            rinsum = ginsum
+            gsum = 0
+            rsum = 0
+            boutsum = 0
+            goutsum = 0
+            routsum = 0
+            binsum = 0
+            ginsum = 0
+            rinsum = 0
             i = -radius
             while (i <= radius) {
                 p = pix[yi + min(wm, max(i, 0))]
@@ -312,14 +283,14 @@ object FastBlurUtility {
         x = 0
         while (x < w) {
             bsum = 0
-            gsum = bsum
-            rsum = gsum
-            boutsum = rsum
-            goutsum = boutsum
-            routsum = goutsum
-            binsum = routsum
-            ginsum = binsum
-            rinsum = ginsum
+            gsum = 0
+            rsum = 0
+            boutsum = 0
+            goutsum = 0
+            routsum = 0
+            binsum = 0
+            ginsum = 0
+            rinsum = 0
             yp = -radius * w
             i = -radius
             while (i <= radius) {

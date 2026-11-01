@@ -1,24 +1,19 @@
 package wipe.cache.main
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
-import android.view.KeyEvent
 import android.view.View
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.PermissionChecker
 import wipe.cache.common.ui.ProgressBarDialog
 import wipe.cache.common.ui.SpringUtils
 import wipe.cache.main.ui.AdapterFileSelector
 import java.io.File
-import wipe.cache.common.shell.RootFile
 import androidx.activity.OnBackPressedCallback
 import com.google.android.material.button.MaterialButton
 
@@ -32,7 +27,7 @@ class ActivityFileSelector : AppCompatActivity() {
     var extension = ""
     var mode = MODE_FILE
     
-    private lateinit var btnSelectDir: com.google.android.material.button.MaterialButton
+    private lateinit var btnSelectDir: MaterialButton
     private lateinit var fileSelectorList: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +51,7 @@ class ActivityFileSelector : AppCompatActivity() {
             if (extras.containsKey("extension")) {
                 extension = "" + extras.getString("extension")
                 if (!extension.startsWith(".")) extension = ".$extension"
-                if (extension.isNotEmpty()) title = title.toString() + "($extension)"
+                if (extension.isNotEmpty()) title = "$title($extension)"
             }
             if (extras.containsKey("mode")) {
                 mode = extras.getInt("mode")
@@ -66,11 +61,9 @@ class ActivityFileSelector : AppCompatActivity() {
         
        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (adapterFileSelector != null && adapterFileSelector!!.goParent()) {
-                    
-                } else {
+                if (!(adapterFileSelector != null && adapterFileSelector!!.goParent())) {
                     isEnabled = false
-                    setResult(Activity.RESULT_CANCELED, Intent())
+                    setResult(RESULT_CANCELED, Intent())
                     onBackPressedDispatcher.onBackPressed()
                 }
             }
@@ -91,13 +84,6 @@ class ActivityFileSelector : AppCompatActivity() {
         }
     }
 
-    private fun checkPermission(permission: String): Boolean =
-            PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_GRANTED
-
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 111)
-    }
-    
     override fun onResume() {
         super.onResume()
         if (adapterFileSelector == null) loadData()
@@ -108,7 +94,7 @@ class ActivityFileSelector : AppCompatActivity() {
         val onSelected = Runnable {
             val file: File? = adapterFileSelector!!.selectedFile
             if (file != null) {
-                setResult(Activity.RESULT_OK, Intent().putExtra("file", file.absolutePath))
+                setResult(RESULT_OK, Intent().putExtra("file", file.absolutePath))
                 finish()
             }
         }
@@ -123,7 +109,7 @@ class ActivityFileSelector : AppCompatActivity() {
             btnSelectDir.setOnClickListener {
                 val currentPath = adapterFileSelector?.currentDir?.absolutePath
                 if (currentPath != null) {
-                    setResult(Activity.RESULT_OK, Intent().putExtra("file", currentPath))
+                    setResult(RESULT_OK, Intent().putExtra("file", currentPath))
                     finish()
                 }
             }

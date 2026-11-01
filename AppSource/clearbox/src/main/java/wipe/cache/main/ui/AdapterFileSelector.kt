@@ -6,15 +6,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
 import wipe.cache.common.ui.DialogHelper.Companion.confirm
 import wipe.cache.common.ui.ProgressBarDialog
 import wipe.cache.common.ui.SpringUtils
 import wipe.cache.main.R
 import java.io.File
-import java.io.FileFilter
 import wipe.cache.common.shell.RootFile
-import java.util.Locale
 
 class AdapterFileSelector private constructor(
     rootDir: File,
@@ -46,14 +43,14 @@ class AdapterFileSelector private constructor(
         progressBarDialog: ProgressBarDialog,
         extension: String?
     ) {
-        this.rootDir = rootDir.getAbsolutePath()
+        this.rootDir = rootDir.absolutePath
         this.fileSelected = fileSelected
         this.progressBarDialog = progressBarDialog
         if (extension != null) {
             if (extension.startsWith(".")) {
                 this.extension = extension
             } else {
-                this.extension = "." + extension
+                this.extension = ".$extension"
             }
         }
         loadDir(rootDir)
@@ -70,12 +67,12 @@ class AdapterFileSelector private constructor(
                 hasParent = false
             }
             
-            var files: Array<File?>? = tryListDir(dir)
-    
+            val files: Array<File?>? = tryListDir(dir)
+
             if (files != null) {
                 sortFiles(files)
             }
-                
+
             fileArray = files
             currentDir = dir
             handler.post {
@@ -84,21 +81,21 @@ class AdapterFileSelector private constructor(
             }
         }.start()
     }
-    
+
     private fun tryListDir(dir: File): Array<File?>? {
-        val result = dir.listFiles(FileFilter { f ->
+        val result = dir.listFiles { f ->
             if (folderChooserMode) f.isDirectory
             else f.exists() && (!f.isFile || extension.isNullOrEmpty() || f.name.endsWith(extension!!))
-        })
+        }
         if (result != null) return result as Array<File?>
         
         return try {
             val rootFiles = RootFile.list(dir.absolutePath)
             rootFiles
-                .filter { if (folderChooserMode) it.isDirectory else true }
+                .filter { !folderChooserMode || it.isDirectory }
                 .map { File(it.absolutePath) }
                 .toTypedArray<File?>()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
@@ -115,7 +112,7 @@ class AdapterFileSelector private constructor(
             }
         }
     }
-    
+
     fun goParent(): Boolean {
         if (hasParent) {
             loadDir(File(currentDir!!.getParent()))
@@ -138,21 +135,15 @@ class AdapterFileSelector private constructor(
         }
     }
 
-    fun refresh() {
-        if (this.currentDir != null) {
-            this.loadDir(currentDir!!)
-        }
-    }
-
     override fun getItem(position: Int): Any? {
-        if (hasParent) {
+        return if (hasParent) {
             if (position == 0) {
-                return File(currentDir!!.getParent())
+                File(currentDir!!.getParent())
             } else {
-                return fileArray!![position - 1]
+                fileArray!![position - 1]
             }
         } else {
-            return fileArray!![position]
+            fileArray!![position]
         }
     }
 
@@ -168,7 +159,7 @@ class AdapterFileSelector private constructor(
             view.setOnClickListener { goParent() }
             return view
         }
-    
+
         val file = getItem(position) as File
         if (file.isDirectory) {
             view = View.inflate(parent.context, R.layout.list_item_dir, null)
@@ -200,16 +191,15 @@ class AdapterFileSelector private constructor(
                         }
                         selectedFile = file
                         fileSelected!!.run()
-                    },
-                    Runnable {}
-                )
+                    }
+                ) {}
             }
         }
         (view.findViewById<View>(R.id.ItemTitle) as TextView).text = file.name
         SpringUtils.addPressSpring(view)
         return view
     }
-    
+
     companion object {
         fun FolderChooser(
             rootDir: File,

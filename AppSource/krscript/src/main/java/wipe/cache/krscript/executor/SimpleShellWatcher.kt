@@ -21,69 +21,62 @@ class SimpleShellWatcher {
     ) {
         val shellTranslation = ShellTranslation(context)
 
-        val inputStream = process.getInputStream()
-        val errorStream = process.getErrorStream()
-        val reader = Thread(object : Runnable {
-            override fun run() {
-                var line: String?
-                try {
-                    val bufferedReader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
-                    while ((bufferedReader.readLine().also { line = it }) != null) {
-                        shellHandlerBase.sendMessage(
-                            shellHandlerBase.obtainMessage(
-                                ShellHandlerBase.EVENT_REDE,
-                                shellTranslation.resolveRow(line!!) + "\n"
-                            )
-                        )
-                    }
-                } catch (ignored: Exception) {
-                }
-            }
-        })
-        val readerError = Thread(object : Runnable {
-            override fun run() {
-                var line: String?
-                try {
-                    val bufferedReader = BufferedReader(InputStreamReader(errorStream, "UTF-8"))
-                    while ((bufferedReader.readLine().also { line = it }) != null) {
-                        shellHandlerBase.sendMessage(
-                            shellHandlerBase.obtainMessage(
-                                ShellHandlerBase.EVENT_READ_ERROR,
-                                shellTranslation.resolveRow(line!!) + "\n"
-                            )
-                        )
-                    }
-                } catch (ignored: Exception) {
-                }
-            }
-        })
-        val processFinal = process
-        val waitExit = Thread(object : Runnable {
-            override fun run() {
-                var status = -1
-                try {
-                    status = processFinal.waitFor()
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                } finally {
+        val inputStream = process.inputStream
+        val errorStream = process.errorStream
+        val reader = Thread {
+            var line: String?
+            try {
+                val bufferedReader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
+                while ((bufferedReader.readLine().also { line = it }) != null) {
                     shellHandlerBase.sendMessage(
                         shellHandlerBase.obtainMessage(
-                            ShellHandlerBase.EVENT_EXIT,
-                            status
+                            ShellHandlerBase.EVENT_REDE,
+                            shellTranslation.resolveRow(line!!) + "\n"
                         )
                     )
-                    if (reader.isAlive()) {
-                        reader.interrupt()
-                    }
-                    if (readerError.isAlive()) {
-                        readerError.interrupt()
-                    }
-                    if (onExit != null) {
-                        onExit.run()
-                    }
                 }
+            } catch (_: Exception) {
+                // .
             }
-        })
+        }
+        val readerError = Thread {
+            var line: String?
+            try {
+                val bufferedReader = BufferedReader(InputStreamReader(errorStream, "UTF-8"))
+                while ((bufferedReader.readLine().also { line = it }) != null) {
+                    shellHandlerBase.sendMessage(
+                        shellHandlerBase.obtainMessage(
+                            ShellHandlerBase.EVENT_READ_ERROR,
+                            shellTranslation.resolveRow(line!!) + "\n"
+                        )
+                    )
+                }
+            } catch (_: Exception) {
+                // .
+            }
+        }
+        val waitExit = Thread {
+            var status = -1
+            try {
+                status = process.waitFor()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            } finally {
+                shellHandlerBase.sendMessage(
+                    shellHandlerBase.obtainMessage(
+                        ShellHandlerBase.EVENT_EXIT,
+                        status
+                    )
+                )
+                if (reader.isAlive) {
+                    reader.interrupt()
+                }
+                if (readerError.isAlive) {
+                    readerError.interrupt()
+                }
+                onExit?.run()
+            }
+        }
 
         reader.start()
         readerError.start()

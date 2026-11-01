@@ -7,7 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import wipe.cache.common.R as CommonR
 import wipe.cache.krscript.model.ClickableNode
-
+import androidx.core.graphics.drawable.toDrawable
 
 class IconPathAnalysis {
     // 获取快捷方式的图标
@@ -17,26 +17,26 @@ class IconPathAnalysis {
 
     // 获取快捷方式的图标
     fun loadLogo(context: Context, clickableNode: ClickableNode, useDefault: Boolean): Drawable? {
-        if (!clickableNode.logoPath.isEmpty()) {
+        if (clickableNode.logoPath.isNotEmpty()) {
             val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.logoPath)
             inputStream?.run {
-                return bitmap2Drawable(context, BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
+                return bitmap2Drawable(context, BitmapFactory.decodeStream(this))
             }
         }
-        if (!clickableNode.iconPath.isEmpty()) {
+        if (clickableNode.iconPath.isNotEmpty()) {
             val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.iconPath)
             inputStream?.run {
-                return bitmap2Drawable(context, BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
+                return bitmap2Drawable(context, BitmapFactory.decodeStream(this))
             }
         }
         return if (useDefault) context.getDrawable(CommonR.drawable.function)!! else null
     }
 
     fun loadIcon(context: Context, clickableNode: ClickableNode): Drawable? {
-        if (!clickableNode.iconPath.isEmpty()) {
+        if (clickableNode.iconPath.isNotEmpty()) {
             val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.iconPath)
             inputStream?.run {
-                return bitmap2Drawable(context, BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
+                return bitmap2Drawable(context, BitmapFactory.decodeStream(this))
             }
         }
         return null
@@ -44,6 +44,6 @@ class IconPathAnalysis {
 
     // Bitmap转换成Drawable
     fun bitmap2Drawable(context: Context, bitmap: Bitmap): Drawable {
-        return BitmapDrawable(context.resources, bitmap)
+        return bitmap.toDrawable(context.resources)
     }
 }

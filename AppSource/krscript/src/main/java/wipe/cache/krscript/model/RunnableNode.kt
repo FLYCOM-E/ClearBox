@@ -1,7 +1,6 @@
 package wipe.cache.krscript.model
 
 open class RunnableNode(currentConfigXml: String) : ClickableNode(currentConfigXml) {
-
     // 是否在开始前显示操作确认提示
     var confirm: Boolean = false
     // 警示信息
@@ -16,14 +15,13 @@ open class RunnableNode(currentConfigXml: String) : ClickableNode(currentConfigX
     var updateBlocks: Array<String>? = null
     // 执行完成后是否自动关闭页面
     var autoFinish = false
-
     // 交互界面（default、bg-task、hidden）
     var shell = shellModeDefault
 
     companion object {
-        val shellModeDefault = "default"
-        val shellModeBgTask = "bg-task"
-        val shellModeHidden = "hidden"
+        const val shellModeDefault = "default"
+        const val shellModeBgTask = "bg-task"
+        const val shellModeHidden = "hidden"
     }
 
     //

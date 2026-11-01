@@ -46,7 +46,7 @@ abstract class ShellHandlerBase : Handler() {
     protected fun onReaderMsg(msg: Any?) {
         if (msg != null) {
             val log = msg.toString().trim { it <= ' ' }
-            if (Pattern.matches("^progress:\\[[\\-0-9\\\\]{1,}/[0-9\\\\]{1,}]$", log)) {
+            if (Pattern.matches("^progress:\\[[\\-0-9\\\\]+/[0-9\\\\]+]$", log)) {
                 val values: Array<String?> =
                     log.substring("progress:[".length, log.indexOf("]")).split("/".toRegex())
                         .dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -127,7 +127,7 @@ abstract class ShellHandlerBase : Handler() {
         const val EVENT_WRITE: Int = 6
 
         /**
-         * 处理Exitvalue
+         * 处理 Exit value
          */
         val EVENT_EXIT: Int = -2
     }

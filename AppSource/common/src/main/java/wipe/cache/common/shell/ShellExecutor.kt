@@ -6,11 +6,6 @@ object ShellExecutor {
     private var extraEnvPath: String = ""
     private var defaultEnvPath: String = ""
 
-    @JvmStatic
-    fun setExtraEnvPath(extraEnvPath: String) {
-        this.extraEnvPath = extraEnvPath
-    }
-
     private val envPath: String?
         get() {
             // FIXME:非root模式下，默认的 TMPDIR=/data/local/tmp 变量可能会导致某些需要写缓存的场景（例如使用source指令）脚本执行失败！
@@ -19,7 +14,7 @@ object ShellExecutor {
                     try {
                         val process = Runtime.getRuntime().exec("sh")
                         val outputStream = process.outputStream
-                        outputStream.write("echo \$PATH".toByteArray())
+                        outputStream.write($$"echo $PATH".toByteArray())
                         outputStream.flush()
                         outputStream.close()
 
@@ -33,9 +28,9 @@ object ShellExecutor {
                         if (path.isNotEmpty()) {
                             defaultEnvPath = path
                         } else {
-                            throw RuntimeException("Get \$PATH args error")
+                            throw RuntimeException($$"Get $PATH args error")
                         }
-                    } catch (ex: Exception) {
+                    } catch (_: Exception) {
                         defaultEnvPath = "/sbin:/system/sbin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin"
                     }
                 }
