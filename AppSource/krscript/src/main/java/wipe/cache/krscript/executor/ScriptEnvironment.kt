@@ -67,8 +67,7 @@ object ScriptEnvironment {
                 fileName = fileName.substring(ASSETS_FILE.length)
             }
 
-            val inputStream = context.assets.open(fileName)
-            val bytes = ByteArray(inputStream.available())
+            val bytes = context.assets.open(fileName).use { it.readBytes() }
             var envShell = String(bytes, Charset.defaultCharset()).replace("\r".toRegex(), "")
 
             val environment = getEnvironment(context)
