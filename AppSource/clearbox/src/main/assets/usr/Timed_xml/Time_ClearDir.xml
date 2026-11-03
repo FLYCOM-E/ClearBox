@@ -4,7 +4,14 @@ cat <<w
 <group title=" ">
     <action interruptible="false">
         <title>$L_AR_CUST_TIME ($L_UNIT: $L_TIME_M)</title>
-        <summary sh="echo -n '$L_NUM_TIME_NOW '; grep 'time=' $work_dir/$timed_config_dir/ClearDir.conf | cut -f2 -d '='" />
+        <summary sh="echo -n '$L_NUM_TIME_NOW '; grep 'time=' $work_dir/$timed_config_dir/ClearDir.conf | cut -f2 -d '=';
+                        last_time=\$(grep 'date=' $work_dir/$timed_config_dir/ClearDir.conf | cut -f2 -d '=');
+                        if [ -z \$last_time ] || [ \$last_time = 0 ]; then
+                            echo -n '$L_LAST_RUN_TIME';
+                        else
+                            echo -n '$L_LAST_RUN_TIME'; date -d @\$last_time '+%m-%d %H:%M';
+                        fi
+                        " />
         <param name="minute_num" max="59" min="1" type="seekbar" value="10" />
             <set>
             echo -e "time=\${minute_num}/M\ndate=0\nrun=$home_dir/$core --clear-storage" > "$work_dir/$timed_config_dir/ClearDir.conf"

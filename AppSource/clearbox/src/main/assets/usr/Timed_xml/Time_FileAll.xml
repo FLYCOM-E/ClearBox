@@ -4,7 +4,14 @@ cat <<w
 <group title=" ">
     <action interruptible="false">
         <title>$L_AR_CUST_TIME ($L_UNIT: $L_TIME_H)</title>
-        <summary sh="echo -n '$L_NUM_TIME_NOW '; grep 'time=' $work_dir/$timed_config_dir/FileAll.conf | cut -f2 -d '='" />
+        <summary sh="echo -n '$L_NUM_TIME_NOW '; grep 'time=' $work_dir/$timed_config_dir/FileAll.conf | cut -f2 -d '=';
+                        last_time=\$(grep 'date=' $work_dir/$timed_config_dir/FileAll.conf | cut -f2 -d '=');
+                        if [ -z \$last_time ] || [ \$last_time = 0 ]; then
+                            echo -n '$L_LAST_RUN_TIME';
+                        else
+                            echo -n '$L_LAST_RUN_TIME'; date -d @\$last_time '+%m-%d %H:%M';
+                        fi
+                        " />
         <param name="hour_num" max="23" min="1" type="seekbar" value="12" />
             <set>
             echo -e "time=\${hour_num}/H\ndate=0\nrun=$home_dir/$core --file-sort" > "$work_dir/$timed_config_dir/FileAll.conf"

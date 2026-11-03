@@ -14,6 +14,8 @@ else
     source "/data/adb/wipe_cache/PATH"
 fi
 ######
+exec 2>>/dev/null
+######
 Version=$(grep "version=" "$home_dir/module.prop" | cut -f2 -d "=")
 Str_1=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d '=' | cut -f1 -d "|")
 Str_2=$(grep "str=" "$home_dir/module.prop" | cut -f2 -d "|")
@@ -269,8 +271,17 @@ case "$input" in
       case "$at_input" in
           1)
             clear
+            
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearAll.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
+            
+            last_time=$(grep "date=" "$work_dir/$timed_config_dir/ClearAll.conf" | cut -f2 -d '=')
+            if [ -z "$last_time" ] || [ "$last_time" = 0 ]; then
+                echo -e " \033[104m[$L_LAST_RUN_TIME]\033[0m"
+            else
+                echo -e " \033[104m[$L_LAST_RUN_TIME $(date -d @$last_time '+%m-%d %H:%M')]\033[0m"
+            fi
+            
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -305,8 +316,17 @@ case "$input" in
             ;;
           2)
             clear
+            
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ListDir.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
+            
+            last_time=$(grep "date=" "$work_dir/$timed_config_dir/ListDir.conf" | cut -f2 -d '=')
+            if [ -z "$last_time" ] || [ "$last_time" = 0 ]; then
+                echo -e " \033[104m[$L_LAST_RUN_TIME]\033[0m"
+            else
+                echo -e " \033[104m[$L_LAST_RUN_TIME $(date -d @$last_time '+%m-%d %H:%M')]\033[0m"
+            fi
+            
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -341,8 +361,17 @@ case "$input" in
             ;;
           3)
             clear
+            
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearDir.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
+            
+            last_time=$(grep "date=" "$work_dir/$timed_config_dir/ClearDir.conf" | cut -f2 -d '=')
+            if [ -z "$last_time" ] || [ "$last_time" = 0 ]; then
+                echo -e " \033[104m[$L_LAST_RUN_TIME]\033[0m"
+            else
+                echo -e " \033[104m[$L_LAST_RUN_TIME $(date -d @$last_time '+%m-%d %H:%M')]\033[0m"
+            fi
+            
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_M)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -377,8 +406,17 @@ case "$input" in
             ;;
           4)
             clear
+            
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/ClearCache.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
+            
+            last_time=$(grep "date=" "$work_dir/$timed_config_dir/ClearCache.conf" | cut -f2 -d '=')
+            if [ -z "$last_time" ] || [ "$last_time" = 0 ]; then
+                echo -e " \033[104m[$L_LAST_RUN_TIME]\033[0m"
+            else
+                echo -e " \033[104m[$L_LAST_RUN_TIME $(date -d @$last_time '+%m-%d %H:%M')]\033[0m"
+            fi
+            
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -413,8 +451,17 @@ case "$input" in
             ;;
           5)
             clear
+            
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/FileAll.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
+            
+            last_time=$(grep "date=" "$work_dir/$timed_config_dir/FileAll.conf" | cut -f2 -d '=')
+            if [ -z "$last_time" ] || [ "$last_time" = 0 ]; then
+                echo -e " \033[104m[$L_LAST_RUN_TIME]\033[0m"
+            else
+                echo -e " \033[104m[$L_LAST_RUN_TIME $(date -d @$last_time '+%m-%d %H:%M')]\033[0m"
+            fi
+            
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_H)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
@@ -449,8 +496,17 @@ case "$input" in
             ;;
           6)
             clear
+            
             NowTime=$(grep "time=" "$work_dir/$timed_config_dir/F2fsGc.conf" | cut -f2 -d "=")
             echo -e " \033[104m[$L_NUM_TIME_NOW $NowTime]\033[0m"
+            
+            last_time=$(grep "date=" "$work_dir/$timed_config_dir/F2fsGc.conf" | cut -f2 -d '=')
+            if [ -z "$last_time" ] || [ "$last_time" = 0 ]; then
+                echo -e " \033[104m[$L_LAST_RUN_TIME]\033[0m"
+            else
+                echo -e " \033[104m[$L_LAST_RUN_TIME $(date -d @$last_time '+%m-%d %H:%M')]\033[0m"
+            fi
+            
             echo -e "\033[96m ==============================================\033[0m\n"
             echo -e "\033[93m 1:\t$L_AR_CUST_TIME ($L_UNIT：$L_TIME_D)\033[0m\n"
             echo -e "\033[93m 0:\t$L_CLOSE_FUNCTION\033[0m\n"
