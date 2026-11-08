@@ -108,13 +108,6 @@ int stop_cache_daemon(char * argv[])
         }
     }
     
-    // 设置命名空间
-    if (set_name_space() != 0)
-    {
-        close(inotify_fd);
-        return -1;
-    }
-    
     // 脱离终端
     if (s_daemon() != 0)
     {

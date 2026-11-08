@@ -46,12 +46,6 @@ static int running(char * command);
 
 int time_daemon(char * argv[])
 {
-    // 设置命名空间
-    if (set_name_space() != 0)
-    {
-        return -1;
-    }
-    
     // 拼接及检查配置目录
     char config_dir[strlen(work_dir) + sizeof(CONFIG_PATH_NAME) + 2];
     snprintf(config_dir, sizeof(config_dir), "%s/%s", work_dir, CONFIG_PATH_NAME);

@@ -34,12 +34,6 @@ int bmount(char * mode_str)
     }
     fclose(sys_mounts_fp);
     
-    // 设置命名空间
-    if (set_name_space() != 0)
-    {
-        return -1;
-    }
-    
     int mode = 0;
     if (strcasecmp(mode_str, "MOUNT") == 0)
     {
