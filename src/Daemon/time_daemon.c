@@ -262,7 +262,7 @@ int time_daemon(char * argv[])
         
         // 语言更新
         while_count++;
-        if (while_count >= 10)
+        if (while_count >= 5)
         {
             set_language(&current_lang);
             while_count = 0;
