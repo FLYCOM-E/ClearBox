@@ -377,7 +377,10 @@ static int clear_service(char * storage_dir, char * config_name, char * dir_name
             fflush(stdout);
             
             int all_count = find_file(storage_dir, file_dir, file_args, count);
-            fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
+            if (all_count >= 1)
+            {
+                fprintf(stderr, L_FM_ALL_END, all_count, config_file_name_p);
+            }
             
             if (new_pid == 0) _exit(0);
         }
