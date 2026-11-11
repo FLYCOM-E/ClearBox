@@ -1,64 +1,45 @@
 package wipe.cache.main
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
-import android.view.View
-import android.widget.TextView
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import wipe.cache.common.shell.ShellExecutor
-import wipe.cache.common.ui.SpringUtils
 import wipe.cache.krscript.executor.ScriptEnvironment
 import wipe.cache.main.permissions.CheckRootStatus
 import java.io.BufferedReader
 import java.io.DataOutputStream
-import wipe.cache.krscript.model.PageNode
-import wipe.cache.krscript.model.NodeInfoBase
-import wipe.cache.krscript.config.PageConfigReader
-import wipe.cache.krscript.config.PageConfigSh
 
 class SplashActivity : AppCompatActivity() {
-    private lateinit var startLogo: View
-    private lateinit var startStateText: TextView
+    private val myHandler = Handler(Looper.getMainLooper())
+    private var navigating = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        ThemeModeState.switchTheme(this)
-        setContentView(R.layout.activity_splash)
-        
+        splashScreen.setKeepOnScreenCondition { !navigating && !CheckRootStatus.dialogShowing }
+
         if (ScriptEnvironment.isInited) {
             if (isTaskRoot) {
                 gotoHome()
+            } else {
+                finish()
             }
             return
         }
 
-        setContentView(R.layout.activity_splash)
-        startLogo = findViewById(R.id.start_logo)
-        startStateText = findViewById(R.id.start_state_text)
-        SpringUtils.springScaleEntrance(startLogo)
-        checkPermissions()
-    }
-    
-    private fun checkPermissions() {
-        startLogo.visibility = View.VISIBLE
-        checkRoot {
-            startStateText.text = getString(R.string.permission_checking)
-            hasRoot = true
-            checkFileWrite {
-                startToFinish()
-            }
-        }
+        CheckRootStatus(this) { startToFinish() }.forceGetRoot()
     }
 
     private fun checkPermission(permission: String): Boolean = PermissionChecker.checkSelfPermission(this.applicationContext, permission) == PermissionChecker.PERMISSION_GRANTED
 
-    private fun checkFileWrite(next: Runnable) {
+    private fun startToFinish() {
         Thread {
             CheckRootStatus.grantPermission(this)
             if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(
@@ -77,53 +58,37 @@ class SplashActivity : AppCompatActivity() {
                     0x11
                 )
             }
-            myHandler.post {
-                next.run()
-            }
-        }.start()
-    }
-
-    private var hasRoot = false
-    private var myHandler = Handler(Looper.getMainLooper())
-
-    private fun checkRoot(next: Runnable) {
-        CheckRootStatus(this, next).forceGetRoot()
-    }
-    
-    private fun startToFinish() {
-        startStateText.text = getString(R.string.pop_started)
-    
-        val config = KrScriptConfig().init(this)
-        if (config.getBeforeStartSh()!!.isNotEmpty()) {
-            BeforeStartThread(this, config, UpdateLogViewHandler(startStateText) {
-                preloadAndGotoHome(config)
-            }).start()
-        } else {
-            preloadAndGotoHome(config)
-        }
-    }
-    
-    private fun preloadAndGotoHome(config: KrScriptConfig) {
-        startStateText.text = getString(R.string.please_wait)
-        Thread {
-            config.getFavoriteConfig()?.let { PageCache.homeItems = getItems(it) }
-            config.getPageListConfig()?.let { PageCache.pageItems = getItems(it) }
+            val config = KrScriptConfig().init(this, CheckRootStatus.lastCheckResult)
+            runBeforeStartSh(config)
             myHandler.post { gotoHome() }
         }.start()
     }
-    
-    private fun getItems(pageNode: PageNode): ArrayList<NodeInfoBase>? {
-        var items: ArrayList<NodeInfoBase>? = null
-        if (pageNode.pageConfigSh.isNotEmpty()) {
-            items = PageConfigSh(this, pageNode.pageConfigSh, null).execute()
+
+    private fun runBeforeStartSh(config: KrScriptConfig) {
+        val beforeStartSh = config.getBeforeStartSh() ?: return
+        if (beforeStartSh.isEmpty()) {
+            return
         }
-        if (items == null && pageNode.pageConfigPath.isNotEmpty()) {
-            items = PageConfigReader(this.applicationContext, pageNode.pageConfigPath, null).readConfigXml()
+        try {
+            val process = if (CheckRootStatus.lastCheckResult) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
+            val outputStream = DataOutputStream(process.outputStream)
+            ScriptEnvironment.executeShell(
+                this,
+                outputStream,
+                beforeStartSh,
+                config.getVariables() as HashMap<String?, String?>?,
+                null,
+                "splash"
+            )
+            StreamReadThread(process.inputStream.bufferedReader()).start()
+            StreamReadThread(process.errorStream.bufferedReader()).start()
+            process.waitFor()
+        } catch (_: Exception) {
         }
-        return items
     }
-    
+
     private fun gotoHome() {
+        navigating = true
         if (this.intent != null && this.intent.hasExtra("JumpActionPage") && this.intent.getBooleanExtra("JumpActionPage", false)) {
             val actionPage = Intent(this.applicationContext, ActionPage::class.java)
             actionPage.putExtras(this.intent)
@@ -135,62 +100,14 @@ class SplashActivity : AppCompatActivity() {
         finish()
     }
 
-    private class UpdateLogViewHandler(private var logView: TextView, private val onExit: Runnable) {
-        private val handler = Handler(Looper.getMainLooper())
-        private var notificationMessageRows = ArrayList<String>()
-        private var someIgnored = false
-
-        fun onLogOutput(log: String) {
-            handler.post {
-                synchronized(notificationMessageRows) {
-                    if (notificationMessageRows.size > 6) {
-                        notificationMessageRows.remove(notificationMessageRows.first())
-                        someIgnored = true
-                    }
-                    notificationMessageRows.add(log)
-                    logView.text =
-                        notificationMessageRows.joinToString("\n", if (someIgnored) "……\n" else "").trim()
-                }
-            }
-        }
-
-        fun onExit() {
-            handler.post { onExit.run() }
-        }
-    }
-
-    private class BeforeStartThread(private var context: Context, private val config: KrScriptConfig, private var updateLogViewHandler: UpdateLogViewHandler) : Thread() {
-        val params = config.getVariables()
-
+    private class StreamReadThread(private val reader: BufferedReader) : Thread() {
         override fun run() {
             try {
-                val process = if (CheckRootStatus.lastCheckResult) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
-                val outputStream = DataOutputStream(process.outputStream)
-                ScriptEnvironment.executeShell(
-                    context,
-                    outputStream,
-                    config.getBeforeStartSh(),
-                    params as HashMap<String?, String?>?,
-                    null,
-                    "splash"
-                )
-                StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
-                StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()
-                process.waitFor()
-                updateLogViewHandler.onExit()
+                while (true) {
+                    val line = reader.readLine() ?: break
+                    Log.d("ClearBoxSplash", line)
+                }
             } catch (_: Exception) {
-                updateLogViewHandler.onExit()
-            }
-        }
-    }
-
-    private class StreamReadThread(private var reader: BufferedReader, private var updateLogViewHandler: UpdateLogViewHandler) : Thread() {
-        override fun run() {
-            var line: String?
-            while (true) {
-                line = reader.readLine()
-                if (line == null) break
-                else updateLogViewHandler.onLogOutput(line)
             }
         }
     }

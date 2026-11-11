@@ -15,6 +15,16 @@ class KrScriptConfig {
     private val DEFAULT_CONFIG = "Config.conf"
     
     fun init(context: Context): KrScriptConfig {
+        return init(context, null)
+    }
+
+    /**
+     * 初始化配置并初始化脚本执行环境。
+     *
+     * @param context Context
+     * @param knownRootResult 调用方已完成的 Root 检查结果；传 null 则跳过 Root 检查（由 ScriptEnvironment 自行检测）
+     */
+    fun init(context: Context, knownRootResult: Boolean?): KrScriptConfig {
         if (configInfo == null) {
             configInfo = HashMap()
             configInfo!![EXECUTOR_CORE] = EXECUTOR_CORE_DEFAULT
@@ -46,7 +56,7 @@ class KrScriptConfig {
             } catch (_: Exception) {
             }
 
-            ScriptEnvironment.init(context, getExecutorCore(), getToolkitDir())
+            ScriptEnvironment.init(context, getExecutorCore(), getToolkitDir(), knownRootResult)
         }
 
         return this

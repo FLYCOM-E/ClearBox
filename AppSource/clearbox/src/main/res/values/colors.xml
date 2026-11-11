@@ -19,4 +19,6 @@
     <color name="md_primary_container">#00D2C4</color>
     <color name="md_secondary">#00D2C4</color>
     <color name="md_secondary_container">#00D2C4</color>
+
+    <color name="splash_background">#050B0D</color>
 </resources>

@@ -60,6 +60,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${rootProject.ext.kotlin_version}"
     implementation "androidx.constraintlayout:constraintlayout:${rootProject.ext.constraintlayout}"
     implementation "androidx.core:core-ktx:${rootProject.ext.core_ktx}"
+    implementation "androidx.core:core-splashscreen:${rootProject.ext.core_splashscreen}"
     
     implementation project(':common')
     implementation project(':krscript')

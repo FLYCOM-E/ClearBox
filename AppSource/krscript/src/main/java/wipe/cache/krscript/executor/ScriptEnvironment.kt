@@ -50,12 +50,24 @@ object ScriptEnvironment {
      * @return 是否初始化成功
      */
     fun init(context: Context, executor: String, toolkitDir: String?): Boolean {
+        return init(context, executor, toolkitDir, null)
+    }
+
+    /**
+     * 初始化执行器
+     *
+     * @param context  Context
+     * @param executor 执行器在Assets中的位置
+     * @param knownRootResult 调用方已完成的 Root 检查结果；传 null 则在需要时自行检测
+     * @return 是否初始化成功
+     */
+    fun init(context: Context, executor: String, toolkitDir: String?, knownRootResult: Boolean?): Boolean {
         if (isInited) {
             return true
         }
 
         shellTranslation = ShellTranslation(context.applicationContext)
-        rooted = checkRoot()
+        rooted = knownRootResult ?: checkRoot()
 
         try {
             if (!toolkitDir.isNullOrEmpty()) {

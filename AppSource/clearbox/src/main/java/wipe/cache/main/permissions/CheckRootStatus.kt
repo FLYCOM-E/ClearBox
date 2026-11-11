@@ -24,6 +24,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
     var thread: Thread? = null
 
     fun forceGetRoot() {
+        dialogShowing = false
         if (lastCheckResult) {
             val nextRunnable = next
             if (nextRunnable != null) {
@@ -45,6 +46,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                 } else {
                     myHandler.post {
                         KeepShellPublic.tryExit()
+                        dialogShowing = true
                         val builder = MaterialAlertDialogBuilder(context)
                                 .setTitle(R.string.error_root)
                                 .setPositiveButton(R.string.btn_retry) { _: DialogInterface, _: Int ->
@@ -77,6 +79,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
                 if (!completed) {
                     KeepShellPublic.tryExit()
                     myHandler.post {
+                        dialogShowing = true
                         DialogHelper.confirm(
                             context,
                             context.getString(R.string.error_root),
@@ -101,6 +104,11 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null) 
 
     companion object {
         private var rootStatus = false
+
+        @JvmStatic
+        var dialogShowing = false
+            private set
+
         private fun checkPermission(context: Context, permission: String): Boolean =
                 PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
 

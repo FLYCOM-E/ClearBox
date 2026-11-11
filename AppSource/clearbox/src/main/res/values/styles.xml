@@ -30,6 +30,11 @@
         <item name="android:foregroundTintMode">screen</item>
     </style>
     <style name="Theme.KrScript.PopupOverlay" parent="ThemeOverlay.Material3.Dialog" />
+    <style name="Theme.KrScript.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.KrScript</item>
+    </style>
     <style name="textTitle">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textStyle">bold</item>

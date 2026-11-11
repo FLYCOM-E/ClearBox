@@ -92,7 +92,7 @@ int time_daemon(char * argv[])
     post(SERVER_NAME, SERVER_NAME, L_TD_START_SUCCESS, read_config_count, getpid());
     write_log(work_dir, SERVER_NAME, L_TD_START_SUCCESS, read_config_count, getpid());
     
-    int while_count = 0; // 循环次数，用于语言更新，每 10 次检查更新语言
+    int while_count = 0; // 循环次数，目前主要用于语言更新
     while (sig_flag == 0)
     {
         if (watch == 1)

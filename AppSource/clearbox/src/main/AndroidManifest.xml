@@ -60,6 +60,7 @@
         <activity
             android:name=".SplashActivity"
             android:exported="true"
+            android:theme="@style/Theme.KrScript.Splash"
             android:configChanges="keyboardHidden|orientation|layoutDirection|screenLayout|colorMode|fontScale|smallestScreenSize|density|keyboard|screenSize|touchscreen"
             android:screenOrientation="fullUser">
             <intent-filter>
