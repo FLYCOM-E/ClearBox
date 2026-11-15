@@ -1,6 +1,6 @@
 {
-    "version": "V5.2.1",
-    "versionCode": 101,
-    "zipUrl": "https://nightly.link/FLYCOM-E/ClearBox/actions/runs/38402886149/ClearBox-V5.2.1-101.zip",
+    "version": "V5.2.2",
+    "versionCode": 102,
+    "zipUrl": "https://nightly.link/FLYCOM-E/ClearBox/actions/runs/43721622363/ClearBox-V5.2.2-102.zip",
     "changelog": "https://raw.githubusercontent.com/FLYCOM-E/ClearBox/main/UpdateJson/ko_KR/ChangeLog.md"
 }
