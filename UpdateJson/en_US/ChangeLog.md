@@ -1,22 +1,23 @@
-# Version 5.2.1 (101) Release
+# Version 5.2.2 (102) Release
 
-## ADD
+## ADD 
 
-- Storage analysis (NCDU) now supports displaying symlink types, performance optimization
-- Added cleanup of SystemServer crash logs
-- Added storage cleanup rule preset:
-```
-com.tencent.mobileqq   #QQ
-```
+- The automatic cleaning settings page now shows the last run time; if never run/configured, it displays as empty
+- Added app cleaning rule preset: WeChat (com.tencent.mm)
 
 ## UPDATE
 
-- File organization/cleanup concurrency support, allocated based on device CPU core multiplier, measured file organization speed up to x2
-- Unified module packaging, automatically extracts the corresponding architecture during installation, no extra storage space used
-- App UI theme, layout, animation optimization, upgraded library versions
-- Whitelist now also applies to system cache cleanup
+- App splash screen reworked to follow relevant guidelines; no longer displays a custom splash on startup
+- File organization no longer shows items with a count of 0
+- Timed language auto-refresh interval changed to 5 minutes, fixing delayed language updates
+- App code optimization: removed dead code, updated some legacy code
+- Removed the useless Tab bar at the bottom of the App to improve the full-screen experience
+- App storage cache cleaning no longer reports errors on failure, since most failures are simply due to the cache directory not existing
+- Directory reorganization: whitelist files are no longer scattered in the config directory but placed in a dedicated directory
+- The whitelist now applies to app private directories in internal storage, preventing junk and empty folders from being cleaned within them
+- Custom rule cleaning now displays the total cleaned size
 
 ## FIX
 
-- Fixed a bug where file operations could freeze in some scenarios
-- Fixed abnormal animation in App transparent mode
+- [Test] Tested fix for disappearing downloaded themes in `Xiaomi Themes` and abnormal image loading in `TIM`
+- Fixed a bug where the search box in the App chooser interface merged into the status bar
