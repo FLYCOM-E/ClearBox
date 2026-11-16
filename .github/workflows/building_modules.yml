@@ -26,9 +26,9 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       
-      - name: Setup JDK and dependencies 
+      - name: Setup JDK and dependencies
         id: setup-jdk
         run: |
           JDK_VER="${{ github.event.inputs.jdk_version || '17' }}"
@@ -74,7 +74,7 @@ jobs:
           rm "$ZIP_FILE"
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ClearBox-${{ steps.get_version.outputs.version }}-${{ steps.get_version.outputs.versionCode }}
           path: temp/
@@ -87,12 +87,12 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: collected_artifacts
       
