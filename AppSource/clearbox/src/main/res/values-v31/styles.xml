@@ -17,6 +17,7 @@
         <item name="radioButtonStyle">@style/Widget.Material3.CompoundButton.RadioButton</item>
         <item name="android:windowBackground">?attr/colorSurfaceDim</item>
         <item name="krSwitchThumColor">@color/switch_thumb_color</item>
+        <item name="android:forceDarkAllowed">false</item>
     </style>
     <style name="AppThemeWallpaperLight" parent="Theme.KrScript">
         <item name="android:statusBarColor">#00FFFFFF</item>
