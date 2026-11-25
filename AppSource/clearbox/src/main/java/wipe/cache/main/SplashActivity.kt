@@ -23,6 +23,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        ThemeModeState.switchTheme(this)
         splashScreen.setKeepOnScreenCondition { !navigating && !CheckRootStatus.dialogShowing }
 
         if (ScriptEnvironment.isInited) {
