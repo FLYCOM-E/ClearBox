@@ -237,6 +237,7 @@ int time_daemon(char * argv[])
                     }
                     else
                     {
+                        post(SERVER_NAME, SERVER_NAME, L_TD_CONFIG_DISABLED, config[i].config_name);
                         config[i].enable = 0;
                         i++;
                         continue;

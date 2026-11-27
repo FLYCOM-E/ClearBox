@@ -67,6 +67,7 @@ typedef struct
     const char * l_td_config_write_error;
     const char * l_td_watch_config_dir_error;
     const char * l_td_load_config_success;
+    const char * l_td_config_disabled;
     const char * l_ac_clear;
     const char * l_ac_config_app_notfound;
     const char * l_ac_config_package_err;
@@ -201,6 +202,7 @@ static const LangPack lang_packs[] =
         .l_td_config_write_error = " » %s 配置回写失败.\n",
         .l_td_watch_config_dir_error = " » 热更新配置初始化失败: %s\n",
         .l_td_load_config_success = " » %s 配置已更新\n",
+        .l_td_config_disabled = " » 配置 %s 已停用\n",
         .l_ac_clear = " » 清理 %s &\n",
         .l_ac_config_app_notfound = " » %s 配置指定软件未找到！\n",
         .l_ac_config_package_err = " » %s 配置声明错误，未正确填写包名！\n",
@@ -332,6 +334,7 @@ static const LangPack lang_packs[] =
         .l_td_config_write_error = " » %s 配置回寫失敗.\n",
         .l_td_watch_config_dir_error = " » 熱更新配置初始化失敗: %s\n",
         .l_td_load_config_success = " » %s 配置已更新\n",
+        .l_td_config_disabled = " » 配置 %s 已停用\n",
         .l_ac_clear = " » 清理 %s &\n",
         .l_ac_config_app_notfound = " » %s 配置指定軟體未找到！\n",
         .l_ac_config_package_err = " » %s 配置宣告錯誤，未正確填寫套件名稱！\n",
@@ -463,6 +466,7 @@ static const LangPack lang_packs[] =
         .l_td_config_write_error = " » Не удалось записать конфигурацию %s.\n",
         .l_td_watch_config_dir_error = " » Не удалось инициализировать горячее обновление конфигурации: %s\n",
         .l_td_load_config_success = " » Конфигурация %s обновлена\n",
+        .l_td_config_disabled = " » Конфигурация %s отключена\n",
         .l_ac_clear = " » Очистка %s &\n",
         .l_ac_config_app_notfound = " » Приложение, указанное в конфигурации %s, не найдено！\n",
         .l_ac_config_package_err = " » Ошибка объявления в конфигурации %s: неверно указан пакет！\n",
@@ -594,6 +598,7 @@ static const LangPack lang_packs[] =
         .l_td_config_write_error = " » %s configuration write-back failed.\n",
         .l_td_watch_config_dir_error = " » Hot-reload config initialization failed: %s\n",
         .l_td_load_config_success = " » %s configuration has been updated\n",
+        .l_td_config_disabled = " » Configuration %s has been disabled\n",
         .l_ac_clear = " » Cleaning %s &\n",
         .l_ac_config_app_notfound = " » Application specified in %s configuration not found!\n",
         .l_ac_config_package_err = " » Declaration error in %s configuration, package name not correctly filled!\n",
@@ -725,6 +730,7 @@ static const LangPack lang_packs[] =
         .l_td_config_write_error = " » %s 구성 쓰기 실패.\n",
         .l_td_watch_config_dir_error = " » 핫 업데이트 구성 초기화 실패: %s\n",
         .l_td_load_config_success = " » %s 구성이 업데이트되었습니다\n",
+        .l_td_config_disabled = " » 구성 %s 이(가) 비활성화되었습니다\n",
         .l_ac_clear = " » %s 정리 중 &\n",
         .l_ac_config_app_notfound = " » %s 구성에 지정된 앱을 찾을 수 없습니다！\n",
         .l_ac_config_package_err = " » %s 구성 선언 오류: 패키지 이름이 올바르지 않습니다！\n",
@@ -856,6 +862,7 @@ static const LangPack lang_packs[] =
         .l_td_config_write_error = " » %s 設定の書き戻しに失敗しました。\n",
         .l_td_watch_config_dir_error = " » ホットアップデート設定の初期化に失敗しました: %s\n",
         .l_td_load_config_success = " » %s 設定が更新されました\n",
+        .l_td_config_disabled = " » 設定 %d は無効化されました\n",
         .l_ac_clear = " » %s をクリーン中 &\n",
         .l_ac_config_app_notfound = " » %s 設定で指定されたアプリが見つかりません！\n",
         .l_ac_config_package_err = " » %s 設定の宣言エラー：パッケージ名が正しく入力されていません！\n",
@@ -989,6 +996,7 @@ extern LangType current_lang;
 #define L_TD_CONFIG_WRITE_ERROR lang_packs[current_lang].l_td_config_write_error
 #define L_TD_WATCH_CONFIG_DIR_ERROR lang_packs[current_lang].l_td_watch_config_dir_error
 #define L_TD_LOAD_CONFIG_SUCCESS lang_packs[current_lang].l_td_load_config_success
+#define L_TD_CONFIG_DISABLED lang_packs[current_lang].l_td_config_disabled
 #define L_AC_CLEAR lang_packs[current_lang].l_ac_clear
 #define L_AC_CONFIG_APP_NOTFOUND lang_packs[current_lang].l_ac_config_app_notfound
 #define L_AC_CONFIG_PACKAGE_ERR lang_packs[current_lang].l_ac_config_package_err
